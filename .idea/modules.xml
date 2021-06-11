@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CodeEditor.iml" filepath="$PROJECT_DIR$/.idea/modules/CodeEditor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/CodeEditor.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/CodeEditor.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CodeEditor.buildSrc.iml" filepath="$PROJECT_DIR$/.idea/modules/CodeEditor.buildSrc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/editor/CodeEditor.editor.iml" filepath="$PROJECT_DIR$/.idea/modules/editor/CodeEditor.editor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/language-base/CodeEditor.language-base.iml" filepath="$PROJECT_DIR$/.idea/modules/language-base/CodeEditor.language-base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/language-cobol85/CodeEditor.language-cobol85.iml" filepath="$PROJECT_DIR$/.idea/modules/language-cobol85/CodeEditor.language-cobol85.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/language-golang/CodeEditor.language-golang.iml" filepath="$PROJECT_DIR$/.idea/modules/language-golang/CodeEditor.language-golang.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/language-html/CodeEditor.language-html.iml" filepath="$PROJECT_DIR$/.idea/modules/language-html/CodeEditor.language-html.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/language-java/CodeEditor.language-java.iml" filepath="$PROJECT_DIR$/.idea/modules/language-java/CodeEditor.language-java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/language-mksh/CodeEditor.language-mksh.iml" filepath="$PROJECT_DIR$/.idea/modules/language-mksh/CodeEditor.language-mksh.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/language-python/CodeEditor.language-python.iml" filepath="$PROJECT_DIR$/.idea/modules/language-python/CodeEditor.language-python.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/language-universal/CodeEditor.language-universal.iml" filepath="$PROJECT_DIR$/.idea/modules/language-universal/CodeEditor.language-universal.iml" />
+    </modules>
+  </component>
+</project>
