@@ -36,32 +36,7 @@ Note: Language issues may not be handled.
 ![Select Text](/images/select-text.png)
 ![Search and Replace](/images/search-replace.png)
 ![Wordwrap](/images/wordwrap.png)
-## How to use this editor  
-* Step 1.Add the JitPack repository to your build file   
-Add it in your root build.gradle at the end of repositories:
-```Gradle
-allprojects {
-  repositories {
-    ...
-    maven { url 'https://jitpack.io' }
-  }
-}
- ```
-* Step 2. Add the dependency to your app
-```Gradle
-dependencies {
-  implementation 'com.github.Rosemoe.CodeEditor:<moduleName>:<versionName>'
-}
-```
-Available modules:     
-* editor 
-* language-base
-* language-java
-* language-html
-* language-python
-* language-universal   
-### Some more information
-Go to [Wiki](https://github.com/Rosemoe/CodeEditor/wiki)
+
 ### Discuss
 * Official QQ Group:[216632648](https://jq.qq.com/?_wv=1027&k=n68uxQws)
 * [Official Telegram Group](https://t.me/rosemoe_code_editor)
