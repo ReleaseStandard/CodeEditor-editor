@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/CodeEditor-editor.iml" filepath="$PROJECT_DIR$/.idea/modules/CodeEditor-editor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-2064621020/CodeEditor-editor.CodeEditor-buildSrc.iml" filepath="$PROJECT_DIR$/.idea/modules/-2064621020/CodeEditor-editor.CodeEditor-buildSrc.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/editor/CodeEditor-editor.editor.iml" filepath="$PROJECT_DIR$/.idea/modules/editor/CodeEditor-editor.editor.iml" />
     </modules>
   </component>

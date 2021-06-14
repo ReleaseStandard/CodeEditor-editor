@@ -18,14 +18,14 @@ apply plugin: 'com.android.library'
 //apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion Versions.compileSdkVersion
+    buildToolsVersion Versions.targetSdkVersion
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 9
-        versionName "0.5.1"
+        minSdkVersion Versions.minSdkVersion
+        targetSdkVersion Versions.targetSdkVersion
+        versionCode Versions.versionCode
+        versionName Versions.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
