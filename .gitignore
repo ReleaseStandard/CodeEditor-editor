@@ -17,3 +17,6 @@ shelf/**
 .externalNativeBuild
 .cxx
 local.properties
+build/
+build/*
+build/**
