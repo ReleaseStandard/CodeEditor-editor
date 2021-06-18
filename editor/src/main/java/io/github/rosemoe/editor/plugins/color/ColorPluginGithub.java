@@ -29,23 +29,23 @@ public class ColorPluginGithub extends ColorPlugin {
     }
 
     @Override
-    public HashMap<Integer, Integer> getColors() {
-        return new HashMap<Integer, Integer>() {{
-            put(R.styleable.CodeEditor_widget_color_base00, 0xff24292e);
-            put(R.styleable.CodeEditor_widget_color_base1, 0xff6a737d);
-            put(R.styleable.CodeEditor_widget_color_base2, 0xffbec0c1);
-            put(R.styleable.CodeEditor_widget_color_base3, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_accent1, 0xffde3a49);
-            put(R.styleable.CodeEditor_widget_color_accent6, 0xff24292e);
-            put(R.styleable.CodeEditor_widget_color_accent7, 0xff032f62);
-            put(R.styleable.CodeEditor_widget_color_accent8, 0xff005cc5);
-            put(R.styleable.CodeEditor_widget_color_comment, 0xff6a737d);
-            put(R.styleable.CodeEditor_widget_color_wholeBackground, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_textNormal, 0xff24292e);
-            put(R.styleable.CodeEditor_widget_color_lineNumberBackground, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_lineNumberPanel, 0xffbec0c1);
-            put(R.styleable.CodeEditor_widget_color_selectionInsert, 0xffc7edcc);
-            put(R.styleable.CodeEditor_widget_color_selectionHandle, 0xffc7edcc);
+    public HashMap<String, Integer> getColors() {
+        return new HashMap<String, Integer>() {{
+            put("base00", 0xff24292e);
+            put("base1", 0xff6a737d);
+            put("base2", 0xffbec0c1);
+            put("base3", 0xffffffff);
+            put("accent1", 0xffde3a49);
+            put("accent6", 0xff24292e);
+            put("accent7", 0xff032f62);
+            put("accent8", 0xff005cc5);
+            put("comment", 0xff6a737d);
+            put("wholeBackground", 0xffffffff);
+            put("textNormal", 0xff24292e);
+            put("lineNumberBackground", 0xffffffff);
+            put("lineNumberPanel", 0xffbec0c1);
+            put("selectionInsert", 0xffc7edcc);
+            put("selectionHandle", 0xffc7edcc);
         }};
     }
 }

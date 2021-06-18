@@ -41,7 +41,7 @@ public abstract class ColorPlugin extends Plugin {
 
 
     public void apply() {
-        HashMap<Integer,Integer> colors = getColors();
+        HashMap<String,Integer> colors = getColors();
         if ( colors == null ) {
             colors = new HashMap<>();
         }
@@ -53,6 +53,6 @@ public abstract class ColorPlugin extends Plugin {
      * @return
      */
     @Nullable
-    public abstract HashMap<Integer,Integer> getColors();
+    public abstract HashMap<String,Integer> getColors();
 
 }

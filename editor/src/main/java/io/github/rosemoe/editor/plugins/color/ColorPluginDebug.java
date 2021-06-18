@@ -34,29 +34,29 @@ public class ColorPluginDebug extends ColorPlugin {
     }
 
     @Override
-    public HashMap<Integer, Integer> getColors() {
-        return new HashMap<Integer, Integer>() {{
-            put(R.styleable.CodeEditor_widget_color_base03, 0xFFFF0000);
-            put(R.styleable.CodeEditor_widget_color_base02, 0xFF00FF00);
-            put(R.styleable.CodeEditor_widget_color_base01, 0xFF0000FF);
-            put(R.styleable.CodeEditor_widget_color_base00, 0xFFFFFF00);
-            put(R.styleable.CodeEditor_widget_color_base0, 0xFF00FFFF);
-            put(R.styleable.CodeEditor_widget_color_base1, 0xFFFF00FF);
-            put(R.styleable.CodeEditor_widget_color_base2, 0xFFFFFFFF);
-            put(R.styleable.CodeEditor_widget_color_base3, 0xFF000000);
-            put(R.styleable.CodeEditor_widget_color_accent1, 0xFFaaFF00);
-            put(R.styleable.CodeEditor_widget_color_accent2, 0xFFaa0011);
-            put(R.styleable.CodeEditor_widget_color_accent3, 0xFFFFaa00);
-            put(R.styleable.CodeEditor_widget_color_accent4, 0xFF0aFFaF);
-            put(R.styleable.CodeEditor_widget_color_accent5, 0xFF6c71c4);
-            put(R.styleable.CodeEditor_widget_color_accent6, 0xFF268bd2);
-            put(R.styleable.CodeEditor_widget_color_accent7, 0xFF2aa198);
-            put(R.styleable.CodeEditor_widget_color_accent8, 0xFF859900);
-            put(R.styleable.CodeEditor_widget_color_lineNumberPanel, 0xFFFF0000);
-            put(R.styleable.CodeEditor_widget_color_lineNumberBackground, 0xFF00FF00);
-            put(R.styleable.CodeEditor_widget_color_currentLine, 0xFFFF0000);
-            put(R.styleable.CodeEditor_widget_color_textSelected,0xFF00FF00);
-            put(R.styleable.CodeEditor_widget_color_selectedTextBackground, 0xFFFF0000);
+    public HashMap<String, Integer> getColors() {
+        return new HashMap<String, Integer>() {{
+            put("base03", 0xFFFF0000);
+            put("base02", 0xFF00FF00);
+            put("base01", 0xFF0000FF);
+            put("base00", 0xFFFFFF00);
+            put("base0", 0xFF00FFFF);
+            put("base1", 0xFFFF00FF);
+            put("base2", 0xFFFFFFFF);
+            put("base3", 0xFF000000);
+            put("accent1", 0xFFaaFF00);
+            put("accent2", 0xFFaa0011);
+            put("accent3", 0xFFFFaa00);
+            put("accent4", 0xFF0aFFaF);
+            put("accent5", 0xFF6c71c4);
+            put("accent6", 0xFF268bd2);
+            put("accent7", 0xFF2aa198);
+            put("accent8", 0xFF859900);
+            put("lineNumberPanel", 0xFFFF0000);
+            put("lineNumberBackground", 0xFF00FF00);
+            put("currentLine", 0xFFFF0000);
+            put("textSelected",0xFF00FF00);
+            put("selectedTextBackground", 0xFFFF0000);
         }};
     }
 }

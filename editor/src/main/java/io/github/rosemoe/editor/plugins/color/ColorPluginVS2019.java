@@ -32,34 +32,34 @@ public class ColorPluginVS2019 extends ColorPlugin {
 
     @Nullable
     @Override
-    public HashMap<Integer, Integer> getColors() {
-        return new HashMap<Integer, Integer>() {{
-            put(R.styleable.CodeEditor_widget_color_base00, 0xffdcdcdc);
-            put(R.styleable.CodeEditor_widget_color_base1, 0xff57a64a);
-            put(R.styleable.CodeEditor_widget_color_base2, 0xff3676b8);
-            put(R.styleable.CodeEditor_widget_color_base3, 0xff1e1e1e);
-            put(R.styleable.CodeEditor_widget_color_accent1, 0xff569cd6);
-            put(R.styleable.CodeEditor_widget_color_accent5, 0xff4ec9b0);
-            put(R.styleable.CodeEditor_widget_color_accent4, 0xffdcdcaa);
-            put(R.styleable.CodeEditor_widget_color_accent6, 0xffdcdcdc);
-            put(R.styleable.CodeEditor_widget_color_accent7, 0xffd69d85);
-            put(R.styleable.CodeEditor_widget_color_comment, 0xff57a64a);
-            put(R.styleable.CodeEditor_widget_color_wholeBackground, 0xff1e1e1e);
-            put(R.styleable.CodeEditor_widget_color_textNormal, 0xffdcdcdc);
-            put(R.styleable.CodeEditor_widget_color_lineNumberBackground, 0xff1e1e1e);
-            put(R.styleable.CodeEditor_widget_color_lineNumberPanelText, 0xff2b9eaf);
-            put(R.styleable.CodeEditor_widget_color_lineNumberPanel, 0xff2b9eaf);
-            put(R.styleable.CodeEditor_widget_color_linedivider, 0xff2b9eaf);
-            put(R.styleable.CodeEditor_widget_color_scrollbarThumb, 0xff3e3e42);
-            put(R.styleable.CodeEditor_widget_color_scrollbarThumbPressed, 0xff9e9e9e);
-            put(R.styleable.CodeEditor_widget_color_selectedTextBackground, 0xff3676b8);
-            put(R.styleable.CodeEditor_widget_color_matchedTextBackground, 0xff653306);
-            put(R.styleable.CodeEditor_widget_color_currentLine, 0xff464646);
-            put(R.styleable.CodeEditor_widget_color_selectionInsert, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_selectionHandle, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_blockLine, 0xff717171);
-            put(R.styleable.CodeEditor_widget_color_blockLineCurrent, 0);
-            put(R.styleable.CodeEditor_widget_color_nonPrintableChar, 0xffdddddd);
+    public HashMap<String, Integer> getColors() {
+        return new HashMap<String, Integer>() {{
+            put("base00", 0xffdcdcdc);
+            put("base1", 0xff57a64a);
+            put("base2", 0xff3676b8);
+            put("base3", 0xff1e1e1e);
+            put("accent1", 0xff569cd6);
+            put("accent5", 0xff4ec9b0);
+            put("accent4", 0xffdcdcaa);
+            put("accent6", 0xffdcdcdc);
+            put("accent7", 0xffd69d85);
+            put("comment", 0xff57a64a);
+            put("wholeBackground", 0xff1e1e1e);
+            put("textNormal", 0xffdcdcdc);
+            put("lineNumberBackground", 0xff1e1e1e);
+            put("lineNumberPanelText", 0xff2b9eaf);
+            put("lineNumberPanel", 0xff2b9eaf);
+            put("linedivider", 0xff2b9eaf);
+            put("scrollbarThumb", 0xff3e3e42);
+            put("scrollbarThumbPressed", 0xff9e9e9e);
+            put("selectedTextBackground", 0xff3676b8);
+            put("matchedTextBackground", 0xff653306);
+            put("currentLine", 0xff464646);
+            put("selectionInsert", 0xffffffff);
+            put("selectionHandle", 0xffffffff);
+            put("blockLine", 0xff717171);
+            put("blockLineCurrent", 0);
+            put("nonPrintableChar", 0xffdddddd);
         }};
     }
 }

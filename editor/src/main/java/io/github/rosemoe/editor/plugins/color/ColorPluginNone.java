@@ -36,7 +36,7 @@ public class ColorPluginNone extends ColorPlugin {
 
     @Nullable
     @Override
-    public HashMap<Integer, Integer> getColors() {
+    public HashMap<String, Integer> getColors() {
         return null;
     }
 

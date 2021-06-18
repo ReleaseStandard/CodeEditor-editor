@@ -29,27 +29,27 @@ public class ColorPluginHTML extends ColorPlugin {
     }
 
     @Override
-    public HashMap<Integer, Integer> getColors() {
-        return new HashMap<Integer, Integer>() {{
-            put(R.styleable.CodeEditor_widget_color_base00, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_base1, 0xffbdbdbd);
-            put(R.styleable.CodeEditor_widget_color_base2, 0xff464646);
-            put(R.styleable.CodeEditor_widget_color_base3, 0xff212121);
-            put(R.styleable.CodeEditor_widget_color_accent1, 0xff4fc3f7);
-            put(R.styleable.CodeEditor_widget_color_accent5, 0xfff0be4b);
-            put(R.styleable.CodeEditor_widget_color_accent6,0xff333333);
-            put(R.styleable.CodeEditor_widget_color_accent7,0xff008080);
-            put(R.styleable.CodeEditor_widget_color_comment, 0xffbdbdbd);
-            put(R.styleable.CodeEditor_widget_color_wholeBackground, 0xff212121);
-            put(R.styleable.CodeEditor_widget_color_textNormal, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_lineNumberBackground, 0xff1e1e1e);
-            put(R.styleable.CodeEditor_widget_color_linedivider, 0xff2b9eaf);
-            put(R.styleable.CodeEditor_widget_color_lineNumberPanelText, 0xff2b9eaf);
-            put(R.styleable.CodeEditor_widget_color_currentLine, 0xff464646);
-            put(R.styleable.CodeEditor_widget_color_nonPrintableChar, 0xffdddddd);
-            put(R.styleable.CodeEditor_widget_color_selectionInsert, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_selectionHandle, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_lineNumberPanel, 0xff2b9eaf);
+    public HashMap<String, Integer> getColors() {
+        return new HashMap<String, Integer>() {{
+            put("base00", 0xffffffff);
+            put("base1", 0xffbdbdbd);
+            put("base2", 0xff464646);
+            put("base3", 0xff212121);
+            put("accent1", 0xff4fc3f7);
+            put("accent5", 0xfff0be4b);
+            put("accent6",0xff333333);
+            put("accent7",0xff008080);
+            put("comment", 0xffbdbdbd);
+            put("wholeBackground", 0xff212121);
+            put("textNormal", 0xffffffff);
+            put("lineNumberBackground", 0xff1e1e1e);
+            put("linedivider", 0xff2b9eaf);
+            put("lineNumberPanelText", 0xff2b9eaf);
+            put("currentLine", 0xff464646);
+            put("nonPrintableChar", 0xffdddddd);
+            put("selectionInsert", 0xffffffff);
+            put("selectionHandle", 0xffffffff);
+            put("lineNumberPanel", 0xff2b9eaf);
         }};
     }
 }

@@ -78,9 +78,8 @@ public class CodeAnalyzerResultColor extends TokenEmitterResult {
         add((Integer)spanLine, SpanController.obtain((Integer)column, (Integer)color));
     }
     private void addFromColorName(Object spanLine, Object column, String colorName) {
-        String colName = (String) colorName;
         Integer color = theme.editor.colorManager.getColor(colorName);
-        Logger.debug("colName=",colName,",color=",color);
+        Logger.debug("colorName=",colorName,",color=",color);
         addIfNeeded(spanLine,column,color);
     }
     /**

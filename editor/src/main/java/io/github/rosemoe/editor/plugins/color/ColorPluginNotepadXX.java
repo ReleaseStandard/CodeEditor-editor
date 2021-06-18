@@ -32,30 +32,30 @@ public class ColorPluginNotepadXX extends ColorPlugin {
 
     @Nullable
     @Override
-    public HashMap<Integer, Integer> getColors() {
-        return new HashMap<Integer, Integer>() {{
-            put(R.styleable.CodeEditor_widget_color_base00, 0xff000000);
-            put(R.styleable.CodeEditor_widget_color_base1, 0xff008000);
-            put(R.styleable.CodeEditor_widget_color_base2, 0xffe4e4e4);
-            put(R.styleable.CodeEditor_widget_color_base3, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_accent1, 0xff8000ff);
-            put(R.styleable.CodeEditor_widget_color_accent6, 0xff000000);
-            put(R.styleable.CodeEditor_widget_color_accent7, 0xff808080);
-            put(R.styleable.CodeEditor_widget_color_accent8, 0xff0000ff);
-            put(R.styleable.CodeEditor_widget_color_comment, 0xff008000);
-            put(R.styleable.CodeEditor_widget_color_wholeBackground, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_textNormal, 0xff000000);
-            put(R.styleable.CodeEditor_widget_color_lineNumberBackground, 0xffe4e4e4);
-            put(R.styleable.CodeEditor_widget_color_lineNumberPanel, 0xff808080);
-            put(R.styleable.CodeEditor_widget_color_lineNumberPanelText, 0xffc0c0c0);
-            put(R.styleable.CodeEditor_widget_color_linedivider, 0xffc0c0c0);
-            put(R.styleable.CodeEditor_widget_color_selectedTextBackground, 0xff75d975);
-            put(R.styleable.CodeEditor_widget_color_matchedTextBackground, 0xffc0c0c0);
-            put(R.styleable.CodeEditor_widget_color_currentLine, 0xffe8e8ff);
-            put(R.styleable.CodeEditor_widget_color_selectionInsert, 0xff8000ff);
-            put(R.styleable.CodeEditor_widget_color_selectionHandle, 0xff8000ff);
-            put(R.styleable.CodeEditor_widget_color_blockLine, 0xffc0c0c0);
-            put(R.styleable.CodeEditor_widget_color_blockLineCurrent, 0);
+    public HashMap<String, Integer> getColors() {
+        return new HashMap<String, Integer>() {{
+            put("base00", 0xff000000);
+            put("base1", 0xff008000);
+            put("base2", 0xffe4e4e4);
+            put("base3", 0xffffffff);
+            put("accent1", 0xff8000ff);
+            put("accent6", 0xff000000);
+            put("accent7", 0xff808080);
+            put("accent8", 0xff0000ff);
+            put("comment", 0xff008000);
+            put("wholeBackground", 0xffffffff);
+            put("textNormal", 0xff000000);
+            put("lineNumberBackground", 0xffe4e4e4);
+            put("lineNumberPanel", 0xff808080);
+            put("lineNumberPanelText", 0xffc0c0c0);
+            put("linedivider", 0xffc0c0c0);
+            put("selectedTextBackground", 0xff75d975);
+            put("matchedTextBackground", 0xffc0c0c0);
+            put("currentLine", 0xffe8e8ff);
+            put("selectionInsert", 0xff8000ff);
+            put("selectionHandle", 0xff8000ff);
+            put("blockLine", 0xffc0c0c0);
+            put("blockLineCurrent", 0);
         }};
     }
 }

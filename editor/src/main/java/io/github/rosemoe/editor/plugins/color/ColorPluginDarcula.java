@@ -29,32 +29,32 @@ public class ColorPluginDarcula extends ColorPlugin {
     }
 
     @Override
-    public HashMap<Integer, Integer> getColors() {
-        return new HashMap<Integer, Integer>() {{
-            put(R.styleable.CodeEditor_widget_color_base00, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_base1, 0xff606366);
-            put(R.styleable.CodeEditor_widget_color_base2, 0xff323232);
-            put(R.styleable.CodeEditor_widget_color_base3, 0xff2b2b2b);
-            put(R.styleable.CodeEditor_widget_color_accent1, 0xffcc7832);
-            put(R.styleable.CodeEditor_widget_color_accent4, 0xFF9876aa);
-            put(R.styleable.CodeEditor_widget_color_accent6, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_accent7, 0xff6a8759);
-            put(R.styleable.CodeEditor_widget_color_comment, 0xff808080);
-            put(R.styleable.CodeEditor_widget_color_wholeBackground, 0xff2b2b2b);
-            put(R.styleable.CodeEditor_widget_color_textNormal, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_lineNumberBackground, 0xff313335);
-            put(R.styleable.CodeEditor_widget_color_lineNumberPanel, 0xff606366);
-            put(R.styleable.CodeEditor_widget_color_linedivider, 0xff606366);
-            put(R.styleable.CodeEditor_widget_color_scrollbarThumb, 0xffa6a6a6);
-            put(R.styleable.CodeEditor_widget_color_scrollbarThumbPressed, 0xff565656);
-            put(R.styleable.CodeEditor_widget_color_selectedTextBackground, 0xff3676b8);
-            put(R.styleable.CodeEditor_widget_color_matchedTextBackground, 0xff32593d);
-            put(R.styleable.CodeEditor_widget_color_currentLine, 0xff323232);
-            put(R.styleable.CodeEditor_widget_color_selectionInsert, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_selectionHandle, 0xffffffff);
-            put(R.styleable.CodeEditor_widget_color_blockLine, 0xff575757);
-            put(R.styleable.CodeEditor_widget_color_blockLineCurrent, 0xdd575757);
-            put(R.styleable.CodeEditor_widget_color_nonPrintableChar, 0xff6a8759);
+    public HashMap<String, Integer> getColors() {
+        return new HashMap<String, Integer>() {{
+            put("base00", 0xffffffff);
+            put("base1", 0xff606366);
+            put("base2", 0xff323232);
+            put("base3", 0xff2b2b2b);
+            put("accent1", 0xffcc7832);
+            put("accent4", 0xFF9876aa);
+            put("accent6", 0xffffffff);
+            put("accent7", 0xff6a8759);
+            put("comment", 0xff808080);
+            put("wholeBackground", 0xff2b2b2b);
+            put("textNormal", 0xffffffff);
+            put("lineNumberBackground", 0xff313335);
+            put("lineNumberPanel", 0xff606366);
+            put("linedivider", 0xff606366);
+            put("scrollbarThumb", 0xffa6a6a6);
+            put("scrollbarThumbPressed", 0xff565656);
+            put("selectedTextBackground", 0xff3676b8);
+            put("matchedTextBackground", 0xff32593d);
+            put("currentLine", 0xff323232);
+            put("selectionInsert", 0xffffffff);
+            put("selectionHandle", 0xffffffff);
+            put("blockLine", 0xff575757);
+            put("blockLineCurrent", 0xdd575757);
+            put("nonPrintableChar", 0xff6a8759);
         }};
     }
 
