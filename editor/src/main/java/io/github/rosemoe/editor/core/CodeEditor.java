@@ -67,6 +67,8 @@ import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
 import io.github.rosemoe.editor.core.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.widgets.linenumberpanel.controller.LineNumberPanelController;
 import io.github.rosemoe.editor.core.widgets.loopback.LoopbackWidget;
+import io.github.rosemoe.editor.core.widgets.symbolinput.controller.SymbolChannelController;
+import io.github.rosemoe.editor.core.widgets.symbolinput.controller.SymbolInputController;
 import io.github.rosemoe.editor.core.widgets.widgetmanager.controller.WidgetManagerController;
 import io.github.rosemoe.editor.core.widgets.userinput.view.UserInputConnexionView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
@@ -218,7 +220,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     public CompletionWindowController completionWindow;                    // Manage completion item showing
     public  UserInputController userInput;                                  // Manage all user input, eg scale scrolling
     public LineNumberPanelController lineNumber;                            // Manage display of line number, computation
-
+    public SymbolInputController symbolInputController;                     // Manage symbol input view
     public ExtensionContainer widgets = new ExtensionContainer();           // System plugins
     public ExtensionContainer plugins = new ExtensionContainer();           // Plugins designed by users
 
@@ -543,11 +545,13 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         mConnection       = new UserInputConnexionController(this);
         widgets.put(new ColorSchemeController(this));
         completionWindow  = new CompletionWindowController(this);
+        symbolInputController = new SymbolInputController(this);
         widgets.put(
                 userInput,
                 new LoopbackWidget(this),
                 new WidgetManagerController(this),
-                lineNumber
+                lineNumber,
+                symbolInputController
         );
         mInsertSelWidth = lineNumber.getDividerWidth() / 2;
         mDpUnit = lineNumber.getDividerWidth() / 2;

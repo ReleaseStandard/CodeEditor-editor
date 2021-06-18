@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core;
+package io.github.rosemoe.editor.core.widgets.symbolinput.controller;
 
 import io.github.rosemoe.editor.core.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CodeEditor;
