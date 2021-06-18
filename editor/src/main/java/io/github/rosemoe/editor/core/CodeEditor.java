@@ -57,6 +57,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -276,15 +277,26 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      */
     private void initFromAttributeSet(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         TypedArray ta = getContext().obtainStyledAttributes(attrs,R.styleable.CodeEditor);
-
+        try {
+            Class.forName("com.fasterxml.jackson.databind.ObjectMapper");
+        } catch (ClassNotFoundException e) {
+            Logger.v("WARNING : jackson is not avaliable : you must add it from the main application, styled attributes will not work");
+            Logger.v("ex:     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.3'\n" +
+                                "    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.3'");
+        }
         String config = ta.getString(R.styleable.CodeEditor_config);
         if ( config != null ) {
             Logger.debug("config=",config);
             ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = null;
             try {
-                JsonNode rootNode = mapper.readTree(config);
+                rootNode = mapper.readTree(config);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                return;
+            }
 
-                // configure extensions (widgets, plugins)
+            // configure extensions (widgets, plugins)
                 JsonNode extensions = rootNode.get("extensions");
                 if ( extensions != null ) {
                     for(ExtensionContainer ec : new ExtensionContainer[]{plugins, widgets}) {
@@ -312,10 +324,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                         setTextSize((float) textSz.asDouble());
                     }
                 }
-
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
         }
 
 
