@@ -25,7 +25,7 @@ import android.util.TypedValue;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.util.Logger;
-import io.github.rosemoe.editor.core.widgets.Widget;
+import io.github.rosemoe.editor.core.widgets.WidgetController;
 import io.github.rosemoe.editor.core.widgets.linenumberpanel.extension.LineNumberPanelEvent;
 import io.github.rosemoe.editor.core.widgets.linenumberpanel.model.LineNumberPanelModel;
 import io.github.rosemoe.editor.core.widgets.linenumberpanel.view.LineNumberPanelView;
@@ -36,7 +36,7 @@ import static io.github.rosemoe.editor.core.widgets.linenumberpanel.model.LineNu
  * Class responsible for displaying a line number panel on the editor.
  *
  */
-public class LineNumberPanelController extends Widget {
+public class LineNumberPanelController extends WidgetController {
 
     public LineNumberPanelModel model = new LineNumberPanelModel();
     public final LineNumberPanelView  view;

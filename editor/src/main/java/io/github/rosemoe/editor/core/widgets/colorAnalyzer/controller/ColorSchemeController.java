@@ -25,7 +25,7 @@ import java.util.Map;
 
 import io.github.rosemoe.editor.R;
 import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.widgets.Widget;
+import io.github.rosemoe.editor.core.widgets.WidgetController;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.widgets.colorAnalyzer.extension.ColorSchemeEvent;
@@ -40,7 +40,7 @@ import static io.github.rosemoe.editor.core.widgets.colorAnalyzer.extension.Colo
  * https://github.com/altercation/solarized
  * @author Rose
  */
-public class ColorSchemeController extends Widget {
+public class ColorSchemeController extends WidgetController {
 
     public static final int UPDATE_COLOR_SLEEP = 100;
     private static final int TODO = 0xFFFF0000;

@@ -19,7 +19,7 @@ import android.util.Log;
 
 import io.github.rosemoe.editor.core.widgets.cursor.view.CursorView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
-import io.github.rosemoe.editor.core.widgets.Widget;
+import io.github.rosemoe.editor.core.widgets.WidgetController;
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.widgets.cursor.model.CursorModel;
 import io.github.rosemoe.editor.core.widgets.contentAnalyzer.processors.indexer.CachedIndexer;
@@ -31,7 +31,7 @@ import io.github.rosemoe.editor.core.CodeEditor;
  * @author Rose
  * Warning:The cursor position will update automatically when the content has been changed by other way
  */
-public final class CursorController extends Widget {
+public final class CursorController extends WidgetController {
 
     private final ContentMapController mContent;
     private final CachedIndexer mIndexer;

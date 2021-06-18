@@ -66,10 +66,9 @@ import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
 import io.github.rosemoe.editor.core.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.widgets.linenumberpanel.controller.LineNumberPanelController;
-import io.github.rosemoe.editor.core.widgets.loopback.LoopbackWidget;
-import io.github.rosemoe.editor.core.widgets.symbolinput.controller.SymbolChannelController;
+import io.github.rosemoe.editor.core.widgets.loopback.LoopbackWidgetController;
 import io.github.rosemoe.editor.core.widgets.symbolinput.controller.SymbolInputController;
-import io.github.rosemoe.editor.core.widgets.widgetmanager.controller.WidgetManagerController;
+import io.github.rosemoe.editor.core.widgets.widgetmanager.controller.WidgetControllerManagerController;
 import io.github.rosemoe.editor.core.widgets.userinput.view.UserInputConnexionView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
 import io.github.rosemoe.editor.plugins.debug.TestPlugin;
@@ -548,8 +547,8 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         symbolInputController = new SymbolInputController(this);
         widgets.put(
                 userInput,
-                new LoopbackWidget(this),
-                new WidgetManagerController(this),
+                new LoopbackWidgetController(this),
+                new WidgetControllerManagerController(this),
                 lineNumber,
                 symbolInputController
         );
@@ -922,8 +921,12 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
 
         offsetX = -getOffsetX();
 
-        if (isLineNumberEnabled()) {
 
+
+        // line number widget paint
+        if (isLineNumberEnabled()) {
+            //lineNumber.model.computedText = ;
+            lineNumber.view.paint(canvas, this);
             lineNumber.drawLineNumberBackground(canvas, offsetX, lineNumberWidth + lineNumber.getDividerMargin(), getColorScheme().getLineNumberBackground());
             drawDivider(canvas, offsetX + lineNumberWidth + lineNumber.getDividerMargin(),color.getLineDivider());
             int lineNumberColor = getColorScheme().getLineNumberPanelText();
@@ -932,6 +935,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                 lineNumber.drawLineNumber(canvas, IntPair.getFirst(packed), IntPair.getSecond(packed), offsetX, lineNumberWidth, lineNumberColor);
             }
         }
+
 
         if (!isWordwrap() && isBlockLineEnabled()) {
             drawBlockLines(canvas, textOffset);

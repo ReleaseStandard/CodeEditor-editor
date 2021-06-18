@@ -20,8 +20,9 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 
 import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.widgets.WidgetCanvasPartView;
 
-public class LineNumberPanelView {
+public class LineNumberPanelView extends WidgetCanvasPartView {
     public Paint lineNumberPaint = new Paint();
     public Paint.FontMetricsInt mLineNumberMetrics;
     final CodeEditor editor;
@@ -36,6 +37,19 @@ public class LineNumberPanelView {
             lineNumberPaint.setTextAlign(align);
         }
     }
+
+    /**
+     * Draw text of line number panel.
+     * @param canvas
+     * @param row
+     * @param offsetX
+     * @param width
+     * @param count
+     * @param color
+     * @param computedText
+     * @param mDividerMargin
+     * @param mLineNumberAlign
+     */
     public void drawLineNumber(Canvas canvas, int row, float offsetX, float width, int count, int color, char[]computedText, float mDividerMargin, Paint.Align mLineNumberAlign) {
         setTextAlign(mLineNumberAlign);
         lineNumberPaint.setColor(color);
@@ -53,5 +67,10 @@ public class LineNumberPanelView {
             case CENTER:
                 canvas.drawText(computedText, 0, count, offsetX + (width + mDividerMargin) / 2f, y, lineNumberPaint);
         }
+    }
+
+    @Override
+    public void paint(Canvas canvas, CodeEditor editor) {
+
     }
 }

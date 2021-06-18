@@ -15,6 +15,8 @@
  */
 package io.github.rosemoe.editor.core.widgets;
 
+import androidx.core.util.ObjectsCompat;
+
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
@@ -26,14 +28,19 @@ import io.github.rosemoe.editor.core.util.Logger;
  *
  * @author Release Standard
  */
-public abstract class Widget extends Extension {
+public abstract class WidgetController extends Extension {
 
-    public Widget(CodeEditor editor) {
+    public WidgetModel model = null;
+    public WidgetView view = null;
+
+    public WidgetController(CodeEditor editor) {
         super(editor);
     }
 
     @Override
-    protected void handleEventEmit(Event e) { editor.plugins.dispatch(e); }
+    protected void handleEventEmit(Event e) {
+        editor.plugins.dispatch(e);
+    }
 
     @Override
     public void dispatch(Event e) {

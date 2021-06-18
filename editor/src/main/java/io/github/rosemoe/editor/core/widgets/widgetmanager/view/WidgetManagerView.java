@@ -35,7 +35,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import io.github.rosemoe.editor.R;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.util.Logger;
-import io.github.rosemoe.editor.core.widgets.widgetmanager.controller.WidgetManagerController;
+import io.github.rosemoe.editor.core.widgets.widgetmanager.controller.WidgetControllerManagerController;
 
 public class WidgetManagerView extends AppCompatActivity {
 
@@ -86,8 +86,8 @@ public class WidgetManagerView extends AppCompatActivity {
                     @Override
                     public void run() {
                         e.toggleIsEnabled();
-                        WidgetManagerController.DataHolder.put("extension",e);
-                        WidgetManagerController.DataHolder.put("kind",kind);
+                        WidgetControllerManagerController.DataHolder.put("extension",e);
+                        WidgetControllerManagerController.DataHolder.put("kind",kind);
                         finish();
                     }
                 }.start();

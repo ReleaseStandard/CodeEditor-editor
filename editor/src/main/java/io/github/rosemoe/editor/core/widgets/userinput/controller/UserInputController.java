@@ -22,7 +22,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.OverScroller;
 
-import io.github.rosemoe.editor.core.widgets.Widget;
+import io.github.rosemoe.editor.core.widgets.WidgetController;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.widgets.loopback.codeanalysis.LoopbackEvent;
 import io.github.rosemoe.editor.core.widgets.userinput.extension.UserInputEvent;
@@ -45,7 +45,7 @@ import static io.github.rosemoe.editor.core.widgets.userinput.model.UserInputMod
  * @author Rose
  */
 @SuppressWarnings("CanBeFinal")
-public final class UserInputController extends Widget {
+public final class UserInputController extends WidgetController {
 
     public UserInputModel model = new UserInputModel();
     public final UserInputView  view;

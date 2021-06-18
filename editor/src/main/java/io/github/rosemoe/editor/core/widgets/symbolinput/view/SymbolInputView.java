@@ -37,8 +37,10 @@ public class SymbolInputView extends LinearLayout {
 
     int textcolor = Color.BLACK;
     int bgColor = Color.WHITE;
+
     public SymbolChannelController channel;
     public ArrayList<View> views = new ArrayList();
+
     /**
      * View initialization.
      */

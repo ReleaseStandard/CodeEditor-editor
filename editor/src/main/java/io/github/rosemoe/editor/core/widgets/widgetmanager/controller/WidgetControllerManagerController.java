@@ -23,7 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.widgets.Widget;
+import io.github.rosemoe.editor.core.widgets.WidgetController;
 import io.github.rosemoe.editor.core.widgets.widgetmanager.extension.WidgetManagerEvent;
 import io.github.rosemoe.editor.core.widgets.widgetmanager.model.WidgetManagerModel;
 import io.github.rosemoe.editor.core.widgets.widgetmanager.view.WidgetManagerView;
@@ -31,7 +31,7 @@ import io.github.rosemoe.editor.core.widgets.widgetmanager.view.WidgetManagerVie
 /**
  * This widget disable any other, based on the Event defined with each.
  */
-public class WidgetManagerController extends Widget {
+public class WidgetControllerManagerController extends WidgetController {
 
     public WidgetManagerModel model = new WidgetManagerModel();
     public WidgetManagerView view;
@@ -59,7 +59,7 @@ public class WidgetManagerController extends Widget {
         }
     }
 
-    public WidgetManagerController(CodeEditor editor) {
+    public WidgetControllerManagerController(CodeEditor editor) {
         super(editor);
         name = "WidgetManager";
         description = "Allow enable disable widgets from plugins and display this gui";
@@ -73,13 +73,13 @@ public class WidgetManagerController extends Widget {
             case WidgetManagerEvent.ISENABLED: {
                 String wname = (String) wme.getArg(0);
                 Boolean state = (Boolean) wme.getArg(1);
-                Widget w = (Widget) editor.widgets.get(wname);
+                WidgetController w = (WidgetController) editor.widgets.get(wname);
                 w.setEnabled(state);
                 break;
             }
             case WidgetManagerEvent.TOGGLE: {
                 String wname = (String) wme.getArg(0);
-                Widget w = (Widget) editor.widgets.get(wname);
+                WidgetController w = (WidgetController) editor.widgets.get(wname);
                 w.toggleIsEnabled();
                 break;
             }
@@ -91,8 +91,8 @@ public class WidgetManagerController extends Widget {
                 new Thread() {
                     @Override
                     public void run() {
-                        WidgetManagerController.DataHolder.lock();
-                        while (WidgetManagerController.DataHolder.get("kind") == null ) {
+                        WidgetControllerManagerController.DataHolder.lock();
+                        while (WidgetControllerManagerController.DataHolder.get("kind") == null ) {
                             try {
                                 Thread.sleep(100);
                             } catch (InterruptedException interruptedException) {
