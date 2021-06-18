@@ -17,9 +17,15 @@ package io.github.rosemoe.editor.core.widgets.symbolinput.view;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import java.util.ArrayList;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.widgets.symbolinput.controller.SymbolChannelController;
@@ -31,7 +37,8 @@ public class SymbolInputView extends LinearLayout {
 
     int textcolor = Color.BLACK;
     int bgColor = Color.WHITE;
-
+    public SymbolChannelController channel;
+    public ArrayList<View> views = new ArrayList();
     /**
      * View initialization.
      */
@@ -65,21 +72,30 @@ public class SymbolInputView extends LinearLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
-
-    private SymbolChannelController channel;
-
-    public void bindEditor(CodeEditor editor) {
-        channel = editor.createNewSymbolChannel();
+    @Override
+    public void setEnabled(boolean state) {
+        super.setEnabled(state);
+        if ( state ) {
+            for(View v : views) {
+                if ( ! v.isShown() ) {
+                    addButton(v);
+                }
+            }
+        } else {
+            removeAllViewsInLayout();
+        }
+        invalidate();
     }
-    public void removeSymbols() {
-        removeAllViews();
+    private void addButton(View v) {
+        addView(v, new LinearLayout.LayoutParams(-2, -1));
     }
     public void addSymbol(String symbol, final String insertText) {
         Button btn = new Button(getContext(), null, android.R.attr.buttonStyleSmall);
         btn.setText(symbol);
         btn.setTextColor(textcolor);
         btn.setBackgroundColor(bgColor);
-        addView(btn, new LinearLayout.LayoutParams(-2, -1));
+        addButton(btn);
+        views.add(btn);
         btn.setOnClickListener((view) -> {
             channel.insertSymbol(insertText, 1);
         });

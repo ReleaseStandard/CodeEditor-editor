@@ -602,12 +602,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     public void setOverScrollEnabled(boolean overScrollEnabled) {
         userInput.setOverScrollEnabled(overScrollEnabled);
     }
-    /**
-     * Create a channel to insert symbols
-     */
-    public SymbolChannelController createNewSymbolChannel() {
-        return new SymbolChannelController(this);
-    }
 
     /**
      * Set adapter for auto-completion window

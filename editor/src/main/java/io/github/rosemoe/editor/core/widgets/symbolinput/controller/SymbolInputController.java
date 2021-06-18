@@ -17,7 +17,7 @@ public class SymbolInputController extends Widget {
 
     public SymbolInputController(CodeEditor editor) {
         super(editor);
-        name = "symbolinput";
+        name        = "symbolinput";
         description = "Symbol input widget";
     }
 
@@ -27,6 +27,7 @@ public class SymbolInputController extends Widget {
      */
     public void attachView(SymbolInputView view) {
         this.view = view;
+        view.channel = new SymbolChannelController(editor);
     }
 
 
