@@ -72,21 +72,7 @@ public class SymbolInputView extends LinearLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
-    @Override
-    public void setEnabled(boolean state) {
-        super.setEnabled(state);
-        if ( state ) {
-            for(View v : views) {
-                if ( ! v.isShown() ) {
-                    addButton(v);
-                }
-            }
-        } else {
-            removeAllViewsInLayout();
-        }
-        invalidate();
-    }
-    private void addButton(View v) {
+    public void addButton(View v) {
         addView(v, new LinearLayout.LayoutParams(-2, -1));
     }
     public void addSymbol(String symbol, final String insertText) {

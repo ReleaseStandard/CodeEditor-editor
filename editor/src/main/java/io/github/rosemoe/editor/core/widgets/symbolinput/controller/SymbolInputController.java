@@ -1,5 +1,6 @@
 package io.github.rosemoe.editor.core.widgets.symbolinput.controller;
 
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -30,6 +31,23 @@ public class SymbolInputController extends Widget {
         view.channel = new SymbolChannelController(editor);
     }
 
+    /**
+     * @param state
+     */
+    @Override
+    public void setEnabled(boolean state) {
+        super.setEnabled(state);
+        if ( state ) {
+            for(View v : view.views) {
+                if ( ! v.isShown() ) {
+                    view.addButton(v);
+                }
+            }
+        } else {
+            view.removeAllViewsInLayout();
+        }
+        view.invalidate();
+    }
 
     /**
      * Add symboles into the view.
