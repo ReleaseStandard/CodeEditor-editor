@@ -101,7 +101,7 @@ public class Extension implements EventSource, EventDestination, Comparable, Par
         Logger.debug("Writing parcel :",name,description);
         dest.writeString(name);
         dest.writeString(description);
-        dest.writeBoolean(isEnabled());
+        dest.writeInt(isEnabled()?1:0);
     }
     @Override
     public int describeContents() {
@@ -124,7 +124,7 @@ public class Extension implements EventSource, EventDestination, Comparable, Par
        editor = null;
        name = in.readString();
        description = in.readString();
-       setEnabled(in.readBoolean());
+       setEnabled(in.readInt()==1);
     }
 
 
