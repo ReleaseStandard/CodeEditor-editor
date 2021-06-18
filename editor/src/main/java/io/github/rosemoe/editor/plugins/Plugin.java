@@ -19,11 +19,11 @@ import io.github.rosemoe.editor.R;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.widgets.colorAnalyzer.extension.ColorSchemeEvent;
-import io.github.rosemoe.editor.core.widgets.linenumberpanel.extension.LineNumberPanelEvent;
-import io.github.rosemoe.editor.core.widgets.loopback.codeanalysis.LoopbackEvent;
-import io.github.rosemoe.editor.core.widgets.userinput.extension.UserInputEvent;
-import io.github.rosemoe.editor.core.widgets.widgetmanager.extension.WidgetManagerEvent;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.extension.ColorSchemeEvent;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.extension.LineNumberPanelEvent;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.loopback.codeanalysis.LoopbackEvent;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
+import io.github.rosemoe.editor.core.extension.plugins.widgetmanager.extension.WidgetManagerEvent;
 
 
 /**

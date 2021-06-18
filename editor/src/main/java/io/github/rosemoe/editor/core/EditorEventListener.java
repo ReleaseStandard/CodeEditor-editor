@@ -15,9 +15,8 @@
  */
 package io.github.rosemoe.editor.core;
 
-import io.github.rosemoe.editor.core.widgets.contentAnalyzer.controller.ContentMapController;
-import io.github.rosemoe.editor.core.widgets.contentAnalyzer.controller.ContentListener;
-import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentListener;
 
 /**
  * Listener for editor

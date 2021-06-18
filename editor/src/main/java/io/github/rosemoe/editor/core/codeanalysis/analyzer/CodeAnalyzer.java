@@ -22,11 +22,11 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
 import io.github.rosemoe.editor.core.util.CallStack;
-import io.github.rosemoe.editor.core.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
-import io.github.rosemoe.editor.core.widgets.colorAnalyzer.controller.spans.SpanMapController;
-import io.github.rosemoe.editor.core.widgets.contentAnalyzer.controller.ContentMapController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.spans.SpanMapController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
 import io.github.rosemoe.editor.core.util.Logger;
-import io.github.rosemoe.editor.core.widgets.contentAnalyzer.codeanalysis.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.codeanalysis.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.BlockLineModel;
 
 /**

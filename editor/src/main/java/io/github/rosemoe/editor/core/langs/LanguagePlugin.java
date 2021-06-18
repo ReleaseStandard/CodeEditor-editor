@@ -19,11 +19,9 @@ import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.NewlineHandler;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.extension.Extension;
-import io.github.rosemoe.editor.core.extension.ExtensionChooser;
-import io.github.rosemoe.editor.core.widgets.completion.controller.AutoCompleteProviderController;
-import io.github.rosemoe.editor.core.widgets.completion.controller.IdentifierAutoComplete;
-import io.github.rosemoe.editor.core.widgets.completion.controller.SymbolPairMatch;
-import io.github.rosemoe.editor.plugins.Plugin;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.AutoCompleteProviderController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.IdentifierAutoComplete;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.SymbolPairMatch;
 
 /**
  * Language for editor

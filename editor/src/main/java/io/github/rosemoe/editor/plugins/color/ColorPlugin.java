@@ -19,7 +19,7 @@ import androidx.annotation.Nullable;
 
 import java.util.HashMap;
 
-import io.github.rosemoe.editor.core.widgets.colorAnalyzer.extension.ColorSchemeEvent;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.extension.ColorSchemeEvent;
 import io.github.rosemoe.editor.plugins.Plugin;
 import io.github.rosemoe.editor.core.CodeEditor;
 

@@ -22,9 +22,9 @@ import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzerThread;
-import io.github.rosemoe.editor.core.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
-import io.github.rosemoe.editor.core.widgets.completion.controller.AutoCompleteProviderController;
-import io.github.rosemoe.editor.core.widgets.completion.controller.CompletionItemController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.AutoCompleteProviderController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.CompletionItemController;
 
 /**
  * Empty language without any effect,
