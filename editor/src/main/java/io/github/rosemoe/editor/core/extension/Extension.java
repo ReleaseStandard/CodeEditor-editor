@@ -18,6 +18,8 @@ package io.github.rosemoe.editor.core.extension;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import java.util.HashMap;
 
 import io.github.rosemoe.editor.core.CodeEditor;
@@ -121,10 +123,12 @@ public class Extension implements EventSource, EventDestination, Comparable, Par
 
     private Extension(Parcel in) {
         Logger.debug("Reading parcel");
-       editor = null;
-       name = in.readString();
-       description = in.readString();
-       setEnabled(in.readInt()==1);
+        editor = null;
+        if ( in != null ) {
+            name = in.readString();
+            description = in.readString();
+            setEnabled(in.readInt() == 1);
+        }
     }
 
 
@@ -195,6 +199,7 @@ public class Extension implements EventSource, EventDestination, Comparable, Par
         this.editor = editor;
     }
 
+    // color management facilities
     public String getPrefixedColor(String name) {
         return this.name + "." + name;
     }
@@ -208,4 +213,20 @@ public class Extension implements EventSource, EventDestination, Comparable, Par
         return editor.colorManager.getColor(getPrefixedColor(name));
     }
 
+    /**
+     * Public interface to call.
+     * @param extension
+     */
+    public final void configure(JsonNode extension) {
+
+        // is enabled enabled
+        JsonNode enabled = extension.get("enabled");
+        if (enabled != null) {
+            setEnabled(enabled.asBoolean());
+        }
+
+        // user defined configuration
+        initFromJson(extension);
+    }
+    protected void initFromJson(JsonNode extension) { }
 }

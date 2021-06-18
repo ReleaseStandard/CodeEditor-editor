@@ -88,5 +88,6 @@
         <attr name="widget.color.accent7" format="color"/>
         <attr name="widget.color.accent8" format="color"/>
 
+        <attr name="config" format="string" />
     </declare-styleable>
 </resources>

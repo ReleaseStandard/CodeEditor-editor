@@ -22,6 +22,8 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.util.TypedValue;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.util.Logger;
@@ -236,4 +238,8 @@ public class LineNumberPanelController extends WidgetController {
         editor.invalidate();
     }
 
+    @Override
+    protected void initFromJson(JsonNode extension) {
+
+    }
 }

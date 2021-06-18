@@ -56,12 +56,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import io.github.rosemoe.editor.R;
 import io.github.rosemoe.editor.core.color.ColorManager;
+import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.ExtensionContainer;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
@@ -271,20 +276,48 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      */
     private void initFromAttributeSet(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         TypedArray ta = getContext().obtainStyledAttributes(attrs,R.styleable.CodeEditor);
-        for ( int id : new int[] {
-                R.styleable.CodeEditor_tab_width, R.styleable.CodeEditor_widget_cursor_blink_period, R.styleable.CodeEditor_textSize,
-        }) {
-            int trash = -1;
-            int val = ta.getInteger(id,trash);
-            if ( val == trash ) {
-                continue;
-            }
-            if ( id == R.styleable.CodeEditor_widget_cursor_blink_period ) {
-                cursor.setBlinkPeriod(val);
-            } else if ( id == R.styleable.CodeEditor_textSize ) {
-                setTextSize(val);
+
+        String config = ta.getString(R.styleable.CodeEditor_config);
+        if ( config != null ) {
+            Logger.debug("config=",config);
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                JsonNode rootNode = mapper.readTree(config);
+
+                // configure extensions (widgets, plugins)
+                JsonNode extensions = rootNode.get("extensions");
+                if ( extensions != null ) {
+                    for(ExtensionContainer ec : new ExtensionContainer[]{plugins, widgets}) {
+                        for (Extension e : ec.extensions) {
+                            JsonNode extension = extensions.get(e.name);
+                            if (extension == null) {
+                                continue;
+                            }
+
+                            // configure an extension
+                            e.configure(extension);
+                        }
+                    }
+                }
+
+                // configure the core
+                JsonNode core = rootNode.get("core");
+                if ( core != null ) {
+                    JsonNode tabWidth = core.get("tabWidth");
+                    if ( tabWidth != null ) {
+                        cursor.model.mTabWidth = tabWidth.asInt();
+                    }
+                    JsonNode textSz = core.get("textSize");
+                    if ( textSz != null ) {
+                        setTextSize((float) textSz.asDouble());
+                    }
+                }
+
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
             }
         }
+
 
         for ( int id : new int[] {
                 R.styleable.CodeEditor_widget_cursor_blink_enabled,

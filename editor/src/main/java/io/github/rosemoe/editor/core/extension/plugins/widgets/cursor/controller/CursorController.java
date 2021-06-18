@@ -17,6 +17,8 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controlle
 
 import android.util.Log;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view.CursorView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
@@ -566,5 +568,15 @@ public final class CursorController extends WidgetController {
         }
     }
 
+    @Override
+    protected void initFromJson(JsonNode extension) {
+        JsonNode blink = extension.get("blink");
+        if ( blink != null ) {
+            JsonNode period = blink.get("period");
+            if ( period != null ) {
+                setBlinkPeriod(period.asInt());
+            }
+        }
+    }
 }
 
