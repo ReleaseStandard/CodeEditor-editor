@@ -61,6 +61,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -284,7 +287,25 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             Logger.v("ex:     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.3'\n" +
                                 "    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.3'");
         }
-        String config = ta.getString(R.styleable.CodeEditor_config);
+        //String config = ta.getString(R.styleable.CodeEditor_config);
+
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(getContext().getAssets().open("config.json")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String line = "";
+        StringBuilder stringBuilder = new StringBuilder();
+        while (true) {
+            try {
+                if (!((line = br.readLine()) != null)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            stringBuilder.append(line).append('\n');
+        }
+        String config = stringBuilder.toString();
         if ( config != null ) {
             Logger.debug("config=",config);
             ObjectMapper mapper = new ObjectMapper();
@@ -301,11 +322,12 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                 if ( extensions != null ) {
                     for(ExtensionContainer ec : new ExtensionContainer[]{plugins, widgets}) {
                         for (Extension e : ec.extensions) {
+                            Logger.debug("Trying extension : ",e.name);
                             JsonNode extension = extensions.get(e.name);
                             if (extension == null) {
                                 continue;
                             }
-
+                            Logger.debug(" \\\\=> configuring extension");
                             // configure an extension
                             e.configure(extension);
                         }
