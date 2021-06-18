@@ -31,8 +31,8 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.contr
  */
 public class SymbolInputView extends LinearLayout {
 
-    int textcolor = Color.BLACK;
-    int bgColor = Color.WHITE;
+    public int textcolor = Color.BLACK;
+    public int bgColor = Color.WHITE;
 
     public SymbolChannelController channel;
     public ArrayList<View> views = new ArrayList();

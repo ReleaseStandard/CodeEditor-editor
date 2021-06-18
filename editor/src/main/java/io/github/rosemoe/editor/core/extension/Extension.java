@@ -195,4 +195,17 @@ public class Extension implements EventSource, EventDestination, Comparable, Par
         this.editor = editor;
     }
 
+    public String getPrefixedColor(String name) {
+        return this.name + "." + name;
+    }
+    public void registerColor(String name, Object value) {
+        editor.colorManager.register(getPrefixedColor(name),value);
+    }
+    public Integer getColor(String name) {
+        return editor.colorManager.getColor(name);
+    }
+    public Integer getPrivateColor(String name) {
+        return editor.colorManager.getColor(getPrefixedColor(name));
+    }
+
 }

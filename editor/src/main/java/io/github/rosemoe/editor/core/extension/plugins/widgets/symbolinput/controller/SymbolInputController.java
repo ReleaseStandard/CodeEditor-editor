@@ -18,6 +18,8 @@ public class SymbolInputController extends WidgetController {
         super(editor);
         name        = "symbolinput";
         description = "Symbol input widget";
+        registerColor("text", "textNormal");
+        registerColor("bg","base2");
     }
 
     /**
@@ -27,6 +29,8 @@ public class SymbolInputController extends WidgetController {
     public void attachView(SymbolInputView view) {
         this.view = view;
         view.channel = new SymbolChannelController(editor);
+        view.textcolor = getPrivateColor( "text");
+        view.bgColor = getPrivateColor("bg");
     }
 
     /**
