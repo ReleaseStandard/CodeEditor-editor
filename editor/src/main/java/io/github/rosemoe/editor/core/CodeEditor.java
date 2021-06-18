@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.rosemoe.editor.R;
+import io.github.rosemoe.editor.core.color.ColorManager;
 import io.github.rosemoe.editor.core.extension.ExtensionContainer;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
@@ -216,12 +217,14 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     private CursorController cursor;                                        // Manage the cursor
     private SearcherController searcher;                                    // Manage search in the displayed text
     private ContextActionController contextAction;                          // Manage context action showing, eg copy paste
-    public CompletionWindowController completionWindow;                    // Manage completion item showing
+    public CompletionWindowController completionWindow;                     // Manage completion item showing
     public  UserInputController userInput;                                  // Manage all user input, eg scale scrolling
     public LineNumberPanelController lineNumber;                            // Manage display of line number, computation
     public SymbolInputController symbolInputController;                     // Manage symbol input view
     public ExtensionContainer widgets = new ExtensionContainer();           // System plugins
     public ExtensionContainer plugins = new ExtensionContainer();           // Plugins designed by users
+
+    public ColorManager colorManager = new ColorManager();                  // retain all colors.
 
     private Paint mPaint;
     private Paint miniGraphPaint;
@@ -872,10 +875,10 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             String text = "Formatting your code...";
             float centerY = getHeight() / 2f;
             // TODO : repair text formatting
-            drawColor(canvas, getColorScheme().getLineNumberPanel(), new RectF());
+            drawColor(canvas, colorManager.getColor("lineNumberPanel"), new RectF());
             float baseline = centerY - getRowHeight() / 2f + getRowBaseline(0);
             float centerX = getWidth() / 2f;
-            mPaint.setColor(getColorScheme().getLineNumberPanelText());
+            mPaint.setColor(colorManager.getColor("lineNumberPanelText"));
             mPaint.setTextAlign(Paint.Align.CENTER);
             canvas.drawText(text, centerX, baseline, mPaint);
             mPaint.setTextAlign(Paint.Align.LEFT);
@@ -885,7 +888,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         getCursor().updateCache(getFirstVisibleLine());
 
         ColorSchemeController color = getColorScheme();
-        drawColor(canvas, getColorScheme().getWholeBackground(), mViewRect);
+        drawColor(canvas, colorManager.getColor("wholeBackground"), mViewRect);
 
         float lineNumberWidth = lineNumber.measureLineNumber(getLineCount());
         float offsetX = -getOffsetX() + measureTextRegionOffset();
@@ -927,9 +930,9 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         if (isLineNumberEnabled()) {
             //lineNumber.model.computedText = ;
             lineNumber.view.paint(canvas, this);
-            lineNumber.drawLineNumberBackground(canvas, offsetX, lineNumberWidth + lineNumber.getDividerMargin(), getColorScheme().getLineNumberBackground());
-            drawDivider(canvas, offsetX + lineNumberWidth + lineNumber.getDividerMargin(),color.getLineDivider());
-            int lineNumberColor = getColorScheme().getLineNumberPanelText();
+            lineNumber.drawLineNumberBackground(canvas, offsetX, lineNumberWidth + lineNumber.getDividerMargin(), colorManager.getColor("lineNumberBackground"));
+            drawDivider(canvas, offsetX + lineNumberWidth + lineNumber.getDividerMargin(),colorManager.getColor("completionPanelBackground"));
+            int lineNumberColor = colorManager.getColor("lineNumberPanelText");
             for (int i = 0; i < postDrawLineNumbers.size(); i++) {
                 long packed = postDrawLineNumbers.get(i);
                 lineNumber.drawLineNumber(canvas, IntPair.getFirst(packed), IntPair.getSecond(packed), offsetX, lineNumberWidth, lineNumberColor);
@@ -991,7 +994,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         SpanMapController spanMap = analyzer.getSpanMap();
         List<Integer> matchedPositions = new ArrayList<>();
         int currentLine = cursor.isSelected() ? -1 : cursor.getLeftLine();
-        int currentLineBgColor = getColorScheme().getCurrentLine();
+        int currentLineBgColor = colorManager.getColor("currentLine");
         int lastPreparedLine = -1;
         int leadingWhitespaceEnd = 0;
         int trailingWhitespaceStart = 0;
@@ -1045,7 +1048,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             // Draw matched text background
             if (!matchedPositions.isEmpty()) {
                 for (int position : matchedPositions) {
-                    drawRowRegionBackground(canvas, paintingOffset, row, firstVisibleChar, lastVisibleChar, position, position + searcher.model.searchText.length(), getColorScheme().getTextSelectedBackground());
+                    drawRowRegionBackground(canvas, paintingOffset, row, firstVisibleChar, lastVisibleChar, position, position + searcher.model.searchText.length(), colorManager.getColor("textSelectedBackground"));
                 }
             }
 
@@ -1061,7 +1064,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                 if (line == cursor.getRightLine()) {
                     selectionEnd = cursor.getRightColumn();
                 }
-                drawRowRegionBackground(canvas, paintingOffset, row, firstVisibleChar, lastVisibleChar, selectionStart, selectionEnd, getColorScheme().getTextSelectedBackground());
+                drawRowRegionBackground(canvas, paintingOffset, row, firstVisibleChar, lastVisibleChar, selectionStart, selectionEnd, colorManager.getColor("textSelectedBackground"));
             }
 
             // Draw current line background
@@ -1149,7 +1152,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                     mRect.bottom = mRect.top + getRowHeight() * 0.06f;
                     mRect.left = paintingOffset + measureText(mBuffer, firstVisibleChar, paintStart - firstVisibleChar);
                     mRect.right = mRect.left + measureText(mBuffer, paintStart, paintEnd - paintStart);
-                    drawColor(canvas, getColorScheme().getUnderline(), mRect);
+                    drawColor(canvas, colorManager.getColor("underline"), mRect);
                 }
             }
 
@@ -1194,7 +1197,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      */
     private void drawMiniGraph(Canvas canvas, float offset, int row, String graph) {
         // Draw
-        miniGraphPaint.setColor(getColorScheme().getNonPrintableChar());
+        miniGraphPaint.setColor(colorManager.getColor("nonPrintableChar"));
         float baseline = getRowBottom(row) - getOffsetY() - mGraphMetrics.descent;
         canvas.drawText(graph, 0, graph.length(), offset, baseline, miniGraphPaint);
     }
@@ -1205,7 +1208,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     private void drawWhitespaces(Canvas canvas, float offset, int row, int rowStart, int rowEnd, int min, int max, float circleRadius) {
         int paintStart = Math.max(rowStart, Math.min(rowEnd, min));
         int paintEnd = Math.max(rowStart, Math.min(rowEnd, max));
-        lineNumber.view.lineNumberPaint.setColor(getColorScheme().getNonPrintableChar());
+        lineNumber.view.lineNumberPaint.setColor(colorManager.getColor("nonPrintableChar"));
 
         if (paintStart < paintEnd) {
             float spaceWidth = mFontCache.measureChar(' ', mPaint);
@@ -1360,7 +1363,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                         drawText(canvas, mBuffer, startIndex, selectionStart - startIndex, offsetX, baseline);
                         float deltaX = measureText(mBuffer, startIndex, selectionStart - startIndex);
                         //selectionStart - selectionEnd
-                        mPaint.setColor(getColorScheme().getTextSelected());
+                        mPaint.setColor(colorManager.getColor("textSelected"));
                         drawText(canvas, mBuffer, selectionStart, selectionEnd - selectionStart, offsetX + deltaX, baseline);
                         deltaX += measureText(mBuffer, selectionStart, selectionEnd - selectionStart);
                         //selectionEnd - endIndex
@@ -1371,7 +1374,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                         //startIndex - selectionStart
                         drawText(canvas, mBuffer, startIndex, selectionStart - startIndex, offsetX, baseline);
                         //selectionStart - endIndex
-                        mPaint.setColor(getColorScheme().getTextSelected());
+                        mPaint.setColor(colorManager.getColor("textSelected"));
                         drawText(canvas, mBuffer, selectionStart, endIndex - selectionStart, offsetX + measureText(mBuffer, startIndex, selectionStart - startIndex), baseline);
                     }
                 } else {
@@ -1381,11 +1384,11 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                         //selectionEnd - endIndex
                         drawText(canvas, mBuffer, selectionEnd, endIndex - selectionEnd, offsetX + measureText(mBuffer, startIndex, selectionEnd - startIndex), baseline);
                         //startIndex - selectionEnd
-                        mPaint.setColor(getColorScheme().getTextSelected());
+                        mPaint.setColor(colorManager.getColor("textSelected"));
                         drawText(canvas, mBuffer, startIndex, selectionEnd - startIndex, offsetX, baseline);
                     } else {
                         //One region
-                        mPaint.setColor(getColorScheme().getTextSelected());
+                        mPaint.setColor(colorManager.getColor("textSelected"));
                         drawText(canvas, mBuffer, startIndex, endIndex - startIndex, offsetX, baseline);
                     }
                 }
@@ -1477,7 +1480,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         resultRect.right = right;
         resultRect.top = top;
         resultRect.bottom = bottom;
-        mPaint.setColor(getColorScheme().getSelectionHandle());
+        mPaint.setColor(colorManager.getColor("selectionHandle"));
         canvas.drawCircle(centerX, (top + bottom) / 2, radius, mPaint);
     }
 
@@ -1518,7 +1521,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                     mRect.left = centerX - mDpUnit * mBlockLineWidth / 2;
                     mRect.right = centerX + mDpUnit * mBlockLineWidth / 2;
 
-                    drawColor(canvas, curr == cursorIdx ? getColorScheme().getBlockLineCurrent() : getColorScheme().getBlockLine(), mRect);
+                    drawColor(canvas, curr == cursorIdx ? colorManager.getColor("blockLineCurrent") : colorManager.getColor("blockLine"), mRect);
                 } catch (IndexOutOfBoundsException e) {
                     //Ignored
                     //Because the exception usually occurs when the content changed.
@@ -1556,10 +1559,10 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         mRect.bottom = centerY + getRowHeight() / 2f + expand;
         mRect.right = rightX;
         mRect.left = rightX - expand * 2 - textWidth;
-        drawColor(canvas, getColorScheme().getLineNumberPanel(), mRect);
+        drawColor(canvas, colorManager.getColor("lineNumberPanel"), mRect);
         float baseline = centerY - getRowHeight() / 2f + getRowBaseline(0);
         float centerX = (mRect.left + mRect.right) / 2;
-        mPaint.setColor(getColorScheme().getLineNumberPanelText());
+        mPaint.setColor(colorManager.getColor("lineNumberPanelText"));
         mPaint.setTextAlign(Paint.Align.CENTER);
         canvas.drawText(text, centerX, baseline, mPaint);
         mPaint.setTextAlign(Paint.Align.LEFT);
@@ -1579,7 +1582,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             mRect.bottom = getRowBottom(row) - getOffsetY();
             mRect.left = centerX - mInsertSelWidth / 2f;
             mRect.right = centerX + mInsertSelWidth / 2f;
-            drawColor(canvas, getColorScheme().getSelectionInsert(), mRect);
+            drawColor(canvas, colorManager.getColor("selectionInsert"), mRect);
         }
         if (handle != null) {
             drawHandle(canvas, row, centerX, handle, -1);
@@ -1597,7 +1600,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             mRect.bottom = getRowBottom(row) - getOffsetY();
             mRect.left = centerX - mInsertSelWidth / 2f;
             mRect.right = centerX + mInsertSelWidth / 2f;
-            drawColor(canvas, getColorScheme().getSelectionInsert(), mRect);
+            drawColor(canvas, colorManager.getColor("selectionInsert"), mRect);
         }
         if (handle != null) {
             drawHandle(canvas, row, centerX, handle, handleType);
@@ -3299,7 +3302,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @param type Color type changed
      */
     public void onColorUpdated(int type) {
-        if (type == getColorScheme().getCompletionPanelBackground() || type == getColorScheme().getCompletionPanelCorner()) {
+        if (type == colorManager.getColor("completionPanelBackground") || type == colorManager.getColor("completionPanelCorner")) {
             if (completionWindow != null)
                 completionWindow.applyColorScheme();
             return;

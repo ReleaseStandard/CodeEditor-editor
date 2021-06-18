@@ -53,6 +53,10 @@ public class LineNumberPanelController extends WidgetController {
         mDividerMargin = mDividerWidth;
         name        = "linenumberpanel";
         description = "This widget is responsible from displaying the linenumber panel";
+        editor.colorManager.register("lineNumberPanel", "base2");
+        editor.colorManager.register("lineNumberBackground", "base2");
+        editor.colorManager.register("lineNumberPanelText", "base1");
+
     }
 
     @Override

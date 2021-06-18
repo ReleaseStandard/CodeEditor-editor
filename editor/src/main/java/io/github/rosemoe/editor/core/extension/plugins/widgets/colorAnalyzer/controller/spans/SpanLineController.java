@@ -15,8 +15,11 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.spans;
 
+import android.graphics.Color;
+
 import java.util.TreeMap;
 
+import io.github.rosemoe.editor.core.color.ColorManager;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.model.analysis.spans.SpanLineModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.view.analysis.spans.SpanLineView;
 import io.github.rosemoe.editor.core.util.Logger;
@@ -200,7 +203,7 @@ public class SpanLineController {
      */
     public static SpanLineController EMPTY() {
         SpanLineController line = new SpanLineController();
-        line.add(SpanController.obtain(0, ColorSchemeController.DEFAULT_TEXT_COLOR()));
+        line.add(SpanController.obtain(0, ColorManager.DEFAULT_TEXT_COLOR));
         return line;
     }
 

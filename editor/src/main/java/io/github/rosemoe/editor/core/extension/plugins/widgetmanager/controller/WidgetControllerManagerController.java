@@ -31,10 +31,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgetmanager.view.Widget
 /**
  * This widget disable any other, based on the Event defined with each.
  */
-public class WidgetControllerManagerController extends WidgetController {
-
-    public WidgetManagerModel model = new WidgetManagerModel();
-    public WidgetManagerView view;
+public class WidgetControllerManagerController extends Extension {
 
     /**
      * Used to pass some data between activities.
@@ -113,5 +110,10 @@ public class WidgetControllerManagerController extends WidgetController {
                 }.start();
             }
         }
+    }
+
+    @Override
+    protected void handleEventEmit(Event e) {
+        editor.plugins.dispatch(e);
     }
 }

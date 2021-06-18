@@ -608,7 +608,7 @@ public final class UserInputController extends WidgetController {
             mRect.left = editor.getWidth() - editor.mDpUnit * 10;
             mRect.top = 0;
             mRect.bottom = editor.getHeight();
-            editor.drawColor(canvas, editor.getColorScheme().getScrollBarTrack(), mRect);
+            editor.drawColor(canvas, editor.colorManager.getColor("scrollBarTrack"), mRect);
         }
     }
 
@@ -640,7 +640,7 @@ public final class UserInputController extends WidgetController {
         mRect.top = topY;
         mRect.bottom = topY + length;
         view.getVerticalScrollBarRect().set(mRect);
-        editor.drawColor(canvas, holdVerticalScrollBar() ? editor.getColorScheme().getScrollBarThumbPressed() : editor.getColorScheme().getScrollBarThumb(), mRect);
+        editor.drawColor(canvas, holdVerticalScrollBar() ? editor.colorManager.getColor("scrollBarThumbPressed") : editor.colorManager.getColor("scrollBarThumb"), mRect);
     }
     /**
      * Draw scroll bars and tracks
@@ -674,7 +674,7 @@ public final class UserInputController extends WidgetController {
             mRect.bottom = editor.getHeight();
             mRect.right = editor.getWidth();
             mRect.left = 0;
-            editor.drawColor(canvas, editor.getColorScheme().getScrollBarTrack(), mRect);
+            editor.drawColor(canvas, editor.colorManager.getColor("scrollBarTrack"), mRect);
         }
     }
 
@@ -694,7 +694,7 @@ public final class UserInputController extends WidgetController {
         mRect.right = leftX + length;
         mRect.left = leftX;
         view.getHorizontalScrollBarRect().set(mRect);
-        editor.drawColor(canvas, holdHorizontalScrollBar() ? editor.getColorScheme().getScrollBarThumbPressed() : editor.getColorScheme().getScrollBarThumb(), mRect);
+        editor.drawColor(canvas, holdHorizontalScrollBar() ? editor.colorManager.getColor("scrollBarThumbPressed") : editor.colorManager.getColor("scrollBarThumb"), mRect);
     }
 }
 

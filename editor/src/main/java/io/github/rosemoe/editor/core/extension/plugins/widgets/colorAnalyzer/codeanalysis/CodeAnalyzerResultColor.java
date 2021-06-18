@@ -44,7 +44,7 @@ public class CodeAnalyzerResultColor extends TokenEmitterResult {
         }
         if ( args.length >= 3 ) {
             if ( args[2] instanceof String ) {
-                addFromColorName(args[0],args[1],args[2]);
+                addFromColorName(args[0],args[1], (String) args[2]);
             } else {
                 addIfNeeded(args[0], args[1], args[2]);
             }
@@ -77,9 +77,9 @@ public class CodeAnalyzerResultColor extends TokenEmitterResult {
         Logger.debug("Add a new span into the line : spanLine=",spanLine,",column=",column,",color=",color);
         add((Integer)spanLine, SpanController.obtain((Integer)column, (Integer)color));
     }
-    private void addFromColorName(Object spanLine, Object column, Object colorName) {
+    private void addFromColorName(Object spanLine, Object column, String colorName) {
         String colName = (String) colorName;
-        Integer color = theme.getColor((String) colorName);
+        Integer color = theme.editor.colorManager.getColor(colorName);
         Logger.debug("colName=",colName,",color=",color);
         addIfNeeded(spanLine,column,color);
     }

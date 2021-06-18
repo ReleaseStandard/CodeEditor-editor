@@ -48,8 +48,8 @@ public class CompleteWindowView extends EditorBasePopupWindow {
         mTip = new TextView(ctx);
         mTip.setText("Refreshing...");
         mTip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
-        mTip.setBackgroundColor(editor.getColorScheme().getCompletionPanelBackground());
-        mTip.setTextColor(editor.getColorScheme().getTextNormal());
+        mTip.setBackgroundColor(editor.colorManager.getColor("completionPanelBackground"));
+        mTip.setTextColor(editor.colorManager.getColor("textNormal"));
         layout.addView(mTip);
         ((RelativeLayout.LayoutParams) mTip.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         setContentView(layout);
@@ -67,8 +67,8 @@ public class CompleteWindowView extends EditorBasePopupWindow {
         });
     }
     public void applyColorScheme(ColorSchemeController theme) {
-        mBg.setStroke(1, theme.getCompletionPanelCorner());
-        mBg.setColor(theme.getCompletionPanelBackground());
+        mBg.setStroke(1, mEditor.colorManager.getColor("completionPanelCorner"));
+        mBg.setColor(mEditor.colorManager.getColor("completionPanelBackground"));
     }
     public void setAdapter(CompletionAdapter adapter) {
         mAdapter = adapter;

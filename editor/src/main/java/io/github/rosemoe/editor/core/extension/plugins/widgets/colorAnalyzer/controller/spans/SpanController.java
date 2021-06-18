@@ -18,6 +18,7 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.co
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import io.github.rosemoe.editor.core.color.ColorManager;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.model.analysis.spans.SpanModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.ColorSchemeController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.view.analysis.spans.SpanView;
@@ -37,7 +38,7 @@ public class SpanController {
      * @return an empty span with default settings.
      */
     public static SpanController EMPTY() {
-        return obtain(0, ColorSchemeController.DEFAULT_BACKGROUND_COLOR());
+        return obtain(0, ColorManager.DEFAULT_BACKGROUND_COLOR);
     }
     /**
      * Create a new span
