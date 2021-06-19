@@ -115,6 +115,26 @@ public class ColorManager {
     }
 
     /**
+     * Because Integer.parseInt do not support FFFF0000 (must be -FF0000)
+     * @param hex
+     * @return
+     */
+    public static int decodeHex(String hex) {
+        if ( hex.length() %2 != 0 ) {
+            hex="0"+hex;
+        }
+        int value = 0;
+        for(int a = hex.length(); a > 0; a=a-2) {
+            String no = hex.substring(a-2,a);
+            int part = Integer.parseInt(no, 16);
+            part = part << ( 8 * ((a+2)/2) ) ;
+            value += part;
+        }
+        Logger.debug("hex=",hex,",color=",value);
+        return value;
+    }
+
+    /**
      * Get a color following a redirection.
      * @param color color's name
      * @return value of the color
@@ -122,6 +142,9 @@ public class ColorManager {
     public Integer getColor(String color) {
         Object value = colors.get(color);
         if ( value == null ) {
+            if ( color.indexOf('#') == 0 ) {
+                return decodeHex(color.substring(1));
+            }
             throw new RuntimeException("Warning requested color "+color+" is not registered");
         }
         if ( value instanceof String ) {

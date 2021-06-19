@@ -976,31 +976,20 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             mRightHandle.setEmpty();
         }
 
-        LongArrayList postDrawLineNumbers = mPostDrawLineNumbers;
-        postDrawLineNumbers.clear();
+        lineNumber.model.postDrawLineNumbers.clear();
 
         // handleInitPaint cursor
         List<CursorView.CursorPaintAction> postDrawCursor = new ArrayList<>();
         //
 
-        drawRows(canvas, textOffset, postDrawLineNumbers, postDrawCursor);
+        drawRows(canvas, textOffset, lineNumber.model.postDrawLineNumbers, postDrawCursor);
 
         offsetX = -getOffsetX();
 
 
 
-        // line number widget paint
-        if (isLineNumberEnabled()) {
-            //lineNumber.model.computedText = ;
-            lineNumber.view.paint(canvas, this);
-            lineNumber.drawLineNumberBackground(canvas, offsetX, lineNumberWidth + lineNumber.getDividerMargin(), colorManager.getColor("lineNumberBackground"));
-            drawDivider(canvas, offsetX + lineNumberWidth + lineNumber.getDividerMargin(),colorManager.getColor("completionPanelBackground"));
-            int lineNumberColor = colorManager.getColor("lineNumberPanelText");
-            for (int i = 0; i < postDrawLineNumbers.size(); i++) {
-                long packed = postDrawLineNumbers.get(i);
-                lineNumber.drawLineNumber(canvas, IntPair.getFirst(packed), IntPair.getSecond(packed), offsetX, lineNumberWidth, lineNumberColor);
-            }
-        }
+        // line number widget pain
+        lineNumber.paint(canvas, offsetX, getLineCount());
 
 
         if (!isWordwrap() && isBlockLineEnabled()) {
@@ -1075,7 +1064,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             ContentLineController contentLine = mText.getLine(line);
             int columnCount = contentLine.length();
             if (rowInf.model.isLeadingRow) {
-                postDrawLineNumbers.add(IntPair.pack(line, row));
+                lineNumber.model.postDrawLineNumbers.add(IntPair.pack(line, row));
             }
 
             // Prepare data
@@ -1919,7 +1908,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @param offsetX End x of line number region
      * @param color   Color to draw divider
      */
-    private void drawDivider(Canvas canvas, float offsetX, int color) {
+    public void drawDivider(Canvas canvas, float offsetX, int color) {
         float right = offsetX + lineNumber.getDividerWidth();
         if (right < 0) {
             return;

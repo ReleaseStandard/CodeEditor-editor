@@ -25,7 +25,9 @@ import android.util.TypedValue;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.color.ColorManager;
 import io.github.rosemoe.editor.core.extension.events.Event;
+import io.github.rosemoe.editor.core.util.IntPair;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.extension.LineNumberPanelEvent;
@@ -113,8 +115,10 @@ public class LineNumberPanelController extends WidgetController {
      */
     public void drawLineNumber(Canvas canvas, int line, int row, float offsetX, float width, int color) {
         if (width + offsetX <= 0) {
+            Logger.debug("aborted ...");
             return;
         }
+        Logger.debug("color=",color,",model.computedText=",model.computedText.length,",c1=",model.computedText[0]);
         int count = model.computeAndGetText(line);
         view.drawLineNumber(canvas,row,offsetX,width,count,color,model.computedText,getDividerMargin(),getViewLineNumber());
     }
@@ -137,6 +141,7 @@ public class LineNumberPanelController extends WidgetController {
         if (right < 0) {
             return;
         }
+        Logger.debug("color=",color);
         float left = Math.max(0f, offsetX);
         RectF mRect = new RectF();
         mRect.bottom = editor.getHeight();
@@ -241,5 +246,29 @@ public class LineNumberPanelController extends WidgetController {
     @Override
     protected void initFromJson(JsonNode extension) {
 
+    }
+
+    /**
+     * Generic method : all widgets will have it (all canvas widget).
+     * Paint the widget on the screen in its state.
+     * @param canvas to paint on
+     */
+    public void paint(Canvas canvas, Object ...args) {
+        if ( isDisabled() ) { return ; }
+
+        ColorManager colorManager = editor.colorManager;
+        int lineNumberColor = colorManager.getColor("lineNumberPanelText");
+        int lineNumberBackgroundColor = colorManager.getColor("lineNumberBackground");
+        Float offsetX = (Float) args[0];
+        Integer lineCount = (Integer) args[1];
+        float lineNumberWidth = measureLineNumber(lineCount);
+
+        drawLineNumberBackground(canvas, offsetX, lineNumberWidth + getDividerMargin(), lineNumberBackgroundColor);
+        editor.drawDivider(canvas, offsetX + lineNumberWidth + getDividerMargin(), colorManager.getColor("completionPanelBackground"));
+
+        for (int i = 0; i < model.postDrawLineNumbers.size(); i++) {
+            long packed = model.postDrawLineNumbers.get(i);
+            drawLineNumber(canvas, IntPair.getFirst(packed), IntPair.getSecond(packed), offsetX, lineNumberWidth, lineNumberColor);
+        }
     }
 }

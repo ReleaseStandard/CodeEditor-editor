@@ -15,6 +15,8 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.model;
 
+import io.github.rosemoe.editor.core.util.LongArrayList;
+
 public class LineNumberPanelModel {
     public char[] computedText = new char[16];
     /**
@@ -45,5 +47,7 @@ public class LineNumberPanelModel {
     public static final int ALIGN_CENTER = 2;
     public static final int ALIGN_DEFAULT = ALIGN_LEFT;
     public int mLineNumberAlign = ALIGN_DEFAULT;
+
+    public LongArrayList postDrawLineNumbers = new LongArrayList();
 
 }
