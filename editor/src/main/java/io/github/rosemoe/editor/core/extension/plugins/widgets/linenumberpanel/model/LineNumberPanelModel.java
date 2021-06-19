@@ -17,8 +17,22 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.
 
 import io.github.rosemoe.editor.core.util.LongArrayList;
 
+/**
+ * Class that hold data for the linenumber panel.
+ */
 public class LineNumberPanelModel {
+
     public char[] computedText = new char[16];
+
+    public static final int ALIGN_RIGHT = 0;
+    public static final int ALIGN_LEFT = 1;
+    public static final int ALIGN_CENTER = 2;
+    public static final int ALIGN_DEFAULT = ALIGN_CENTER;
+    public int alignment = ALIGN_DEFAULT;
+
+    public float dividerWidth = 0;
+    public float dividerMargin = 0;
+
     /**
      *
      * @param line
@@ -42,12 +56,10 @@ public class LineNumberPanelModel {
         return count;
     }
 
-    public static final int ALIGN_RIGHT = 0;
-    public static final int ALIGN_LEFT = 1;
-    public static final int ALIGN_CENTER = 2;
-    public static final int ALIGN_DEFAULT = ALIGN_LEFT;
-    public int mLineNumberAlign = ALIGN_DEFAULT;
 
+    /**
+     * PUBLIC
+     */
     public LongArrayList postDrawLineNumbers = new LongArrayList();
 
 }

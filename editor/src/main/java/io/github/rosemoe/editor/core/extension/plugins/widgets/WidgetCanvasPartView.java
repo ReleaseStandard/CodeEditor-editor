@@ -15,4 +15,9 @@ public abstract class WidgetCanvasPartView extends WidgetView {
      * @param editor
      */
     public abstract void paint(Canvas canvas, CodeEditor editor);
+
+    public final CodeEditor editor;
+    public WidgetCanvasPartView(CodeEditor editor) {
+        this.editor = editor;
+    }
 }

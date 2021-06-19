@@ -522,14 +522,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         mInputMethodManager.restartInput(this);
     }
 
-    /**
-     * Get the width of line number and divider line
-     *
-     * @return The width
-     */
-    public float measureTextRegionOffset() {
-        return isLineNumberEnabled() ? lineNumber.measureLineNumber(getLineCount()) + lineNumber.getDividerMargin() * 2 + lineNumber.getDividerWidth() : mDpUnit * 5;
-    }
+
 
     /**
      * Get the rect of left selection handle painted on view
@@ -558,7 +551,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      */
     public float getOffset(int line, int column) {
         prepareLine(line);
-        return measureText(mBuffer, 0, column) + measureTextRegionOffset() - getOffsetX();
+        return measureText(mBuffer, 0, column) + lineNumber.getPanelWidth() - getOffsetX();
     }
 
     /**
@@ -920,7 +913,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         lineNumber.view.lineNumberPaint.setTextSize(size);
         miniGraphPaint.setTextSize(size * SCALE_MINI_GRAPH);
         mTextMetrics = mPaint.getFontMetricsInt();
-        lineNumber.view.mLineNumberMetrics = lineNumber.view.lineNumberPaint.getFontMetricsInt();
         mGraphMetrics = miniGraphPaint.getFontMetricsInt();
         mFontCache.clearCache();
     }
@@ -954,7 +946,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         drawColor(canvas, colorManager.getColor("wholeBackground"), mViewRect);
 
         float lineNumberWidth = lineNumber.measureLineNumber(getLineCount());
-        float offsetX = -getOffsetX() + measureTextRegionOffset();
+        float offsetX = -getOffsetX() + lineNumber.getPanelWidth();
         float textOffset = offsetX;
 
         if (isWordwrap()) {
@@ -1598,7 +1590,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         if (lineNumber.isDisabled()) {
             return;
         }
-        String text = mLnTip + (1 + getFirstVisibleLine());
+        String text = getLnTip() + (1 + getFirstVisibleLine());
         float backupSize = mPaint.getTextSize();
         mPaint.setTextSize(getLineInfoTextSize());
         Paint.FontMetricsInt backupMetrics = mTextMetrics;
@@ -1900,34 +1892,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     }
 
 
-
-    /**
-     * Draw divider line
-     *
-     * @param canvas  Canvas to draw
-     * @param offsetX End x of line number region
-     * @param color   Color to draw divider
-     */
-    public void drawDivider(Canvas canvas, float offsetX, int color) {
-        float right = offsetX + lineNumber.getDividerWidth();
-        if (right < 0) {
-            return;
-        }
-        float left = Math.max(0f, offsetX);
-        // OK
-        RectF mRect = new RectF();
-        mRect.bottom = getHeight();
-        mRect.top = 0;
-        int offY = getOffsetY();
-        if (offY < 0) {
-            mRect.bottom = mRect.bottom - offY;
-            mRect.top = mRect.top - offY;
-        }
-        mRect.left = left;
-        mRect.right = right;
-        drawColor(canvas, color, mRect);
-    }
-
     /**
      * Create layout for text
      */
@@ -2056,7 +2020,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         int column = cursor.getRightColumn();
         prepareLine(l);
         boolean visible = true;
-        float x = measureTextRegionOffset();
+        float x = lineNumber.getPanelWidth();
         x = x + mLayout.getCharLayoutOffset(l, column)[1];
         x = x - getOffsetX();
         if (x < 0) {
@@ -2175,7 +2139,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     public void ensurePositionVisible(int line, int column) {
         float[] layoutOffset = mLayout.getCharLayoutOffset(line, column);
         // x offset is the left of character
-        float xOffset = layoutOffset[1] + measureTextRegionOffset();
+        float xOffset = layoutOffset[1] + lineNumber.getPanelWidth();
         // y offset is the bottom of row
         float yOffset = layoutOffset[0];
 
@@ -2271,7 +2235,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @see IntPair
      */
     public long getPointPosition(float xOffset, float yOffset) {
-        return mLayout.getCharPositionForLayoutOffset(xOffset - measureTextRegionOffset(), yOffset);
+        return mLayout.getCharPositionForLayoutOffset(xOffset - lineNumber.getPanelWidth(), yOffset);
     }
 
     /**
@@ -2301,7 +2265,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @return max scroll x
      */
     public int getScrollMaxX() {
-        return (int) Math.max(0, mLayout.getLayoutWidth() + measureTextRegionOffset() - getWidth() / 2f);
+        return (int) Math.max(0, mLayout.getLayoutWidth() + lineNumber.getPanelWidth() - getWidth() / 2f);
     }
 
     /**

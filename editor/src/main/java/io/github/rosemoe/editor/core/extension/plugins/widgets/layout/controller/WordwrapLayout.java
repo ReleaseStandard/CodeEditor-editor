@@ -82,7 +82,7 @@ public class WordwrapLayout extends AbstractLayout {
             }
         };
         model.rowTable = new ArrayList<>();
-        model.width = editor.getWidth() - (int) editor.measureTextRegionOffset() - (int) editor.getDpUnit() * 5;
+        model.width = editor.getWidth() - (int) editor.lineNumber.getPanelWidth() - (int) editor.getDpUnit() * 5;
         breakAllLines();
     }
 

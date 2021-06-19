@@ -554,7 +554,7 @@ public final class UserInputController extends WidgetController {
                 }
                 int column = view.editor.getText().getColumnCount(line);
                 // Do not scroll too far from text region of this line
-                float maxOffset = view.editor.measureTextRegionOffset() + view.editor.mLayout.getCharLayoutOffset(line, column)[1] - view.editor.getWidth() * 0.85f;
+                float maxOffset = view.editor.lineNumber.getPanelWidth() + view.editor.mLayout.getCharLayoutOffset(line, column)[1] - view.editor.getWidth() * 0.85f;
                 if (view.mScroller.getCurrX() > maxOffset) {
                     dx = 0;
                 }

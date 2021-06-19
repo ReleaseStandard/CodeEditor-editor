@@ -22,15 +22,15 @@ import android.graphics.Typeface;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetCanvasPartView;
 
+/**
+ * This view is a canvas part.
+ */
 public class LineNumberPanelView extends WidgetCanvasPartView {
-    public Paint lineNumberPaint = new Paint();
-    public Paint.FontMetricsInt mLineNumberMetrics;
-    final CodeEditor editor;
 
     public LineNumberPanelView(CodeEditor editor) {
+        super(editor);
         lineNumberPaint.setAntiAlias(true);
         lineNumberPaint.setTypeface(Typeface.MONOSPACE);
-        this.editor = editor;
     }
     public void setTextAlign(Paint.Align align) {
         if (lineNumberPaint.getTextAlign() != align) {
@@ -55,7 +55,8 @@ public class LineNumberPanelView extends WidgetCanvasPartView {
         lineNumberPaint.setColor(color);
         // Line number center align to text center
 
-        float y = (editor.getRowBottom(row) + editor.getRowTop(row)) / 2f - (mLineNumberMetrics.descent - mLineNumberMetrics.ascent) / 2f - mLineNumberMetrics.ascent - editor.getOffsetY();
+        Paint.FontMetrics metrics = lineNumberPaint.getFontMetrics();
+        float y = (editor.getRowBottom(row) + editor.getRowTop(row)) / 2f - (metrics.descent - metrics.ascent) / 2f - metrics.ascent - editor.getOffsetY();
 
         switch (mLineNumberAlign) {
             case LEFT:
@@ -69,8 +70,12 @@ public class LineNumberPanelView extends WidgetCanvasPartView {
         }
     }
 
+    /**
+     * PUBLIC
+     */
     @Override
     public void paint(Canvas canvas, CodeEditor editor) {
 
     }
+    public Paint lineNumberPaint = new Paint();
 }
