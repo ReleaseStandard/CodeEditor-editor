@@ -5,6 +5,9 @@ import android.graphics.RectF;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetCanvasPartView;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputController;
+import io.github.rosemoe.editor.core.model.Rect;
+import io.github.rosemoe.editor.core.util.shortcuts.A;
 
 public class CursorPartView extends WidgetCanvasPartView {
     public CursorPartView(CodeEditor editor) {
@@ -19,7 +22,7 @@ public class CursorPartView extends WidgetCanvasPartView {
     /**
      * Execute painting on the given editor and canvas
      */
-    public void exec(Canvas canvas, float centerX, int row, RectF handle, boolean insert, int handleType) {
+    public void exec(Canvas canvas, float centerX, int row, Rect handle, boolean insert, int handleType) {
         if (!insert || editor.cursor.blink == null || editor.cursor.blink.model.visibility) {
             // OK
             RectF mRect = new RectF();
@@ -40,15 +43,15 @@ public class CursorPartView extends WidgetCanvasPartView {
      * @param canvas     The Canvas to draw handle
      * @param row        The row you want to attach handle to its bottom (Usually the selection line)
      * @param centerX    Center x offset of handle
-     * @param resultRect The rect of handle this method drew
+     * @param rect The rect of handle this method drew
      * @param handleType The selection handle type (LEFT, RIGHT,BOTH or -1)
      */
-    private void drawHandle(Canvas canvas, int row, float centerX, RectF resultRect, int handleType) {
+    private void drawHandle(Canvas canvas, int row, float centerX, Rect rect, int handleType) {
+        RectF resultRect = A.getRectF(rect);
         float radius = editor.mDpUnit * 12;
 
-
-        // TODO : interwidget dependency
-        if (handleType > -1 && handleType == editor.userInput.getTouchedHandleType()) {
+        // TODO WD
+        if (handleType != UserInputController.SelectionHandle.NONE && handleType == editor.userInput.getTouchedHandleType()) {
             radius = editor.mDpUnit * 16;
         }
 
