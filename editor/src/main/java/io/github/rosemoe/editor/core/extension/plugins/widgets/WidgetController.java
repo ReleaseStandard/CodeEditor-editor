@@ -23,6 +23,8 @@ import io.github.rosemoe.editor.core.util.Logger;
 /**
  * This class provide a widget system for CodeEditor.
  * Each widget can provide custom xml attributes and colors for the color widget.
+ * We take a widget as :
+ *  an application, or a component of an interface, that enables a user to perform a function or access a service.
  *
  * @author Release Standard
  */

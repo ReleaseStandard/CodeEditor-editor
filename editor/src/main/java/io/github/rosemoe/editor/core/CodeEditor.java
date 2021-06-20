@@ -57,7 +57,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -76,9 +75,9 @@ import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.controller.LineNumberPanelController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.loopback.LoopbackWidgetController;
+import io.github.rosemoe.editor.core.extension.plugins.loopback.LoopbackWidgetController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.controller.SymbolInputController;
-import io.github.rosemoe.editor.core.extension.plugins.widgetmanager.controller.WidgetControllerManagerController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.controller.WidgetControllerManagerController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputConnexionView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
 import io.github.rosemoe.editor.plugins.debug.TestPlugin;
@@ -979,11 +978,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         offsetX = -getOffsetX();
 
 
-
-        // line number widget pain
-        lineNumber.paint(canvas, offsetX, getLineCount());
-
-
         if (!isWordwrap() && isBlockLineEnabled()) {
             drawBlockLines(canvas, textOffset);
         }
@@ -994,7 +988,10 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         }
         //
 
-        userInput.drawScrollBars(canvas);
+        // widget paints
+        lineNumber.paint(canvas, offsetX, getLineCount());
+        userInput.paint(canvas);
+
         drawEdgeEffect(canvas);
     }
 

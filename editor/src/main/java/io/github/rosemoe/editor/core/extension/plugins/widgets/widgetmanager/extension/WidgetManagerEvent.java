@@ -13,19 +13,16 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.extension.plugins.widgets.loopback.codeanalysis;
+package io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.extension;
 
 import io.github.rosemoe.editor.core.extension.events.Event;
 
-/**
- * This widget is important because it allows communication between plugins.
- */
-public class LoopbackEvent extends Event {
-    // secondary keywords
-    // same // public final static String PLUGINS_BROADCAST = "loopback";
-    // action
-    public final static String PLUGINS_BROADCAST = "loopback";
-    public LoopbackEvent(String subtype, Object ...args) {
+public class WidgetManagerEvent extends Event {
+    public final static String ISENABLED      = "isenabled";
+    public final static String TOGGLE         = "toggle";
+    public final static String GUI            = "gui";
+
+    public WidgetManagerEvent(String subtype, Object ...args) {
         super(subtype,args);
     }
 }

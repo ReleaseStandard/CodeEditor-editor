@@ -15,6 +15,7 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller;
 
+import android.graphics.Canvas;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -269,5 +270,4 @@ public class UserInputConnexionController {
         }
         model.composingLine = model.composingStart = model.composingEnd = -1;
     }
-
 }

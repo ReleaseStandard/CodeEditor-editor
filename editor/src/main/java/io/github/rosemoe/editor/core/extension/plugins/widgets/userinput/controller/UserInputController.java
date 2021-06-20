@@ -24,7 +24,7 @@ import android.widget.OverScroller;
 
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
 import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.loopback.codeanalysis.LoopbackEvent;
+import io.github.rosemoe.editor.core.extension.plugins.loopback.codeanalysis.LoopbackEvent;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.model.UserInputModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputView;
@@ -41,6 +41,8 @@ import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.
  * This is an event source for our mvc.
  * Each widget could an event source or an event destination.
  *
+ * the user input extension:
+ *  View : a canvaspartview
  *
  * @author Rose
  */
@@ -647,7 +649,7 @@ public final class UserInputController extends WidgetController {
      *
      * @param canvas The canvas to draw
      */
-    public void drawScrollBars(Canvas canvas) {
+    private void drawScrollBars(Canvas canvas) {
         view.getVerticalScrollBarRect().setEmpty();
         view.getHorizontalScrollBarRect().setEmpty();
         if (!model.shouldDrawScrollBar()) {
@@ -695,6 +697,10 @@ public final class UserInputController extends WidgetController {
         mRect.left = leftX;
         view.getHorizontalScrollBarRect().set(mRect);
         editor.drawColor(canvas, holdHorizontalScrollBar() ? editor.colorManager.getColor("scrollBarThumbPressed") : editor.colorManager.getColor("scrollBarThumb"), mRect);
+    }
+
+    public void paint(Canvas canvas, Object ...args) {
+        drawScrollBars(canvas);
     }
 }
 

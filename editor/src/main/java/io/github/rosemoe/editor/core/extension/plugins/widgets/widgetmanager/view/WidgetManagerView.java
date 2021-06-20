@@ -14,7 +14,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.extension.plugins.widgetmanager.view;
+package io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -35,7 +35,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import io.github.rosemoe.editor.R;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.util.Logger;
-import io.github.rosemoe.editor.core.extension.plugins.widgetmanager.controller.WidgetControllerManagerController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.controller.WidgetControllerManagerController;
 
 public class WidgetManagerView extends AppCompatActivity {
 

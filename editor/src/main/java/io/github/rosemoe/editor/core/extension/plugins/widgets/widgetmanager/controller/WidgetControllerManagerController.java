@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.extension.plugins.widgetmanager.controller;
+package io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.controller;
 
 import android.content.Intent;
 
@@ -24,9 +24,8 @@ import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
-import io.github.rosemoe.editor.core.extension.plugins.widgetmanager.extension.WidgetManagerEvent;
-import io.github.rosemoe.editor.core.extension.plugins.widgetmanager.model.WidgetManagerModel;
-import io.github.rosemoe.editor.core.extension.plugins.widgetmanager.view.WidgetManagerView;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.extension.WidgetManagerEvent;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.view.WidgetManagerView;
 
 /**
  * This widget disable any other, based on the Event defined with each.

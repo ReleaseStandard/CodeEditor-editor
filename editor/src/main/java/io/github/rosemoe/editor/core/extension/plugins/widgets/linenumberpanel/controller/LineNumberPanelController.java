@@ -38,6 +38,7 @@ import static io.github.rosemoe.editor.core.extension.plugins.widgets.linenumber
 
 /**
  * Class responsible for displaying a line number panel on the editor.
+ * This is a widget.
  *
  */
 public class LineNumberPanelController extends WidgetController {
