@@ -17,4 +17,7 @@ public class Rect {
         this.top = top;
         this.right = right;
     }
+    public Rect() {
+
+    }
 }

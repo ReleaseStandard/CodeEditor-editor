@@ -93,9 +93,6 @@ public class ColorManager {
         colors.put("blockLineCurrent", "base2");
         colors.put("selectionInsert", "textNormal");
         colors.put("selectionHandle", "textNormal");
-        colors.put("scrollBarThumb", "base1");
-        colors.put("scrollBarThumbPressed", "base2");
-        colors.put("scrollBarTrack", "wholeBackground");
         colors.put("nonPrintableChar", 0x00000000);
         colors.put("completionPanelBackground", "base1");
         colors.put("completionPanelCorner", "base2");

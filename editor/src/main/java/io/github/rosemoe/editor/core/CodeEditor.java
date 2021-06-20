@@ -852,22 +852,23 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
 
     @Override
     public boolean isHorizontalScrollBarEnabled() {
-        return userInput.model.mHorizontalScrollBarEnabled;
+        return userInput.scrollBarH.isEnabled();
     }
 
     @Override
     public void setHorizontalScrollBarEnabled(boolean horizontalScrollBarEnabled) {
-        userInput.model.mHorizontalScrollBarEnabled = horizontalScrollBarEnabled;
+        userInput.scrollBarH.setEnabled(horizontalScrollBarEnabled);
+
     }
 
     @Override
     public boolean isVerticalScrollBarEnabled() {
-        return userInput.model.mVerticalScrollBarEnabled;
+        return userInput.scrollBarV.isEnabled();
     }
 
     @Override
     public void setVerticalScrollBarEnabled(boolean verticalScrollBarEnabled) {
-        userInput.model.mVerticalScrollBarEnabled = verticalScrollBarEnabled;
+        userInput.scrollBarV.setEnabled(verticalScrollBarEnabled);
     }
 
 

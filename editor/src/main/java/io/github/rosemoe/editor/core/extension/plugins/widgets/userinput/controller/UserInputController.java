@@ -32,6 +32,7 @@ import io.github.rosemoe.editor.core.util.IntPair;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.TextActionPopupWindow;
+import io.github.rosemoe.editor.core.util.shortcuts.A;
 
 import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent.*;
 import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.model.UserInputModel.*;
@@ -61,6 +62,9 @@ public final class UserInputController extends WidgetController {
     private float downY = 0;
     private float downX = 0;
     private int touchedHandleType = -1;
+
+    public final ScrollBarController scrollBarH;
+    public final ScrollBarController scrollBarV;
 
     /**
      * Create a event handler for the given editor
@@ -147,6 +151,8 @@ public final class UserInputController extends WidgetController {
                 return super.handleOnDoubleTapEvent(e);
             }
         };
+        scrollBarH = new ScrollBarController(editor, "horizontal");
+        scrollBarV = new ScrollBarController(editor, "vertical");
         setOverScrollEnabled(true);
     }
 
@@ -159,24 +165,6 @@ public final class UserInputController extends WidgetController {
         }
         model.mLastSetSelection = 0;
         view.editor.invalidate();
-    }
-
-    /**
-     * Whether the vertical scroll bar is touched
-     *
-     * @return Whether touched
-     */
-    public boolean holdVerticalScrollBar() {
-        return model.holdingScrollbarVertical;
-    }
-
-    /**
-     * Whether the horizontal scroll bar is touched
-     *
-     * @return Whether touched
-     */
-    public boolean holdHorizontalScrollBar() {
-        return model.holdingScrollbarHorizontal;
     }
 
     /**
@@ -220,7 +208,8 @@ public final class UserInputController extends WidgetController {
      * @param enabled Enabled / disabled
      */
     public void setScrollBarEnabled(boolean enabled) {
-        model.mVerticalScrollBarEnabled = model.mHorizontalScrollBarEnabled = enabled;
+        scrollBarV.setEnabled(enabled);
+        scrollBarH.setEnabled(enabled);
     }
 
     /**
@@ -249,7 +238,7 @@ public final class UserInputController extends WidgetController {
      * @return Whether handling
      */
     public boolean handlingMotions() {
-        return holdHorizontalScrollBar() || holdVerticalScrollBar() || holdInsertHandle() || model.selectionHandleType != -1;
+        return scrollBarH.isHolding() || scrollBarV.isHolding() || holdInsertHandle() || model.selectionHandleType != -1;
     }
 
     /**
@@ -265,23 +254,23 @@ public final class UserInputController extends WidgetController {
         }
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                model.holdingScrollbarVertical = model.holdingScrollbarHorizontal = false;
-                RectF rect = view.getVerticalScrollBarRect();
+                scrollBarV.model.holding = scrollBarH.model.holding = false;
+                RectF rect = scrollBarV.view.bar;
                 if (rect.contains(e.getX(), e.getY())) {
-                    model.holdingScrollbarVertical = true;
+                    scrollBarV.model.holding = true;
                     downY = e.getY();
                     view.editor.hideAutoCompleteWindow();
                 }
-                rect = view.getHorizontalScrollBarRect();
+                rect = scrollBarH.view.bar;
                 if (rect.contains(e.getX(), e.getY())) {
-                    model.holdingScrollbarHorizontal = true;
+                    scrollBarH.model.holding = true;
                     downX = e.getX();
                     view.editor.hideAutoCompleteWindow();
                 }
-                if (model.holdingScrollbarVertical && model.holdingScrollbarHorizontal) {
-                    model.holdingScrollbarHorizontal = false;
+                if (scrollBarV.isHolding() && scrollBarH.isHolding()) {
+                    scrollBarV.model.holding = false;
                 }
-                if (model.holdingScrollbarVertical || model.holdingScrollbarHorizontal) {
+                if (scrollBarV.isHolding() || scrollBarH.model.holding) {
                     view.editor.invalidate();
                 }
                 if (shouldDrawInsertHandle() && view.editor.getInsertHandleRect().contains(e.getX(), e.getY())) {
@@ -310,7 +299,7 @@ public final class UserInputController extends WidgetController {
                 }
                 return true;
             case MotionEvent.ACTION_MOVE:
-                if (model.holdingScrollbarVertical) {
+                if (scrollBarV.isHolding()) {
                     float movedDis = e.getY() - downY;
                     downY = e.getY();
                     float all = view.editor.mLayout.getLayoutHeight() + view.editor.getHeight() / 2f;
@@ -318,7 +307,7 @@ public final class UserInputController extends WidgetController {
                     view.scrollBy(0, dy);
                     return true;
                 }
-                if (model.holdingScrollbarHorizontal) {
+                if (scrollBarH.model.holding) {
                     float movedDis = e.getX() - downX;
                     downX = e.getX();
                     float all = view.editor.getScrollMaxX() + view.editor.getWidth();
@@ -329,14 +318,14 @@ public final class UserInputController extends WidgetController {
                 return handleSelectionChange(e);
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                if (model.holdingScrollbarVertical) {
-                    model.holdingScrollbarVertical = false;
+                if (scrollBarV.isHolding()) {
+                    scrollBarV.model.holding = false;
                     view.editor.invalidate();
                     model.mLastScroll = System.currentTimeMillis();
                     view.notifyScrolled();
                 }
-                if (model.holdingScrollbarHorizontal) {
-                    model.holdingScrollbarHorizontal = false;
+                if (scrollBarH.model.holding) {
+                    scrollBarH.model.holding = false;
                     view.editor.invalidate();
                     model.mLastScroll = System.currentTimeMillis();
                     view.notifyScrolled();
@@ -597,107 +586,21 @@ public final class UserInputController extends WidgetController {
         }
     }
 
-
-
-    /**
-     * Draw vertical scroll bar track
-     *
-     * @param canvas Canvas to draw
-     */
-    public void drawScrollBarTrackVertical(Canvas canvas) {
-        if (holdVerticalScrollBar()) {
-            RectF mRect = new RectF();
-            mRect.right = editor.getWidth();
-            mRect.left = editor.getWidth() - editor.mDpUnit * 10;
-            mRect.top = 0;
-            mRect.bottom = editor.getHeight();
-            editor.drawColor(canvas, editor.colorManager.getColor("scrollBarTrack"), mRect);
-        }
-    }
-
-
-    /**
-     * Draw vertical scroll bar
-     *
-     * @param canvas Canvas to draw
-     */
-    public void drawScrollBarVertical(Canvas canvas) {
-        int page = editor.getHeight();
-        float all = editor.mLayout.getLayoutHeight() + editor.getHeight() / 2f;
-        float length = page / all * editor.getHeight();
-        float topY;
-        if (length < editor.mDpUnit * 30) {
-            length = editor.mDpUnit * 30;
-            topY = (editor.getOffsetY() + page / 2f) / all * (editor.getHeight() - length);
-        } else {
-            topY = editor.getOffsetY() / all * editor.getHeight();
-        }
-        if (holdVerticalScrollBar()) {
-            float centerY = topY + length / 2f;
-            editor.drawLineInfoPanel(canvas, centerY, 0);
-            // TODO : drawLineInfoPanel(canvas, centerY, mRect.left - mDpUnit * 5);
-        }
-        RectF mRect = new RectF();
-        mRect.right = editor.getWidth();
-        mRect.left = editor.getWidth() - editor.mDpUnit * 10;
-        mRect.top = topY;
-        mRect.bottom = topY + length;
-        view.getVerticalScrollBarRect().set(mRect);
-        editor.drawColor(canvas, holdVerticalScrollBar() ? editor.colorManager.getColor("scrollBarThumbPressed") : editor.colorManager.getColor("scrollBarThumb"), mRect);
-    }
     /**
      * Draw scroll bars and tracks
      *
      * @param canvas The canvas to draw
      */
     private void drawScrollBars(Canvas canvas) {
-        view.getVerticalScrollBarRect().setEmpty();
-        view.getHorizontalScrollBarRect().setEmpty();
-        if (!model.shouldDrawScrollBar()) {
+        if (!model.shouldDrawScrollBar(scrollBarV.isHolding(),scrollBarH.isHolding())) {
             return;
         }
         if (editor.isVerticalScrollBarEnabled() && editor.getScrollMaxY() > editor.getHeight() / 2) {
-            drawScrollBarTrackVertical(canvas);
-            drawScrollBarVertical(canvas);
+            scrollBarV.paint(canvas);
         }
         if (editor.isHorizontalScrollBarEnabled() && !editor.isWordwrap() && editor.getScrollMaxX() > editor.getWidth() * 3 / 4) {
-            drawScrollBarTrackHorizontal(canvas);
-            drawScrollBarHorizontal(canvas);
+            scrollBarH.paint(canvas);
         }
-    }
-    /**
-     * Draw horizontal scroll bar track
-     *
-     * @param canvas Canvas to draw
-     */
-    private void drawScrollBarTrackHorizontal(Canvas canvas) {
-        if (holdHorizontalScrollBar()) {
-            RectF mRect = new RectF();
-            mRect.top = editor.getHeight() - editor.mDpUnit * 10;
-            mRect.bottom = editor.getHeight();
-            mRect.right = editor.getWidth();
-            mRect.left = 0;
-            editor.drawColor(canvas, editor.colorManager.getColor("scrollBarTrack"), mRect);
-        }
-    }
-
-    /**
-     * Draw horizontal scroll bar
-     *
-     * @param canvas Canvas to draw
-     */
-    private void drawScrollBarHorizontal(Canvas canvas) {
-        int page = editor.getWidth();
-        float all = editor.getScrollMaxX() + editor.getWidth();
-        float length = page / all * editor.getWidth();
-        float leftX = editor.getOffsetX() / all * editor.getWidth();
-        RectF mRect = new RectF();
-        mRect.top = editor.getHeight() - editor.mDpUnit * 10;
-        mRect.bottom = editor.getHeight();
-        mRect.right = leftX + length;
-        mRect.left = leftX;
-        view.getHorizontalScrollBarRect().set(mRect);
-        editor.drawColor(canvas, holdHorizontalScrollBar() ? editor.colorManager.getColor("scrollBarThumbPressed") : editor.colorManager.getColor("scrollBarThumb"), mRect);
     }
 
     public void paint(Canvas canvas, Object ...args) {

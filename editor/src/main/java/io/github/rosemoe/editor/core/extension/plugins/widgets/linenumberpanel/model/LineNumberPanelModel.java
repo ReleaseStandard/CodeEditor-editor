@@ -15,6 +15,7 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.model;
 
+import io.github.rosemoe.editor.core.model.Rect;
 import io.github.rosemoe.editor.core.util.LongArrayList;
 
 /**
@@ -32,6 +33,9 @@ public class LineNumberPanelModel {
 
     public float dividerWidth = 0;
     public float dividerMargin = 0;
+
+    public Rect divider = new Rect();
+    public Rect panelBg = new Rect();
 
     /**
      *

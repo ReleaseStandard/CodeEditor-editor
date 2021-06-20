@@ -15,6 +15,9 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.model;
 
+import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.ScrollBarController;
+import io.github.rosemoe.editor.core.model.Rect;
+
 import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputController.HIDE_DELAY;
 
 public class UserInputModel {
@@ -24,12 +27,8 @@ public class UserInputModel {
     public boolean isScaling = false;
     public long mLastScroll = 0;
     public long mLastInteraction = 0;
-    public boolean holdingScrollbarVertical = false;
-    public boolean holdingScrollbarHorizontal = false;
     public boolean mHoldingInsertHandle = false;
     public boolean mOverScrollEnabled = false;
-    public boolean mVerticalScrollBarEnabled = true;
-    public boolean mHorizontalScrollBarEnabled = true;
 
     public final static int LEFT_EDGE   = 1;
     public final static int RIGHT_EDGE  = 1 << 1;
@@ -41,6 +40,7 @@ public class UserInputModel {
      */
     public int   selectionHandleType = -1;
     public float edgeFieldSize;
+
 
     /**
      * Whether this character is a part of word
@@ -77,7 +77,7 @@ public class UserInputModel {
      *
      * @return whether draw scroll bars
      */
-    public boolean shouldDrawScrollBar() {
+    public boolean shouldDrawScrollBar(boolean holdingScrollbarVertical, boolean holdingScrollbarHorizontal) {
         return System.currentTimeMillis() - mLastScroll < HIDE_DELAY || holdingScrollbarVertical || holdingScrollbarHorizontal;
     }
 

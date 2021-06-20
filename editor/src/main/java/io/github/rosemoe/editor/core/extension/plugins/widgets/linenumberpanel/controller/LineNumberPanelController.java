@@ -18,7 +18,6 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.util.TypedValue;
 
@@ -33,6 +32,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.extension.LineNumberPanelEvent;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.model.LineNumberPanelModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.view.LineNumberPanelView;
+import io.github.rosemoe.editor.core.util.shortcuts.A;
 
 import static io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.model.LineNumberPanelModel.*;
 
@@ -244,18 +244,21 @@ public class LineNumberPanelController extends WidgetController {
             return;
         }
         float left = Math.max(0f, offsetX);
-        // OK
-        RectF mRect = new RectF();
-        mRect.bottom = editor.getHeight();
-        mRect.top = 0;
         int offY = editor.getOffsetY();
+        int editorHeight = editor.getHeight();
+
+        // model compute
+        model.divider.bottom = editorHeight;
+        model.divider.top = 0;
         if (offY < 0) {
-            mRect.bottom = mRect.bottom - offY;
-            mRect.top = mRect.top - offY;
+            model.divider.bottom = model.divider.bottom - offY;
+            model.divider.top = model.divider.top - offY;
         }
-        mRect.left = left;
-        mRect.right = right;
-        editor.drawColor(canvas, color, mRect);
+        model.divider.left = left;
+        model.divider.right = right;
+
+        // display view
+        editor.drawColor(canvas, color, A.getRectF(model.divider));
     }
     /**
      * Draw line number background
@@ -272,17 +275,19 @@ public class LineNumberPanelController extends WidgetController {
         }
         Logger.debug("color=",color);
         float left = Math.max(0f, offsetX);
-        RectF mRect = new RectF();
-        mRect.bottom = editor.getHeight();
-        mRect.top = 0;
+
+        model.panelBg.bottom = editor.getHeight();
+        model.panelBg.top = 0;
         int offY = editor.getOffsetY();
         if (offY < 0) {
-            mRect.bottom = mRect.bottom - offY;
-            mRect.top = mRect.top - offY;
+            model.panelBg.bottom = model.panelBg.bottom - offY;
+            model.panelBg.top = model.panelBg.top - offY;
         }
-        mRect.left = left;
-        mRect.right = right;
-        editor.drawColor(canvas, color, mRect);
+        model.panelBg.left = left;
+        model.panelBg.right = right;
+
+        // display view
+        editor.drawColor(canvas, color, A.getRectF(model.panelBg));
     }
     /**
      * Draw single line number

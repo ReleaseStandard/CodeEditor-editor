@@ -51,9 +51,6 @@ public class UserInputView extends WidgetCanvasPartView implements GestureDetect
     public GestureDetector gestureDetector;
     public ScaleGestureDetector scaleDetector;
 
-    public RectF mVerticalScrollBar;
-    public RectF mHorizontalScrollBar;
-
     public UserInputView(CodeEditor editor, Context ctx) {
         super(editor);
         mScroller = new OverScroller(editor.getContext());
@@ -62,8 +59,6 @@ public class UserInputView extends WidgetCanvasPartView implements GestureDetect
         gestureDetector = new GestureDetector(ctx, this);
         gestureDetector.setOnDoubleTapListener(this);
         scaleDetector = new ScaleGestureDetector(ctx, this);
-        mVerticalScrollBar = new RectF();
-        mHorizontalScrollBar = new RectF();
     }
 
 
@@ -189,24 +184,6 @@ public class UserInputView extends WidgetCanvasPartView implements GestureDetect
 
         }
         editor.postDelayed(new ScrollNotifier(), HIDE_DELAY_HANDLE);
-    }
-
-    /**
-     * Get the rect of vertical scroll bar on view
-     *
-     * @return Rect of scroll bar
-     */
-    public RectF getVerticalScrollBarRect() {
-        return mVerticalScrollBar;
-    }
-
-    /**
-     * Get the rect of horizontal scroll bar on view
-     *
-     * @return Rect of scroll bar
-     */
-    public RectF getHorizontalScrollBarRect() {
-        return mHorizontalScrollBar;
     }
 
     /**
