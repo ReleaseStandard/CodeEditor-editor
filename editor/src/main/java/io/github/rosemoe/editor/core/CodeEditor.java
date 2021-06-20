@@ -74,6 +74,7 @@ import io.github.rosemoe.editor.core.extension.ExtensionContainer;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorPartController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.controller.LineNumberPanelController;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.LoopbackWidgetController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.controller.SymbolInputController;
@@ -190,7 +191,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     private int mNonPrintableOptions;
     private int mCachedLineNumberWidth;
     public float mDpUnit;
-    private float mInsertSelWidth;
+    public float mInsertSelWidth;
     private float mBlockLineWidth;
     private float mLineInfoTextSize;
     private boolean mWait;
@@ -222,7 +223,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     public LanguagePlugin mLanguage;
 
     // widgets
-    private CursorController cursor;                                        // Manage the cursor
+    public CursorController cursor;                                        // Manage the cursor
     private SearcherController searcher;                                    // Manage search in the displayed text
     private ContextActionController contextAction;                          // Manage context action showing, eg copy paste
     public CompletionWindowController completionWindow;                     // Manage completion item showing
@@ -234,7 +235,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
 
     public ColorManager colorManager = new ColorManager();                  // retain all colors.
 
-    private Paint mPaint;
+    public Paint mPaint;
     private Paint miniGraphPaint;
     private char[] mBuffer;
     private Matrix mMatrix;
@@ -967,13 +968,12 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             mRightHandle.setEmpty();
         }
 
+        // update from the model
         lineNumber.model.postDrawLineNumbers.clear();
+        cursor.parts.clear();
 
-        // handleInitPaint cursor
-        List<CursorView.CursorPaintAction> postDrawCursor = new ArrayList<>();
-        //
-
-        drawRows(canvas, textOffset, lineNumber.model.postDrawLineNumbers, postDrawCursor);
+        // WARNING: data processing here: instanciation controllers
+        drawRows(canvas, textOffset, lineNumber.model.postDrawLineNumbers);
 
         offsetX = -getOffsetX();
 
@@ -982,15 +982,10 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             drawBlockLines(canvas, textOffset);
         }
 
-        // handleEndPaint cursor
-        for (CursorView.CursorPaintAction action : postDrawCursor) {
-            action.exec(canvas, this);
-        }
-        //
-
-        // widget paints
+        // widget canvas part paints
         lineNumber.paint(canvas, offsetX, getLineCount());
         userInput.paint(canvas);
+        cursor.paint(canvas);
 
         drawEdgeEffect(canvas);
     }
@@ -1020,9 +1015,8 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @param canvas              Canvas to draw
      * @param offset              Offset of text region start
      * @param postDrawLineNumbers Line numbers to be drawn later
-     * @param postDrawCursor      Cursors to be drawn later
      */
-    private void drawRows(Canvas canvas, float offset, LongArrayList postDrawLineNumbers, List<CursorView.CursorPaintAction> postDrawCursor) {
+    private void drawRows(Canvas canvas, float offset, LongArrayList postDrawLineNumbers) {
         analyzer.lockView();
         RowIterator rowIterator = mLayout.obtainRowIterator(getFirstVisibleRow());
         CodeAnalyzerResultColor colRes = (CodeAnalyzerResultColor) analyzer.getResult("color");
@@ -1198,27 +1192,28 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             }
 
             // Draw cursors
-            viewDrawCursor(firstVisibleChar,lastVisibleChar,line,paintingOffset,row,postDrawCursor);
+            viewDrawCursor(firstVisibleChar,lastVisibleChar,line,paintingOffset,row);
 
         }
         analyzer.unlockView();
     }
 
-    public void viewDrawCursor(int firstVisibleChar, int lastVisibleChar, int line , float paintingOffset, int row, List<CursorView.CursorPaintAction> postDrawCursor) {
+    public void viewDrawCursor(int firstVisibleChar, int lastVisibleChar, int line , float paintingOffset, int row) {
         if (cursor.isSelected()) {
             if (mTextActionPresenter.shouldShowCursor()) {
                 if (cursor.getLeftLine() == line && isInside(cursor.getLeftColumn(), firstVisibleChar, lastVisibleChar, line)) {
                     float centerX = paintingOffset + measureText(mBuffer, firstVisibleChar, cursor.getLeftColumn() - firstVisibleChar);
-                    postDrawCursor.add(new CursorView.CursorPaintAction(row, centerX, mLeftHandle, false, UserInputController.SelectionHandle.LEFT));
+                    cursor.parts.add(new CursorPartController(this, row, centerX, mLeftHandle, false, UserInputController.SelectionHandle.LEFT));
                 }
                 if (cursor.getRightLine() == line && isInside(cursor.getRightColumn(), firstVisibleChar, lastVisibleChar, line)) {
                     float centerX = paintingOffset + measureText(mBuffer, firstVisibleChar, cursor.getRightColumn() - firstVisibleChar);
-                    postDrawCursor.add(new CursorView.CursorPaintAction(row, centerX, mRightHandle, false, UserInputController.SelectionHandle.RIGHT));
+                    cursor.parts.add(new CursorPartController(this, row, centerX, mRightHandle, false, UserInputController.SelectionHandle.RIGHT));
+
                 }
             }
         } else if (cursor.getLeftLine() == line && isInside(cursor.getLeftColumn(), firstVisibleChar, lastVisibleChar, line)) {
             float centerX = paintingOffset + measureText(mBuffer, firstVisibleChar, cursor.getLeftColumn() - firstVisibleChar);
-            postDrawCursor.add(new CursorView.CursorPaintAction(row, centerX, userInput.shouldDrawInsertHandle() ? mInsertHandle : null, true));
+            cursor.parts.add(new CursorPartController(this, row, centerX, userInput.shouldDrawInsertHandle() ? mInsertHandle : null, true));
         }
     }
     public void showTextActionPopup() {
@@ -1493,39 +1488,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     }
 
     /**
-     * Draw a handle.
-     * The handle can be insert handle,left handle or right handle
-     *
-     * @param canvas     The Canvas to draw handle
-     * @param row        The row you want to attach handle to its bottom (Usually the selection line)
-     * @param centerX    Center x offset of handle
-     * @param resultRect The rect of handle this method drew
-     * @param handleType The selection handle type (LEFT, RIGHT,BOTH or -1)
-     */
-    private void drawHandle(Canvas canvas, int row, float centerX, RectF resultRect, int handleType) {
-        float radius = mDpUnit * 12;
-
-        if (handleType > -1 && handleType == userInput.getTouchedHandleType()) {
-            radius = mDpUnit * 16;
-        }
-
-        float top = getRowBottom(row) - getOffsetY();
-        float bottom = top + radius * 2;
-        float left = centerX - radius;
-        float right = centerX + radius;
-        if (right < 0 || left > getWidth() || bottom < 0 || top > getHeight()) {
-            resultRect.setEmpty();
-            return;
-        }
-        resultRect.left = left;
-        resultRect.right = right;
-        resultRect.top = top;
-        resultRect.bottom = bottom;
-        mPaint.setColor(colorManager.getColor("selectionHandle"));
-        canvas.drawCircle(centerX, (top + bottom) / 2, radius, mPaint);
-    }
-
-    /**
      * Draw code block lines on screen
      *
      * @param canvas  The canvas to draw
@@ -1609,43 +1571,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         mPaint.setTextAlign(Paint.Align.LEFT);
         mPaint.setTextSize(backupSize);
         mTextMetrics = backupMetrics;
-    }
-
-
-    /**
-     * Draw cursor
-     */
-    private void drawCursor(Canvas canvas, float centerX, int row, RectF handle, boolean insert) {
-        if (!insert || cursor.blink == null || cursor.blink.model.visibility) {
-            // OK
-            RectF mRect = new RectF();
-            mRect.top = getRowTop(row) - getOffsetY();
-            mRect.bottom = getRowBottom(row) - getOffsetY();
-            mRect.left = centerX - mInsertSelWidth / 2f;
-            mRect.right = centerX + mInsertSelWidth / 2f;
-            drawColor(canvas, colorManager.getColor("selectionInsert"), mRect);
-        }
-        if (handle != null) {
-            drawHandle(canvas, row, centerX, handle, -1);
-        }
-    }
-
-    /**
-     * Draw cursor
-     */
-    public void drawCursor(Canvas canvas, float centerX, int row, RectF handle, boolean insert, int handleType) {
-        if (!insert || cursor.blink == null || cursor.blink.model.visibility) {
-            // OK
-            RectF mRect = new RectF();
-            mRect.top = getRowTop(row) - getOffsetY();
-            mRect.bottom = getRowBottom(row) - getOffsetY();
-            mRect.left = centerX - mInsertSelWidth / 2f;
-            mRect.right = centerX + mInsertSelWidth / 2f;
-            drawColor(canvas, colorManager.getColor("selectionInsert"), mRect);
-        }
-        if (handle != null) {
-            drawHandle(canvas, row, centerX, handle, handleType);
-        }
     }
 
     /**

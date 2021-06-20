@@ -15,9 +15,13 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller;
 
+import android.graphics.Canvas;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view.CursorView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
@@ -32,6 +36,8 @@ import io.github.rosemoe.editor.core.CodeEditor;
 /**
  * @author Rose
  * Warning:The cursor position will update automatically when the content has been changed by other way
+ * Cursor controller : the cursor widget aka blinking part, context action (context action popup).
+ *
  */
 public final class CursorController extends WidgetController {
 
@@ -43,6 +49,7 @@ public final class CursorController extends WidgetController {
     public CursorBlinkController blink;        // Manage cursor blink effect
     private CharPosition mLeft, mRight;
     public static final boolean DEFAULT_ISAUTO_IDENT = true;
+    public ArrayList<CursorPartController> parts = new ArrayList<>();
 
     /**
      * Create a new CursorController for ContentMapController
@@ -53,7 +60,7 @@ public final class CursorController extends WidgetController {
         super(editor);
         mContent = content;
         mIndexer = new CachedIndexer(content);
-        view     = new CursorView();
+        view     = new CursorView(editor);
         blink = new CursorBlinkController(editor, CursorBlinkController.DEFAULT_CURSOR_BLINK_PERIOD);
     }
 
@@ -576,6 +583,12 @@ public final class CursorController extends WidgetController {
             if ( period != null ) {
                 setBlinkPeriod(period.asInt());
             }
+        }
+    }
+
+    public void paint(Canvas canvas) {
+        for(CursorPartController part : parts) {
+            part.paint(canvas);
         }
     }
 }

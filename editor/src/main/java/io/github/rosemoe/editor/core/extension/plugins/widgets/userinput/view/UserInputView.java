@@ -17,6 +17,7 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.util.TypedValue;
 import android.view.GestureDetector;
@@ -24,6 +25,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.OverScroller;
 
+import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetCanvasPartView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contextaction.controller.ContextActionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.model.UserInputModel;
 import io.github.rosemoe.editor.core.TextComposeBasePopup;
@@ -38,9 +40,9 @@ import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.
 
 /**
  * This handles events : scale, tap, double tap, ...
+ *  this view is a canvas drawing view,
  */
-public class UserInputView implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener {
-    public CodeEditor editor;
+public class UserInputView extends WidgetCanvasPartView implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener {
     public final OverScroller mScroller;
     public float maxSize;
     public float minSize;
@@ -53,7 +55,7 @@ public class UserInputView implements GestureDetector.OnGestureListener, Gesture
     public RectF mHorizontalScrollBar;
 
     public UserInputView(CodeEditor editor, Context ctx) {
-        this.editor = editor;
+        super(editor);
         mScroller = new OverScroller(editor.getContext());
         maxSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 32, Resources.getSystem().getDisplayMetrics());
         minSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 6, Resources.getSystem().getDisplayMetrics());
@@ -478,6 +480,8 @@ public class UserInputView implements GestureDetector.OnGestureListener, Gesture
     public boolean handleOnDoubleTapEvent(MotionEvent e) { return true; }
 
 
+    @Override
+    public void paint(Canvas canvas, CodeEditor editor) {
 
-
+    }
 }

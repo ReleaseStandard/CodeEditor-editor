@@ -1,0 +1,28 @@
+package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller;
+
+import android.graphics.Canvas;
+import android.graphics.RectF;
+
+import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.model.CursorPartModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view.CursorPartView;
+
+public class CursorPartController {
+    public CursorPartView view;
+    public CursorPartModel model;
+
+    public CursorPartController(CodeEditor editor, int row, float centerX, RectF outRect, boolean insert) {
+        view = new CursorPartView(editor);
+        model = new CursorPartModel(row,centerX,outRect,insert);
+    }
+    public CursorPartController(CodeEditor editor, int row, float centerX, RectF outRect, boolean insert, int handleType) {
+        view = new CursorPartView(editor);
+        model = new CursorPartModel(row,centerX,outRect,insert,handleType);
+    }
+    /**
+     * Paint a cursor subpart.
+     */
+    public void paint(Canvas canvas, Object ...args) {
+        view.exec(canvas, model.centerX, model.row, model.outRect, model.insert, model.handleType);
+    }
+}

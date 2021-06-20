@@ -18,60 +18,20 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetCanvasPartView;
 
-public class CursorView {
-    public CursorView() {
+public class CursorView extends WidgetCanvasPartView {
+
+    public CursorView(CodeEditor editor) {
+        super(editor);
     }
-    /**
-     * Class for saving state for cursor
-     */
-    public static class CursorPaintAction {
 
-        /**
-         * RowModel position
-         */
-        final int row;
-
-        /**
-         * Center x offset
-         */
-        final float centerX;
-
-        /**
-         * Handle rectangle
-         */
-        final RectF outRect;
-
-        /**
-         * Draw as insert cursor
-         */
-        final boolean insert;
-
-        int handleType = -1;
-
-        public CursorPaintAction(int row, float centerX, RectF outRect, boolean insert) {
-            this.row = row;
-            this.centerX = centerX;
-            this.outRect = outRect;
-            this.insert = insert;
-        }
-
-        public CursorPaintAction(int row, float centerX, RectF outRect, boolean insert, int handleType) {
-            this.row = row;
-            this.centerX = centerX;
-            this.outRect = outRect;
-            this.insert = insert;
-            this.handleType = handleType;
-        }
-
-
-        /**
-         * Execute painting on the given editor and canvas
-         */
-        public void exec(Canvas canvas, CodeEditor editor) {
-            editor.drawCursor(canvas, centerX, row, outRect, insert, handleType);
-        }
+    @Override
+    public void paint(Canvas canvas, CodeEditor editor) {
 
     }
 }
