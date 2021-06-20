@@ -74,12 +74,12 @@ public class ScrollBarController extends WidgetController {
 
         // painting
         if ( isHolding() ) {
-            editor.drawColor(canvas, getPrivateColor("scrollBarTrack"), view.barTrack);
+            editor.drawColor(canvas, getColor("scrollBarTrack"), view.barTrack);
             if ( isVertical ) {
                 editor.drawLineInfoPanel(canvas, centerY, 0);
             }
         }
-        editor.drawColor(canvas, isHolding() ? getPrivateColor("scrollBarThumbPressed") : getPrivateColor("scrollBarThumb"), view.bar);
+        editor.drawColor(canvas, isHolding() ? getColor("scrollBarThumbPressed") : getColor("scrollBarThumb"), view.bar);
     }
     public boolean isHolding() {
         return model.holding;
