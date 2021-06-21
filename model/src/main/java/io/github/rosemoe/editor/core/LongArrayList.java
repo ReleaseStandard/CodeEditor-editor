@@ -41,7 +41,7 @@ public class LongArrayList {
     }
 
     public long get(int index) {
-        if (index > length || index < 0) {
+        if (index >= length || index < 0) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
         return data[index];
