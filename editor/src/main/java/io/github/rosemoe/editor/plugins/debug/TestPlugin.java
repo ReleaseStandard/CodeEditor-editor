@@ -18,7 +18,7 @@ package io.github.rosemoe.editor.plugins.debug;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.extension.LineNumberPanelEvent;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.model.LineNumberPanelModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelModel;
 
 import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent.*;
 

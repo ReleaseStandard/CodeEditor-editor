@@ -15,8 +15,8 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.processors;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.spans.SpanMapController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.spans.SpanLineController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanMapController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanLineController;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**

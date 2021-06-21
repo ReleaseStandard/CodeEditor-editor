@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
-import io.github.rosemoe.editor.core.util.IntPair;
+import io.github.rosemoe.editor.core.IntPair;
 
 public class WordwrapModel {
 

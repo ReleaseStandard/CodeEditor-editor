@@ -18,7 +18,7 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.
 import android.text.GetChars;
 import android.text.TextUtils;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.model.ContentLineModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.ContentLineModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.view.ContentLineView;
 
 /**

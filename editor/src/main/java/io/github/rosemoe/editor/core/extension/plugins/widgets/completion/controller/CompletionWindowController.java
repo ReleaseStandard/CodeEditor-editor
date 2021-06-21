@@ -21,10 +21,10 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.ColorSchemeController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.ColorSchemeController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.model.CompletionWindowModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.CompletionWindowModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.view.CompleteWindowView;
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.CodeEditor;

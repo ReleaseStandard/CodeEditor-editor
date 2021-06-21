@@ -16,6 +16,7 @@
 package io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller;
 
 
+import io.github.rosemoe.editor.core.IntPair;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentListener;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.processors.ContentLineRemoveListener;
 
@@ -72,7 +73,7 @@ public interface Layout extends ContentLineRemoveListener, ContentListener {
      * @param xOffset Horizontal offset on layout
      * @param yOffset Vertical offset on layout
      * @return Packed IntPair, first is line and second is column
-     * @see io.github.rosemoe.editor.core.util.IntPair
+     * @see IntPair
      */
     long getCharPositionForLayoutOffset(float xOffset, float yOffset);
 

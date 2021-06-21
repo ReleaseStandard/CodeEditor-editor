@@ -15,14 +15,13 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller;
 
-import android.graphics.Canvas;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.model.UserInputConnexionModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputConnexionModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputConnexionView;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;

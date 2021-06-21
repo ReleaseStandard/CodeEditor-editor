@@ -18,9 +18,9 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.pr
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.spans.SpanController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.spans.SpanLineController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.spans.SpanMapController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanLineController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanMapController;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**

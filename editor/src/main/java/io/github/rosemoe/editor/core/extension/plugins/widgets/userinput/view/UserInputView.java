@@ -18,7 +18,6 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.RectF;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -27,16 +26,15 @@ import android.widget.OverScroller;
 
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetCanvasPartView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contextaction.controller.ContextActionController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.model.UserInputModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel;
 import io.github.rosemoe.editor.core.TextComposeBasePopup;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contextaction.view.ContextActionView;
-import io.github.rosemoe.editor.core.util.IntPair;
+import io.github.rosemoe.editor.core.IntPair;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.TextActionPopupWindow;
 
-import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputController.*;
-import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.model.UserInputModel.isWhitespace;
+import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel.isWhitespace;
 
 /**
  * This handles events : scale, tap, double tap, ...
@@ -90,15 +88,15 @@ public class UserInputView extends WidgetCanvasPartView implements GestureDetect
                     }
                     preciousX = x;
                     preciousY = y;
-                    editor.postDelayed(this, INTERACTION_END_DELAY);
-                } else if (System.currentTimeMillis() - mLastInteraction >= INTERACTION_END_DELAY) {
+                    editor.postDelayed(this, UserInputModel.INTERACTION_END_DELAY);
+                } else if (System.currentTimeMillis() - mLastInteraction >= UserInputModel.INTERACTION_END_DELAY) {
                     editor.invalidate();
                     editor.onEndGestureInteraction();
                 }
             }
 
         }
-        editor.postDelayed(new InvalidateNotifier(), INTERACTION_END_DELAY);
+        editor.postDelayed(new InvalidateNotifier(), UserInputModel.INTERACTION_END_DELAY);
     }
     /**
      * Get scroller for editor
@@ -123,13 +121,13 @@ public class UserInputView extends WidgetCanvasPartView implements GestureDetect
         class InvalidateNotifier implements Runnable {
             @Override
             public void run() {
-                if (System.currentTimeMillis() - mLastSetSelection >= HIDE_DELAY) {
+                if (System.currentTimeMillis() - mLastSetSelection >= UserInputModel.HIDE_DELAY) {
                     editor.invalidate();
                 }
             }
 
         }
-        editor.postDelayed(new InvalidateNotifier(), HIDE_DELAY);
+        editor.postDelayed(new InvalidateNotifier(), UserInputModel.HIDE_DELAY);
     }
 
 
@@ -177,13 +175,13 @@ public class UserInputView extends WidgetCanvasPartView implements GestureDetect
         class ScrollNotifier implements Runnable {
             @Override
             public void run() {
-                if (System.currentTimeMillis() - mLastScroll >= HIDE_DELAY_HANDLE) {
+                if (System.currentTimeMillis() - mLastScroll >= UserInputModel.HIDE_DELAY_HANDLE) {
                     editor.invalidate();
                 }
             }
 
         }
-        editor.postDelayed(new ScrollNotifier(), HIDE_DELAY_HANDLE);
+        editor.postDelayed(new ScrollNotifier(), UserInputModel.HIDE_DELAY_HANDLE);
     }
 
     /**

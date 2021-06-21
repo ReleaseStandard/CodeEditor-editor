@@ -17,7 +17,7 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controlle
 
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view.CursorBlinkView;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.model.CursorBlinkModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorBlinkModel;
 import io.github.rosemoe.editor.core.CodeEditor;
 
 /**

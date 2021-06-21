@@ -16,10 +16,6 @@
 package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view;
 
 import android.graphics.Canvas;
-import android.graphics.RectF;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetCanvasPartView;

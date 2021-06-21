@@ -2,3 +2,4 @@ rootProject.name = "CodeEditor-editor"
 include ':editor'
 include ':model'
 include ':view-android'
+include ':controller'

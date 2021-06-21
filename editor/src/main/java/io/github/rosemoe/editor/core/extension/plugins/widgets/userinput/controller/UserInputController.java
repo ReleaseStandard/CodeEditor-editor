@@ -25,17 +25,17 @@ import android.widget.OverScroller;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.codeanalysis.LoopbackEvent;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.scrollbar.controller.ScrollBarController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.scrollbar.ScrollBarController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.model.UserInputModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputView;
-import io.github.rosemoe.editor.core.util.IntPair;
+import io.github.rosemoe.editor.core.IntPair;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.TextActionPopupWindow;
 
 import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent.*;
-import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.model.UserInputModel.*;
+import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel.*;
 
 /**
  * Handles touch events of editor
@@ -50,21 +50,20 @@ import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.
 @SuppressWarnings("CanBeFinal")
 public final class UserInputController extends WidgetController {
 
-    public UserInputModel model = new UserInputModel();
-    public final UserInputView  view;
+    private UserInputModel model = new UserInputModel();
+    public final UserInputView view;
 
-    public final static int HIDE_DELAY = 3000;
-    private final static int SELECTION_HANDLE_RESIZE_DELAY = 10;
-    public final static int HIDE_DELAY_HANDLE = 5000;
-    public static final long INTERACTION_END_DELAY = 100;
+    public final ScrollBarController scrollBarH;
+    public final ScrollBarController scrollBarV;
 
     private SelectionHandle insert = null, left = null, right = null;
     private float downY = 0;
     private float downX = 0;
     private int touchedHandleType = -1;
 
-    public final ScrollBarController scrollBarH;
-    public final ScrollBarController scrollBarV;
+    public boolean isScaling() {
+        return model.isScaling;
+    }
 
     /**
      * Create a event handler for the given editor

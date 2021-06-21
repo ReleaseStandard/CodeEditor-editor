@@ -75,7 +75,8 @@ import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorPartController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.controller.LineNumberPanelController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelController;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.LoopbackWidgetController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.controller.SymbolInputController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.controller.WidgetControllerManagerController;
@@ -85,7 +86,7 @@ import io.github.rosemoe.editor.plugins.debug.TestPlugin;
 import io.github.rosemoe.editor.plugins.debug.WidgetAnalyzerPlugin;
 import io.github.rosemoe.editor.plugins.debug.ExamplePlugin;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputConnexionController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.ColorSchemeController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.ColorSchemeController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.RowController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.CompletionWindowController;
@@ -97,20 +98,17 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.CompletionAdapter;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.WordwrapLayout;
 import io.github.rosemoe.editor.core.langs.empty.EmptyLanguage;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.spans.SpanMapController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.spans.SpanLineController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.spans.SpanController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanMapController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanLineController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentLineController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentListener;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputView;
 import io.github.rosemoe.editor.core.util.FontCache;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view.CursorView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.processors.ContentLineRemoveListener;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.processors.SpanUpdater;
-import io.github.rosemoe.editor.core.util.IntPair;
 import io.github.rosemoe.editor.core.util.Logger;
-import io.github.rosemoe.editor.core.util.LongArrayList;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.Layout;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.LineBreakLayout;
 
@@ -953,7 +951,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         if (isWordwrap()) {
             if (mCachedLineNumberWidth == 0) {
                 mCachedLineNumberWidth = (int) lineNumberWidth;
-            } else if (mCachedLineNumberWidth != (int) lineNumberWidth && !userInput.model.isScaling) {
+            } else if (mCachedLineNumberWidth != (int) lineNumberWidth && !userInput.isScaling()) {
                 mCachedLineNumberWidth = (int) lineNumberWidth;
                 createLayout();
             }
@@ -3018,7 +3016,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             mText.setLineListener(null);
         }
         mText = new ContentMapController(text,this);
-        boolean isAutoIndented = CursorController.DEFAULT_ISAUTO_IDENT;
+        boolean isAutoIndented = CursorModel.DEFAULT_ISAUTO_IDENT;
         if ( cursor != null ) {
             isAutoIndented = cursor.isAutoIndent();
         }

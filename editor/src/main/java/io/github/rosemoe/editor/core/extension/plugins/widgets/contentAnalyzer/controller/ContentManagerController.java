@@ -18,7 +18,7 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.model.ContentManagerModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.ContentManagerModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.view.ContentManagerView;
 
 /**

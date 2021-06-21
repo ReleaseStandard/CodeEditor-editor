@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import junit.framework.TestCase;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.controller.LineNumberPanelController;
-
 public class ExtensionTest extends TestCase {
 
     public void testConfigure() throws JsonProcessingException {

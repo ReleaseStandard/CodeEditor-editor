@@ -21,16 +21,15 @@ import android.util.Log;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view.CursorView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
 import io.github.rosemoe.editor.core.CharPosition;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.model.CursorModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.processors.indexer.CachedIndexer;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
-import io.github.rosemoe.editor.core.util.IntPair;
+import io.github.rosemoe.editor.core.IntPair;
 import io.github.rosemoe.editor.core.CodeEditor;
 
 /**
@@ -48,7 +47,6 @@ public final class CursorController extends WidgetController {
 	public final CursorView view;
     public CursorBlinkController blink;        // Manage cursor blink effect
     private CharPosition mLeft, mRight;
-    public static final boolean DEFAULT_ISAUTO_IDENT = true;
     public ArrayList<CursorPartController> parts = new ArrayList<>();
 
     /**

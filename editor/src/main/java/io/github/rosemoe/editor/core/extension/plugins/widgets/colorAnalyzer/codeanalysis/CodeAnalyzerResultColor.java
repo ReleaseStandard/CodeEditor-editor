@@ -17,9 +17,9 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.co
 
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.tokenemitter.TokenEmitterResult;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.ColorSchemeController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.spans.SpanController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.spans.SpanMapController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.ColorSchemeController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanMapController;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**

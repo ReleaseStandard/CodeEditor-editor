@@ -20,7 +20,7 @@ import java.util.NoSuchElementException;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentLineController;
 import io.github.rosemoe.editor.core.util.BinaryHeap;
-import io.github.rosemoe.editor.core.util.IntPair;
+import io.github.rosemoe.editor.core.IntPair;
 import io.github.rosemoe.editor.core.CodeEditor;
 
 /**

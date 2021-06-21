@@ -17,7 +17,7 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.co
 
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzerResultRecycler;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.controller.spans.SpanMapController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanMapController;
 import io.github.rosemoe.editor.core.util.Logger;
 
 public class ColorAnalyzerResultRecycler extends CodeAnalyzerResultRecycler {

@@ -20,7 +20,7 @@ import android.view.View;
 
 import java.util.Comparator;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.model.CompletionItemModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.CompletionItemModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.view.CompletionItemView;
 
 /**
