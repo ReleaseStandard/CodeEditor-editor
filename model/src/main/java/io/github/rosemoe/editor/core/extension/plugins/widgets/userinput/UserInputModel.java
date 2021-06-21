@@ -63,6 +63,7 @@ public class UserInputModel {
 
     /**
      * Check whether operands are the same sign.
+     * 0 is a neutral value (not signed, not unsigned)
      * @param a
      * @param b
      * @return

@@ -100,7 +100,7 @@ public final class CursorController extends WidgetController {
      * @param column The column position
      */
     public void setLeft(int line, int column) {
-        model.mLeft = mIndexer.getCharPosition(line, column).fromThis();
+        model.mLeft = mIndexer.getCharPosition(line, column).clone();
     }
 
     /**
@@ -110,7 +110,7 @@ public final class CursorController extends WidgetController {
      * @param column The column position
      */
     public void setRight(int line, int column) {
-        model.mRight = mIndexer.getCharPosition(line, column).fromThis();
+        model.mRight = mIndexer.getCharPosition(line, column).clone();
     }
 
     /**
@@ -439,14 +439,14 @@ public final class CursorController extends WidgetController {
      * Get copy of left cursor
      */
     public CharPosition left() {
-        return mLeft.fromThis();
+        return mLeft.clone();
     }
 
     /**
      * Get copy of right cursor
      */
     public CharPosition right() {
-        return mRight.fromThis();
+        return mRight.clone();
     }
 
     /**
@@ -456,7 +456,7 @@ public final class CursorController extends WidgetController {
      * @param startColumn Start column
      */
     public void beforeInsert(int startLine, int startColumn) {
-        model.cache0 = mIndexer.getCharPosition(startLine, startColumn).fromThis();
+        model.cache0 = mIndexer.getCharPosition(startLine, startColumn).clone();
     }
 
     /**
@@ -468,8 +468,8 @@ public final class CursorController extends WidgetController {
      * @param endColumn   End column
      */
     public void beforeDelete(int startLine, int startColumn, int endLine, int endColumn) {
-        model.cache1 = mIndexer.getCharPosition(startLine, startColumn).fromThis();
-        model.cache2 = mIndexer.getCharPosition(endLine, endColumn).fromThis();
+        model.cache1 = mIndexer.getCharPosition(startLine, startColumn).clone();
+        model.cache2 = mIndexer.getCharPosition(endLine, endColumn).clone();
     }
 
     /**
@@ -493,10 +493,10 @@ public final class CursorController extends WidgetController {
         mIndexer.afterInsert(mContent, startLine, startColumn, endLine, endColumn, insertedContent);
         int beginIdx = model.cache0.getIndex();
         if (getLeft() >= beginIdx) {
-            model.mLeft = mIndexer.getCharPosition(getLeft() + insertedContent.length()).fromThis();
+            model.mLeft = mIndexer.getCharPosition(getLeft() + insertedContent.length()).clone();
         }
         if (getRight() >= beginIdx) {
-            model.mRight = mIndexer.getCharPosition(getRight() + insertedContent.length()).fromThis();
+            model.mRight = mIndexer.getCharPosition(getRight() + insertedContent.length()).clone();
         }
     }
 
@@ -520,21 +520,21 @@ public final class CursorController extends WidgetController {
             return;
         }
         if (endIdx <= left) {
-            model.mLeft = mIndexer.getCharPosition(left - (endIdx - beginIdx)).fromThis();
-            model.mRight = mIndexer.getCharPosition(right - (endIdx - beginIdx)).fromThis();
+            model.mLeft = mIndexer.getCharPosition(left - (endIdx - beginIdx)).clone();
+            model.mRight = mIndexer.getCharPosition(right - (endIdx - beginIdx)).clone();
         } else if (/* endIdx > left && */ endIdx < right) {
             if (beginIdx <= left) {
-                model.mLeft = mIndexer.getCharPosition(beginIdx).fromThis();
-                model.mRight = mIndexer.getCharPosition(right - (endIdx - Math.max(beginIdx, left))).fromThis();
+                model.mLeft = mIndexer.getCharPosition(beginIdx).clone();
+                model.mRight = mIndexer.getCharPosition(right - (endIdx - Math.max(beginIdx, left))).clone();
             } else {
-                model.mRight = mIndexer.getCharPosition(right - (endIdx - beginIdx)).fromThis();
+                model.mRight = mIndexer.getCharPosition(right - (endIdx - beginIdx)).clone();
             }
         } else {
             if (beginIdx <= left) {
-                model.mLeft = mIndexer.getCharPosition(beginIdx).fromThis();
-                model.mRight = model.mLeft.fromThis();
+                model.mLeft = mIndexer.getCharPosition(beginIdx).clone();
+                model.mRight = model.mLeft.clone();
             } else {
-                model.mRight = mIndexer.getCharPosition(left + (right - beginIdx)).fromThis();
+                model.mRight = mIndexer.getCharPosition(left + (right - beginIdx)).clone();
             }
         }
     }

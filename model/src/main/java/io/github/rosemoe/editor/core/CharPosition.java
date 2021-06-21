@@ -94,7 +94,8 @@ public final class CharPosition {
      *
      * @return New CharPosition including info of this CharPosition
      */
-    public CharPosition fromThis() {
+    @Override
+    public CharPosition clone() {
         CharPosition pos = new CharPosition();
         pos.index = index;
         pos.line = line;
