@@ -1,6 +1,6 @@
 package io.github.rosemoe.editor.core.util.shortcuts;
 
-import io.github.rosemoe.editor.core.view.Adaptater;
+import io.github.rosemoe.editor.core.Adaptater;
 
 /**
  * Defined for convenience.

@@ -1,9 +1,7 @@
 package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.model;
-import android.graphics.RectF;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view.CursorPartView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputController;
-import io.github.rosemoe.editor.core.model.Rect;
+import io.github.rosemoe.editor.core.Rect;
 
 /**
  * Hold data for a cursor part.

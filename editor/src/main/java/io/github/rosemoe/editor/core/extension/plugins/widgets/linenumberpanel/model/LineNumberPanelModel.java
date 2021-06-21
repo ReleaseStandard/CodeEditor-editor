@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.model;
 
-import io.github.rosemoe.editor.core.model.Rect;
+import io.github.rosemoe.editor.core.Rect;
 import io.github.rosemoe.editor.core.util.LongArrayList;
 
 /**

@@ -25,6 +25,7 @@ import android.widget.OverScroller;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.codeanalysis.LoopbackEvent;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.scrollbar.controller.ScrollBarController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.model.UserInputModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputView;
@@ -32,7 +33,6 @@ import io.github.rosemoe.editor.core.util.IntPair;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.TextActionPopupWindow;
-import io.github.rosemoe.editor.core.util.shortcuts.A;
 
 import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent.*;
 import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.model.UserInputModel.*;

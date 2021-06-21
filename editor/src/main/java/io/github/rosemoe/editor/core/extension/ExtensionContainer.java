@@ -24,6 +24,9 @@ import io.github.rosemoe.editor.core.util.Logger;
 
 /**
  * This is class is a container for extension with a priority queue.
+ * You can view it as a bus.
+ * You can connect the bus an other.
+ * Extensions in the communicate with others with some rules defined in the handle{emit,dispatch} function.
  */
 public class ExtensionContainer extends Extension {
 
@@ -82,8 +85,6 @@ public class ExtensionContainer extends Extension {
             this.extensions.add(extension);
         }
     }
-
-
 
 
     /**

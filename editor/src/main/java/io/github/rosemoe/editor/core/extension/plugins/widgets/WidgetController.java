@@ -30,8 +30,8 @@ import io.github.rosemoe.editor.core.util.Logger;
  */
 public abstract class WidgetController extends Extension {
 
-    public WidgetModel model = null;
-    public WidgetView view = null;
+    protected WidgetModel model = null;
+    protected WidgetView view = null;
 
     public WidgetController(CodeEditor editor) {
         super(editor);

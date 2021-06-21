@@ -15,9 +15,6 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.model;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.ScrollBarController;
-import io.github.rosemoe.editor.core.model.Rect;
-
 import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputController.HIDE_DELAY;
 
 public class UserInputModel {

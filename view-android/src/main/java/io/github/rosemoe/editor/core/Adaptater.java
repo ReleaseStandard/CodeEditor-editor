@@ -1,7 +1,6 @@
-package io.github.rosemoe.editor.core.view;
+package io.github.rosemoe.editor.core;
 
 import android.graphics.RectF;
-import io.github.rosemoe.editor.core.model.Rect;
 
 /**
  * This adapt data from the model to the view.
@@ -13,12 +12,12 @@ public class Adaptater {
      * @param o
      * @return
      */
-    public static io.github.rosemoe.editor.core.model.Rect getRect(Object o) {
+    public static Rect getRect(Object o) {
         if ( o == null ) {
             return null;
         }
         RectF r = (RectF) o;
-        return new io.github.rosemoe.editor.core.model.Rect(r.left, r.top, r.right, r.bottom);
+        return new Rect(r.left, r.top, r.right, r.bottom);
     }
     public static RectF getRectF(Rect r) {
         if ( r == null ) { return null; }

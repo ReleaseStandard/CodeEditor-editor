@@ -1,4 +1,4 @@
-package io.github.rosemoe.editor.core.model;
+package io.github.rosemoe.editor.core;
 
 /**
  * A Rect on the screen.

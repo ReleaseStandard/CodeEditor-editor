@@ -6,7 +6,7 @@ import android.graphics.RectF;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetCanvasPartView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputController;
-import io.github.rosemoe.editor.core.model.Rect;
+import io.github.rosemoe.editor.core.Rect;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
 
 public class CursorPartView extends WidgetCanvasPartView {
