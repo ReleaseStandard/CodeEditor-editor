@@ -1,6 +1,7 @@
 package io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.controller;
 
 import android.view.View;
+import android.view.ViewGroup;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
@@ -40,17 +41,17 @@ public class SymbolInputController extends WidgetController {
     public void setEnabled(boolean state) {
         super.setEnabled(state);
         if ( state ) {
+            view.setVisibility(View.VISIBLE);
             for(View v : view.views) {
                 if ( ! v.isShown() ) {
                     view.addButton(v);
                 }
             }
         } else {
-            view.removeAllViewsInLayout();
+            view.setVisibility(View.INVISIBLE);
         }
         view.invalidate();
     }
-
     /**
      * Add symboles into the view.
      * @param symbolsDisplayIcon What text to display as an icon
