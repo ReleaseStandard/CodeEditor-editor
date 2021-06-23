@@ -35,6 +35,9 @@ import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.TextActionPopupWindow;
 
+import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel.BOTH;
+import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel.LEFT;
+import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel.RIGHT;
 import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent.*;
 import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel.*;
 
@@ -278,23 +281,23 @@ public final class UserInputController extends WidgetController {
                     downY = e.getY();
                     downX = e.getX();
 
-                    insert = new SelectionHandle(SelectionHandle.BOTH);
+                    insert = new SelectionHandle(BOTH);
                 }
                 boolean left = view.editor.getLeftHandleRect().contains(e.getX(), e.getY());
                 boolean right = view.editor.getRightHandleRect().contains(e.getX(), e.getY());
                 if (left || right) {
                     if (left) {
-                        model.selectionHandleType = SelectionHandle.LEFT;
-                        touchedHandleType = SelectionHandle.LEFT;
+                        model.selectionHandleType = LEFT;
+                        touchedHandleType = LEFT;
                     } else {
-                        model.selectionHandleType = SelectionHandle.RIGHT;
-                        touchedHandleType = SelectionHandle.RIGHT;
+                        model.selectionHandleType = RIGHT;
+                        touchedHandleType = RIGHT;
                     }
                     downY = e.getY();
                     downX = e.getX();
 
-                    this.left = new SelectionHandle(SelectionHandle.LEFT);
-                    this.right = new SelectionHandle(SelectionHandle.RIGHT);
+                    this.left = new SelectionHandle(LEFT);
+                    this.right = new SelectionHandle(RIGHT);
 
                 }
                 return true;
@@ -355,11 +358,11 @@ public final class UserInputController extends WidgetController {
             return true;
         }
         switch (model.selectionHandleType) {
-            case SelectionHandle.LEFT:
+            case LEFT:
                 this.left.applyPosition(e);
                 scrollIfThumbReachesEdge(e);
                 return true;
-            case SelectionHandle.RIGHT:
+            case RIGHT:
                 this.right.applyPosition(e);
                 scrollIfThumbReachesEdge(e);
                 return true;
@@ -372,10 +375,10 @@ public final class UserInputController extends WidgetController {
             insert.applyPosition(e);
         } else {
             switch (model.selectionHandleType) {
-                case SelectionHandle.LEFT:
+                case LEFT:
                     this.left.applyPosition(e);
                     break;
-                case SelectionHandle.RIGHT:
+                case RIGHT:
                     this.right.applyPosition(e);
                     break;
             }
@@ -435,12 +438,7 @@ public final class UserInputController extends WidgetController {
     @SuppressWarnings("CanBeFinal")
     public
     class SelectionHandle {
-
-        public static final int NONE = -1;
-        public static final int LEFT = 0;
-        public static final int RIGHT = 1;
-        public static final int BOTH = 2;
-
+        
         public int type;
 
         /**
@@ -451,7 +449,6 @@ public final class UserInputController extends WidgetController {
         public SelectionHandle(int type) {
             this.type = type;
         }
-
         /**
          * Handle the event
          *
@@ -539,7 +536,7 @@ public final class UserInputController extends WidgetController {
             if (dx > 0) {
                 // Check whether there is content at right
                 int line;
-                if (model.mHoldingInsertHandle || model.selectionHandleType == SelectionHandle.LEFT) {
+                if (model.mHoldingInsertHandle || model.selectionHandleType == LEFT) {
                     line = view.editor.getCursor().getLeftLine();
                 } else {
                     line = view.editor.getCursor().getRightLine();

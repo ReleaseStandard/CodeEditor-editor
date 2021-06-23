@@ -21,6 +21,13 @@ public class UserInputModel {
     public final static int HIDE_DELAY_HANDLE = 5000;
     public static final long INTERACTION_END_DELAY = 100;
     public final static int SELECTION_HANDLE_RESIZE_DELAY = 10;
+
+    // handles : multiple stuff
+    public static final int NONE = -1;
+    public static final int LEFT = 0;
+    public static final int RIGHT = 1;
+    public static final int BOTH = 2;
+
     public long mLastTouchedSelectionHandle = 0;
     public long mLastSetSelection = 0;
     public boolean isScaling = false;

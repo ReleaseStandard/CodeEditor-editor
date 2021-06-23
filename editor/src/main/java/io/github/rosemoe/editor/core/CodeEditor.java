@@ -79,6 +79,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorMode
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelController;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.LoopbackWidgetController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.controller.SymbolInputController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.controller.WidgetControllerManagerController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputConnexionView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
@@ -1204,11 +1205,11 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             if (mTextActionPresenter.shouldShowCursor()) {
                 if (cursor.getLeftLine() == line && isInside(cursor.getLeftColumn(), firstVisibleChar, lastVisibleChar, line)) {
                     float centerX = paintingOffset + measureText(mBuffer, firstVisibleChar, cursor.getLeftColumn() - firstVisibleChar);
-                    cursor.parts.add(new CursorPartController(this, row, centerX, mLeftHandle, false, UserInputController.SelectionHandle.LEFT));
+                    cursor.parts.add(new CursorPartController(this, row, centerX, mLeftHandle, false, UserInputModel.LEFT));
                 }
                 if (cursor.getRightLine() == line && isInside(cursor.getRightColumn(), firstVisibleChar, lastVisibleChar, line)) {
                     float centerX = paintingOffset + measureText(mBuffer, firstVisibleChar, cursor.getRightColumn() - firstVisibleChar);
-                    cursor.parts.add(new CursorPartController(this, row, centerX, mRightHandle, false, UserInputController.SelectionHandle.RIGHT));
+                    cursor.parts.add(new CursorPartController(this, row, centerX, mRightHandle, false, UserInputModel.RIGHT));
 
                 }
             }

@@ -1,6 +1,6 @@
-package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.model;
+package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel;
 import io.github.rosemoe.editor.core.Rect;
 
 /**
@@ -31,8 +31,7 @@ public class CursorPartModel {
      * Handle type.
      * TODO WD
      */
-    public int handleType = UserInputController.SelectionHandle.NONE;
-
+    public int handleType = UserInputModel.NONE;
 
     /**
      * Initialize model

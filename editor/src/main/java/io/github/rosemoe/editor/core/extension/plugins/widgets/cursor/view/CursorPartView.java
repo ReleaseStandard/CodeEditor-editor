@@ -5,7 +5,7 @@ import android.graphics.RectF;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetCanvasPartView;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel;
 import io.github.rosemoe.editor.core.Rect;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
 
@@ -51,7 +51,7 @@ public class CursorPartView extends WidgetCanvasPartView {
         float radius = editor.mDpUnit * 12;
 
         // TODO WD
-        if (handleType != UserInputController.SelectionHandle.NONE && handleType == editor.userInput.getTouchedHandleType()) {
+        if (handleType != UserInputModel.NONE && handleType == editor.userInput.getTouchedHandleType()) {
             radius = editor.mDpUnit * 16;
         }
 

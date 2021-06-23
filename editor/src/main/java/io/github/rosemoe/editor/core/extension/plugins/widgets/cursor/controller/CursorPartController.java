@@ -3,7 +3,7 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controlle
 import android.graphics.Canvas;
 
 import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.model.CursorPartModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorPartModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view.CursorPartView;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
 
