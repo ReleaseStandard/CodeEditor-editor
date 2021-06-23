@@ -41,8 +41,13 @@ public class ScrollBarModelTest {
             b.dump();
         }
     }
-
-
+    @Test
+    public void computeBarTrackRect() {
+        ScrollBarModel a = new ScrollBarModel();
+        for(int b = 0; b < 100; b = b + 1) {
+            a.prepareTrackBarRect(r.nextUint() % 1000, r.nextUint() % 1000);
+        }
+    }
     public boolean floatEq(float a, float b) {
         float boundMinA = a - APPROX;
         float boundMaxA = a + APPROX;

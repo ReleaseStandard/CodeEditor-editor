@@ -24,8 +24,9 @@ public class CursorModel {
     public boolean mAutoIndentEnabled = DEFAULT_ISAUTO_IDENT;
     public CharPosition mLeft, mRight;
     public CharPosition cache0, cache1, cache2;
+
     public CursorModel() {
-        mLeft = new CharPosition().zero();
+        mLeft  = new CharPosition().zero();
         mRight = new CharPosition().zero();
     }
 }

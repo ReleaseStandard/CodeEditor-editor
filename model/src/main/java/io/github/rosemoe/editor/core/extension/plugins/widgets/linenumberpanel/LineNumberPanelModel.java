@@ -39,10 +39,10 @@ public class LineNumberPanelModel {
 
     /**
      *
-     * @param line
-     * @return count
+     * @param line 0..n-1 line number to compute.
+     * @return count character number in the computed text.
      */
-    public int computeAndGetText(int line) {
+    protected int computeAndGetText(int line) {
         // Avoid Integer#toString() calls
         char[] text = computedText;
         int copy = line + 1;

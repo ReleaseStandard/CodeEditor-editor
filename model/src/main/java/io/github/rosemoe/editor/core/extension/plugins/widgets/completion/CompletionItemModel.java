@@ -36,6 +36,9 @@ public class CompletionItemModel {
      */
     public int cursorOffset;
 
+    /**
+     * @param offset
+     */
     public void cursorOffset(int offset) {
         if (offset < 0 || offset > commit.length()) {
             throw new IllegalArgumentException();

@@ -40,12 +40,20 @@ public class ContentLineModel {
         }
     }
 
+    /**
+     * Check if requested index is valid.
+     * @param index in the content line 0..n-1
+     */
     public void checkIndex(int index) {
-        if (index < 0 || index > length) {
+        if (index < 0 || index >= length) {
             throw new StringIndexOutOfBoundsException("index = " + index + ", length = " + length);
         }
     }
 
+    /**
+     * Ensure that the content line has enough space to process.
+     * @param capacity
+     */
     public void ensureCapacity(int capacity) {
         if (value.length < capacity) {
             int newLength = value.length * 2 < capacity ? capacity + 2 : value.length * 2;
@@ -165,6 +173,15 @@ public class ContentLineModel {
         }
     }
 
+    /**
+     * Check last index of the given source inside the target
+     * @param source
+     * @param sourceCount
+     * @param target
+     * @param targetCount
+     * @param fromIndex
+     * @return
+     */
     public static int lastIndexOf(char[] source, int sourceCount,
                                   char[] target, int targetCount,
                                   int fromIndex) {
