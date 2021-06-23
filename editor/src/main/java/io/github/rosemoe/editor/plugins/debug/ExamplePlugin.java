@@ -59,7 +59,7 @@ public class ExamplePlugin extends DebugPlugin {
             Logger.debug("Tripletap detected, sending a loopback event");
             LoopbackEvent e = new LoopbackEvent(LoopbackEvent.PLUGINS_BROADCAST,true);
             emit(e);
-            ColorSchemeEvent cse = new ColorSchemeEvent(ColorSchemeEvent.UPDATE_COLOR, R.styleable.CodeEditor_widget_color_wholeBackground,0xFFFF0000);
+            ColorSchemeEvent cse = new ColorSchemeEvent(ColorSchemeEvent.UPDATE_COLOR, "wholeBackground",0xFFFF0000);
             emit(cse);
             taps = 0;
         }
@@ -78,13 +78,13 @@ public class ExamplePlugin extends DebugPlugin {
                 }
                 case UserInputEvent.SINGLETAPUP: {
                     incOrReset();
-                    ColorSchemeEvent cse = new ColorSchemeEvent(ColorSchemeEvent.UPDATE_COLOR, R.styleable.CodeEditor_widget_color_wholeBackground,0xFF0000FF);
+                    ColorSchemeEvent cse = new ColorSchemeEvent(ColorSchemeEvent.UPDATE_COLOR, "wholeBackground",0xFF0000FF);
                     emit(cse);
                     break;
                 }
                 case UserInputEvent.ONSCALEBEGIN: {
                     Logger.v("Multiple tap detected, sending background color change");
-                    ColorSchemeEvent cse = new ColorSchemeEvent(ColorSchemeEvent.UPDATE_COLOR, R.styleable.CodeEditor_widget_color_wholeBackground,0xFF00FF00);
+                    ColorSchemeEvent cse = new ColorSchemeEvent(ColorSchemeEvent.UPDATE_COLOR, "wholeBackground",0xFF00FF00);
                     emit(cse);
                     break;
                 }
