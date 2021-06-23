@@ -83,6 +83,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInp
 import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.controller.WidgetControllerManagerController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputConnexionView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
+import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.plugins.debug.TestPlugin;
 import io.github.rosemoe.editor.plugins.debug.WidgetAnalyzerPlugin;
 import io.github.rosemoe.editor.plugins.debug.ExamplePlugin;
@@ -109,7 +110,6 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.Us
 import io.github.rosemoe.editor.core.util.FontCache;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.processors.ContentLineRemoveListener;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.processors.SpanUpdater;
-import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.Layout;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.LineBreakLayout;
 
