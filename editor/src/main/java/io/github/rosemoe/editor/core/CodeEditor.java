@@ -623,6 +623,8 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             setDefaultFocusHighlightEnabled(false);
         }
+        userInput.scrollBarV.updateWidth();
+        userInput.scrollBarH.updateWidth();
     }
 
     /**
@@ -2177,7 +2179,8 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @return max scroll y
      */
     public int getScrollMaxY() {
-        return Math.max(0, mLayout.getLayoutHeight() - getHeight() / 2);
+        //return Math.max(0, mLayout.getLayoutHeight() - getHeight() / 2); TODO
+        return mLayout.getLayoutHeight();
     }
 
     /**

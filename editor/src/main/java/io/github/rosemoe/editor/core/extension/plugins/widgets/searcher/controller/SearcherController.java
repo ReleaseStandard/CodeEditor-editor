@@ -39,10 +39,6 @@ public class SearcherController extends WidgetController {
         view.editor = editor;
     }
 
-    private boolean checkState() {
-        return model.checkState();
-    }
-
     public void search(String text) {
         if (text != null && text.length() == 0) {
             text = null;
@@ -53,7 +49,7 @@ public class SearcherController extends WidgetController {
 
     @SuppressWarnings("UnusedReturnValue")
     public boolean replaceThis(String newText) {
-        if ( ! checkState() ) { return false; }
+        if ( ! model.isInitialized() ) { return false; }
         ContentMapController text = view.editor.getText();
         CursorController cursor = text.getCursor();
         if (cursor.isSelected()) {
@@ -70,7 +66,7 @@ public class SearcherController extends WidgetController {
     }
 
     public void replaceAll(final String newText) {
-        if( ! checkState() ) { return; }
+        if( ! model.isInitialized() ) { return; }
         final String searchText = model.searchText;
         view.showSearchDialog(searchText,newText);
     }
@@ -80,12 +76,12 @@ public class SearcherController extends WidgetController {
     }
 
     private void gotoNext(boolean tip) {
-        if ( ! checkState() ) { return ;}
+        if ( ! model.isInitialized() ) { return ;}
         view.gotoNext(model.searchText,tip);
     }
 
     public void gotoLast() {
-        if ( ! checkState() ) { return ;}
+        if ( ! model.isInitialized() ) { return ;}
         view.gotoLast(model.searchText);
     }
 

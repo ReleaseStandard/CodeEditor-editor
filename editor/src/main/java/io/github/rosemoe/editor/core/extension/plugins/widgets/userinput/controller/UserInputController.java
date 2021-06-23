@@ -26,6 +26,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.codeanalysis.LoopbackEvent;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.scrollbar.ScrollBarController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.scrollbar.ScrollBarModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputView;
@@ -150,8 +151,8 @@ public final class UserInputController extends WidgetController {
                 return super.handleOnDoubleTapEvent(e);
             }
         };
-        scrollBarH = new ScrollBarController(editor, "horizontal");
-        scrollBarV = new ScrollBarController(editor, "vertical");
+        scrollBarH = new ScrollBarController(editor, ScrollBarModel.O_HORIZONTAL);
+        scrollBarV = new ScrollBarController(editor, ScrollBarModel.O_VERTICAL);
         setOverScrollEnabled(true);
     }
 
@@ -545,7 +546,10 @@ public final class UserInputController extends WidgetController {
                 }
                 int column = view.editor.getText().getColumnCount(line);
                 // Do not scroll too far from text region of this line
-                float maxOffset = view.editor.lineNumber.getPanelWidth() + view.editor.mLayout.getCharLayoutOffset(line, column)[1] - view.editor.getWidth() * 0.85f;
+                float maxOffset = scrollBarH.model.getMaxScroll();
+                Logger.debug("here:maxOffset=",maxOffset);
+                //float maxOffset = editor.getWidth() - editor.lineNumber.getPanelWidth() - view.editor.mLayout.getCharLayoutOffset(line, column)[1] - scrollBarH.model.barTrackLength
+                //float maxOffset = + view.editor.mLayout.getCharLayoutOffset(line, column)[1] - view.editor.getWidth() * 0.85f;
                 if (view.mScroller.getCurrX() > maxOffset) {
                     dx = 0;
                 }
@@ -595,10 +599,20 @@ public final class UserInputController extends WidgetController {
             return;
         }
         if (editor.isVerticalScrollBarEnabled() && editor.getScrollMaxY() > editor.getHeight() / 2) {
-            scrollBarV.paint(canvas);
+            scrollBarV.paint(canvas,
+                    editor.mLayout.getLayoutHeight() + editor.getHeight() / 2f,
+                    editor.getOffsetY(),
+                    (int) (editor.getWidth() - scrollBarV.getWidth()),
+                    editor.getHeight()
+            );
         }
         if (editor.isHorizontalScrollBarEnabled() && !editor.isWordwrap() && editor.getScrollMaxX() > editor.getWidth() * 3 / 4) {
-            scrollBarH.paint(canvas);
+            scrollBarH.paint(canvas,
+                    editor.getScrollMaxX() + scrollBarH.getWidth(),
+                    editor.getOffsetX(),
+                    (int) (editor.getHeight() - scrollBarH.getWidth()),
+                    editor.getWidth()
+                    );
         }
     }
 

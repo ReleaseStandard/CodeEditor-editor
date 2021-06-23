@@ -4,18 +4,19 @@ import android.graphics.Canvas;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
-import io.github.rosemoe.editor.core.Rect;
+import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
 
 /**
  * A scroll bar with it's track.
  * It is a widget but it does'nt require to be used by plugins.
+ * A scrollbar move on it's 1D axis
  */
 public class ScrollBarController extends WidgetController {
     public final ScrollBarView view;
     public ScrollBarModel model = new ScrollBarModel();
 
-    public ScrollBarController(CodeEditor editor, String orientation) {
+    public ScrollBarController(CodeEditor editor, float orientation) {
         super(editor);
         view = new ScrollBarView(editor);
         model.orientation = orientation;
@@ -26,40 +27,50 @@ public class ScrollBarController extends WidgetController {
     public void paint(Canvas canvas, Object ...args) {
         int eWidth = editor.getWidth();
         int eHeight = editor.getHeight();
-        float dpUnit = editor.mDpUnit;
-        boolean isVertical = model.orientation.equals("vertical");
 
-        // paint the track
-        if (isHolding()) {
-            if ( isVertical ) {
-                model.barTrack = new Rect(eWidth - dpUnit * 10, 0, eWidth, eHeight);
-            } else {
-                model.barTrack = new Rect(0, eHeight - dpUnit * 10, eWidth, eHeight);
-            }
-        }
+        Float lenAllContent    = (Float) args[0];
+        Integer offset         = (Integer) args[1]; // offsetX
+        Integer position       = (Integer) args[2]; // offsetY
+        Integer trackBarLength = (Integer) args[3];
+        Logger.debug("lenAllContent=",lenAllContent,",offset=",offset,",position=",position,",trackaBarLength=",trackBarLength);
 
-        // paint the bar
-        float all = isVertical ? editor.mLayout.getLayoutHeight() + eHeight / 2f : editor.getScrollMaxX() + eWidth;
-        int offsetY = editor.getOffsetY();
-        int offsetX = editor.getOffsetX();
-        float centerY = 0;
-
-        centerY = model.computeBarRect( all, offsetX, offsetY, eWidth, eHeight, dpUnit);
-
-
-        view.barTrack = A.getRectF(model.barTrack);
-        view.bar      = A.getRectF(model.bar);
+        // compute in the model
+        model.length = trackBarLength;
+        updateWidth();
+        model.prepareTrackBarRect(eWidth, eHeight);
+        model.prepareBarRect(lenAllContent, offset, position);
 
         // painting
+        view.barTrack = A.getRectF(model.barTrack);
+        view.bar      = A.getRectF(model.bar);
         if ( isHolding() ) {
             editor.drawColor(canvas, getColor("scrollBarTrack"), view.barTrack);
-            if ( isVertical ) {
-                editor.drawLineInfoPanel(canvas, centerY, 0);
-            }
+            //if ( isVertical ) {
+            //    editor.drawLineInfoPanel(canvas, 0, 0); // TODO : centerX
+            //}
         }
         editor.drawColor(canvas, isHolding() ? getColor("scrollBarThumbPressed") : getColor("scrollBarThumb"), view.bar);
     }
+
+    /**
+     * Test if user is holding the scroll bar.
+     * @return
+     */
     public boolean isHolding() {
         return model.holding;
+    }
+    /**
+     * Update width of the scrollbar, this is required by the model is order to process dimensions.
+     * @return the new width
+     */
+    public float updateWidth() {
+        return model.width = editor.mDpUnit * 10;
+    }
+    /**
+     * Get width of the scroll bar.
+     * @return
+     */
+    public float getWidth() {
+        return model.width;
     }
 }

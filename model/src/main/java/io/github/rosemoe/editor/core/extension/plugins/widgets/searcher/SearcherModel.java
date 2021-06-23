@@ -17,7 +17,12 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.searcher;
 
 public class SearcherModel {
     public String searchText;
-    public boolean checkState() {
+
+    /**
+     * Check if the searcher has been set/initialized.
+     * @return
+     */
+    public boolean isInitialized() {
         return (searchText != null);
     }
 }
