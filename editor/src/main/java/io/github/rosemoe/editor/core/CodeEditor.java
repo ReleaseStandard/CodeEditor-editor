@@ -984,9 +984,9 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         }
 
         // widget canvas part paints
-        lineNumber.paint(canvas, offsetX, getLineCount());
-        userInput.paint(canvas);
-        cursor.paint(canvas);
+        lineNumber.refresh(canvas, offsetX, getLineCount());
+        userInput.refresh(canvas);
+        cursor.refresh(canvas);
 
         drawEdgeEffect(canvas);
     }

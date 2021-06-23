@@ -584,9 +584,10 @@ public final class CursorController extends WidgetController {
         }
     }
 
-    public void paint(Canvas canvas) {
+    @Override
+    protected void handleRefresh(Canvas canvas, Object ...args) {
         for(CursorPartController part : parts) {
-            part.paint(canvas);
+            part.refresh(canvas);
         }
     }
 }

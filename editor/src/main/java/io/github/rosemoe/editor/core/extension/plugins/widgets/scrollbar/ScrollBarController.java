@@ -24,7 +24,7 @@ public class ScrollBarController extends WidgetController {
         registerColor("scrollBarThumbPressed", "base2");
         registerColor("scrollBarTrack", "wholeBackground");
     }
-    public void paint(Canvas canvas, Object ...args) {
+    protected void handleRefresh(Canvas canvas, Object ...args) {
         int eWidth = editor.getWidth();
         int eHeight = editor.getHeight();
 

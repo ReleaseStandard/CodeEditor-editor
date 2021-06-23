@@ -210,9 +210,8 @@ public class LineNumberPanelController extends WidgetController {
      * Paint the widget on the screen in its state.
      * @param canvas to paint on
      */
-    public void paint(Canvas canvas, Object ...args) {
-        if ( isDisabled() ) { return ; }
-
+    @Override
+    protected void handleRefresh(Canvas canvas, Object ...args) {
         ColorManager colorManager = editor.colorManager;
         int lineNumberColor = colorManager.getColor("lineNumberPanelText");
         int lineNumberBackgroundColor = colorManager.getColor("lineNumberBackground");
