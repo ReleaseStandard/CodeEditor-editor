@@ -132,13 +132,24 @@ public class ContentLineModel {
         value[offset] = c;
         length += 1;
     }
+
+    /**
+     * append given text to this. [start, end[
+     * @param s text to get into.
+     * @param start start index 0..n-1 (included in the getted text)
+     * @param end stop index 0..n-1 (excluded from the getted text)
+     */
     public void append(CharSequence s, int start, int end) {
-        if (s == null)
+        if (s == null) {
             s = "null";
+            start = 0;
+            end = 4;
+        }
         if ((start < 0) || (start > end) || (end > s.length()))
             throw new IndexOutOfBoundsException(
                     "start " + start + ", end " + end + ", s.length() "
                             + s.length());
+
         int len = end - start;
         ensureCapacity(length + len);
         for (int i = start, j = length; i < end; i++, j++)

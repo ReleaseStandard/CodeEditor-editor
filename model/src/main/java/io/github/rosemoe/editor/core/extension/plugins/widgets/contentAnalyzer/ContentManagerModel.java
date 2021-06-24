@@ -16,10 +16,10 @@
 package io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer;
 
 public class ContentManagerModel {
-    public boolean mUndoEnabled;
-    public int mMaxStackSize;
-    public boolean mReplaceMark;
-    public boolean mIgnoreModification;
+    public boolean undo;
+    public int maxStackSize;
+    public boolean replaceMark;
+    public boolean ignoreModification;
 
     /**
      * Whether this ContentManagerController is enabled
@@ -27,7 +27,7 @@ public class ContentManagerModel {
      * @return Whether enabled
      */
     public boolean isUndoEnabled() {
-        return mUndoEnabled;
+        return undo;
     }
 
     /**
@@ -36,11 +36,11 @@ public class ContentManagerModel {
      * @return max stack size
      */
     public int getMaxUndoStackSize() {
-        return mMaxStackSize;
+        return maxStackSize;
     }
 
     public ContentManagerModel() {
-        mReplaceMark = false;
-        mIgnoreModification = false;
+        replaceMark = false;
+        ignoreModification = false;
     }
 }

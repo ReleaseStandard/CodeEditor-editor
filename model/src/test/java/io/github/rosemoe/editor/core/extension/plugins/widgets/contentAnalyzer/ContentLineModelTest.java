@@ -8,6 +8,9 @@ import static org.junit.Assert.*;
 
 public class ContentLineModelTest {
 
+    public void p(String msg) {
+        System.out.println(msg);
+    }
     Random r = new Random();
     @Test
     public void initialise() {
@@ -74,6 +77,27 @@ public class ContentLineModelTest {
         }
         System.out.println(a.value);
         assertTrue(sz == a.length);
+
+        // null value
+        a.initialise(true);
+        a.append(null,0,0);
+        p("a.length=" + a.length);
+        assertTrue(a.length == 4);
+
+        // oob except
+        a.initialise(true);
+        try {
+            a.append("okokok", -1, -1);
+            assertTrue(false);
+        } catch(Exception e) {
+            assertTrue(true);
+        }
+        try {
+            a.append("okok", 10, 12);
+            assertTrue(false);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
     }
 
     @Test

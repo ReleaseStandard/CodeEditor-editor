@@ -59,10 +59,10 @@ public final class ContentManagerController implements ContentListener {
      */
     public void undo(ContentMapController content) {
         if (canUndo()) {
-            model.mIgnoreModification = true;
+            model.ignoreModification = true;
             mActionStack.get(mStackPointer - 1).undo(content);
             mStackPointer--;
-            model.mIgnoreModification = false;
+            model.ignoreModification = false;
         }
     }
 
@@ -73,10 +73,10 @@ public final class ContentManagerController implements ContentListener {
      */
     public void redo(ContentMapController content) {
         if (canRedo()) {
-            model.mIgnoreModification = true;
+            model.ignoreModification = true;
             mActionStack.get(mStackPointer).redo(content);
             mStackPointer++;
-            model.mIgnoreModification = false;
+            model.ignoreModification = false;
         }
     }
 
@@ -104,7 +104,7 @@ public final class ContentManagerController implements ContentListener {
      * @param enabled Enable or disable
      */
     public void setUndoEnabled(boolean enabled) {
-        model.mUndoEnabled = enabled;
+        model.undo = enabled;
         if (!enabled) {
             cleanStack();
         }
@@ -120,7 +120,7 @@ public final class ContentManagerController implements ContentListener {
             throw new IllegalArgumentException(
                     "max size can not be zero or smaller.Did you want to disable undo module by calling set_undoEnabled(false)?");
         }
-        model.mMaxStackSize = maxSize;
+        model.maxStackSize = maxSize;
         cleanStack();
     }
 
@@ -129,11 +129,11 @@ public final class ContentManagerController implements ContentListener {
      * This is to limit stack size
      */
     private void cleanStack() {
-        if (!model.mUndoEnabled) {
+        if (!model.undo) {
             mActionStack.clear();
             mStackPointer = 0;
         } else {
-            while (mStackPointer > 1 && mActionStack.size() > model.mMaxStackSize) {
+            while (mStackPointer > 1 && mActionStack.size() > model.maxStackSize) {
                 mActionStack.remove(0);
                 mStackPointer--;
             }
@@ -198,16 +198,16 @@ public final class ContentManagerController implements ContentListener {
 
     @Override
     public void beforeReplace(ContentMapController content) {
-        if (model.mIgnoreModification) {
+        if (model.ignoreModification) {
             return;
         }
-        model.mReplaceMark = true;
+        model.replaceMark = true;
     }
 
     @Override
     public void afterInsert(ContentMapController content, int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence insertedContent) {
-        if (model.mIgnoreModification) {
+        if (model.ignoreModification) {
             return;
         }
         mInsertAction = new InsertAction();
@@ -216,7 +216,7 @@ public final class ContentManagerController implements ContentListener {
         mInsertAction.endLine = endLine;
         mInsertAction.endColumn = endColumn;
         mInsertAction.text = insertedContent;
-        if (model.mReplaceMark) {
+        if (model.replaceMark) {
             ReplaceAction rep = new ReplaceAction();
             rep._delete = mDeleteAction;
             rep._insert = mInsertAction;
@@ -224,13 +224,13 @@ public final class ContentManagerController implements ContentListener {
         } else {
             pushAction(mInsertAction);
         }
-        model.mReplaceMark = false;
+        model.replaceMark = false;
     }
 
     @Override
     public void afterDelete(ContentMapController content, int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence deletedContent) {
-        if (model.mIgnoreModification) {
+        if (model.ignoreModification) {
             return;
         }
         mDeleteAction = new DeleteAction();
@@ -239,7 +239,7 @@ public final class ContentManagerController implements ContentListener {
         mDeleteAction.endLine = endLine;
         mDeleteAction.startLine = startLine;
         mDeleteAction.text = deletedContent;
-        if (!model.mReplaceMark) {
+        if (!model.replaceMark) {
             pushAction(mDeleteAction);
         }
     }

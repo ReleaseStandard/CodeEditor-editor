@@ -12,7 +12,7 @@ public class ContentManagerModelTest {
     public void isUndoEnabled() {
         ContentManagerModel a = new ContentManagerModel();
         boolean undo = r.nextBoolean();
-        a.mUndoEnabled = undo;
+        a.undo = undo;
         assertTrue(a.isUndoEnabled() == undo);
     }
 
@@ -20,7 +20,7 @@ public class ContentManagerModelTest {
     public void getMaxUndoStackSize() {
         ContentManagerModel a = new ContentManagerModel();
         int sz = r.nextInt();
-        a.mMaxStackSize = sz;
+        a.maxStackSize = sz;
         assertTrue(a.getMaxUndoStackSize() == sz );
     }
 }
