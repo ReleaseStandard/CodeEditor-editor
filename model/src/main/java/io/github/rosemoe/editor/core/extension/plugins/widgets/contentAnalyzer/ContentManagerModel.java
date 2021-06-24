@@ -15,6 +15,9 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer;
 
+/**
+ * Model for the content manager (text).
+ */
 public class ContentManagerModel {
     public boolean undo;
     public int maxStackSize;

@@ -6,6 +6,6 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets;
  *  - a View
  *  - an activity
  */
-public abstract class WidgetView {
+public abstract class SystemExtensionView {
 
 }

@@ -8,6 +8,7 @@ import android.graphics.RectF;
  */
 public class Adaptater {
     /**
+     * conversion view RectF to Rect from the vuew
      * Effort to make it cross View (ex: android, then other).
      * @param o
      * @return
@@ -19,6 +20,11 @@ public class Adaptater {
         RectF r = (RectF) o;
         return new Rect(r.left, r.top, r.right, r.bottom);
     }
+    /**
+     * get RectF (view) from Rect model.
+     * @param r
+     * @return
+     */
     public static RectF getRectF(Rect r) {
         if ( r == null ) { return null; }
         return new RectF(r.left,r.top,r.right,r.bottom);

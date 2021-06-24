@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view.CursorBlinkView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorBlinkModel;
 import io.github.rosemoe.editor.core.CodeEditor;
@@ -25,7 +25,7 @@ import io.github.rosemoe.editor.core.CodeEditor;
  *
  * @author Rose
  */
-public final class CursorBlinkController extends WidgetController implements Runnable {
+public final class CursorBlinkController extends SystemExtensionController implements Runnable {
 
     /**
      * The default cursor blinking period

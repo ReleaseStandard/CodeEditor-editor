@@ -22,9 +22,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
 
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view.CursorView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.processors.indexer.CachedIndexer;
@@ -38,7 +38,7 @@ import io.github.rosemoe.editor.core.CodeEditor;
  * Cursor controller : the cursor widget aka blinking part, context action (context action popup).
  *
  */
-public final class CursorController extends WidgetController {
+public final class CursorController extends SystemExtensionController {
 
     private final ContentMapController mContent;
     private final CachedIndexer mIndexer;

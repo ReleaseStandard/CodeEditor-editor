@@ -13,13 +13,15 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.extension.plugins.widgets;
+package io.github.rosemoe.editor.core.extension.plugins;
 
 import android.graphics.Canvas;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.SystemExtensionModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.SystemExtensionView;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**
@@ -30,12 +32,12 @@ import io.github.rosemoe.editor.core.util.Logger;
  *
  * @author Release Standard
  */
-public abstract class WidgetController extends Extension {
+public abstract class SystemExtensionController extends Extension {
 
-    protected WidgetModel model = null;
-    protected WidgetView view = null;
+    protected SystemExtensionModel model = null;
+    protected SystemExtensionView view = null;
 
-    public WidgetController(CodeEditor editor) {
+    public SystemExtensionController(CodeEditor editor) {
         super(editor);
     }
 

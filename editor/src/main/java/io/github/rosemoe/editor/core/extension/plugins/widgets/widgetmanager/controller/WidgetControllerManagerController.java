@@ -23,7 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.extension.WidgetManagerEvent;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.view.WidgetManagerView;
 
@@ -69,13 +69,13 @@ public class WidgetControllerManagerController extends Extension {
             case WidgetManagerEvent.ISENABLED: {
                 String wname = (String) wme.getArg(0);
                 Boolean state = (Boolean) wme.getArg(1);
-                WidgetController w = (WidgetController) editor.widgets.get(wname);
+                SystemExtensionController w = (SystemExtensionController) editor.widgets.get(wname);
                 w.setEnabled(state);
                 break;
             }
             case WidgetManagerEvent.TOGGLE: {
                 String wname = (String) wme.getArg(0);
-                WidgetController w = (WidgetController) editor.widgets.get(wname);
+                SystemExtensionController w = (SystemExtensionController) editor.widgets.get(wname);
                 w.toggleIsEnabled();
                 break;
             }

@@ -84,6 +84,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.con
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputConnexionView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
 import io.github.rosemoe.editor.core.util.Logger;
+import io.github.rosemoe.editor.core.util.shortcuts.A;
 import io.github.rosemoe.editor.plugins.debug.TestPlugin;
 import io.github.rosemoe.editor.plugins.debug.WidgetAnalyzerPlugin;
 import io.github.rosemoe.editor.plugins.debug.ExamplePlugin;
@@ -217,6 +218,9 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     private ContentMapController mText;
     public CodeAnalyzer analyzer;
 
+    public CodeEditorView view = new CodeEditorView();
+    public CodeEditorModel model = new CodeEditorModel();
+
     UserInputConnexionController mConnection;             // Manage other part of the user input, eg copy, paste
     // core
     public LanguagePlugin mLanguage;
@@ -238,7 +242,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     private Paint miniGraphPaint;
     private char[] mBuffer;
     private Matrix mMatrix;
-    private Rect mViewRect;
     private String mLnTip = "Line:";
     private long mLastMakeVisible = 0;
 
@@ -573,7 +576,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                 new WidgetAnalyzerPlugin(this),
                 new TestPlugin(this)
         );
-        mViewRect = new Rect(0, 0, 0, 0);
+        model.background = new io.github.rosemoe.editor.core.Rect(0,0,0,0);
         mInsertHandle = new RectF();
         mLeftHandle = new RectF();
         mRightHandle = new RectF();
@@ -945,7 +948,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         getCursor().updateCache(getFirstVisibleLine());
 
         ColorSchemeController color = getColorScheme();
-        drawColor(canvas, colorManager.getColor("wholeBackground"), mViewRect);
+        drawColor(canvas, colorManager.getColor("wholeBackground"), A.getRectF(model.background));
 
         float lineNumberWidth = lineNumber.measureLineNumber(getLineCount());
         float offsetX = -getOffsetX() + lineNumber.getPanelWidth();
@@ -984,7 +987,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             drawBlockLines(canvas, textOffset);
         }
 
-        // widget canvas part paints
+        // painting of widgets
         lineNumber.refresh(canvas, offsetX, getLineCount());
         userInput.refresh(canvas);
         cursor.refresh(canvas);
@@ -1811,7 +1814,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         mRect.top = getRowTop(row) - getOffsetY();
         mRect.bottom = getRowBottom(row) - getOffsetY();
         mRect.left = 0;
-        mRect.right = mViewRect.right;
+        mRect.right = model.background.right;
         drawColor(canvas, color, mRect);
     }
 
@@ -3595,8 +3598,8 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     @Override
     public void onSizeChanged(int w, int h, int oldWidth, int oldHeight) {
         super.onSizeChanged(w, h, oldWidth, oldHeight);
-        mViewRect.right = w;
-        mViewRect.bottom = h;
+        model.background.right = w;
+        model.background.bottom = h;
         getVerticalEdgeEffect().setSize(w, h);
         getHorizontalEdgeEffect().setSize(h, w);
         getVerticalEdgeEffect().finish();

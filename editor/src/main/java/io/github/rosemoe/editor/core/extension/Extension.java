@@ -34,7 +34,7 @@ import io.github.rosemoe.editor.core.util.Logger;
  * With this generic class you can add widgets and plugins to the editor.
  * Adding widget will make the life easier to plugins developpers.
  *
- * The fact to separate Plugin WidgetController allow use to control by  priority access to resources given to plugins.
+ * The fact to separate Plugin SystemExtensionController allow use to control by  priority access to resources given to plugins.
  * So you can think the widget as a low level Plugin.
  * And the plugin as an higher level plugin.
  *

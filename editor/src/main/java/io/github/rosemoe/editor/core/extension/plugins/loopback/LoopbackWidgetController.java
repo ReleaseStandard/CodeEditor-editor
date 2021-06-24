@@ -16,7 +16,7 @@
 package io.github.rosemoe.editor.core.extension.plugins.loopback;
 
 import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.codeanalysis.LoopbackEvent;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
 import io.github.rosemoe.editor.core.util.Logger;
@@ -24,13 +24,13 @@ import io.github.rosemoe.editor.core.CodeEditor;
 
 import static io.github.rosemoe.editor.core.extension.plugins.loopback.codeanalysis.LoopbackEvent.*;
 
-public class LoopbackWidgetController extends WidgetController {
+public class LoopbackWidgetController extends SystemExtensionController {
     public LoopbackWidgetController(CodeEditor editor) {
         super(editor);
         subscribe(LoopbackEvent.class);
         Logger.debug("TYPE_LOOPBACK=",issubscribed(LoopbackEvent.class),",TYPE_USERINPUT=",issubscribed(UserInputEvent.class));
         name        = "loopback";
-        description = "WidgetController that allow interactions between plugins";
+        description = "SystemExtensionController that allow interactions between plugins";
     }
     @Override
     public void handleEventEmit(Event e) {

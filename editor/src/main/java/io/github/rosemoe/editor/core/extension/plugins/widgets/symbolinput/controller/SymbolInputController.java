@@ -1,17 +1,16 @@
 package io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.controller;
 
 import android.view.View;
-import android.view.ViewGroup;
 
 import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.view.SymbolInputView;
 
 /**
  * We can consider that a SymbolInputController have only one
  * view. (Nobody wants two symbol view in one codeeditor).
  */
-public class SymbolInputController extends WidgetController {
+public class SymbolInputController extends SystemExtensionController {
 
     public SymbolInputView view = null;
 

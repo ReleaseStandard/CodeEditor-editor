@@ -27,8 +27,8 @@ import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.color.ColorManager;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.IntPair;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.util.Logger;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.extension.LineNumberPanelEvent;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
 
@@ -39,7 +39,7 @@ import static io.github.rosemoe.editor.core.extension.plugins.widgets.linenumber
  * This is a widget.
  *
  */
-public class LineNumberPanelController extends WidgetController {
+public class LineNumberPanelController extends SystemExtensionController {
 
     public LineNumberPanelModel model = new LineNumberPanelModel();
     public final LineNumberPanelView  view;

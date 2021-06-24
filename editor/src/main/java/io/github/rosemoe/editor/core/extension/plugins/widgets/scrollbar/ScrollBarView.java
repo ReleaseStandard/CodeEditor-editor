@@ -4,9 +4,9 @@ import android.graphics.Canvas;
 import android.graphics.RectF;
 
 import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetCanvasPartView;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionCanvasPartView;
 
-public class ScrollBarView extends WidgetCanvasPartView {
+public class ScrollBarView extends SystemExtensionCanvasPartView {
     public RectF bar = new RectF();
     public RectF barTrack = new RectF();
 

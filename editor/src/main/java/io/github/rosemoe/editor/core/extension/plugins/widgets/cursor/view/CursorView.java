@@ -18,9 +18,9 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view;
 import android.graphics.Canvas;
 
 import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetCanvasPartView;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionCanvasPartView;
 
-public class CursorView extends WidgetCanvasPartView {
+public class CursorView extends SystemExtensionCanvasPartView {
 
     public CursorView(CodeEditor editor) {
         super(editor);

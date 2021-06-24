@@ -4,12 +4,12 @@ import android.graphics.Canvas;
 import android.graphics.RectF;
 
 import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetCanvasPartView;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionCanvasPartView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel;
 import io.github.rosemoe.editor.core.Rect;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
 
-public class CursorPartView extends WidgetCanvasPartView {
+public class CursorPartView extends SystemExtensionCanvasPartView {
     public CursorPartView(CodeEditor editor) {
         super(editor);
     }

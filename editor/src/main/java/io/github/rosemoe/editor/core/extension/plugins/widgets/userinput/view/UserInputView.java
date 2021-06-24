@@ -24,7 +24,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.OverScroller;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetCanvasPartView;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionCanvasPartView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contextaction.controller.ContextActionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel;
 import io.github.rosemoe.editor.core.TextComposeBasePopup;
@@ -40,7 +40,7 @@ import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.
  * This handles events : scale, tap, double tap, ...
  *  this view is a canvas drawing view,
  */
-public class UserInputView extends WidgetCanvasPartView implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener {
+public class UserInputView extends SystemExtensionCanvasPartView implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener {
     public final OverScroller mScroller;
     public float maxSize;
     public float minSize;

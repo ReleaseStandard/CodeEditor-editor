@@ -18,15 +18,11 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.an
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 
-import androidx.annotation.StyleableRes;
-
 import java.util.HashMap;
-import java.util.Map;
 
-import io.github.rosemoe.editor.R;
 import io.github.rosemoe.editor.core.color.ColorManager;
 import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetController;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.extension.ColorSchemeEvent;
@@ -41,7 +37,7 @@ import static io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnaly
  * https://github.com/altercation/solarized
  * @author Rose
  */
-public class ColorSchemeController extends WidgetController {
+public class ColorSchemeController extends SystemExtensionController {
 
     /**
      * For sub classes

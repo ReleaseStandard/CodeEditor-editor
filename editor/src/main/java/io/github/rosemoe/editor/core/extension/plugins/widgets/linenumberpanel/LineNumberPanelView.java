@@ -20,12 +20,12 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 
 import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetCanvasPartView;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionCanvasPartView;
 
 /**
  * This view is a canvas part.
  */
-public class LineNumberPanelView extends WidgetCanvasPartView {
+public class LineNumberPanelView extends SystemExtensionCanvasPartView {
 
     public LineNumberPanelView(CodeEditor editor) {
         super(editor);
