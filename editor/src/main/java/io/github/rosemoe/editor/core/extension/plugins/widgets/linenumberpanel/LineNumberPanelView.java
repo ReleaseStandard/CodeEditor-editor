@@ -37,7 +37,6 @@ public class LineNumberPanelView extends SystemExtensionCanvasPartView {
             lineNumberPaint.setTextAlign(align);
         }
     }
-
     /**
      * Draw text of line number panel.
      * @param canvas

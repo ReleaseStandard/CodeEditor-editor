@@ -15,7 +15,12 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor;
 
+import android.graphics.RectF;
+
+import com.releasestandard.codeeditor.model.R;
+
 import io.github.rosemoe.editor.core.CharPosition;
+import io.github.rosemoe.editor.core.Rect;
 
 public class CursorModel {
 
@@ -24,6 +29,9 @@ public class CursorModel {
     public boolean mAutoIndentEnabled = DEFAULT_ISAUTO_IDENT;
     public CharPosition mLeft, mRight;
     public CharPosition cache0, cache1, cache2;
+    public Rect mLeftHandle = new Rect();
+    public Rect mRightHandle = new Rect();
+    public Rect mInsertHandle = new Rect();
 
     public CursorModel() {
         mLeft  = new CharPosition().zero();

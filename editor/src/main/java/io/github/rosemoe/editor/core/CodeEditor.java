@@ -177,7 +177,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      */
     private static final float SCALE_MINI_GRAPH = 0.9f;
 
-    /*
+    /**
      * Internal state identifiers of action mode
      */
     public static final int ACTION_MODE_NONE = 0;
@@ -210,15 +210,12 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     private boolean mHighlightCurrentLine;
     private boolean mSymbolCompletionEnabled;
 
-    private RectF mLeftHandle;
-    private RectF mRightHandle;
-    private RectF mInsertHandle;
     private ClipboardManager mClipboardManager;
     private InputMethodManager mInputMethodManager;
-    private ContentMapController mText;
+    public ContentMapController mText;
     public CodeAnalyzer analyzer;
 
-    public CodeEditorView view = new CodeEditorView();
+    public CodeEditorView view;
     public CodeEditorModel model = new CodeEditorModel();
 
     UserInputConnexionController mConnection;             // Manage other part of the user input, eg copy, paste
@@ -240,7 +237,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
 
     public Paint mPaint;
     private Paint miniGraphPaint;
-    private char[] mBuffer;
+    public char[] mBuffer;
     private Matrix mMatrix;
     private String mLnTip = "Line:";
     private long mLastMakeVisible = 0;
@@ -257,7 +254,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     private Paint.FontMetricsInt mGraphMetrics;
 
     private SymbolPairMatch mOverrideSymbolPairs;
-    private LongArrayList mPostDrawLineNumbers = new LongArrayList();
     private CharPosition mLockedSelection;
     public KeyMetaStates mKeyMetaStates = new KeyMetaStates(this);
 
@@ -532,7 +528,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @return Rect of left handle
      */
     public RectF getLeftHandleRect() {
-        return mLeftHandle;
+        return A.getRectF(cursor.model.mLeftHandle);
     }
 
     /**
@@ -541,7 +537,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @return Rect of right handle
      */
     public RectF getRightHandleRect() {
-        return mRightHandle;
+        return A.getRectF(cursor.model.mRightHandle);
     }
 
     /**
@@ -561,6 +557,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * Initialize variants
      */
     private void initialize() {
+        view = new CodeEditorView(this);
         mFontCache = new FontCache();
         mPaint = new Paint();
         miniGraphPaint = new Paint();
@@ -577,9 +574,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                 new TestPlugin(this)
         );
         model.background = new io.github.rosemoe.editor.core.Rect(0,0,0,0);
-        mInsertHandle = new RectF();
-        mLeftHandle = new RectF();
-        mRightHandle = new RectF();
         mInputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         mClipboardManager = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
         cursorPosition = -1;
@@ -882,7 +876,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @return Rect of insert handle
      */
     public RectF getInsertHandleRect() {
-        return mInsertHandle;
+        return A.getRectF(cursor.model.mInsertHandle);
     }
 
     /**
@@ -915,7 +909,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      */
     public void setTextSizePxDirect(float size) {
         mPaint.setTextSize(size);
-        lineNumber.view.lineNumberPaint.setTextSize(size);
+        lineNumber.setTextSize(size);
         miniGraphPaint.setTextSize(size * SCALE_MINI_GRAPH);
         mTextMetrics = mPaint.getFontMetricsInt();
         mGraphMetrics = miniGraphPaint.getFontMetricsInt();
@@ -931,6 +925,8 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         //record();
         //counter = 0;
         analyzer.recycle();
+
+        // TODO : missing part
         if (mFormatThread != null) {
             String text = "Formatting your code...";
             float centerY = getHeight() / 2f;
@@ -947,8 +943,8 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
 
         getCursor().updateCache(getFirstVisibleLine());
 
-        ColorSchemeController color = getColorScheme();
-        drawColor(canvas, colorManager.getColor("wholeBackground"), A.getRectF(model.background));
+        // draw the background
+        view.drawBackground(canvas);
 
         float lineNumberWidth = lineNumber.measureLineNumber(getLineCount());
         float offsetX = -getOffsetX() + lineNumber.getPanelWidth();
@@ -965,17 +961,9 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             mCachedLineNumberWidth = 0;
         }
 
-        if (!cursor.isSelected()) {
-            mInsertHandle.setEmpty();
-        }
-        if (!mTextActionPresenter.shouldShowCursor()) {
-            mLeftHandle.setEmpty();
-            mRightHandle.setEmpty();
-        }
-
         // update from the model
-        lineNumber.model.postDrawLineNumbers.clear();
-        cursor.parts.clear();
+        lineNumber.clear();
+        cursor.clear();
 
         // WARNING: data processing here: instanciation controllers
         drawRows(canvas, textOffset, lineNumber.model.postDrawLineNumbers);
@@ -990,7 +978,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         // painting of widgets
         lineNumber.refresh(canvas, offsetX, getLineCount());
         userInput.refresh(canvas);
-        cursor.refresh(canvas);
 
         drawEdgeEffect(canvas);
     }
@@ -1161,7 +1148,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
 
             // Draw hard wrap
             if (lastVisibleChar == columnCount && (mNonPrintableOptions & FLAG_DRAW_LINE_SEPARATOR) != 0) {
-                drawMiniGraph(canvas, paintingOffset, row, "↵");
+                drawSmallCharacter(canvas, paintingOffset, row, "↵");
             }
 
             // Recover the offset
@@ -1197,30 +1184,12 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             }
 
             // Draw cursors
-            viewDrawCursor(firstVisibleChar,lastVisibleChar,line,paintingOffset,row);
+            cursor.refresh(canvas,firstVisibleChar,lastVisibleChar,line,paintingOffset,row);
 
         }
         analyzer.unlockView();
     }
 
-    public void viewDrawCursor(int firstVisibleChar, int lastVisibleChar, int line , float paintingOffset, int row) {
-        if (cursor.isSelected()) {
-            if (mTextActionPresenter.shouldShowCursor()) {
-                if (cursor.getLeftLine() == line && isInside(cursor.getLeftColumn(), firstVisibleChar, lastVisibleChar, line)) {
-                    float centerX = paintingOffset + measureText(mBuffer, firstVisibleChar, cursor.getLeftColumn() - firstVisibleChar);
-                    cursor.parts.add(new CursorPartController(this, row, centerX, mLeftHandle, false, UserInputModel.LEFT));
-                }
-                if (cursor.getRightLine() == line && isInside(cursor.getRightColumn(), firstVisibleChar, lastVisibleChar, line)) {
-                    float centerX = paintingOffset + measureText(mBuffer, firstVisibleChar, cursor.getRightColumn() - firstVisibleChar);
-                    cursor.parts.add(new CursorPartController(this, row, centerX, mRightHandle, false, UserInputModel.RIGHT));
-
-                }
-            }
-        } else if (cursor.getLeftLine() == line && isInside(cursor.getLeftColumn(), firstVisibleChar, lastVisibleChar, line)) {
-            float centerX = paintingOffset + measureText(mBuffer, firstVisibleChar, cursor.getLeftColumn() - firstVisibleChar);
-            cursor.parts.add(new CursorPartController(this, row, centerX, userInput.shouldDrawInsertHandle() ? mInsertHandle : null, true));
-        }
-    }
     public void showTextActionPopup() {
         if (mTextActionPresenter instanceof TextActionPopupWindow) {
             TextActionPopupWindow window = (TextActionPopupWindow) mTextActionPresenter;
@@ -1236,9 +1205,9 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     /**
      * Draw small characters as graph
      */
-    private void drawMiniGraph(Canvas canvas, float offset, int row, String graph) {
+    private void drawSmallCharacter(Canvas canvas, float offset, int row, String graph) {
         // Draw
-        miniGraphPaint.setColor(colorManager.getColor("nonPrintableChar"));
+        //miniGraphPaint.setColor(colorManager.getColor("nonPrintableChar"));
         float baseline = getRowBottom(row) - getOffsetY() - mGraphMetrics.descent;
         canvas.drawText(graph, 0, graph.length(), offset, baseline, miniGraphPaint);
     }
@@ -1326,23 +1295,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                 index += pattern.length();
             }
         }
-    }
-
-    /**
-     * Is inside the region
-     *
-     * @param index Index to test
-     * @param start Start of region
-     * @param end   End of region
-     * @param line  Checking line
-     * @return Whether cursor should be drawn in this row
-     */
-    private boolean isInside(int index, int start, int end, int line) {
-        // Due not to draw duplicate cursors for a single one
-        if (index == end && mText.getLine(line).length() != end) {
-            return false;
-        }
-        return index >= start && index <= end;
     }
 
     /**
@@ -1704,7 +1656,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @param count Count of characters
      * @return The width measured
      */
-    private float measureText(char[] src, int index, int count) {
+    public float measureText(char[] src, int index, int count) {
         int tabCount = 0;
         for (int i = 0; i < count; i++) {
             if (src[index + i] == '\t') {

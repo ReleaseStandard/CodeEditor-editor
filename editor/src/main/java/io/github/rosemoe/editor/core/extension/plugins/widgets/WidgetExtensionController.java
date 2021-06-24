@@ -21,4 +21,12 @@ public class WidgetExtensionController extends SystemExtensionController {
     }
     protected void handleRefresh(Canvas canvas, Object ...args) {
     }
+    public void clear() {}
+
+    /**
+     * set text size inside this widget.
+     */
+    public void setTextSize(float size) {
+
+    }
 }

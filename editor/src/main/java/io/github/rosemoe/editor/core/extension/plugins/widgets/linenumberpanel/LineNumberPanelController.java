@@ -27,7 +27,6 @@ import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.color.ColorManager;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.IntPair;
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.extension.LineNumberPanelEvent;
@@ -91,7 +90,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
 
     /**
      * Get the width of line number region
-     *
+     * @param lineCount line count
      * @return width of line number region
      */
     public float measureLineNumber(int lineCount) {
@@ -147,6 +146,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
         model.alignment = ALIGN_DEFAULT;
         return getViewLineNumber();
     }
+
     /**
      * Set line number align
      *
@@ -258,6 +258,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
         // display view
         editor.drawColor(canvas, color, A.getRectF(model.divider));
     }
+
     /**
      * Draw line number background
      *
@@ -287,6 +288,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
         // display view
         editor.drawColor(canvas, color, A.getRectF(model.panelBg));
     }
+
     /**
      * Draw single line number
      */
@@ -298,5 +300,14 @@ public class LineNumberPanelController extends WidgetExtensionController {
         Logger.debug("color=",color,",model.computedText=",model.computedText.length,",c1=",model.computedText[0]);
         int count = model.computeAndGetText(line);
         view.drawLineNumber(canvas,row,offsetX,width,count,color,model.computedText,model.dividerMargin,getViewLineNumber());
+    }
+
+    @Override
+    public void clear() {
+        model.postDrawLineNumbers.clear();
+    }
+    @Override
+    public void setTextSize(float size) {
+        view.lineNumberPaint.setTextSize(size);
     }
 }

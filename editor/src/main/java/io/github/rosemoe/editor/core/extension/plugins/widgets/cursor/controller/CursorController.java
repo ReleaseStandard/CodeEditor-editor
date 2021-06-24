@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view.CursorView;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorModel;
@@ -32,6 +33,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.p
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
 import io.github.rosemoe.editor.core.IntPair;
 import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.util.shortcuts.A;
 
 /**
  * @author Rose
@@ -586,10 +588,63 @@ public final class CursorController extends WidgetExtensionController {
     }
 
     @Override
-    protected void handleRefresh(Canvas canvas, Object ...args) {
+    public void clear() {
+        parts.clear();
+        if (!isSelected()) {
+            model.mInsertHandle.clear();
+        }
+        if (!editor.mTextActionPresenter.shouldShowCursor()) {
+            model.mLeftHandle.clear();
+            model.mRightHandle.clear();
+        }
+    }
+
+    @Override
+    public void handleRefresh(Canvas canvas, Object ...args) {
+
+        Integer firstVisibleChar = (Integer) args[0];
+        Integer lastVisibleChar = (Integer) args[1];
+        Integer line = (Integer) args[2];
+        Float paintingOffset = (Float) args[3];
+        Integer row = (Integer) args[4];
+
+        if (isSelected()) {
+            if (editor.mTextActionPresenter.shouldShowCursor()) {
+                if (getLeftLine() == line && isInside(getLeftColumn(), firstVisibleChar, lastVisibleChar, line)) {
+                    float centerX = paintingOffset + editor.measureText(editor.mBuffer, firstVisibleChar, getLeftColumn() - firstVisibleChar);
+                    parts.add(new CursorPartController(editor, row, centerX, A.getRectF(model.mLeftHandle), false, UserInputModel.LEFT));
+                }
+                if (getRightLine() == line && isInside(getRightColumn(), firstVisibleChar, lastVisibleChar, line)) {
+                    float centerX = paintingOffset + editor.measureText(editor.mBuffer, firstVisibleChar, getRightColumn() - firstVisibleChar);
+                    parts.add(new CursorPartController(editor, row, centerX, A.getRectF(model.mRightHandle), false, UserInputModel.RIGHT));
+
+                }
+            }
+        } else if (getLeftLine() == line && isInside(getLeftColumn(), firstVisibleChar, lastVisibleChar, line)) {
+            float centerX = paintingOffset + editor.measureText(editor.mBuffer, firstVisibleChar, getLeftColumn() - firstVisibleChar);
+            parts.add(new CursorPartController(editor, row, centerX, editor.userInput.shouldDrawInsertHandle() ? A.getRectF(model.mInsertHandle) : null, true));
+        }
+
+        // call refresh on underlying objects
         for(CursorPartController part : parts) {
             part.refresh(canvas);
         }
+    }
+    /**
+     * Is inside the region
+     *
+     * @param index Index to test
+     * @param start Start of region
+     * @param end   End of region
+     * @param line  Checking line
+     * @return Whether cursor should be drawn in this row
+     */
+    public boolean isInside(int index, int start, int end, int line) {
+        // Due not to draw duplicate cursors for a single one
+        if (index == end && editor.mText.getLine(line).length() != end) {
+            return false;
+        }
+        return index >= start && index <= end;
     }
 }
 

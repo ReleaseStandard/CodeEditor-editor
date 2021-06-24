@@ -73,4 +73,11 @@ public class Rect {
                            no + "right=" + right +
                            o + "}");
     }
+    public void clear() {
+        bottom = 0;
+        top = 0;
+        left = 0;
+        right = 0;
+        orientation = 0;
+    }
 }
