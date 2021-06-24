@@ -69,19 +69,19 @@ public class WidgetControllerManagerController extends Extension {
             case WidgetManagerEvent.ISENABLED: {
                 String wname = (String) wme.getArg(0);
                 Boolean state = (Boolean) wme.getArg(1);
-                SystemExtensionController w = (SystemExtensionController) editor.widgets.get(wname);
+                SystemExtensionController w = (SystemExtensionController) editor.systemPlugins.get(wname);
                 w.setEnabled(state);
                 break;
             }
             case WidgetManagerEvent.TOGGLE: {
                 String wname = (String) wme.getArg(0);
-                SystemExtensionController w = (SystemExtensionController) editor.widgets.get(wname);
+                SystemExtensionController w = (SystemExtensionController) editor.systemPlugins.get(wname);
                 w.toggleIsEnabled();
                 break;
             }
             case WidgetManagerEvent.GUI: {
                 Intent intent = new Intent(editor.getContext(), WidgetManagerView.class);
-                intent.putExtra("widgets", editor.widgets.extensions.toArray(new Extension[editor.widgets.extensions.size()]));
+                intent.putExtra("widgets", editor.systemPlugins.extensions.toArray(new Extension[editor.systemPlugins.extensions.size()]));
                 intent.putExtra("plugins", editor.plugins.extensions.toArray(new Extension[editor.plugins.extensions.size()]));
                 editor.getContext().startActivity(intent);
                 new Thread() {
@@ -98,7 +98,7 @@ public class WidgetControllerManagerController extends Extension {
                         String kind = (String) DataHolder.get("kind");
                         Extension e = (Extension) DataHolder.get("extension");
                         if ( kind.equals("widgets") ) {
-                            editor.widgets.get(e.name).setEnabled(e.isEnabled());
+                            editor.systemPlugins.get(e.name).setEnabled(e.isEnabled());
                         }
                         if ( kind.equals("plugins") ) {
                             editor.plugins.get(e.name).setEnabled(e.isEnabled());

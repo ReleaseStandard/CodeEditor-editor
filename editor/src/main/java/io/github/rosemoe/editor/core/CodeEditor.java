@@ -74,12 +74,10 @@ import io.github.rosemoe.editor.core.extension.ExtensionContainer;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorPartController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelController;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.LoopbackWidgetController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.controller.SymbolInputController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.controller.WidgetControllerManagerController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputConnexionView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
@@ -229,9 +227,9 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     public CompletionWindowController completionWindow;                     // Manage completion item showing
     public  UserInputController userInput;                                  // Manage all user input, eg scale scrolling
     public LineNumberPanelController lineNumber;                            // Manage display of line number, computation
-    public SymbolInputController symbolInputController;                     // Manage symbol input view
-    public ExtensionContainer widgets = new ExtensionContainer();           // System plugins
-    public ExtensionContainer plugins = new ExtensionContainer();           // Plugins designed by users
+    public SymbolInputController symbolInputController;                           // Manage symbol input view
+    public ExtensionContainer systemPlugins = new ExtensionContainer();           // System plugins
+    public ExtensionContainer plugins = new ExtensionContainer();                 // Plugins designed by users
 
     public ColorManager colorManager = new ColorManager();                  // retain all colors.
 
@@ -318,7 +316,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             // configure extensions (widgets, plugins)
                 JsonNode extensions = rootNode.get("extensions");
                 if ( extensions != null ) {
-                    for(ExtensionContainer ec : new ExtensionContainer[]{plugins, widgets}) {
+                    for(ExtensionContainer ec : new ExtensionContainer[]{plugins, systemPlugins}) {
                         for (Extension e : ec.extensions) {
                             Logger.debug("Trying extension : ",e.name);
                             JsonNode extension = extensions.get(e.name);
@@ -597,10 +595,10 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         userInput         = new UserInputController(this,getContext());
         lineNumber        = new LineNumberPanelController(this);
         mConnection       = new UserInputConnexionController(this);
-        widgets.put(new ColorSchemeController(this));
+        systemPlugins.put(new ColorSchemeController(this));
         completionWindow  = new CompletionWindowController(this);
         symbolInputController = new SymbolInputController(this);
-        widgets.put(
+        systemPlugins.put(
                 userInput,
                 new LoopbackWidgetController(this),
                 new WidgetControllerManagerController(this),
@@ -966,7 +964,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         cursor.clear();
 
         // WARNING: data processing here: instanciation controllers
-        drawRows(canvas, textOffset, lineNumber.model.postDrawLineNumbers);
+        drawRows(canvas, textOffset);
 
         offsetX = -getOffsetX();
 
@@ -1006,9 +1004,8 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      *
      * @param canvas              Canvas to draw
      * @param offset              Offset of text region start
-     * @param postDrawLineNumbers Line numbers to be drawn later
      */
-    private void drawRows(Canvas canvas, float offset, LongArrayList postDrawLineNumbers) {
+    private void drawRows(Canvas canvas, float offset) {
         analyzer.lockView();
         RowIterator rowIterator = mLayout.obtainRowIterator(getFirstVisibleRow());
         CodeAnalyzerResultColor colRes = (CodeAnalyzerResultColor) analyzer.getResult("color");
@@ -1039,7 +1036,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             ContentLineController contentLine = mText.getLine(line);
             int columnCount = contentLine.length();
             if (rowInf.model.isLeadingRow) {
-                lineNumber.model.postDrawLineNumbers.add(IntPair.pack(line, row));
+                lineNumber.addNumber(line, row);
             }
 
             // Prepare data
@@ -1212,13 +1209,18 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         canvas.drawText(graph, 0, graph.length(), offset, baseline, miniGraphPaint);
     }
 
+    Paint paintWhitespaces = new Paint();
+
     /**
      * Draw non-printable characters
      */
     private void drawWhitespaces(Canvas canvas, float offset, int row, int rowStart, int rowEnd, int min, int max, float circleRadius) {
         int paintStart = Math.max(rowStart, Math.min(rowEnd, min));
         int paintEnd = Math.max(rowStart, Math.min(rowEnd, max));
-        lineNumber.view.lineNumberPaint.setColor(colorManager.getColor("nonPrintableChar"));
+
+        paintWhitespaces.setColor(colorManager.getColor("nonPrintableChar"));
+        paintWhitespaces.setTypeface(Typeface.MONOSPACE);
+        paintWhitespaces.setAntiAlias(true);
 
         if (paintStart < paintEnd) {
             float spaceWidth = mFontCache.measureChar(' ', mPaint);
@@ -1237,7 +1239,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                     float charStartOffset = offset + spaceWidth * i;
                     float charEndOffset = charStartOffset + spaceWidth;
                     float centerOffset = (charStartOffset + charEndOffset) / 2f;
-                    canvas.drawCircle(centerOffset, rowCenter, circleRadius, lineNumber.view.lineNumberPaint);
+                    canvas.drawCircle(centerOffset, rowCenter, circleRadius, paintWhitespaces);
                 }
                 offset += charWidth;
                 paintStart++;
@@ -3072,7 +3074,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      */
     @NonNull
     public ColorSchemeController getColorScheme() {
-        return (ColorSchemeController) widgets.get("color");
+        return (ColorSchemeController) systemPlugins.get("color");
     }
 
     /**

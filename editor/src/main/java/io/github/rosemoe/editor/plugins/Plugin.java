@@ -77,7 +77,7 @@ public abstract class Plugin extends Extension {
     }
 
     @Override
-    protected void handleEventEmit(Event e) { editor.widgets.dispatch(e); }
+    protected void handleEventEmit(Event e) { editor.systemPlugins.dispatch(e); }
 
     public Plugin(CodeEditor editor) {
         super(editor);

@@ -26,13 +26,13 @@ import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionCanvasPart
  * This view is a canvas part.
  */
 public class LineNumberPanelView extends SystemExtensionCanvasPartView {
-
+    protected Paint lineNumberPaint = new Paint();
     public LineNumberPanelView(CodeEditor editor) {
         super(editor);
         lineNumberPaint.setAntiAlias(true);
         lineNumberPaint.setTypeface(Typeface.MONOSPACE);
     }
-    public void setTextAlign(Paint.Align align) {
+    protected void setTextAlign(Paint.Align align) {
         if (lineNumberPaint.getTextAlign() != align) {
             lineNumberPaint.setTextAlign(align);
         }
@@ -49,7 +49,7 @@ public class LineNumberPanelView extends SystemExtensionCanvasPartView {
      * @param mDividerMargin
      * @param mLineNumberAlign
      */
-    public void drawLineNumber(Canvas canvas, int row, float offsetX, float width, int count, int color, char[]computedText, float mDividerMargin, Paint.Align mLineNumberAlign) {
+    protected void drawLineNumber(Canvas canvas, int row, float offsetX, float width, int count, int color, char[]computedText, float mDividerMargin, Paint.Align mLineNumberAlign) {
         setTextAlign(mLineNumberAlign);
         lineNumberPaint.setColor(color);
         // Line number center align to text center
@@ -76,5 +76,4 @@ public class LineNumberPanelView extends SystemExtensionCanvasPartView {
     public void paint(Canvas canvas, CodeEditor editor) {
 
     }
-    public Paint lineNumberPaint = new Paint();
 }

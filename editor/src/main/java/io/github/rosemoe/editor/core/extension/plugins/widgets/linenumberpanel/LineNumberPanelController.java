@@ -41,8 +41,8 @@ import static io.github.rosemoe.editor.core.extension.plugins.widgets.linenumber
  */
 public class LineNumberPanelController extends WidgetExtensionController {
 
-    public LineNumberPanelModel model = new LineNumberPanelModel();
-    public final LineNumberPanelView  view;
+    private LineNumberPanelModel model = new LineNumberPanelModel();
+    private final LineNumberPanelView  view;
 
     public LineNumberPanelController(CodeEditor editor) {
         super(editor);
@@ -309,5 +309,9 @@ public class LineNumberPanelController extends WidgetExtensionController {
     @Override
     public void setTextSize(float size) {
         view.lineNumberPaint.setTextSize(size);
+    }
+
+    public void addNumber(int line, int row) {
+        model.postDrawLineNumbers.add(IntPair.pack(line, row));
     }
 }
