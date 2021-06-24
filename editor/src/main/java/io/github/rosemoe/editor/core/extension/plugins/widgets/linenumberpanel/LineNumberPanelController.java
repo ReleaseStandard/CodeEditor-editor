@@ -85,6 +85,9 @@ public class LineNumberPanelController extends WidgetExtensionController {
     @Override
     public void setEnabled(boolean state) {
         super.setEnabled(state);
+        if (editor.isWordwrap()) {
+            editor.createLayout();
+        }
         editor.invalidate();
     }
 

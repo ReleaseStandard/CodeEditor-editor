@@ -199,7 +199,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     private boolean mCharPaint;
     private boolean mWordwrap;
     private boolean mUndoEnabled;
-    private boolean mLineNumberEnabled;
     private boolean mBlockLineEnabled;
     private boolean mAutoCompletionEnabled;
     private boolean mCompletionOnComposing;
@@ -385,11 +384,11 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             } else if ( id == R.styleable.CodeEditor_editable ) {
                 setEditable(val);
             } else if ( id == R.styleable.CodeEditor_lineNumberEnabled ) {
-                setLineNumberEnabled(val);
+                //setLineNumberEnabled(val);
             } else if ( id == R.styleable.CodeEditor_autoCompletionOnComposing ) {
                 setAutoCompletionOnComposing(val);
             } else if ( id == R.styleable.CodeEditor_lineNumberVisible ) {
-                setLineNumberEnabled(val);
+                //setLineNumberEnabled(val);
             } else if ( id == R.styleable.CodeEditor_widget_cursor_blink_enabled ) {
                 cursor.setBlinkEnabled(val);
             }
@@ -589,7 +588,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         setHighlightSelectedText(true);
         setSymbolCompletionEnabled(true);
         setEditable(true);
-        setLineNumberEnabled(true);
         setAutoCompletionOnComposing(true);
         setTypefaceText(Typeface.DEFAULT);
         userInput         = new UserInputController(this,getContext());
@@ -3031,28 +3029,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         }
 
         setTextSizePx(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSize, res.getDisplayMetrics()));
-    }
-
-    /**
-     * Check whether line numbers are shown
-     *
-     * @return The state of line number displaying
-     */
-    public boolean isLineNumberEnabled() {
-        return mLineNumberEnabled;
-    }
-
-    /**
-     * Set whether we should display line numbers
-     *
-     * @param lineNumberEnabled The state of line number displaying
-     */
-    public void setLineNumberEnabled(boolean lineNumberEnabled) {
-        if (lineNumberEnabled != mLineNumberEnabled && isWordwrap()) {
-            createLayout();
-        }
-        mLineNumberEnabled = lineNumberEnabled;
-        invalidate();
     }
 
     /**
