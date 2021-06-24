@@ -51,16 +51,4 @@ public abstract class SystemExtensionController extends Extension {
         super.dispatch(e);
         Logger.v("Dispatch on widget requested");
     }
-
-    /**
-     * Feed the widget with new data.
-     */
-    public final void refresh(Canvas canvas, Object ...args) {
-        if ( isDisabled() ) {
-            return ;
-        }
-        handleRefresh(canvas,args);
-    }
-    protected void handleRefresh(Canvas canvas, Object ...args) {
-    }
 }

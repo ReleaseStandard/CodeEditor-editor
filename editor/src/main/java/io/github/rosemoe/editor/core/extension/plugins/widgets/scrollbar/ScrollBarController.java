@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
 
@@ -12,7 +13,7 @@ import io.github.rosemoe.editor.core.util.shortcuts.A;
  * It is a widget but it does'nt require to be used by plugins.
  * A scrollbar move on it's 1D axis
  */
-public class ScrollBarController extends SystemExtensionController {
+public class ScrollBarController extends WidgetExtensionController {
     public final ScrollBarView view;
     public ScrollBarModel model = new ScrollBarModel();
 
