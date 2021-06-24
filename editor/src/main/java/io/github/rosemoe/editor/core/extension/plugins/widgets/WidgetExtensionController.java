@@ -5,6 +5,10 @@ import android.graphics.Canvas;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 
+/**
+ * A widget is a subtype of extension.
+ * it has facilities for painting on the screen.
+ */
 public class WidgetExtensionController extends SystemExtensionController {
     public WidgetExtensionController(CodeEditor editor) {
         super(editor);

@@ -73,6 +73,7 @@ import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.ExtensionContainer;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelController;
@@ -374,7 +375,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             } else if ( id == R.styleable.CodeEditor_highlightSelectedText ) {
                 setHighlightSelectedText(val);
             } else if ( id == R.styleable.CodeEditor_displayLnPanel ) {
-                lineNumber.setEnabled(val);
+                //lineNumber.setEnabled(val);
             } else if ( id == R.styleable.CodeEditor_overScrollEnabled ) {
                 setOverScrollEnabled(val);
             } else if ( id == R.styleable.CodeEditor_horizontalScrollBarEnabled ) {
@@ -905,7 +906,8 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      */
     public void setTextSizePxDirect(float size) {
         mPaint.setTextSize(size);
-        lineNumber.setTextSize(size);
+        WidgetExtensionController e = (WidgetExtensionController) systemPlugins.get("linenumberpanel");
+        if ( e != null ) { e.setTextSize(size); }
         miniGraphPaint.setTextSize(size * SCALE_MINI_GRAPH);
         mTextMetrics = mPaint.getFontMetricsInt();
         mGraphMetrics = miniGraphPaint.getFontMetricsInt();
