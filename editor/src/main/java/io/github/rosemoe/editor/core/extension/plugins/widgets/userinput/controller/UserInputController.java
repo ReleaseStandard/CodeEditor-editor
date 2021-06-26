@@ -20,6 +20,7 @@ import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.View;
 import android.widget.OverScroller;
 
 import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
@@ -613,6 +614,11 @@ public final class UserInputController extends WidgetExtensionController {
                     editor.view.getWidth()
                     );
         }
+    }
+
+    @Override
+    public void attachView(View v) {
+
     }
 }
 

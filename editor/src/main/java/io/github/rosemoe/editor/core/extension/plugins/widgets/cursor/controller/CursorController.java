@@ -17,6 +17,7 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controlle
 
 import android.graphics.Canvas;
 import android.util.Log;
+import android.view.View;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -577,6 +578,11 @@ public final class CursorController extends WidgetExtensionController {
         if ( blink != null ) {
             blink.setEnabled(state);
         }
+    }
+
+    @Override
+    public void attachView(View v) {
+
     }
 
     @Override

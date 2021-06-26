@@ -35,6 +35,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.CursorAnchorInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
@@ -248,56 +249,40 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      */
     public static CodeEditor newInstance(AppCompatActivity activity, @IdRes int root ) {
         View rootView = activity.findViewById(root);
-        CodeEditor editor = new CodeEditor(findCodeEditorView(rootView));
+        CodeEditor editor = new CodeEditor();
+        recurse(editor, rootView, false);
         editor.initialize();
-        recurse(editor, rootView);
+        recurse(editor, rootView, true);
         return editor;
     }
-    /**
-     * Get views from the given root.
-     * @param rootView
-     * @return
-     */
-    public static void recurse(CodeEditor editor, View rootView) {
-        if( rootView instanceof LinearLayout ) {
-            for(int i = 0; i < ((LinearLayout) rootView).getChildCount(); i++) {
-                recurse(editor, ((LinearLayout) rootView).getChildAt(i));
+
+    public static void recurse(CodeEditor editor, View rootView) { recurse(editor, rootView, true); }
+        /**
+         * Get views from the given root.
+         * @param rootView
+         * @return
+         */
+    public static void recurse(CodeEditor editor, View rootView, Boolean attachWidgets) {
+        if( rootView instanceof ViewGroup ) {
+            for(int i = 0; i < ((ViewGroup) rootView).getChildCount(); i++) {
+                recurse(editor, ((ViewGroup) rootView).getChildAt(i),attachWidgets);
             }
         }
-        if ( rootView instanceof  HorizontalScrollView) {
-            for( int i = 0; i < ((HorizontalScrollView) rootView).getChildCount() ; i++) {
-                recurse(editor, ((HorizontalScrollView) rootView).getChildAt(i));
+        if ( attachWidgets ) {
+            if (rootView instanceof LineNumberPanelView) {
+                Logger.debug("LineNumberPanelView has been found");
+                editor.lineNumber.attachView(rootView);
+            }
+            if (rootView instanceof SymbolInputView) {
+                SymbolInputController sic = (SymbolInputController) editor.systemPlugins.get("symbolinput");
+                sic.view = (WidgetExtensionView) rootView;
+                sic.attachView((SymbolInputView) rootView);
+            }
+        } else {
+            if (rootView instanceof CodeEditorView) {
+                editor.view = (CodeEditorView) rootView;
             }
         }
-        if ( rootView instanceof LineNumberPanelView ) {
-            Logger.debug("LineNumberPanelView has been found");
-            editor.lineNumber.attachView(rootView);
-        }
-        if ( rootView instanceof SymbolInputView ) {
-            SymbolInputController sic = (SymbolInputController) editor.systemPlugins.get("symbolinput");
-            sic.view = (WidgetExtensionView) rootView;
-            sic.attachView((SymbolInputView) rootView);
-        }
-    }
-    public static CodeEditorView findCodeEditorView(View rootView) {
-        if( rootView instanceof LinearLayout ) {
-            for(int i = 0; i < ((LinearLayout) rootView).getChildCount(); i++) {
-                View v = findCodeEditorView(((LinearLayout) rootView).getChildAt(i));
-                if ( v != null ) {
-                    return (CodeEditorView) v;
-                }
-            }//
-        }
-        if ( rootView instanceof  HorizontalScrollView) {
-            for( int i = 0; i < ((HorizontalScrollView) rootView).getChildCount() ; i++) {
-                View v = findCodeEditorView(((HorizontalScrollView) rootView).getChildAt(i));
-                if ( v != null ) { return (CodeEditorView) v; }
-            }
-        }
-        if ( rootView instanceof  CodeEditorView) {
-            return (CodeEditorView) rootView;
-        }
-        return null;
     }
     public CodeEditor() {
 

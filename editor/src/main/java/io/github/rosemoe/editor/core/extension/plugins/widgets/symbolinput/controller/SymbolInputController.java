@@ -49,6 +49,12 @@ public class SymbolInputController extends WidgetExtensionController {
         }
         super.setEnabled(state);
     }
+
+    @Override
+    public void attachView(View v) {
+
+    }
+
     /**
      * Add symboles into the view.
      * @param symbolsDisplayIcon What text to display as an icon

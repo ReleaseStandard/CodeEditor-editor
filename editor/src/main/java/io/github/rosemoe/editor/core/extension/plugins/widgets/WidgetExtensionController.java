@@ -11,7 +11,7 @@ import io.github.rosemoe.editor.core.util.Logger;
  * A widget is a subtype of extension.
  * it has facilities for painting on the screen.
  */
-public class WidgetExtensionController extends SystemExtensionController {
+public abstract class WidgetExtensionController extends SystemExtensionController {
     public WidgetExtensionView view;
     public WidgetExtensionController(CodeEditor editor) {
         super(editor);
@@ -62,4 +62,6 @@ public class WidgetExtensionController extends SystemExtensionController {
         }
         view.invalidate();
     }
+
+    public abstract void attachView(View v);
 }

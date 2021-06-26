@@ -1,6 +1,7 @@
 package io.github.rosemoe.editor.core.extension.plugins.widgets.scrollbar;
 
 import android.graphics.Canvas;
+import android.view.View;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
@@ -51,6 +52,11 @@ public class ScrollBarController extends WidgetExtensionController {
             //}
         }
         editor.drawColor(canvas, isHolding() ? getColor("scrollBarThumbPressed") : getColor("scrollBarThumb"), view.bar);
+    }
+
+    @Override
+    public void attachView(View v) {
+
     }
 
     /**
