@@ -4,16 +4,19 @@ import android.view.View;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.view.SymbolInputView;
 
 /**
  * We can consider that a SymbolInputController have only one
  * view. (Nobody wants two symbol view in one codeeditor).
  */
-public class SymbolInputController extends SystemExtensionController {
+public class SymbolInputController extends WidgetExtensionController {
 
-    public SymbolInputView view = null;
-
+    public SymbolInputView getView() {
+        return (SymbolInputView) view;
+    }
     public SymbolInputController(CodeEditor editor) {
         super(editor);
         name        = "symbolinput";
@@ -27,7 +30,6 @@ public class SymbolInputController extends SystemExtensionController {
      * @param view
      */
     public void attachView(SymbolInputView view) {
-        this.view = view;
         view.channel = new SymbolChannelController(editor);
         view.textcolor = getPrefixedColor( "text");
         view.bgColor = getPrefixedColor("bg");
@@ -38,18 +40,14 @@ public class SymbolInputController extends SystemExtensionController {
      */
     @Override
     public void setEnabled(boolean state) {
-        super.setEnabled(state);
         if ( state ) {
-            view.setVisibility(View.VISIBLE);
-            for(View v : view.views) {
+            for(View v : getView().views) {
                 if ( ! v.isShown() ) {
-                    view.addButton(v);
+                    getView().addButton(v);
                 }
             }
-        } else {
-            view.setVisibility(View.INVISIBLE);
         }
-        view.invalidate();
+        super.setEnabled(state);
     }
     /**
      * Add symboles into the view.
@@ -59,7 +57,7 @@ public class SymbolInputController extends SystemExtensionController {
     public void addSymbols(String[] symbolsDisplayIcon, final String[] symbolsTextAction) {
         int count = Math.max(symbolsDisplayIcon.length, symbolsTextAction.length);
         for (int i = 0; i < count; i++) {
-            view.addSymbol(symbolsDisplayIcon[i], symbolsTextAction[i]);
+            getView().addSymbol(symbolsDisplayIcon[i], symbolsTextAction[i]);
         }
     }
 }

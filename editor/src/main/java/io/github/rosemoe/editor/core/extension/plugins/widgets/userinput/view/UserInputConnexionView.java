@@ -24,6 +24,7 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 
+import io.github.rosemoe.editor.core.CodeEditorView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CharPosition;
@@ -32,12 +33,14 @@ import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.SymbolPairMatch;
 
 public class UserInputConnexionView extends BaseInputConnection {
-    public final CodeEditor editor;
+    public CodeEditor editor;
     public final static int TEXT_LENGTH_LIMIT = 1000000;
 
     public UserInputConnexionView(View targetView, boolean fullEditor) {
         super(targetView, fullEditor);
-        editor = (CodeEditor) targetView;
+    }
+    public void attachEditor(CodeEditor editor) {
+        this.editor = editor;
     }
 
     @Override
@@ -180,7 +183,7 @@ public class UserInputConnexionView extends BaseInputConnection {
     @Override
     public boolean finishComposingText() {
         boolean rv = handleFinishComposingText(editor.isEditable());
-        editor.invalidate();
+        editor.view.invalidate();
         return rv;
     }
 
@@ -245,7 +248,7 @@ public class UserInputConnexionView extends BaseInputConnection {
             }
             handleComposingRegionUpdate(startPos.line,startPos.column,endPos.column);
 
-            editor.invalidate();
+            editor.view.invalidate();
         } catch (IndexOutOfBoundsException e) {
             Logger.debug("set composing region for IME failed", e);
             return false;

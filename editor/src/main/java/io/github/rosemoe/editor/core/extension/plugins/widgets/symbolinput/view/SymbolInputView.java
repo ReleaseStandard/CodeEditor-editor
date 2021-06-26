@@ -24,12 +24,15 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
+import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.controller.SymbolChannelController;
+
+import static android.widget.LinearLayout.HORIZONTAL;
 
 /**
  * Class responsible from displaying symbol input to user.
  */
-public class SymbolInputView extends LinearLayout {
+public class SymbolInputView extends WidgetExtensionView {
 
     public int textcolor = Color.BLACK;
     public int bgColor = Color.WHITE;
@@ -43,7 +46,7 @@ public class SymbolInputView extends LinearLayout {
     public void init() { init(null, null); }
     public void init(Integer textColor, Integer backgroundColor) {
         setBackgroundColor(bgColor);
-        setOrientation(HORIZONTAL);
+        // TODO setOrientation(HORIZONTAL);
         if ( textColor != null ) {
             this.textcolor = textColor;
         }
@@ -71,7 +74,7 @@ public class SymbolInputView extends LinearLayout {
         init();
     }
     public void addButton(View v) {
-        addView(v, new LinearLayout.LayoutParams(-2, -1));
+        // TODO addView(v, new LinearLayout.LayoutParams(-2, -1));
     }
     public void addSymbol(String symbol, final String insertText) {
         Button btn = new Button(getContext(), null, android.R.attr.buttonStyleSmall);

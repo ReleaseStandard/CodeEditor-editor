@@ -37,11 +37,11 @@ public class KeyMetaStates extends android.text.method.MetaKeyKeyListener {
     }
 
     public void onKeyDown(KeyEvent event) {
-        super.onKeyDown(editor, dest, event.getKeyCode(), event);
+        super.onKeyDown(editor.view, dest, event.getKeyCode(), event);
     }
 
     public void onKeyUp(KeyEvent event) {
-        super.onKeyUp(editor, dest, event.getKeyCode(), event);
+        super.onKeyUp(editor.view, dest, event.getKeyCode(), event);
     }
 
     public boolean isShiftPressed() {
@@ -53,7 +53,7 @@ public class KeyMetaStates extends android.text.method.MetaKeyKeyListener {
     }
 
     public void clearMetaStates(int states) {
-        clearMetaKeyState(editor, dest, states);
+        clearMetaKeyState(editor.view, dest, states);
     }
 
 }

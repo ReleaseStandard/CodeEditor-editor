@@ -40,7 +40,7 @@ public class CompleteWindowView extends EditorBasePopupWindow {
     public CompleteWindowView(CodeEditor editor) {
         super(editor);
         mEditor = editor;
-        Context ctx = editor.getContext();
+        Context ctx = editor.view.getContext();
         mAdapter = new DefaultCompletionItemAdapter(editor);
         RelativeLayout layout = new RelativeLayout(ctx);
         mListView = new ListView(ctx);

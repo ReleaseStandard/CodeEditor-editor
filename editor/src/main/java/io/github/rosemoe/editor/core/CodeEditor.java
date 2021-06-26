@@ -15,13 +15,11 @@
  */
 package io.github.rosemoe.editor.core;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -29,59 +27,51 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.os.Bundle;
-import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ActionMode;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.inputmethod.CursorAnchorInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
-import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.OverScroller;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
+import androidx.appcompat.app.AppCompatActivity;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import io.github.rosemoe.editor.R;
 import io.github.rosemoe.editor.core.color.ColorManager;
-import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.ExtensionContainer;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.AbstractLayout;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelController;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.LoopbackWidgetController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.scrollbar.ScrollBarController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.controller.SymbolInputController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.view.SymbolInputView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.controller.WidgetControllerManagerController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputConnexionView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
@@ -101,7 +91,6 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.searcher.controll
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contextaction.controller.ContextActionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.CompletionAdapter;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.WordwrapLayout;
 import io.github.rosemoe.editor.core.langs.empty.EmptyLanguage;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanMapController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanLineController;
@@ -113,8 +102,6 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.Us
 import io.github.rosemoe.editor.core.util.FontCache;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.processors.ContentLineRemoveListener;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.processors.SpanUpdater;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.Layout;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.LineBreakLayout;
 
 /**
  * CodeEditor is a editor that can highlight text regions by doing basic syntax analyzing
@@ -127,12 +114,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller
  *
  * @author Rosemoe
  */
-public class CodeEditor extends View implements ContentListener, TextFormatter.FormatResultReceiver, ContentLineRemoveListener, Callback {
-
-    /**
-     * The default size when creating the editor object. Unit is sp.
-     */
-    public static final int DEFAULT_TEXT_SIZE = 20;
+public class CodeEditor implements ContentListener, TextFormatter.FormatResultReceiver, ContentLineRemoveListener, Callback {
 
     /**
      * Draw whitespace characters before line content start
@@ -189,7 +171,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     public AbstractLayout mLayout;
     public int mStartedActionMode;
     private int cursorPosition;
-    private int mInputType;
+    protected int mInputType;
     private int mNonPrintableOptions;
     public int mCachedLineNumberWidth;
     public float mDpUnit;
@@ -244,8 +226,8 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
 
     public EditorTextActionPresenter mTextActionPresenter;
     private CursorAnchorInfo.Builder mAnchorInfoBuilder;
-    private MaterialEdgeEffect mVerticalEdgeGlow;
-    private MaterialEdgeEffect mHorizontalGlow;
+    protected MaterialEdgeEffect mVerticalEdgeGlow;
+    protected MaterialEdgeEffect mHorizontalGlow;
     private ExtractedTextRequest mExtracting;
     private TextFormatter mFormatThread;
     private EditorEventListener mListener;
@@ -254,19 +236,78 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     private Paint.FontMetricsInt mGraphMetrics;
 
     private SymbolPairMatch mOverrideSymbolPairs;
-    private CharPosition mLockedSelection;
+    protected CharPosition mLockedSelection;
     public KeyMetaStates mKeyMetaStates = new KeyMetaStates(this);
 
-    public CodeEditor(Context context) {
-        this(context, null);
-    }
 
-    public CodeEditor(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+    /**
+     * Create a new instance of CodeEditor that will be find into the given root.
+     * @param activity main activity.
+     * @param root id of the root.
+     * @return
+     */
+    public static CodeEditor newInstance(AppCompatActivity activity, @IdRes int root ) {
+        View rootView = activity.findViewById(root);
+        CodeEditor editor = new CodeEditor(findCodeEditorView(rootView));
+        editor.initialize();
+        recurse(editor, rootView);
+        return editor;
     }
+    /**
+     * Get views from the given root.
+     * @param rootView
+     * @return
+     */
+    public static void recurse(CodeEditor editor, View rootView) {
+        if( rootView instanceof LinearLayout ) {
+            for(int i = 0; i < ((LinearLayout) rootView).getChildCount(); i++) {
+                recurse(editor, ((LinearLayout) rootView).getChildAt(i));
+            }
+        }
+        if ( rootView instanceof  HorizontalScrollView) {
+            for( int i = 0; i < ((HorizontalScrollView) rootView).getChildCount() ; i++) {
+                recurse(editor, ((HorizontalScrollView) rootView).getChildAt(i));
+            }
+        }
+        if ( rootView instanceof LineNumberPanelView ) {
+            Logger.debug("LineNumberPanelView has been found");
+            editor.lineNumber.attachView(rootView);
+        }
+        if ( rootView instanceof SymbolInputView ) {
+            SymbolInputController sic = (SymbolInputController) editor.systemPlugins.get("symbolinput");
+            sic.view = (WidgetExtensionView) rootView;
+            sic.attachView((SymbolInputView) rootView);
+        }
+    }
+    public static CodeEditorView findCodeEditorView(View rootView) {
+        if( rootView instanceof LinearLayout ) {
+            for(int i = 0; i < ((LinearLayout) rootView).getChildCount(); i++) {
+                View v = findCodeEditorView(((LinearLayout) rootView).getChildAt(i));
+                if ( v != null ) {
+                    return (CodeEditorView) v;
+                }
+            }//
+        }
+        if ( rootView instanceof  HorizontalScrollView) {
+            for( int i = 0; i < ((HorizontalScrollView) rootView).getChildCount() ; i++) {
+                View v = findCodeEditorView(((HorizontalScrollView) rootView).getChildAt(i));
+                if ( v != null ) { return (CodeEditorView) v; }
+            }
+        }
+        if ( rootView instanceof  CodeEditorView) {
+            return (CodeEditorView) rootView;
+        }
+        return null;
+    }
+    public CodeEditor() {
 
-    public CodeEditor(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
+    }
+    public CodeEditor(CodeEditorView view) {
+        this.view = view;
+        initialize();
+        //TypedArray ta = view.getContext().obtainStyledAttributes(attrs,R.styleable.CodeEditor);
+        //getColorScheme().initFromAttributeSets(attrs,ta);
+        //initFromAttributeSet(context, attrs, defStyleAttr, defStyleRes);
     }
 
     /**
@@ -277,7 +318,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @param defStyleRes
      */
     private void initFromAttributeSet(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        TypedArray ta = getContext().obtainStyledAttributes(attrs,R.styleable.CodeEditor);
+        /*TypedArray ta = view.getContext().obtainStyledAttributes(attrs,R.styleable.CodeEditor);
         try {
             Class.forName("com.fasterxml.jackson.databind.ObjectMapper");
         } catch (ClassNotFoundException e) {
@@ -289,7 +330,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
 
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new InputStreamReader(getContext().getAssets().open("config.json")));
+            br = new BufferedReader(new InputStreamReader(view.getContext().getAssets().open("config.json")));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -395,14 +436,8 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             } else if ( id == R.styleable.CodeEditor_widget_cursor_blink_enabled ) {
                 cursor.setBlinkEnabled(val);
             }
-        }
-    }
-    public CodeEditor(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        initialize();
-        TypedArray ta = getContext().obtainStyledAttributes(attrs,R.styleable.CodeEditor);
-        getColorScheme().initFromAttributeSets(attrs,ta);
-        initFromAttributeSet(context, attrs, defStyleAttr, defStyleRes);
+            TODO
+        }*/
     }
 
     /**
@@ -453,7 +488,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             return;
         }
         // We do this because if you hide it at once, the editor seems to flash with unknown reason
-        postDelayed(() -> completionWindow.view.hide(), 50);
+        // TODO postDelayed(() -> completionWindow.view.hide(), 50);
     }
 
     /**
@@ -488,7 +523,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             }
         }
         //Logs.log("Send selection changes: candidate(start = " + candidatesStart + ", end =" + candidatesEnd + " ) cursor(left = " + cursor.getLeft() + ", right =" + cursor.getRight() + ")");
-        mInputMethodManager.updateSelection(this, cursor.getLeft(), cursor.getRight(), candidatesStart, candidatesEnd);
+        mInputMethodManager.updateSelection(view, cursor.getLeft(), cursor.getRight(), candidatesStart, candidatesEnd);
     }
 
     /**
@@ -497,7 +532,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     public void updateExtractedText() {
         if (mExtracting != null) {
             //Logs.log("Send extracted text updates");
-            mInputMethodManager.updateExtractedText(this, mExtracting.token, extractText(mExtracting));
+            mInputMethodManager.updateExtractedText(view, mExtracting.token, extractText(mExtracting));
         }
     }
 
@@ -505,7 +540,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * Notify input method that text has been changed for external reason
      */
     public void notifyExternalCursorChange() {
-        //Logs.log("Call cursorChangeExternal()");
+        //Logs.log("Call cursorChangeExternal()");//
         updateExtractedText();
         updateSelection();
         updateCursorAnchor();
@@ -517,7 +552,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
 
     public void restartInput() {
         mConnection.invalid();
-        mInputMethodManager.restartInput(this);
+        mInputMethodManager.restartInput(view);
     }
 
 
@@ -550,10 +585,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     public float getOffset(int line, int column) {
         prepareLine(line);
         float res = measureText(mBuffer, 0, column) - getOffsetX();
-        WidgetExtensionController w = (WidgetExtensionController) systemPlugins.get("linenumberpanel");
-        if ( w != null ) {
-            res += w.width();
-        }
         return res;
     }
 
@@ -562,7 +593,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * Initialize variants
      */
     private void initialize() {
-        view = new CodeEditorView(this);
+        view.editor = this;
         mFontCache = new FontCache();
         mPaint = new Paint();
         miniGraphPaint = new Paint();
@@ -579,16 +610,16 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                 new TestPlugin(this)
         );
         model.background = new io.github.rosemoe.editor.core.Rect(0,0,0,0);
-        mInputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        mClipboardManager = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        mInputMethodManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        mClipboardManager = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
         cursorPosition = -1;
         mVerticalEdgeGlow = new MaterialEdgeEffect();
         mHorizontalGlow   = new MaterialEdgeEffect();
         mOverrideSymbolPairs = new SymbolPairMatch();
         setUndoEnabled(true);
         setScalable(true);
-        setFocusable(true);
-        setFocusableInTouchMode(true);
+        view.setFocusable(true);
+        view.setFocusableInTouchMode(true);
         setEditorLanguage(new EmptyLanguage(this));
         setHighlightCurrentLine(true);
         setAutoCompletionEnabled(true);
@@ -598,7 +629,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         setEditable(true);
         setAutoCompletionOnComposing(true);
         setTypefaceText(Typeface.DEFAULT);
-        userInput         = new UserInputController(this,getContext());
+        userInput         = new UserInputController(this,view.getContext());
         lineNumber        = new LineNumberPanelController(this);
         mConnection       = new UserInputConnexionController(this);
         systemPlugins.put(new ColorSchemeController(this));
@@ -617,12 +648,12 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         mBlockLineEnabled = true;
         mBlockLineWidth = mDpUnit / 1.5f;
         setText(null);
-        setTextSize(DEFAULT_TEXT_SIZE);
+        setTextSize(CodeEditorModel.DEFAULT_TEXT_SIZE);
         setLineInfoTextSize(mPaint.getTextSize());
         setTextActionMode(TextActionMode.POPUP_WINDOW_2);
         // Issue #41 View being highlighted when focused on Android 11
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            setDefaultFocusHighlightEnabled(false);
+            view.setDefaultFocusHighlightEnabled(false);
         }
         userInput.scrollBarV.updateWidth();
         userInput.scrollBarH.updateWidth();
@@ -696,7 +727,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         } else {
             cursorPosition = findCursorBlock();
         }
-        invalidate();
+        view.invalidate();
     }
 
     /**
@@ -705,7 +736,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      */
     public void setHighlightCurrentLine(boolean highlightCurrentLine) {
         mHighlightCurrentLine = highlightCurrentLine;
-        invalidate();
+        view.invalidate();
     }
 
     /**
@@ -759,7 +790,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         if (cursor != null) {
             cursor.setLanguage(mLanguage);
         }
-        invalidate();
+        view.invalidate();
         analyzer.unlockView();
     }
 
@@ -780,7 +811,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      */
     public void setBlockLineWidth(float dp) {
         mBlockLineWidth = dp;
-        invalidate();
+        view.invalidate();
     }
 
     /**
@@ -799,7 +830,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         if (mWordwrap != wordwrap) {
             mWordwrap = wordwrap;
             mLayout.createLayout(this);
-            invalidate();
+            view.invalidate();
         }
     }
 
@@ -810,7 +841,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      */
     public void setScrollBarEnabled(boolean enabled) {
         userInput.setScrollBarEnabled(enabled);
-        invalidate();
+        view.invalidate();
     }
 
     /**
@@ -848,28 +879,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             prefix = "";
         }
         mLnTip = prefix;
-        invalidate();
-    }
-
-    @Override
-    public boolean isHorizontalScrollBarEnabled() {
-        return userInput.scrollBarH.isEnabled();
-    }
-
-    @Override
-    public void setHorizontalScrollBarEnabled(boolean horizontalScrollBarEnabled) {
-        userInput.scrollBarH.setEnabled(horizontalScrollBarEnabled);
-
-    }
-
-    @Override
-    public boolean isVerticalScrollBarEnabled() {
-        return userInput.scrollBarV.isEnabled();
-    }
-
-    @Override
-    public void setVerticalScrollBarEnabled(boolean verticalScrollBarEnabled) {
-        userInput.scrollBarV.setEnabled(verticalScrollBarEnabled);
+        view.invalidate();
     }
 
 
@@ -902,7 +912,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     public void setTextSizePx(@Px float size) {
         setTextSizePxDirect(size);
         mLayout.createLayout(this);
-        invalidate();
+        view.invalidate();
     }
 
     /**
@@ -925,7 +935,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      *
      * @param canvas Canvas you want to draw
      */
-    private void drawView(Canvas canvas) {
+    protected void drawView(Canvas canvas) {
         //record();
         //counter = 0;
         analyzer.recycle();
@@ -933,11 +943,11 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         // TODO : missing part
         if (mFormatThread != null) {
             String text = "Formatting your code...";
-            float centerY = getHeight() / 2f;
+            float centerY = view.getHeight() / 2f;
             // TODO : repair text formatting
-            drawColor(canvas, colorManager.getColor("lineNumberPanel"), new RectF());
+            WidgetExtensionView.drawColor(canvas, colorManager.getColor("lineNumberPanel"), new RectF());
             float baseline = centerY - getRowHeight() / 2f + getRowBaseline(0);
-            float centerX = getWidth() / 2f;
+            float centerX = view.getWidth() / 2f;
             mPaint.setColor(colorManager.getColor("lineNumberPanelText"));
             mPaint.setTextAlign(Paint.Align.CENTER);
             canvas.drawText(text, centerX, baseline, mPaint);
@@ -951,7 +961,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         view.drawBackground(canvas);
 
         float lineNumberWidth = lineNumber.measureLineNumber(getLineCount());
-        float offsetX = -getOffsetX() + lineNumber.width();
+        float offsetX = -getOffsetX();
         float textOffset = offsetX;
 
         if (isWordwrap()) {
@@ -980,7 +990,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         }
 
         // painting of widgets
-        lineNumber.refresh(canvas, offsetX, getLineCount());
+        //lineNumber.refresh(canvas, offsetX, getLineCount());
         userInput.refresh(canvas);
 
         drawEdgeEffect(canvas);
@@ -1064,7 +1074,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             int lastVisibleChar = firstVisibleChar;
             float paintingOffset = charPos[1];
             float temporaryOffset = paintingOffset;
-            while (temporaryOffset < getWidth() && lastVisibleChar < columnCount) {
+            while (temporaryOffset < view.getWidth() && lastVisibleChar < columnCount) {
                 char ch = mBuffer[lastVisibleChar];
                 if (isEmoji(ch) && lastVisibleChar + 1 < columnCount) {
                     temporaryOffset += mFontCache.measureText(mBuffer, lastVisibleChar, lastVisibleChar + 2, mPaint);
@@ -1411,8 +1421,8 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             boolean bottom = userInput.view.topOrBottom;
             if (bottom) {
                 canvas.save();
-                canvas.translate(-getMeasuredWidth(), getMeasuredHeight());
-                canvas.rotate(180, getMeasuredWidth(), 0);
+                canvas.translate(-view.getMeasuredWidth(), view.getMeasuredHeight());
+                canvas.rotate(180, view.getMeasuredWidth(), 0);
             }
             postDraw = mVerticalEdgeGlow.draw(canvas);
             if (bottom) {
@@ -1427,9 +1437,9 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             boolean right = userInput.view.leftOrRight;
             if (right) {
                 canvas.rotate(90);
-                canvas.translate(0, -getMeasuredWidth());
+                canvas.translate(0, -view.getMeasuredWidth());
             } else {
-                canvas.translate(0, getMeasuredHeight());
+                canvas.translate(0, view.getMeasuredHeight());
                 canvas.rotate(-90);
             }
             postDraw = mHorizontalGlow.draw(canvas) || postDraw;
@@ -1449,7 +1459,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             }
         }
         if (postDraw) {
-            postInvalidate();
+            view.postInvalidate();
         }
     }
 
@@ -1486,7 +1496,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                     float centerX = offset + offsetX;
                     RectF mRect = new RectF();
                     mRect.top = Math.max(0, getRowBottom(block.startLine) - getOffsetY());
-                    mRect.bottom = Math.min(getHeight(), getRowTop(block.endLine) - getOffsetY());
+                    mRect.bottom = Math.min(view.getHeight(), getRowTop(block.endLine) - getOffsetY());
                     mRect.left = centerX - mDpUnit * mBlockLineWidth / 2;
                     mRect.right = centerX + mDpUnit * mBlockLineWidth / 2;
 
@@ -1787,6 +1797,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @param color  Color of rect
      * @param rect   Rect to draw
      */
+    // TODO COPY FROM WIDGET VIEW
     public void drawColor(Canvas canvas, int color, RectF rect) {
         if (color != 0) {
             mPaint.setColor(color);
@@ -1812,7 +1823,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     /**
      * Commit a tab to cursor
      */
-    private void commitTab() {
+    protected void commitTab() {
         if (mConnection != null && isEditable()) {
             mConnection.view.commitTextInternal("\t", true);
         }
@@ -1853,7 +1864,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         float panelX = updateCursorAnchor() + mDpUnit * 20;
         float[] rightLayoutOffset = mLayout.getCharLayoutOffset(cursor.getRightLine(), cursor.getRightColumn());
         float panelY = rightLayoutOffset[0] - getOffsetY() + getRowHeight() / 2f;
-        float restY = getHeight() - panelY;
+        float restY = view.getHeight() - panelY;
         if (restY > mDpUnit * 200) {
             restY = mDpUnit * 200;
         } else if (restY < mDpUnit * 100) {
@@ -1865,7 +1876,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             }
             getScroller().startScroll(getOffsetX(), getOffsetY(), 0, (int) offset, 0);
         }
-        completionWindow.updatePosition(panelX,panelY,restY,getWidth(),mDpUnit);
+        completionWindow.updatePosition(panelX,panelY,restY,view.getWidth(),mDpUnit);
     }
 
     /**
@@ -1878,9 +1889,9 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         CursorAnchorInfo.Builder builder = mAnchorInfoBuilder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.reset();
-            mMatrix.set(getMatrix());
+            mMatrix.set(view.getMatrix());
             int[] b = new int[2];
-            getLocationOnScreen(b);
+            view.getLocationOnScreen(b);
             mMatrix.postTranslate(b[0], b[1]);
             builder.setMatrix(mMatrix);
             builder.setSelectionRange(cursor.getLeft(), cursor.getRight());
@@ -1889,7 +1900,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         int column = cursor.getRightColumn();
         prepareLine(l);
         boolean visible = true;
-        float x = lineNumber.getPanelWidth();
+        float x = 0;
         x = x + mLayout.getCharLayoutOffset(l, column)[1];
         x = x - getOffsetX();
         if (x < 0) {
@@ -1897,7 +1908,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             x = 0;
         }
         builder.setInsertionMarkerLocation(x, getRowTop(l) - getOffsetY(), getRowBaseline(l) - getOffsetY(), getRowBottom(l) - getOffsetY(), visible ? CursorAnchorInfo.FLAG_HAS_VISIBLE_REGION : CursorAnchorInfo.FLAG_HAS_INVISIBLE_REGION);
-        mInputMethodManager.updateCursorAnchorInfo(this, builder.build());
+        mInputMethodManager.updateCursorAnchorInfo(view, builder.build());
         return x;
     }
 
@@ -1977,7 +1988,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      */
     public void setNonPrintablePaintingFlags(int flags) {
         this.mNonPrintableOptions = flags;
-        invalidate();
+        view.invalidate();
     }
 
     /**
@@ -2008,7 +2019,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     public void ensurePositionVisible(int line, int column) {
         float[] layoutOffset = mLayout.getCharLayoutOffset(line, column);
         // x offset is the left of character
-        float xOffset = layoutOffset[1] + lineNumber.getPanelWidth();
+        float xOffset = layoutOffset[1];
         // y offset is the bottom of row
         float yOffset = layoutOffset[0];
 
@@ -2019,23 +2030,23 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             //top invisible
             targetY = yOffset - getRowHeight() * 1.1f;
         }
-        if (yOffset > getHeight() + getOffsetY()) {
+        if (yOffset > view.getHeight() + getOffsetY()) {
             //bottom invisible
-            targetY = yOffset - getHeight() + getRowHeight() * 0.1f;
+            targetY = yOffset - view.getHeight() + getRowHeight() * 0.1f;
         }
         float charWidth = column == 0 ? 0 : measureText(mText.getLine(line), column - 1, 1);
         if (xOffset < getOffsetX()) {
             targetX = xOffset - charWidth * 0.2f;
         }
-        if (xOffset + charWidth > getOffsetX() + getWidth()) {
-            targetX = xOffset + charWidth * 0.8f - getWidth();
+        if (xOffset + charWidth > getOffsetX() + view.getWidth()) {
+            targetX = xOffset + charWidth * 0.8f - view.getWidth();
         }
 
         targetX = Math.max(0, Math.min(getScrollMaxX(), targetX));
         targetY = Math.max(0, Math.min(getScrollMaxY(), targetY));
 
         if (targetY == getOffsetY() && targetX == getOffsetX()) {
-            invalidate();
+            view.invalidate();
             return;
         }
 
@@ -2054,7 +2065,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             getScroller().startScroll(getOffsetX(), getOffsetY(), (int) (targetX - getOffsetX()), (int) (targetY - getOffsetY()), 0);
         }
 
-        invalidate();
+        view.invalidate();
     }
 
     /**
@@ -2104,7 +2115,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @see IntPair
      */
     public long getPointPosition(float xOffset, float yOffset) {
-        return mLayout.getCharPositionForLayoutOffset(xOffset - lineNumber.getPanelWidth(), yOffset);
+        return mLayout.getCharPositionForLayoutOffset(xOffset, yOffset);
     }
 
     /**
@@ -2125,7 +2136,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @return max scroll y
      */
     public int getScrollMaxY() {
-        //return Math.max(0, mLayout.getLayoutHeight() - getHeight() / 2); TODO
+        //return Math.max(0, mLayout.getLayoutHeight() - view.getHeight() / 2); TODO
         return mLayout.getLayoutHeight();
     }
 
@@ -2135,7 +2146,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @return max scroll x
      */
     public int getScrollMaxX() {
-        return (int) Math.max(0, mLayout.getLayoutWidth() + lineNumber.getPanelWidth() - getWidth() / 2f);
+        return (int) Math.max(0, mLayout.getLayoutWidth() - view.getWidth() / 2f);
     }
 
     /**
@@ -2147,7 +2158,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
 
     public void setHighlightSelectedText(boolean highlightSelected) {
         mHighlightSelectedText = highlightSelected;
-        invalidate();
+        view.invalidate();
     }
 
     /**
@@ -2321,7 +2332,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                 p2.add(0, 1, 0, R.string.last).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER);
                 p2.add(0, 2, 0, R.string.replace).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER);
                 p2.add(0, 3, 0, R.string.replaceAll).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER);
-                SearchView sv = new SearchView(getContext());
+                SearchView sv = new SearchView(view.getContext());
                 sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
                     @Override
@@ -2339,7 +2350,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                 });
                 p1.setCustomView(sv);
                 sv.performClick();
-                sv.setQueryHint(getContext().getString(R.string.text_to_search));
+                sv.setQueryHint(view.getContext().getString(R.string.text_to_search));
                 sv.setIconifiedByDefault(false);
                 sv.setIconified(false);
                 return true;
@@ -2362,9 +2373,9 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                     case 2:
                     case 3:
                         final boolean replaceAll = p2.getItemId() == 3;
-                        final EditText et = new EditText(getContext());
+                        final EditText et = new EditText(view.getContext());
                         et.setHint(R.string.replacement);
-                        new AlertDialog.Builder(getContext())
+                        new AlertDialog.Builder(view.getContext())
                                 .setTitle(replaceAll ? R.string.replaceAll : R.string.replace)
                                 .setView(et)
                                 .setNegativeButton(R.string.cancel, null)
@@ -2391,7 +2402,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
 
         }
         ActionMode.Callback callback = new SearchActionMode();
-        startActionMode(callback);
+        view.startActionMode(callback);
     }
 
     public UserInputView getEventHandler() {
@@ -2427,7 +2438,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         }
         mTextMetrics = mPaint.getFontMetricsInt();
         mLayout.createLayout(this);
-        invalidate();
+        view.invalidate();
     }
 
     /**
@@ -2473,7 +2484,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @return last visible row
      */
     public int getLastVisibleRow() {
-        return (int) Math.max(0, (getOffsetY() + getHeight()) / getRowHeight());
+        return (int) Math.max(0, (getOffsetY() + view.getHeight()) / getRowHeight());
     }
 
     /**
@@ -2582,7 +2593,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
 
     public void setBlockLineEnabled(boolean enabled) {
         mBlockLineEnabled = enabled;
-        invalidate();
+        view.invalidate();
     }
 
     public boolean isBlockLineEnabled() {
@@ -2777,7 +2788,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         if (makeItVisible) {
             ensurePositionVisible(line, column);
         } else {
-            invalidate();
+            view.invalidate();
         }
         cursor.blink.onSelectionChanged();
         if (mTextActionPresenter != null) {
@@ -2853,7 +2864,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         if (makeRightVisible) {
             ensurePositionVisible(lineRight, columnRight);
         } else {
-            invalidate();
+            view.invalidate();
         }
         cursor.blink.onSelectionChanged();
         if (!lastState && cursor.isSelected() && mStartedActionMode != ACTION_MODE_SEARCH_TEXT) {
@@ -2866,7 +2877,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * Move to next page
      */
     public void movePageDown() {
-        userInput.view.onScroll(null, null, 0, getHeight());
+        userInput.view.onScroll(null, null, 0, view.getHeight());
         completionWindow.view.hide();
     }
 
@@ -2874,7 +2885,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * Move to previous page
      */
     public void movePageUp() {
-        userInput.view.onScroll(null, null, 0, -getHeight());
+        userInput.view.onScroll(null, null, 0, -view.getHeight());
         completionWindow.view.hide();
     }
 
@@ -2894,7 +2905,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             notifyExternalCursorChange();
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(view.getContext(), e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -2912,7 +2923,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(view.getContext(), e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -2977,16 +2988,16 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         analyzer.clear();
         analyzer.analyze(getText());
 
-        requestLayout();
+        view.requestLayout();
 
         if (mListener != null) {
             mListener.onNewTextSet(this);
         }
         if (mInputMethodManager != null) {
-            mInputMethodManager.restartInput(this);
+            mInputMethodManager.restartInput(view);
         }
         mLayout.createLayout(this);
-        invalidate();
+        view.invalidate();
 
         analyzer.unlockView();
     }
@@ -2996,7 +3007,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * @param textSize the editor's text size in <strong>Sp</strong> units.
      */
     public void setTextSize(float textSize) {
-        Context context = getContext();
+        Context context = view.getContext();
         Resources res;
 
         if (context == null) {
@@ -3075,23 +3086,23 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      * Display soft input method for self
      */
     public void showSoftInput() {
-        if (isEditable() && isEnabled()) {
-            if (isInTouchMode()) {
-                requestFocusFromTouch();
+        if (isEditable() && view.isEnabled()) {
+            if (view.isInTouchMode()) {
+                view.requestFocusFromTouch();
             }
-            if (!hasFocus()) {
-                requestFocus();
+            if (!view.hasFocus()) {
+                view.requestFocus();
             }
-            mInputMethodManager.showSoftInput(this, 0);
+            mInputMethodManager.showSoftInput(view, 0);
         }
-        invalidate();
+        view.invalidate();
     }
 
     /**
      * Hide soft input
      */
     public void hideSoftInput() {
-        mInputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
+        mInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     /**
@@ -3148,7 +3159,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     //-------------------------------------------------------------------------------
 
     /**
-     * Called by ColorScheme to notify invalidate
+     * Called by ColorScheme to notify view.invalidate
      *
      * @param type Color type changed
      */
@@ -3158,7 +3169,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                 completionWindow.applyColorScheme();
             return;
         }
-        invalidate();
+        view.invalidate();
     }
 
     /**
@@ -3173,374 +3184,10 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      */
     public void onCloseConnection() {
         setExtracting(null);
-        invalidate();
+        view.invalidate();
     }
 
-    //-------------------------------------------------------------------------------
-    //-------------------------Override methods--------------------------------------
-    //-------------------------------------------------------------------------------
 
-    @Override
-    public void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        drawView(canvas);
-    }
-
-    @Override
-    public AccessibilityNodeInfo createAccessibilityNodeInfo() {
-        AccessibilityNodeInfo node = super.createAccessibilityNodeInfo();
-        node.setEditable(isEditable());
-        node.setTextSelection(cursor.getLeft(), cursor.getRight());
-        node.setScrollable(true);
-        node.setInputType(InputType.TYPE_CLASS_TEXT);
-        node.setMultiLine(true);
-        node.setText(getText().toStringBuilder());
-        node.setLongClickable(true);
-        node.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_COPY);
-        node.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_CUT);
-        node.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_PASTE);
-        node.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SET_TEXT);
-        node.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD);
-        node.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD);
-        return node;
-    }
-
-    @Override
-    public boolean performAccessibilityAction(int action, Bundle arguments) {
-        switch (action) {
-            case AccessibilityNodeInfo.ACTION_COPY:
-                copyText();
-                return true;
-            case AccessibilityNodeInfo.ACTION_CUT:
-                cutText();
-                return true;
-            case AccessibilityNodeInfo.ACTION_PASTE:
-                pasteText();
-                return true;
-            case AccessibilityNodeInfo.ACTION_SET_TEXT:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    setText(arguments.getCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE));
-                    return true;
-                }
-                return false;
-            case AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD:
-                movePageDown();
-                return true;
-            case AccessibilityNodeInfo.ACTION_SCROLL_FORWARD:
-                movePageUp();
-                return true;
-        }
-        return super.performAccessibilityAction(action, arguments);
-    }
-
-    @Override
-    public boolean onCheckIsTextEditor() {
-        return isEnabled() && isEditable();
-    }
-
-    @Override
-    public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
-        if (!isEditable() || !isEnabled()) {
-            return null;
-        }
-        outAttrs.inputType = mInputType != 0 ? mInputType : EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE;
-        outAttrs.initialSelStart = getCursor() != null ? getCursor().getLeft() : 0;
-        outAttrs.initialSelEnd = getCursor() != null ? getCursor().getRight() : 0;
-        outAttrs.initialCapsMode = mConnection.view.getCursorCapsMode(0);
-        mConnection.reset();
-        setExtracting(null);
-        return mConnection.view;
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        Logger.debug("On touch event");
-        if (!isEnabled()) {
-            Logger.debug("Touches are not enabled");
-            return false;
-        }
-        boolean handlingBefore = userInput.handlingMotions();
-        boolean res = userInput.onTouchEvent(event);
-        boolean handling = userInput.handlingMotions();
-        boolean res2 = false;
-        boolean res3 = false;
-        if (!handling && !handlingBefore) {
-            res2 = userInput.view.gestureDetector.onTouchEvent(event);
-            res3 = userInput.view.scaleDetector.onTouchEvent(event);
-        }
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            mVerticalEdgeGlow.onRelease();
-            mHorizontalGlow.onRelease();
-        }
-        return (res3 || res2 || res);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        mKeyMetaStates.onKeyDown(event);
-        boolean isShiftPressed = mKeyMetaStates.isShiftPressed();
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-            case KeyEvent.KEYCODE_DPAD_UP:
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-            case KeyEvent.KEYCODE_MOVE_HOME:
-            case KeyEvent.KEYCODE_MOVE_END:
-                if (isShiftPressed && (!cursor.isSelected())) {
-                    mLockedSelection = cursor.left();
-                } else if(!isShiftPressed && mLockedSelection != null) {
-                    mLockedSelection = null;
-                }
-                mKeyMetaStates.adjust();
-        }
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:{
-                return mTextActionPresenter != null && mTextActionPresenter.onExit();
-            }
-            case KeyEvent.KEYCODE_DEL:
-                if (isEditable()) {
-                    cursor.onDeleteKeyPressed();
-                    notifyExternalCursorChange();
-                }
-                return true;
-            case KeyEvent.KEYCODE_FORWARD_DEL: {
-                if (isEditable()) {
-                    mConnection.view.deleteSurroundingText(0, 1);
-                    notifyExternalCursorChange();
-                }
-                return true;
-            }
-            case KeyEvent.KEYCODE_ENTER: {
-                if (isEditable()) {
-                    if (completionWindow.view.isShowing()) {
-                        completionWindow.select();
-                        return true;
-                    }
-                    NewlineHandler[] handlers = mLanguage.getNewlineHandlers();
-                    if (handlers == null || getCursor().isSelected()) {
-                        cursor.onCommitText("\n", true);
-                    } else {
-                        ContentLineController line = mText.getLine(cursor.getLeftLine());
-                        int index = cursor.getLeftColumn();
-                        String beforeText = line.subSequence(0, index).toString();
-                        String afterText = line.subSequence(index, line.length()).toString();
-                        boolean consumed = false;
-                        for (NewlineHandler handler : handlers) {
-                            if (handler != null) {
-                                if (handler.matchesRequirement(beforeText, afterText)) {
-                                    try {
-                                        NewlineHandler.HandleResult result = handler.handleNewline(beforeText, afterText, getTabWidth());
-                                        if (result != null) {
-                                            cursor.onCommitText(result.text, false);
-                                            int delta = result.shiftLeft;
-                                            if (delta != 0) {
-                                                int newSel = Math.max(getCursor().getLeft() - delta, 0);
-                                                CharPosition charPosition = getCursor().getIndexer().getCharPosition(newSel);
-                                                setSelection(charPosition.line, charPosition.column);
-                                            }
-                                            consumed = true;
-                                        } else {
-                                            continue;
-                                        }
-                                    } catch (Exception e) {
-                                        Log.w(Logger.LOG_TAG, "Error occurred while calling Language's NewlineHandler", e);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                        if (!consumed) {
-                            cursor.onCommitText("\n", true);
-                        }
-                    }
-                    notifyExternalCursorChange();
-                }
-                return true;
-            }
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                moveSelectionDown();
-                return true;
-            case KeyEvent.KEYCODE_DPAD_UP:
-                moveSelectionUp();
-                return true;
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                moveSelectionLeft();
-                return true;
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                moveSelectionRight();
-                return true;
-            case KeyEvent.KEYCODE_MOVE_END:
-                moveSelectionEnd();
-                return true;
-            case KeyEvent.KEYCODE_MOVE_HOME:
-                moveSelectionHome();
-                return true;
-            case KeyEvent.KEYCODE_PAGE_DOWN:
-                movePageDown();
-                return true;
-            case KeyEvent.KEYCODE_PAGE_UP:
-                movePageUp();
-                return true;
-            case KeyEvent.KEYCODE_TAB:
-                if (isEditable()) {
-                    commitTab();
-                }
-                return true;
-            case KeyEvent.KEYCODE_PASTE:
-                if (isEditable()) {
-                    pasteText();
-                }
-                return true;
-            case KeyEvent.KEYCODE_COPY:
-                copyText();
-                return true;
-            case KeyEvent.KEYCODE_SPACE:
-                if (isEditable()) {
-                    getCursor().onCommitText(" ");
-                    notifyExternalCursorChange();
-                }
-                return true;
-            default:
-                if (event.isCtrlPressed() && !event.isAltPressed()) {
-                    switch (keyCode) {
-                        case KeyEvent.KEYCODE_V:
-                            if (isEditable()) {
-                                pasteText();
-                            }
-                            return true;
-                        case KeyEvent.KEYCODE_C:
-                            copyText();
-                            return true;
-                        case KeyEvent.KEYCODE_X:
-                            if (isEditable()) {
-                                cutText();
-                            } else {
-                                copyText();
-                            }
-                            return true;
-                        case KeyEvent.KEYCODE_A:
-                            selectAll();
-                            return true;
-                        case KeyEvent.KEYCODE_Z:
-                            if (isEditable()) {
-                                undo();
-                            }
-                            return true;
-                        case KeyEvent.KEYCODE_Y:
-                            if (isEditable()) {
-                                redo();
-                            }
-                            return true;
-                    }
-                } else if (!event.isCtrlPressed() && !event.isAltPressed()) {
-                    if (event.isPrintingKey() && isEditable()) {
-                        String text = new String(Character.toChars(event.getUnicodeChar(event.getMetaState())));
-                        SymbolPairMatch.Replacement replacement = null;
-                        if (text.length() == 1 && isSymbolCompletionEnabled()) {
-                            replacement = mLanguageSymbolPairs.getCompletion(text.charAt(0));
-                        }
-                        if (replacement == null || replacement == SymbolPairMatch.Replacement.NO_REPLACEMENT) {
-                            getCursor().onCommitText(text);
-                            notifyExternalCursorChange();
-                        } else {
-                            getCursor().onCommitText(replacement.text);
-                            int delta = (replacement.text.length() - replacement.selection);
-                            if (delta != 0) {
-                                int newSel = Math.max(getCursor().getLeft() - delta, 0);
-                                CharPosition charPosition = getCursor().getIndexer().getCharPosition(newSel);
-                                setSelection(charPosition.line, charPosition.column);
-                                notifyExternalCursorChange();
-                            }
-                        }
-                    } else {
-                        return super.onKeyDown(keyCode, event);
-                    }
-                    return true;
-                }
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        mKeyMetaStates.onKeyUp(event);
-        if (!mKeyMetaStates.isShiftPressed() && mLockedSelection != null && !cursor.isSelected()) {
-            mLockedSelection = null;
-        }
-        return super.onKeyUp(keyCode, event);
-    }
-
-    @Override
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        boolean warn = false;
-        //Fill the horizontal layout if WRAP_CONTENT mode
-        if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.AT_MOST || MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED) {
-            widthMeasureSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY);
-            warn = true;
-        }
-        //Fill the vertical layout if WRAP_CONTENT mode
-        if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.AT_MOST || MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.UNSPECIFIED) {
-            heightMeasureSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.EXACTLY);
-            warn = true;
-        }
-        if (warn) {
-            Log.i(Logger.LOG_TAG, "onMeasure():Code editor does not support wrap_content mode when measuring.It will just fill the whole space.");
-        }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    @Override
-    public boolean onGenericMotionEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_SCROLL) {
-            float v_scroll = -event.getAxisValue(MotionEvent.AXIS_VSCROLL);
-            if (v_scroll != 0) {
-                userInput.view.onScroll(event, event, 0, v_scroll * 20);
-            }
-            return true;
-        }
-        return super.onGenericMotionEvent(event);
-    }
-
-    @Override
-    public void onSizeChanged(int w, int h, int oldWidth, int oldHeight) {
-        super.onSizeChanged(w, h, oldWidth, oldHeight);
-        model.background.right = w;
-        model.background.bottom = h;
-        getVerticalEdgeEffect().setSize(w, h);
-        getHorizontalEdgeEffect().setSize(h, w);
-        getVerticalEdgeEffect().finish();
-        getHorizontalEdgeEffect().finish();
-        if (isWordwrap() && w != oldWidth) {
-            mLayout.createLayout(this);
-        } else {
-            userInput.view.scrollBy(getOffsetX() > getScrollMaxX() ? getScrollMaxX() - getOffsetX() : 0, getOffsetY() > getScrollMaxY() ? getScrollMaxY() - getOffsetY() : 0);
-        }
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        cursor.blink.model.valid = cursor.blink.model.period > 0;
-        if (cursor.blink.model.valid) {
-            post(cursor.blink);
-        }
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        cursor.blink.model.valid = false;
-        removeCallbacks(cursor.blink);
-    }
-
-    @Override
-    public void computeScroll() {
-        if (userInput.view.getScroller().computeScrollOffset()) {
-            invalidate();
-        }
-        super.computeScroll();
-    }
 
     @Override
     public void beforeReplace(ContentMapController content) {
@@ -3663,7 +3310,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     @Override
     public void onFormatFail(final Throwable throwable) {
         if (mListener != null && !mListener.onFormatFail(this, throwable)) {
-            post(() -> Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show());
+            view.post(() -> Toast.makeText(view.getContext(), throwable.toString(), Toast.LENGTH_SHORT).show());
         }
         mFormatThread = null;
     }
@@ -3680,7 +3327,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         }
         mFormatThread = null;
         if (originalText == mText) {
-            post(() -> {
+            view.post(() -> {
                 int line = cursor.getLeftLine();
                 int column = cursor.getLeftColumn();
                 mText.replace(0, 0, getLineCount() - 1, mText.getColumnCount(getLineCount() - 1), newText);
@@ -3705,7 +3352,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         if (mHighlightCurrentBlock) {
                 cursorPosition = findCursorBlock();
         }
-        postInvalidate();
+        view.postInvalidate();
     }
 
     //-------------------------------------------------------------------------------

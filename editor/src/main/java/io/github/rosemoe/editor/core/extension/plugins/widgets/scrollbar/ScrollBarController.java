@@ -26,8 +26,8 @@ public class ScrollBarController extends WidgetExtensionController {
         registerColor("scrollBarTrack", "wholeBackground");
     }
     protected void handleRefresh(Canvas canvas, Object ...args) {
-        int eWidth = editor.getWidth();
-        int eHeight = editor.getHeight();
+        int eWidth = editor.view.getWidth();
+        int eHeight = editor.view.getHeight();
 
         Float lenAllContent    = (Float) args[0];
         Integer offset         = (Integer) args[1]; // offsetX

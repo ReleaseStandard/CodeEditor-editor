@@ -557,8 +557,8 @@ public final class CursorController extends WidgetExtensionController {
         } else {
             int before = blink.model.period;
             blink.model.period = period;
-            if (before <= 0 && blink.model.valid && blink.view.editor.isAttachedToWindow()) {
-                blink.view.editor.post(blink);
+            if (before <= 0 && blink.model.valid && blink.view.editor.view.isAttachedToWindow()) {
+                blink.view.editor.view.post(blink);
             }
         }
     }

@@ -92,7 +92,7 @@ public class CompletionWindowController {
 
 
     public Context getContext() {
-        return mEditor.getContext();
+        return mEditor.view.getContext();
     }
 
     public int getCurrentPosition() {
@@ -124,7 +124,7 @@ public class CompletionWindowController {
     public void setLoading(boolean state) {
         model.mLoading = state;
         if (state) {
-            mEditor.postDelayed(() -> {
+            mEditor.view.postDelayed(() -> {
                 if (model.mLoading) {
                     view.mTip.setVisibility(View.VISIBLE);
                 }
@@ -207,7 +207,7 @@ public class CompletionWindowController {
         if (model.mRequestTime != requestTime) {
             return;
         }
-        mEditor.post(() -> {
+        mEditor.view.post(() -> {
             setLoading(false);
             if (results == null || results.isEmpty()) {
                 view.hide();

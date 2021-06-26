@@ -64,11 +64,11 @@ public class EditorBasePopupWindow extends PopupWindow {
     }
 
     public void updatePosition() {
-        int width = mEditor.getWidth();
+        int width = mEditor.view.getWidth();
         if (mLeft > width - getWidth()) {
             mLeft = width - getWidth();
         }
-        int height = mEditor.getHeight();
+        int height = mEditor.view.getHeight();
         if (mTop > height - getHeight()) {
             mTop = height - getHeight();
         }
@@ -78,7 +78,7 @@ public class EditorBasePopupWindow extends PopupWindow {
         if (mLeft < 0) {
             mLeft = 0;
         }
-        mEditor.getLocationInWindow(mLocation);
+        mEditor.view.getLocationInWindow(mLocation);
         if (isShowing()) {
             update(mLocation[0] + mLeft, mLocation[1] + mTop, getWidth(), getHeight());
         }
@@ -88,11 +88,11 @@ public class EditorBasePopupWindow extends PopupWindow {
      * Show the panel or update its position(If already shown)
      */
     public void show() {
-        int width = mEditor.getWidth();
+        int width = mEditor.view.getWidth();
         if (mLeft > width - getWidth()) {
             mLeft = width - getWidth();
         }
-        int height = mEditor.getHeight();
+        int height = mEditor.view.getHeight();
         if (mTop > height - getHeight()) {
             mTop = height - getHeight();
         }
@@ -102,12 +102,12 @@ public class EditorBasePopupWindow extends PopupWindow {
         if (mLeft < 0) {
             mLeft = 0;
         }
-        mEditor.getLocationInWindow(mLocation);
+        mEditor.view.getLocationInWindow(mLocation);
         if (isShowing()) {
             update(mLocation[0] + mLeft, mLocation[1] + mTop, getWidth(), getHeight());
             return;
         }
-        super.showAtLocation(mEditor,
+        super.showAtLocation(mEditor.view,
                 Gravity.START | Gravity.TOP,
                 mLocation[0] + mLeft, mLocation[1] + mTop);
     }

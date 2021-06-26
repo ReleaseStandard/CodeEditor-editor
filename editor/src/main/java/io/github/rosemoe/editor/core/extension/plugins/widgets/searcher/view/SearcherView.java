@@ -25,7 +25,7 @@ import io.github.rosemoe.editor.core.CodeEditor;
 public class SearcherView {
     public CodeEditor editor;
     public void showSearchDialog(String searchText, String newText) {
-        final ProgressDialog progressDialog = ProgressDialog.show(editor.getContext(), "Replacing", "Editor is now replacing texts, please wait", true, false);
+        final ProgressDialog progressDialog = ProgressDialog.show(editor.view.getContext(), "Replacing", "Editor is now replacing texts, please wait", true, false);
         new Thread() {
             @Override
             public void run() {
@@ -39,15 +39,15 @@ public class SearcherView {
                 }
                 final Exception ex2 = ex;
                 final String text2 = text;
-                editor.post(() -> {
+                editor.view.post(() -> {
                     if (text2 == null) {
-                        Toast.makeText(editor.getContext(), String.valueOf(ex2), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(editor.view.getContext(), String.valueOf(ex2), Toast.LENGTH_SHORT).show();
                     } else {
                         int line = editor.getCursor().getLeftLine();
                         int column = editor.getCursor().getLeftColumn();
                         editor.getText().replace(0, 0, editor.getLineCount() - 1, editor.getText().getColumnCount(editor.getLineCount() - 1), text2);
                         editor.setSelectionAround(line, column);
-                        editor.invalidate();
+                        editor.view.invalidate();
                     }
                     progressDialog.cancel();
                 });
@@ -69,7 +69,7 @@ public class SearcherView {
             column = 0;
         }
         if (tip) {
-            Toast.makeText(editor.getContext(), "Not found in this direction", Toast.LENGTH_SHORT).show();
+            Toast.makeText(editor.view.getContext(), "Not found in this direction", Toast.LENGTH_SHORT).show();
             editor.jumpToLine(0);
         }
     }
@@ -86,6 +86,6 @@ public class SearcherView {
             }
             column = i - 1 >= 0 ? text.getColumnCount(i - 1) : 0;
         }
-        Toast.makeText(editor.getContext(), "Not found in this direction", Toast.LENGTH_SHORT).show();
+        Toast.makeText(editor.view.getContext(), "Not found in this direction", Toast.LENGTH_SHORT).show();
     }
 }

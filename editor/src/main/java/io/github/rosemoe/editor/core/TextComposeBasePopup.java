@@ -79,7 +79,7 @@ public class TextComposeBasePopup extends PopupWindow {
      * Show the panel or update its position(If already shown)
      */
     public void show() {
-        int width = mEditor.getWidth();
+        int width = mEditor.view.getWidth();
         RectF leftHandleRect = mEditor.getLeftHandleRect();
         RectF rightHandleRect = mEditor.getRightHandleRect();
 
@@ -108,7 +108,7 @@ public class TextComposeBasePopup extends PopupWindow {
         if (mLeft > width - getWidth()) {
             mLeft = width - getWidth();
         }
-        int height = mEditor.getHeight();
+        int height = mEditor.view.getHeight();
         if (mTop > height - getHeight()) {
             mTop = height - getHeight();
         }
@@ -118,7 +118,7 @@ public class TextComposeBasePopup extends PopupWindow {
         if (mLeft < 0) {
             mLeft = 0;
         }
-        mEditor.getLocationInWindow(mLocation);
+        mEditor.view.getLocationInWindow(mLocation);
         boolean topCovered = mLocation[1] > selectionRect.top - textSizePx - popHeightPx - handleHeight;
 
         if (topCovered) {
@@ -130,7 +130,7 @@ public class TextComposeBasePopup extends PopupWindow {
             update(mLocation[0] + mLeft, mLocation[1] + mTop, getWidth(), getHeight());
             return;
         }
-        super.showAtLocation(mEditor,
+        super.showAtLocation(mEditor.view,
                 Gravity.START | Gravity.TOP,
                 mLocation[0] + mLeft, mLocation[1] + mTop);
     }

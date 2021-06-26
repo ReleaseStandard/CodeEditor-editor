@@ -40,7 +40,7 @@ public class ContextActionView extends EditorBasePopupWindow implements View.OnC
         this.mEditor = editor;
         // Since popup window does provide decor view, we have to pass null to this method
         @SuppressLint("InflateParams")
-        View root = LayoutInflater.from(editor.getContext()).inflate(R.layout.text_compose_panel, null);
+        View root = LayoutInflater.from(editor.view.getContext()).inflate(R.layout.text_compose_panel, null);
         Button selectAll = root.findViewById(R.id.panel_btn_select_all);
         Button cut = root.findViewById(R.id.panel_btn_cut);
         Button copy = root.findViewById(R.id.panel_btn_copy);

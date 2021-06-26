@@ -15,20 +15,43 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.util.AttributeSet;
+import android.view.View;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionCanvasPartView;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.handles.LineNumberPanelViewHandles;
+import io.github.rosemoe.editor.core.util.Logger;
 
 /**
  * This view is a canvas part.
  */
-public class LineNumberPanelView extends SystemExtensionCanvasPartView {
-    protected Paint lineNumberPaint = new Paint();
-    public LineNumberPanelView(CodeEditor editor) {
-        super(editor);
+public class LineNumberPanelView extends WidgetExtensionView {
+    CodeEditor editor;
+    public Paint lineNumberPaint = new Paint();
+
+    public LineNumberPanelViewHandles handles = new LineNumberPanelViewHandles();
+
+    public LineNumberPanelView(Context context) {
+        super(context);
+    }
+    public LineNumberPanelView(Context context, android.util.AttributeSet attrs) {
+        super(context,attrs);
+    }
+    public LineNumberPanelView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+    public LineNumberPanelView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    public void initialize(CodeEditor editor) {
+        this.editor = editor;
         lineNumberPaint.setAntiAlias(true);
         lineNumberPaint.setTypeface(Typeface.MONOSPACE);
     }
@@ -42,7 +65,6 @@ public class LineNumberPanelView extends SystemExtensionCanvasPartView {
      * Draw text of line number panel.
      * @param canvas
      * @param row
-     * @param offsetX
      * @param width
      * @param count
      * @param color
@@ -50,31 +72,42 @@ public class LineNumberPanelView extends SystemExtensionCanvasPartView {
      * @param mDividerMargin
      * @param mLineNumberAlign
      */
-    protected void drawLineNumber(Canvas canvas, int row, float offsetX, float width, int count, int color, char[]computedText, float mDividerMargin, Paint.Align mLineNumberAlign) {
+    protected void drawLineNumber(Canvas canvas, int row, float width, int count, int color, char[]computedText, float mDividerMargin, Paint.Align mLineNumberAlign) {
         setTextAlign(mLineNumberAlign);
         lineNumberPaint.setColor(color);
-        // Line number center align to text center
+        int sz = (int) Math.min((editor.getRowBottom(row) - editor.getRowTop(row)), width);
+        lineNumberPaint.setTextSize(sz);
+        // Line number center align to text center //
 
         Paint.FontMetrics metrics = lineNumberPaint.getFontMetrics();
-        float y = (editor.getRowBottom(row) + editor.getRowTop(row)) / 2f - (metrics.descent - metrics.ascent) / 2f - metrics.ascent - editor.getOffsetY();
-
+        float y = (editor.getRowBottom(row) + editor.getRowTop(row)) / 2f
+                - (metrics.descent - metrics.ascent) / 2f - metrics.ascent
+                - editor.getOffsetY();
         switch (mLineNumberAlign) {
             case LEFT:
-                canvas.drawText(computedText, 0, count, offsetX, y, lineNumberPaint);
+                canvas.drawText(computedText, 0, count, 0, y, lineNumberPaint);
                 break;
             case RIGHT:
-                canvas.drawText(computedText, 0, count, offsetX + width, y, lineNumberPaint);
+                canvas.drawText(computedText, 0, count, 0 + width, y, lineNumberPaint);
                 break;
             case CENTER:
-                canvas.drawText(computedText, 0, count, offsetX + (width + mDividerMargin) / 2f, y, lineNumberPaint);
+                canvas.drawText(computedText, 0, count, 0 + width / 2f, y, lineNumberPaint);
         }
     }
-
+//
+    @Override
+    public void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        handles.handleOnDraw(canvas);
+        //lineNumberPaint.setColor(0xFFFF0000);
+        //canvas.drawText("TEST",0,4,0,0,lineNumberPaint);
+    }
+    //
     /**
      * PUBLIC
      */
-    @Override
+    /*@Override
     public void paint(Canvas canvas, CodeEditor editor) {
 
-    }
+    }*/
 }

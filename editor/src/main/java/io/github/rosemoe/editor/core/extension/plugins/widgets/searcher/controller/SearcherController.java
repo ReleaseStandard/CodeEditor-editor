@@ -44,7 +44,7 @@ public class SearcherController extends SystemExtensionController {
             text = null;
         }
         model.searchText = text;
-        view.editor.postInvalidate();
+        view.editor.view.postInvalidate();
     }
 
     @SuppressWarnings("UnusedReturnValue")

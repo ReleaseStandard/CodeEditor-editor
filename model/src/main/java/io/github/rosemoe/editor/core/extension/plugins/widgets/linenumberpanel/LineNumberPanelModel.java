@@ -15,6 +15,7 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel;
 
+import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.LongArrayList;
 import io.github.rosemoe.editor.core.Rect;
 
@@ -65,5 +66,4 @@ public class LineNumberPanelModel {
      * PUBLIC
      */
     public LongArrayList postDrawLineNumbers = new LongArrayList();
-
 }

@@ -40,30 +40,30 @@ public class EditorTextActionModeStarter implements CodeEditor.EditorTextActionP
         if (mActionMode != null) {
             return;
         }
-        mActionMode = mEditor.startActionMode(new ActionMode.Callback() {
+        mActionMode = mEditor.view.startActionMode(new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
                 mEditor.mStartedActionMode = CodeEditor.ACTION_MODE_SELECT_TEXT;
                 actionMode.setTitle(android.R.string.selectTextMode);
-                TypedArray array = mEditor.getContext().getTheme().obtainStyledAttributes(new int[]{
+                TypedArray array = mEditor.view.getContext().getTheme().obtainStyledAttributes(new int[]{
                         android.R.attr.actionModeSelectAllDrawable,
                         android.R.attr.actionModeCutDrawable,
                         android.R.attr.actionModeCopyDrawable,
                         android.R.attr.actionModePasteDrawable,
                 });
-                menu.add(0, 0, 0, mEditor.getContext().getString(android.R.string.selectAll))
+                menu.add(0, 0, 0, mEditor.view.getContext().getString(android.R.string.selectAll))
                         .setShowAsActionFlags(2)
                         .setIcon(array.getDrawable(0));
 
-                menu.add(0, 1, 0, mEditor.getContext().getString(android.R.string.cut))
+                menu.add(0, 1, 0, mEditor.view.getContext().getString(android.R.string.cut))
                         .setShowAsActionFlags(2)
                         .setIcon(array.getDrawable(1));
 
-                menu.add(0, 2, 0, mEditor.getContext().getString(android.R.string.copy))
+                menu.add(0, 2, 0, mEditor.view.getContext().getString(android.R.string.copy))
                         .setShowAsActionFlags(2)
                         .setIcon(array.getDrawable(2));
 
-                menu.add(0, 3, 0, mEditor.getContext().getString(android.R.string.paste))
+                menu.add(0, 3, 0, mEditor.view.getContext().getString(android.R.string.paste))
                         .setShowAsActionFlags(2)
                         .setIcon(array.getDrawable(3));
 

@@ -51,7 +51,7 @@ public class UserInputView extends SystemExtensionCanvasPartView implements Gest
 
     public UserInputView(CodeEditor editor, Context ctx) {
         super(editor);
-        mScroller = new OverScroller(editor.getContext());
+        mScroller = new OverScroller(editor.view.getContext());
         maxSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 32, Resources.getSystem().getDisplayMetrics());
         minSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 6, Resources.getSystem().getDisplayMetrics());
         gestureDetector = new GestureDetector(ctx, this);
@@ -80,7 +80,7 @@ public class UserInputView extends SystemExtensionCanvasPartView implements Gest
                     int x = mScroller.getCurrX();
                     int y = mScroller.getCurrY();
                     if (x - preciousX == 0 && y - preciousY == 0) {
-                        editor.invalidate();
+                        editor.view.invalidate();
                         editor.onEndGestureInteraction();
                         preciousX = 0;
                         preciousY = 0;
@@ -88,15 +88,15 @@ public class UserInputView extends SystemExtensionCanvasPartView implements Gest
                     }
                     preciousX = x;
                     preciousY = y;
-                    editor.postDelayed(this, UserInputModel.INTERACTION_END_DELAY);
+                    editor.view.postDelayed(this, UserInputModel.INTERACTION_END_DELAY);
                 } else if (System.currentTimeMillis() - mLastInteraction >= UserInputModel.INTERACTION_END_DELAY) {
-                    editor.invalidate();
+                    editor.view.invalidate();
                     editor.onEndGestureInteraction();
                 }
             }
 
         }
-        editor.postDelayed(new InvalidateNotifier(), UserInputModel.INTERACTION_END_DELAY);
+        editor.view.postDelayed(new InvalidateNotifier(), UserInputModel.INTERACTION_END_DELAY);
     }
     /**
      * Get scroller for editor
@@ -122,12 +122,12 @@ public class UserInputView extends SystemExtensionCanvasPartView implements Gest
             @Override
             public void run() {
                 if (System.currentTimeMillis() - mLastSetSelection >= UserInputModel.HIDE_DELAY) {
-                    editor.invalidate();
+                    editor.view.invalidate();
                 }
             }
 
         }
-        editor.postDelayed(new InvalidateNotifier(), UserInputModel.HIDE_DELAY);
+        editor.view.postDelayed(new InvalidateNotifier(), UserInputModel.HIDE_DELAY);
     }
 
 
@@ -165,7 +165,7 @@ public class UserInputView extends SystemExtensionCanvasPartView implements Gest
                 mScroller.getCurrY(),
                 endX - mScroller.getCurrX(),
                 endY - mScroller.getCurrY(), 0);
-        editor.invalidate();
+        editor.view.invalidate();
     }
     /**
      * Notify the editor later to hide scroll bars
@@ -176,12 +176,12 @@ public class UserInputView extends SystemExtensionCanvasPartView implements Gest
             @Override
             public void run() {
                 if (System.currentTimeMillis() - mLastScroll >= UserInputModel.HIDE_DELAY_HANDLE) {
-                    editor.invalidate();
+                    editor.view.invalidate();
                 }
             }
 
         }
-        editor.postDelayed(new ScrollNotifier(), UserInputModel.HIDE_DELAY_HANDLE);
+        editor.view.postDelayed(new ScrollNotifier(), UserInputModel.HIDE_DELAY_HANDLE);
     }
 
     /**
@@ -213,14 +213,14 @@ public class UserInputView extends SystemExtensionCanvasPartView implements Gest
         boolean notifyX = true;
         if (!editor.getVerticalEdgeEffect().isFinished() && !editor.getVerticalEdgeEffect().isRecede()) {
             endY = mScroller.getCurrY();
-            float displacement = Math.max(0, Math.min(1, e2.getX() / editor.getWidth()));
-            editor.getVerticalEdgeEffect().onPull((topOrBottom ? distanceY : -distanceY) / editor.getMeasuredHeight(), !topOrBottom ? displacement : 1 - displacement);
+            float displacement = Math.max(0, Math.min(1, e2.getX() / editor.view.getWidth()));
+            editor.getVerticalEdgeEffect().onPull((topOrBottom ? distanceY : -distanceY) / editor.view.getMeasuredHeight(), !topOrBottom ? displacement : 1 - displacement);
             notifyY = false;
         }
         if (!editor.getHorizontalEdgeEffect().isFinished() && !editor.getHorizontalEdgeEffect().isRecede()) {
             endX = mScroller.getCurrX();
-            float displacement = Math.max(0, Math.min(1, e2.getY() / editor.getHeight()));
-            editor.getHorizontalEdgeEffect().onPull((leftOrRight ? distanceX : -distanceX) / editor.getMeasuredWidth(), !leftOrRight ? 1 - displacement : displacement);
+            float displacement = Math.max(0, Math.min(1, e2.getY() / editor.view.getHeight()));
+            editor.getHorizontalEdgeEffect().onPull((leftOrRight ? distanceX : -distanceX) / editor.view.getMeasuredWidth(), !leftOrRight ? 1 - displacement : displacement);
             notifyX = false;
         }
         mScroller.startScroll(mScroller.getCurrX(),
@@ -229,22 +229,22 @@ public class UserInputView extends SystemExtensionCanvasPartView implements Gest
                 endY - mScroller.getCurrY(), 0);
         final float minOverPull = 0;
         if (notifyY && mScroller.getCurrY() + distanceY <= -minOverPull) {
-            editor.getVerticalEdgeEffect().onPull(-distanceY / editor.getMeasuredHeight(), Math.max(0, Math.min(1, e2.getX() / editor.getWidth())));
+            editor.getVerticalEdgeEffect().onPull(-distanceY / editor.view.getMeasuredHeight(), Math.max(0, Math.min(1, e2.getX() / editor.view.getWidth())));
             topOrBottom = false;
         }
         if (notifyY && mScroller.getCurrY() + distanceY >= editor.getScrollMaxY() + minOverPull) {
-            editor.getVerticalEdgeEffect().onPull(distanceY / editor.getMeasuredHeight(), Math.max(0, Math.min(1, e2.getX() / editor.getWidth())));
+            editor.getVerticalEdgeEffect().onPull(distanceY / editor.view.getMeasuredHeight(), Math.max(0, Math.min(1, e2.getX() / editor.view.getWidth())));
             topOrBottom = true;
         }
         if (notifyX && mScroller.getCurrX() + distanceX <= -minOverPull) {
-            editor.getHorizontalEdgeEffect().onPull(-distanceX / editor.getMeasuredWidth(), Math.max(0, Math.min(1, e2.getY() / editor.getHeight())));
+            editor.getHorizontalEdgeEffect().onPull(-distanceX / editor.view.getMeasuredWidth(), Math.max(0, Math.min(1, e2.getY() / editor.view.getHeight())));
             leftOrRight = false;
         }
         if (notifyX && mScroller.getCurrX() + distanceX >= editor.getScrollMaxX() + minOverPull) {
-            editor.getHorizontalEdgeEffect().onPull(distanceX / editor.getMeasuredWidth(), Math.max(0, Math.min(1, e2.getY() / editor.getHeight())));
+            editor.getHorizontalEdgeEffect().onPull(distanceX / editor.view.getMeasuredWidth(), Math.max(0, Math.min(1, e2.getY() / editor.view.getHeight())));
             leftOrRight = true;
         }
-        editor.invalidate();
+        editor.view.invalidate();
         return handleOnScroll(e1,e2,distanceX,distanceY,endX,endY);
     }
     public boolean handleOnScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY, int endX, int endY) { return true; }
@@ -272,7 +272,7 @@ public class UserInputView extends SystemExtensionCanvasPartView implements Gest
                 editor.hideAutoCompleteWindow();
             }
         }
-        editor.performClick();
+        editor.view.performClick();
         return handleOnSingleTapUp(line,column);
     }
     private void handleSelectedTextClick(MotionEvent e, int line, int column) {
@@ -370,7 +370,7 @@ public class UserInputView extends SystemExtensionCanvasPartView implements Gest
                 editor.getScrollMaxY(),
                 editor.userInput.isOverScrollEnabled() && !editor.isWordwrap() ? (int) (20 * editor.getDpUnit()) : 0,
                 editor.userInput.isOverScrollEnabled() ? (int) (20 * editor.getDpUnit()) : 0);
-        editor.invalidate();
+        editor.view.invalidate();
         float minVe = editor.getDpUnit() * 2000;
         if (Math.abs(velocityX) >= minVe || Math.abs(velocityY) >= minVe) {
             notifyScrolled();
@@ -399,7 +399,7 @@ public class UserInputView extends SystemExtensionCanvasPartView implements Gest
             float top = mScroller.getCurrY() - firstVisible * editor.getRowHeight();
             int height = editor.getRowHeight();
             editor.setTextSizePxDirect(newSize);
-            editor.invalidate();
+            editor.view.invalidate();
             float newY = firstVisible * editor.getRowHeight() + top * editor.getRowHeight() / height;
             mScroller.startScroll(mScroller.getCurrX(), (int) newY, 0, 0, 0);
             return handleOnScale(firstVisible,top,height,newY);
@@ -418,14 +418,14 @@ public class UserInputView extends SystemExtensionCanvasPartView implements Gest
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
         editor.mLayout.createLayout(editor);
-        editor.invalidate();
+        editor.view.invalidate();
         handleOnScaleEnd(detector);
     }
     public boolean handleOnScaleEnd(ScaleGestureDetector detector) { return true; }
 
     @Override
     public boolean onDown(MotionEvent e) {
-        return editor.isEnabled() && handleOnDown(e);
+        return editor.view.isEnabled() && handleOnDown(e);
     }
     public boolean handleOnDown(MotionEvent e) { return true; }
 

@@ -47,7 +47,7 @@ public class UserInputConnexionController {
      * @param targetView Host editor
      */
     public UserInputConnexionController(CodeEditor targetView) {
-        view =  new UserInputConnexionView(targetView, true) {
+        view =  new UserInputConnexionView(targetView.view, true) {
             @Override
             public void handleComposingRegionUpdate(int line, int startCol, int endCol) {
                 model.init(line,startCol,endCol);
@@ -175,12 +175,13 @@ public class UserInputConnexionController {
                 return false;
             }
         };
+        view.attachEditor(targetView);
         model.invalid = false;
     }
 
     public void invalid() {
         model.invalid();
-        view.editor.invalidate();
+        view.editor.view.invalidate();
     }
 
     /**

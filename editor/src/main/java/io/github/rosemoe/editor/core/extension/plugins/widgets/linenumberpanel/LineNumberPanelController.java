@@ -20,14 +20,18 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.TypedValue;
+import android.view.View;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.color.ColorManager;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.IntPair;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.handles.LineNumberPanelViewHandles;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.extension.LineNumberPanelEvent;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
@@ -42,19 +46,31 @@ import static io.github.rosemoe.editor.core.extension.plugins.widgets.linenumber
 public class LineNumberPanelController extends WidgetExtensionController {
 
     private LineNumberPanelModel model = new LineNumberPanelModel();
-    private final LineNumberPanelView  view;
 
+    public LineNumberPanelView getView() {
+        return (LineNumberPanelView) view;
+    }
     public LineNumberPanelController(CodeEditor editor) {
         super(editor);
         subscribe(LineNumberPanelEvent.class);
-        view = new LineNumberPanelView(editor);
-        model.dividerWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, Resources.getSystem().getDisplayMetrics());
-        model.dividerMargin = model.dividerWidth;
         name        = "linenumberpanel";
         description = "This widget is responsible from displaying the linenumber panel";
         editor.colorManager.register("lineNumberPanel", "base2");
         editor.colorManager.register("lineNumberBackground", "base2");
         editor.colorManager.register("lineNumberPanelText", "base1");
+    }
+    public void attachView(View v) {
+        editor.lineNumber.view = (WidgetExtensionView) v;
+        ((LineNumberPanelView)v).initialize(editor);
+        getView().handles = new LineNumberPanelViewHandles() {
+            @Override
+            public void handleOnDraw(Canvas canvas) {
+                LineNumberPanelController.this.refresh(canvas);
+            }
+        };
+        model.dividerWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, Resources.getSystem().getDisplayMetrics());
+        model.dividerMargin = model.dividerWidth;
+        setLineNumberAlign(ALIGN_CENTER);
     }
 
     @Override
@@ -84,11 +100,10 @@ public class LineNumberPanelController extends WidgetExtensionController {
 
     @Override
     public void setEnabled(boolean state) {
-        super.setEnabled(state);
         if (editor.isWordwrap()) {
             editor.mLayout.createLayout(editor);
         }
-        editor.invalidate();
+        super.setEnabled(state);
     }
 
     @Override
@@ -97,14 +112,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
     }
     @Override
     public void setTextSize(float size) {
-        view.lineNumberPaint.setTextSize(size);
-    }
-    /**
-     * Return width of the widget in the view.
-     */
-    @Override
-    public float width() {
-        return getPanelWidth();
+
     }
 
     /**
@@ -126,16 +134,15 @@ public class LineNumberPanelController extends WidgetExtensionController {
         ColorManager colorManager = editor.colorManager;
         int lineNumberColor = colorManager.getColor("lineNumberPanelText");
         int lineNumberBackgroundColor = colorManager.getColor("lineNumberBackground");
-        Float offsetX = (Float) args[0];
-        Integer lineCount = (Integer) args[1];
-        float lineNumberWidth = measureLineNumber(lineCount);
+        int dividerColor = colorManager.getColor("completionPanelBackground");
 
-        drawLineNumberBackground(canvas, offsetX, lineNumberWidth + model.dividerMargin, lineNumberBackgroundColor);
-        drawDivider(canvas, offsetX + lineNumberWidth + model.dividerMargin, colorManager.getColor("completionPanelBackground"));
+        drawLineNumberBackground(canvas, lineNumberBackgroundColor);
+        drawDivider(canvas, dividerColor);
 
         for (int i = 0; i < model.postDrawLineNumbers.size(); i++) {
             long packed = model.postDrawLineNumbers.get(i);
-            drawLineNumber(canvas, IntPair.getFirst(packed), IntPair.getSecond(packed), offsetX, lineNumberWidth, lineNumberColor);
+            Logger.debug("Drawing : ",i);
+            drawLineNumber(canvas, IntPair.getFirst(packed), IntPair.getSecond(packed), lineNumberColor );
         }
     }
 
@@ -156,8 +163,9 @@ public class LineNumberPanelController extends WidgetExtensionController {
         final String[] charSet = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
         float single = 0f;
         for (String ch : charSet) {
-            single = Math.max(single, view.lineNumberPaint.measureText(ch));
+            single = Math.max(single, getView().lineNumberPaint.measureText(ch));
         }
+        Logger.debug("single=",single,",count=",count);
         return single * count;
     }
 
@@ -165,7 +173,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
      * @return Typeface of line number
      */
     public Typeface getTypefaceLineNumber() {
-        return view.lineNumberPaint.getTypeface();
+        return getView().lineNumberPaint.getTypeface();
     }
 
     /**
@@ -177,8 +185,8 @@ public class LineNumberPanelController extends WidgetExtensionController {
         if (typefaceLineNumber == null) {
             typefaceLineNumber = Typeface.MONOSPACE;
         }
-        view.lineNumberPaint.setTypeface(typefaceLineNumber);
-        editor.invalidate();
+        getView().lineNumberPaint.setTypeface(typefaceLineNumber);
+        view.invalidate();
     }
 
     /**
@@ -205,8 +213,8 @@ public class LineNumberPanelController extends WidgetExtensionController {
      */
     public void setLineNumberAlign(int align) {
         model.alignment = align;
-        view.setTextAlign(getViewLineNumber());
-        editor.invalidate();
+        getView().setTextAlign(getViewLineNumber());
+        view.invalidate();
     }
 
     /**
@@ -219,7 +227,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
             throw new IllegalArgumentException("margin can not be under zero");
         }
         model.dividerMargin = dividerMargin;
-        editor.invalidate();
+        view.invalidate();
     }
 
     /**
@@ -239,34 +247,19 @@ public class LineNumberPanelController extends WidgetExtensionController {
             throw new IllegalArgumentException("width can not be under zero");
         }
         model.dividerWidth = dividerWidth;
-        editor.invalidate();
-    }
-
-    /**
-     * Get the width of line number and divider line
-     * (width of the all panel).
-     *
-     * @return The width
-     */
-    public float getPanelWidth() {
-        return isEnabled() ? measureLineNumber(editor.getLineCount()) + model.dividerMargin * 2 + getDividerWidth() : editor.mDpUnit * 5;
+        view.invalidate();
     }
 
     /**
      * Draw divider line
      *
      * @param canvas  Canvas to draw
-     * @param offsetX End x of line number region
      * @param color   Color to draw divider
      */
-    private void drawDivider(Canvas canvas, float offsetX, int color) {
-        float right = offsetX + getDividerWidth();
-        if (right < 0) {
-            return;
-        }
-        float left = Math.max(0f, offsetX);
+    private void drawDivider(Canvas canvas, int color) {
+
         int offY = editor.getOffsetY();
-        int editorHeight = editor.getHeight();
+        int editorHeight = editor.view.getHeight();
 
         // model compute
         model.divider.bottom = editorHeight;
@@ -275,30 +268,28 @@ public class LineNumberPanelController extends WidgetExtensionController {
             model.divider.bottom = model.divider.bottom - offY;
             model.divider.top = model.divider.top - offY;
         }
-        model.divider.left = left;
-        model.divider.right = right;
+        model.divider.left = width() - model.dividerWidth;
+        model.divider.right = model.divider.left + model.dividerWidth;
 
         // display view
-        editor.drawColor(canvas, color, A.getRectF(model.divider));
+        WidgetExtensionView.drawColor(canvas, color, A.getRectF(model.divider));
     }
 
     /**
      * Draw line number background
      *
      * @param canvas  Canvas to draw
-     * @param offsetX Start x of line number region
-     * @param width   Width of line number region
      * @param color   Color of line number background
      */
-    private void drawLineNumberBackground(Canvas canvas, float offsetX, float width, int color) {
-        float right = offsetX + width;
+    private void drawLineNumberBackground(Canvas canvas, int color) {
+        float left = 0;
+        float right = width();
         if (right < 0) {
             return;
         }
         Logger.debug("color=",color);
-        float left = Math.max(0f, offsetX);
 
-        model.panelBg.bottom = editor.getHeight();
+        model.panelBg.bottom = editor.view.getHeight();
         model.panelBg.top = 0;
         int offY = editor.getOffsetY();
         if (offY < 0) {
@@ -315,17 +306,22 @@ public class LineNumberPanelController extends WidgetExtensionController {
     /**
      * Draw single line number
      */
-    private void drawLineNumber(Canvas canvas, int line, int row, float offsetX, float width, int color) {
-        if (width + offsetX <= 0) {
+    private void drawLineNumber(Canvas canvas, int line, int row, int color) {
+        float width = width() - model.dividerWidth - model.dividerMargin;
+        if (width <= 0) {
             Logger.debug("aborted ...");
             return;
         }
-        Logger.debug("color=",color,",model.computedText=",model.computedText.length,",c1=",model.computedText[0]);
         int count = model.computeAndGetText(line);
-        view.drawLineNumber(canvas,row,offsetX,width,count,color,model.computedText,model.dividerMargin,getViewLineNumber());
+        getView().drawLineNumber(canvas,row,width,count,color,model.computedText,model.dividerMargin,getViewLineNumber());
     }
 
     public void addNumber(int line, int row) {
         model.postDrawLineNumbers.add(IntPair.pack(line, row));
+    }
+
+    @Override
+    public float width() {
+        return getView().getWidth();
     }
 }

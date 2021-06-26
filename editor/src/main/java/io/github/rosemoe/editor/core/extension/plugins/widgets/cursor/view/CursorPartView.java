@@ -59,7 +59,7 @@ public class CursorPartView extends SystemExtensionCanvasPartView {
         float bottom = top + radius * 2;
         float left = centerX - radius;
         float right = centerX + radius;
-        if (right < 0 || left > editor.getWidth() || bottom < 0 || top > editor.getHeight()) {
+        if (right < 0 || left > editor.view.getWidth() || bottom < 0 || top > editor.view.getHeight()) {
             resultRect.setEmpty();
             return;
         }

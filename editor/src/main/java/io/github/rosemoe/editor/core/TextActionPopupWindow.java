@@ -52,7 +52,7 @@ public class TextActionPopupWindow extends TextComposeBasePopup implements View.
 
         // Since popup window does provide decor view, we have to pass null to this method
         @SuppressLint("InflateParams")
-        View root = LayoutInflater.from(editor.getContext()).inflate(R.layout.text_compose_popup_window, null);
+        View root = LayoutInflater.from(editor.view.getContext()).inflate(R.layout.text_compose_popup_window, null);
         mSelectAll = root.findViewById(R.id.tcpw_material_button_select_all);
         mContainer = root.findViewById(R.id.text_compose_panel);
         MaterialButton cut = root.findViewById(R.id.tcpw_material_button_cut);

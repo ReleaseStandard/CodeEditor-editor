@@ -122,6 +122,6 @@ public class ColorSchemeController extends SystemExtensionController {
         editor.setEditorLanguage(editor.mLanguage);
         editor.invalidate();
         */
-        editor.invalidate();
+        editor.view.invalidate();
     }
 }

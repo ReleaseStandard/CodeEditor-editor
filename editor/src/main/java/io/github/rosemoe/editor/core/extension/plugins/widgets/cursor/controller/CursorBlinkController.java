@@ -49,8 +49,8 @@ public final class CursorBlinkController extends SystemExtensionController imple
 
     public boolean isSelectionVisible() {
         model.buffer = view.editor.mLayout.getCharLayoutOffset(view.editor.getCursor().getLeftLine(), view.editor.getCursor().getLeftColumn(), model.buffer);
-        return (model.buffer[0] >= view.editor.getOffsetY() && model.buffer[0] - view.editor.getRowHeight() <= view.editor.getOffsetY() + view.editor.getHeight()
-                && model.buffer[1] >= view.editor.getOffsetX() && model.buffer[1] - 100f/* larger than a single character */ <= view.editor.getOffsetX() + view.editor.getWidth());
+        return (model.buffer[0] >= view.editor.getOffsetY() && model.buffer[0] - view.editor.getRowHeight() <= view.editor.getOffsetY() + view.editor.view.getHeight()
+                && model.buffer[1] >= view.editor.getOffsetX() && model.buffer[1] - 100f/* larger than a single character */ <= view.editor.getOffsetX() + view.editor.view.getWidth());
     }
 
     @Override
@@ -60,10 +60,10 @@ public final class CursorBlinkController extends SystemExtensionController imple
             if (System.currentTimeMillis() - model.lastSelectionModificationTime >= model.period * 2) {
                 model.visibility = !model.visibility;
                 if (!view.editor.getCursor().isSelected() && isSelectionVisible()) {
-                    view.editor.invalidate();
+                    view.editor.view.invalidate();
                 }
             }
-            view.editor.postDelayed(this, model.period);
+            view.editor.view.postDelayed(this, model.period);
         } else {
             model.visibility = true;
         }

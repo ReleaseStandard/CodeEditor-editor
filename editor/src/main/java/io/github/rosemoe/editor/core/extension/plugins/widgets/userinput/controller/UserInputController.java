@@ -168,7 +168,7 @@ public final class UserInputController extends WidgetExtensionController {
             return;
         }
         model.mLastSetSelection = 0;
-        view.editor.invalidate();
+        view.editor.view.invalidate();
     }
 
     /**
@@ -225,12 +225,12 @@ public final class UserInputController extends WidgetExtensionController {
             @Override
             public void run() {
                 if (System.currentTimeMillis() - model.mLastTouchedSelectionHandle >= SELECTION_HANDLE_RESIZE_DELAY) {
-                    view.editor.invalidate();
+                    view.editor.view.invalidate();
                     view.editor.onEndTextSelect();
                 }
             }
         }
-        view.editor.postDelayed(new InvalidateNotifier(), SELECTION_HANDLE_RESIZE_DELAY);
+        view.editor.view.postDelayed(new InvalidateNotifier(), SELECTION_HANDLE_RESIZE_DELAY);
     }
 
 
@@ -275,7 +275,7 @@ public final class UserInputController extends WidgetExtensionController {
                     scrollBarV.model.holding = false;
                 }
                 if (scrollBarV.isHolding() || scrollBarH.model.holding) {
-                    view.editor.invalidate();
+                    view.editor.view.invalidate();
                 }
                 if (shouldDrawInsertHandle() && view.editor.getInsertHandleRect().contains(e.getX(), e.getY())) {
                     model.mHoldingInsertHandle = true;
@@ -306,16 +306,16 @@ public final class UserInputController extends WidgetExtensionController {
                 if (scrollBarV.isHolding()) {
                     float movedDis = e.getY() - downY;
                     downY = e.getY();
-                    float all = view.editor.mLayout.getLayoutHeight() + view.editor.getHeight() / 2f;
-                    float dy = movedDis / view.editor.getHeight() * all;
+                    float all = view.editor.mLayout.getLayoutHeight() + view.editor.view.getHeight() / 2f;
+                    float dy = movedDis / view.editor.view.getHeight() * all;
                     view.scrollBy(0, dy);
                     return true;
                 }
                 if (scrollBarH.model.holding) {
                     float movedDis = e.getX() - downX;
                     downX = e.getX();
-                    float all = view.editor.getScrollMaxX() + view.editor.getWidth();
-                    float dx = movedDis / view.editor.getWidth() * all;
+                    float all = view.editor.getScrollMaxX() + view.editor.view.getWidth();
+                    float dx = movedDis / view.editor.view.getWidth() * all;
                     view.scrollBy(dx, 0);
                     return true;
                 }
@@ -324,19 +324,19 @@ public final class UserInputController extends WidgetExtensionController {
             case MotionEvent.ACTION_CANCEL:
                 if (scrollBarV.isHolding()) {
                     scrollBarV.model.holding = false;
-                    view.editor.invalidate();
+                    view.editor.view.invalidate();
                     model.mLastScroll = System.currentTimeMillis();
                     view.notifyScrolled();
                 }
                 if (scrollBarH.model.holding) {
                     scrollBarH.model.holding = false;
-                    view.editor.invalidate();
+                    view.editor.view.invalidate();
                     model.mLastScroll = System.currentTimeMillis();
                     view.notifyScrolled();
                 }
                 if (model.mHoldingInsertHandle) {
                     model.mHoldingInsertHandle = false;
-                    view.editor.invalidate();
+                    view.editor.view.invalidate();
                     view.notifyLater();
                 }
                 model.selectionHandleType = -1;
@@ -386,12 +386,12 @@ public final class UserInputController extends WidgetExtensionController {
         }
     }
     private void scrollIfThumbReachesEdge(MotionEvent e) {
-        int flag = model.computeEdgeFlags(e.getX(), e.getY(), view.editor.getWidth(), view.editor.getHeight());
+        int flag = model.computeEdgeFlags(e.getX(), e.getY(), view.editor.view.getWidth(), view.editor.view.getHeight());
         int initialDelta = (int) (8 * view.editor.getDpUnit());
         if (flag != 0 && view.mEdgeFlags == 0) {
             view.mEdgeFlags = flag;
             view.mThumb = MotionEvent.obtain(e);
-            view.editor.post(new UserInputController.EdgeScrollRunnable(initialDelta));
+            view.editor.view.post(new UserInputController.EdgeScrollRunnable(initialDelta));
         } else if (flag == 0) {
             stopEdgeScroll();
         } else {
@@ -546,8 +546,8 @@ public final class UserInputController extends WidgetExtensionController {
                 // Do not scroll too far from text region of this line
                 float maxOffset = scrollBarH.model.getMaxScroll();
                 Logger.debug("here:maxOffset=",maxOffset);
-                //float maxOffset = editor.getWidth() - editor.lineNumber.getPanelWidth() - view.editor.mLayout.getCharLayoutOffset(line, column)[1] - scrollBarH.model.barTrackLength
-                //float maxOffset = + view.editor.mLayout.getCharLayoutOffset(line, column)[1] - view.editor.getWidth() * 0.85f;
+                //float maxOffset = editor.view.getWidth() - editor.lineNumber.getPanelWidth() - view.editor.mLayout.getCharLayoutOffset(line, column)[1] - scrollBarH.model.barTrackLength
+                //float maxOffset = + view.editor.mLayout.getCharLayoutOffset(line, column)[1] - view.editor.view.getWidth() * 0.85f;
                 if (view.mScroller.getCurrX() > maxOffset) {
                     dx = 0;
                 }
@@ -582,7 +582,7 @@ public final class UserInputController extends WidgetExtensionController {
 
             // Post for animation
             if (view.mEdgeFlags != 0) {
-                view.editor.postDelayed(this, 10);
+                view.editor.view.postDelayed(this, 10);
             }
         }
     }
@@ -597,20 +597,20 @@ public final class UserInputController extends WidgetExtensionController {
         if (!model.shouldDrawScrollBar(scrollBarV.isHolding(),scrollBarH.isHolding())) {
             return;
         }
-        if (editor.isVerticalScrollBarEnabled() && editor.getScrollMaxY() > editor.getHeight() / 2) {
+        if (editor.view.isVerticalScrollBarEnabled() && editor.getScrollMaxY() > editor.view.getHeight() / 2) {
             scrollBarV.refresh(canvas,
-                    editor.mLayout.getLayoutHeight() + editor.getHeight() / 2f,
+                    editor.mLayout.getLayoutHeight() + editor.view.getHeight() / 2f,
                     editor.getOffsetY(),
-                    (int) (editor.getWidth() - scrollBarV.getWidth()),
-                    editor.getHeight()
+                    (int) (editor.view.getWidth() - scrollBarV.getWidth()),
+                    editor.view.getHeight()
             );
         }
-        if (editor.isHorizontalScrollBarEnabled() && !editor.isWordwrap() && editor.getScrollMaxX() > editor.getWidth() * 3 / 4) {
+        if (editor.view.isHorizontalScrollBarEnabled() && !editor.isWordwrap() && editor.getScrollMaxX() > editor.view.getWidth() * 3 / 4) {
             scrollBarH.refresh(canvas,
                     editor.getScrollMaxX() + scrollBarH.getWidth(),
                     editor.getOffsetX(),
-                    (int) (editor.getHeight() - scrollBarH.getWidth()),
-                    editor.getWidth()
+                    (int) (editor.view.getHeight() - scrollBarH.getWidth()),
+                    editor.view.getWidth()
                     );
         }
     }

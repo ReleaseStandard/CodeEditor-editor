@@ -63,7 +63,7 @@ public class ExtensionChooser extends Extension {
         for(int i = 0; i < extensions.size(); i++) {
             names[i] = extensions.get(i).name;
         }
-        Context ctx = editor.getContext();
+        Context ctx = editor.view.getContext();
         AlertDialog.Builder adb = new AlertDialog.Builder(ctx);
         adb.setTitle(popup_title);
         adb.setSingleChoiceItems(names,checkedTheme, ((dialog, which) ->

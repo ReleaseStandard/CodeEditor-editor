@@ -80,10 +80,10 @@ public class WidgetControllerManagerController extends Extension {
                 break;
             }
             case WidgetManagerEvent.GUI: {
-                Intent intent = new Intent(editor.getContext(), WidgetManagerView.class);
+                Intent intent = new Intent(editor.view.getContext(), WidgetManagerView.class);
                 intent.putExtra("widgets", editor.systemPlugins.extensions.toArray(new Extension[editor.systemPlugins.extensions.size()]));
                 intent.putExtra("plugins", editor.plugins.extensions.toArray(new Extension[editor.plugins.extensions.size()]));
-                editor.getContext().startActivity(intent);
+                editor.view.getContext().startActivity(intent);
                 new Thread() {
                     @Override
                     public void run() {
