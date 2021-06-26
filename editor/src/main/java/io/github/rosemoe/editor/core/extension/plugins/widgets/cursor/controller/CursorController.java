@@ -46,6 +46,8 @@ public final class CursorController extends WidgetExtensionController {
     private final ContentMapController mContent;
     private final CachedIndexer mIndexer;
     private LanguagePlugin mLanguage;
+    public float mInsertSelWidth;
+
     public CursorModel model = new CursorModel();
 	public final CursorView view;
     public CursorBlinkController blink;        // Manage cursor blink effect
@@ -63,6 +65,7 @@ public final class CursorController extends WidgetExtensionController {
         mIndexer = new CachedIndexer(content);
         view     = new CursorView(editor);
         blink = new CursorBlinkController(editor, CursorBlinkController.DEFAULT_CURSOR_BLINK_PERIOD);
+        mInsertSelWidth = editor.lineNumber.getDividerWidth() / 2;
     }
 
     /**

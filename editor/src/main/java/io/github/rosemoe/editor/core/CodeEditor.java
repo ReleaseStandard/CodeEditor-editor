@@ -73,6 +73,7 @@ import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.ExtensionContainer;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorModel;
@@ -190,7 +191,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     private int mNonPrintableOptions;
     private int mCachedLineNumberWidth;
     public float mDpUnit;
-    public float mInsertSelWidth;
     private float mBlockLineWidth;
     private float mLineInfoTextSize;
     private boolean mWait;
@@ -547,7 +547,12 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      */
     public float getOffset(int line, int column) {
         prepareLine(line);
-        return measureText(mBuffer, 0, column) + lineNumber.getPanelWidth() - getOffsetX();
+        float res = measureText(mBuffer, 0, column) - getOffsetX();
+        WidgetExtensionController w = (WidgetExtensionController) systemPlugins.get("linenumberpanel");
+        if ( w != null ) {
+            res += w.width();
+        }
+        return res;
     }
 
     /**
@@ -604,7 +609,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                 lineNumber,
                 symbolInputController
         );
-        mInsertSelWidth = lineNumber.getDividerWidth() / 2;
         mDpUnit = lineNumber.getDividerWidth() / 2;
         mDrag = false;
         mWait = false;
@@ -945,7 +949,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         view.drawBackground(canvas);
 
         float lineNumberWidth = lineNumber.measureLineNumber(getLineCount());
-        float offsetX = -getOffsetX() + lineNumber.getPanelWidth();
+        float offsetX = -getOffsetX() + lineNumber.width();
         float textOffset = offsetX;
 
         if (isWordwrap()) {
@@ -979,6 +983,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
 
         drawEdgeEffect(canvas);
     }
+
 
     /**
      * Clear flag in flags
@@ -2439,19 +2444,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         }
         mTextMetrics = mPaint.getFontMetricsInt();
         createLayout();
-        invalidate();
-    }
-
-    /**
-     * Width for insert cursor
-     *
-     * @param width CursorController width
-     */
-    public void setCursorWidth(float width) {
-        if (width < 0) {
-            throw new IllegalArgumentException("width can not be under zero");
-        }
-        mInsertSelWidth = width;
         invalidate();
     }
 

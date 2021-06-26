@@ -28,8 +28,8 @@ public class CursorPartView extends SystemExtensionCanvasPartView {
             RectF mRect = new RectF();
             mRect.top = editor.getRowTop(row) - editor.getOffsetY();
             mRect.bottom = editor.getRowBottom(row) - editor.getOffsetY();
-            mRect.left = centerX - editor.mInsertSelWidth / 2f;
-            mRect.right = centerX + editor.mInsertSelWidth / 2f;
+            mRect.left = centerX - editor.cursor.mInsertSelWidth / 2f;
+            mRect.right = centerX + editor.cursor.mInsertSelWidth / 2f;
             editor.drawColor(canvas, editor.colorManager.getColor("selectionInsert"), mRect);
         }
         if (handle != null) {

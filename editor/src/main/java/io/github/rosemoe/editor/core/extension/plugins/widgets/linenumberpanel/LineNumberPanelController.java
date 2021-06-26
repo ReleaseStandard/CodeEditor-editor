@@ -91,6 +91,54 @@ public class LineNumberPanelController extends WidgetExtensionController {
         editor.invalidate();
     }
 
+    @Override
+    public void clear() {
+        model.postDrawLineNumbers.clear();
+    }
+    @Override
+    public void setTextSize(float size) {
+        view.lineNumberPaint.setTextSize(size);
+    }
+    /**
+     * Return width of the widget in the view.
+     */
+    @Override
+    public float width() {
+        return getPanelWidth();
+    }
+
+    /**
+     * Init the widget from json.
+     * @param extension
+     */
+    @Override
+    protected void initFromJson(JsonNode extension) {
+
+    }
+
+    /**
+     * Generic method : all widgets will have it (all canvas widget).
+     * Paint the widget on the screen in its state.
+     * @param canvas to paint on
+     */
+    @Override
+    protected void handleRefresh(Canvas canvas, Object ...args) {
+        ColorManager colorManager = editor.colorManager;
+        int lineNumberColor = colorManager.getColor("lineNumberPanelText");
+        int lineNumberBackgroundColor = colorManager.getColor("lineNumberBackground");
+        Float offsetX = (Float) args[0];
+        Integer lineCount = (Integer) args[1];
+        float lineNumberWidth = measureLineNumber(lineCount);
+
+        drawLineNumberBackground(canvas, offsetX, lineNumberWidth + model.dividerMargin, lineNumberBackgroundColor);
+        drawDivider(canvas, offsetX + lineNumberWidth + model.dividerMargin, colorManager.getColor("completionPanelBackground"));
+
+        for (int i = 0; i < model.postDrawLineNumbers.size(); i++) {
+            long packed = model.postDrawLineNumbers.get(i);
+            drawLineNumber(canvas, IntPair.getFirst(packed), IntPair.getSecond(packed), offsetX, lineNumberWidth, lineNumberColor);
+        }
+    }
+
     /**
      * Get the width of line number region
      * @param lineCount line count
@@ -204,34 +252,6 @@ public class LineNumberPanelController extends WidgetExtensionController {
         return isEnabled() ? measureLineNumber(editor.getLineCount()) + model.dividerMargin * 2 + getDividerWidth() : editor.mDpUnit * 5;
     }
 
-    @Override
-    protected void initFromJson(JsonNode extension) {
-
-    }
-
-    /**
-     * Generic method : all widgets will have it (all canvas widget).
-     * Paint the widget on the screen in its state.
-     * @param canvas to paint on
-     */
-    @Override
-    protected void handleRefresh(Canvas canvas, Object ...args) {
-        ColorManager colorManager = editor.colorManager;
-        int lineNumberColor = colorManager.getColor("lineNumberPanelText");
-        int lineNumberBackgroundColor = colorManager.getColor("lineNumberBackground");
-        Float offsetX = (Float) args[0];
-        Integer lineCount = (Integer) args[1];
-        float lineNumberWidth = measureLineNumber(lineCount);
-
-        drawLineNumberBackground(canvas, offsetX, lineNumberWidth + model.dividerMargin, lineNumberBackgroundColor);
-        drawDivider(canvas, offsetX + lineNumberWidth + model.dividerMargin, colorManager.getColor("completionPanelBackground"));
-
-        for (int i = 0; i < model.postDrawLineNumbers.size(); i++) {
-            long packed = model.postDrawLineNumbers.get(i);
-            drawLineNumber(canvas, IntPair.getFirst(packed), IntPair.getSecond(packed), offsetX, lineNumberWidth, lineNumberColor);
-        }
-    }
-
     /**
      * Draw divider line
      *
@@ -303,15 +323,6 @@ public class LineNumberPanelController extends WidgetExtensionController {
         Logger.debug("color=",color,",model.computedText=",model.computedText.length,",c1=",model.computedText[0]);
         int count = model.computeAndGetText(line);
         view.drawLineNumber(canvas,row,offsetX,width,count,color,model.computedText,model.dividerMargin,getViewLineNumber());
-    }
-
-    @Override
-    public void clear() {
-        model.postDrawLineNumbers.clear();
-    }
-    @Override
-    public void setTextSize(float size) {
-        view.lineNumberPaint.setTextSize(size);
     }
 
     public void addNumber(int line, int row) {
