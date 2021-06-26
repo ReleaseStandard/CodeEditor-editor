@@ -19,34 +19,32 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
-import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.SymbolChannelController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.handles.SymbolInputViewHandles;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.handles.SymbolInputViewHandle;
 
 /**
  * Class responsible from displaying symbol input to user.
  */
 public class SymbolInputView extends WidgetExtensionView {
 
-    public LinearLayout ll ;
-    public SymbolInputViewHandles handles = new SymbolInputViewHandles();
+    public SymbolInputViewHandle handles = new SymbolInputViewHandle();
     public int textcolor = Color.BLACK;
     public int bgColor = Color.WHITE;
 
     public SymbolChannelController channel;
-    public ArrayList<View> views = new ArrayList();
 
     /**
      * View initialization.
      */
     public void init() { init(null, null); }
     public void init(Integer textColor, Integer backgroundColor) {
+        super.initialize();
         setBackgroundColor(bgColor);
         if ( textColor != null ) {
             this.textcolor = textColor;
@@ -73,20 +71,6 @@ public class SymbolInputView extends WidgetExtensionView {
     public SymbolInputView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
-    }
-    public void addButton(View v) {
-        ll.addView(v, new LinearLayout.LayoutParams(-2, -1));
-    }
-    public void addSymbol(String symbol, final String insertText) {
-        Button btn = new Button(getContext(), null, android.R.attr.buttonStyleSmall);
-        btn.setText(symbol);
-        btn.setTextColor(textcolor);
-        btn.setBackgroundColor(bgColor);
-        addButton(btn);
-        views.add(btn);
-        btn.setOnClickListener((view) -> {
-            handles.handleOnClickSymbol(channel, symbol, insertText);
-        });
     }
 
 }

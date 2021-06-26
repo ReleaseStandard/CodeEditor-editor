@@ -1,12 +1,15 @@
 package io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput;
 
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import java.util.ArrayList;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.handles.SymbolInputViewHandles;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.handles.SymbolInputViewHandle;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**
@@ -15,6 +18,7 @@ import io.github.rosemoe.editor.core.util.Logger;
  */
 public class SymbolInputController extends WidgetExtensionController {
 
+    public ArrayList<SymbolController> symbols = new ArrayList<>();
     public SymbolInputModel model = new SymbolInputModel();
     public SymbolInputView getView() {
         return (SymbolInputView) view;
@@ -34,12 +38,12 @@ public class SymbolInputController extends WidgetExtensionController {
      */
     @Override
     public void attachView(View view) {
+        view.setWillNotDraw(false);
         this.view = (WidgetExtensionView) view;
         SymbolInputView siv = getView();
-        siv.ll = new LinearLayout(siv.getContext());
-        siv.ll.setOrientation(LinearLayout.HORIZONTAL);
+        getView().setOrientation(LinearLayout.HORIZONTAL);
 
-        siv.handles = new SymbolInputViewHandles() {
+        siv.handles = new SymbolInputViewHandle() {
             @Override
             public void handleOnClickSymbol(SymbolChannelController channel, String symbol, String insertText) {
                 super.handleOnClickSymbol(channel, symbol, insertText);
@@ -49,7 +53,6 @@ public class SymbolInputController extends WidgetExtensionController {
         siv.channel = new SymbolChannelController();
         siv.textcolor = getPrefixedColor( "text");
         siv.bgColor = getPrefixedColor("bg");
-
         addSymbols(new String[]{"TAB", "{", "}", "(", ")", ",", ".", ";", "\"", "?", "+", "-", "*", "/"},
                 new String[]{"\t", "{}", "}", "(", ")", ",", ".", ";", "\"", "?", "+", "-", "*", "/"});
         Logger.debug("View attached");
@@ -60,13 +63,15 @@ public class SymbolInputController extends WidgetExtensionController {
      */
     @Override
     public void setEnabled(boolean state) {
+        /*
+        TODO
         if ( state ) {
             for(View v : getView().views) {
                 if ( ! v.isShown() ) {
                     getView().addButton(v);
                 }
             }
-        }
+        }*/
         super.setEnabled(state);
     }
 
@@ -78,7 +83,16 @@ public class SymbolInputController extends WidgetExtensionController {
     public void addSymbols(String[] symbolsDisplayIcon, final String[] symbolsTextAction) {
         int count = Math.max(symbolsDisplayIcon.length, symbolsTextAction.length);
         for (int i = 0; i < count; i++) {
-            getView().addSymbol(symbolsDisplayIcon[i], symbolsTextAction[i]);
+            String symbol = symbolsDisplayIcon[i];
+            String actionText = symbolsTextAction[i];
+            SymbolController s = new SymbolController(editor,view.getContext(), symbol, actionText) {
+                @Override
+                public void handleOnClick() {
+                    getView().channel.insertSymbol(editor, actionText, 1);
+                }
+            };
+            symbols.add(s);
+            getView().addView(s.view,new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
         view.invalidate();
         Logger.debug("symbols added");

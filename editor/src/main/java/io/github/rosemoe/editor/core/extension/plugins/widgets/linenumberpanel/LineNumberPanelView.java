@@ -49,9 +49,9 @@ public class LineNumberPanelView extends WidgetExtensionView {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
     public void initialize() {
+        super.initialize();
         lineNumberPaint.setAntiAlias(true);
         lineNumberPaint.setTypeface(Typeface.MONOSPACE);
-        setWillNotDraw(false); // https://stackoverflow.com/questions/10727225/drawing-something-on-my-linearlayout
     }
 
     /**

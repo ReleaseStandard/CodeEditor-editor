@@ -12,6 +12,9 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 
 public class WidgetExtensionView extends LinearLayout {
+    public void initialize() {
+        setWillNotDraw(false); // https://stackoverflow.com/questions/10727225/drawing-something-on-my-linearlayout
+    }
     public WidgetExtensionView(Context context) {
         super(context);
     }
