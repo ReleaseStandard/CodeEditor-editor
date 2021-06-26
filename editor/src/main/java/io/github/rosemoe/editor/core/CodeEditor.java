@@ -77,8 +77,10 @@ import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.AbstractLayout;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelController;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.LoopbackWidgetController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.scrollbar.ScrollBarController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.controller.SymbolInputController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.controller.WidgetControllerManagerController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputConnexionView;
@@ -184,12 +186,12 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     static final int ACTION_MODE_SEARCH_TEXT = 1;
     public static final int ACTION_MODE_SELECT_TEXT = 2;
     public SymbolPairMatch mLanguageSymbolPairs;
-    public Layout mLayout;
+    public AbstractLayout mLayout;
     public int mStartedActionMode;
     private int cursorPosition;
     private int mInputType;
     private int mNonPrintableOptions;
-    private int mCachedLineNumberWidth;
+    public int mCachedLineNumberWidth;
     public float mDpUnit;
     private float mBlockLineWidth;
     private float mLineInfoTextSize;
@@ -198,7 +200,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     private boolean mScalable;
     private boolean mEditable;
     private boolean mCharPaint;
-    private boolean mWordwrap;
+    public boolean mWordwrap;
     private boolean mUndoEnabled;
     private boolean mBlockLineEnabled;
     private boolean mAutoCompletionEnabled;
@@ -796,7 +798,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
     public void setWordwrap(boolean wordwrap) {
         if (mWordwrap != wordwrap) {
             mWordwrap = wordwrap;
-            createLayout();
+            mLayout.createLayout(this);
             invalidate();
         }
     }
@@ -899,7 +901,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
      */
     public void setTextSizePx(@Px float size) {
         setTextSizePxDirect(size);
-        createLayout();
+        mLayout.createLayout(this);
         invalidate();
     }
 
@@ -957,7 +959,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
                 mCachedLineNumberWidth = (int) lineNumberWidth;
             } else if (mCachedLineNumberWidth != (int) lineNumberWidth && !userInput.isScaling()) {
                 mCachedLineNumberWidth = (int) lineNumberWidth;
-                createLayout();
+                mLayout.createLayout(this);
             }
         } else {
             mCachedLineNumberWidth = 0;
@@ -1777,25 +1779,6 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         drawColor(canvas, color, mRect);
     }
 
-
-    /**
-     * Create layout for text
-     */
-    public void createLayout() {
-        if (mLayout != null) {
-            mLayout.destroyLayout();
-        }
-        if (mWordwrap) {
-            mCachedLineNumberWidth = (int) lineNumber.measureLineNumber(getLineCount());
-            mLayout = new WordwrapLayout(this, mText);
-        } else {
-            mLayout = new LineBreakLayout(this, mText);
-        }
-        if (userInput != null) {
-            userInput.view.scrollBy(0, 0);
-        }
-    }
-
     /**
      * Draw rect on screen
      * Will not do any thing if color is zero
@@ -2443,7 +2426,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
             mCharPaint = false;
         }
         mTextMetrics = mPaint.getFontMetricsInt();
-        createLayout();
+        mLayout.createLayout(this);
         invalidate();
     }
 
@@ -3002,7 +2985,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         if (mInputMethodManager != null) {
             mInputMethodManager.restartInput(this);
         }
-        createLayout();
+        mLayout.createLayout(this);
         invalidate();
 
         analyzer.unlockView();
@@ -3529,7 +3512,7 @@ public class CodeEditor extends View implements ContentListener, TextFormatter.F
         getVerticalEdgeEffect().finish();
         getHorizontalEdgeEffect().finish();
         if (isWordwrap() && w != oldWidth) {
-            createLayout();
+            mLayout.createLayout(this);
         } else {
             userInput.view.scrollBy(getOffsetX() > getScrollMaxX() ? getScrollMaxX() - getOffsetX() : 0, getOffsetY() > getScrollMaxY() ? getScrollMaxY() - getOffsetY() : 0);
         }

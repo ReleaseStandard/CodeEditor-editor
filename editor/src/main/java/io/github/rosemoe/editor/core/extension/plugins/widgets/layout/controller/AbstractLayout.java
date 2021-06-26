@@ -89,4 +89,19 @@ public abstract class AbstractLayout implements Layout {
         fontCache = null;
     }
 
+    public static void createLayout(CodeEditor editor) {
+        if (editor.mLayout != null) {
+            editor.mLayout.destroyLayout();
+        }
+        if (editor.mWordwrap) {
+            editor.mCachedLineNumberWidth = (int) editor.lineNumber.measureLineNumber(editor.getLineCount());
+            editor.mLayout = new WordwrapLayout(editor, editor.mText);
+        } else {
+            editor.mLayout = new LineBreakLayout(editor, editor.mText);
+        }
+        if (editor.userInput != null) {
+            editor.userInput.view.scrollBy(0, 0);
+        }
+    }
+
 }

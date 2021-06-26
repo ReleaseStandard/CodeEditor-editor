@@ -58,7 +58,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
     }
 
     @Override
-    public void handleEventDispatch(Event e, String subtype) {
+    protected void handleEventDispatch(Event e, String subtype) {
         LineNumberPanelEvent uie = (LineNumberPanelEvent) e;
         switch(subtype) {
             case LineNumberPanelEvent.CHANGE_ALIGN:
@@ -86,7 +86,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
     public void setEnabled(boolean state) {
         super.setEnabled(state);
         if (editor.isWordwrap()) {
-            editor.createLayout();
+            editor.mLayout.createLayout(editor);
         }
         editor.invalidate();
     }

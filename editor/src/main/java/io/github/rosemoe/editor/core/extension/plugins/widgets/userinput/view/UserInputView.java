@@ -417,7 +417,7 @@ public class UserInputView extends SystemExtensionCanvasPartView implements Gest
 
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
-        editor.createLayout();
+        editor.mLayout.createLayout(editor);
         editor.invalidate();
         handleOnScaleEnd(detector);
     }
