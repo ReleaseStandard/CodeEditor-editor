@@ -1,5 +1,6 @@
 package io.github.rosemoe.editor.core;
 
+import android.graphics.Paint;
 import android.graphics.RectF;
 
 /**

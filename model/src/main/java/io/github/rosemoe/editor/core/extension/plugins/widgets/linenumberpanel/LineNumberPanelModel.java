@@ -33,7 +33,12 @@ public class LineNumberPanelModel {
     public int alignment = ALIGN_DEFAULT;
 
     public float dividerWidth = 0;
-    public float dividerMargin = 0;
+    /**
+     * left and right margin for the text.
+     *
+     * @param dividerMargin Margin for the text
+     */
+    public float margin = 20;
 
     public Rect divider = new Rect();
     public Rect panelBg = new Rect();

@@ -20,20 +20,16 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.OverScroller;
 
-import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionCanvasPartView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.handles.LineNumberPanelViewHandles;
-import io.github.rosemoe.editor.core.util.Logger;
 
 /**
  * This view is a canvas part.
  */
 public class LineNumberPanelView extends WidgetExtensionView {
-    CodeEditor editor;
+
     public OverScroller scroller;
     public Paint lineNumberPaint = new Paint();
 
@@ -51,12 +47,15 @@ public class LineNumberPanelView extends WidgetExtensionView {
     public LineNumberPanelView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
-
-    public void initialize(CodeEditor editor) {
-        this.editor = editor;
+    public void initialize() {
         lineNumberPaint.setAntiAlias(true);
         lineNumberPaint.setTypeface(Typeface.MONOSPACE);
     }
+
+    /**
+     * Set text alignment in this view.
+     * @param align
+     */
     protected void setTextAlign(Paint.Align align) {
         if (lineNumberPaint.getTextAlign() != align) {
             lineNumberPaint.setTextAlign(align);
@@ -67,49 +66,41 @@ public class LineNumberPanelView extends WidgetExtensionView {
      * Draw text of line number panel.
      * @param canvas
      * @param row
-     * @param width
+     * @param textWidth
      * @param count
      * @param color
      * @param computedText
-     * @param mDividerMargin
+     * @param margin
      * @param mLineNumberAlign
      */
-    protected void drawLineNumber(Canvas canvas, int row, float width, int count, int color, char[]computedText, float mDividerMargin, Paint.Align mLineNumberAlign) {
+    protected void drawLineNumber(Canvas canvas, int row, float textWidth, int count, int color, char[]computedText, float margin, Paint.Align mLineNumberAlign, int bottomRow, int topRow, int yOffset) {
         setTextAlign(mLineNumberAlign);
         lineNumberPaint.setColor(color);
-        int sz = (int) Math.min((editor.getRowBottom(row) - editor.getRowTop(row)), width);
+        int sz = (int) Math.min((bottomRow - topRow), textWidth);
+        float marginLeft = margin/2;
+        float marginRight = margin/2;
         lineNumberPaint.setTextSize(sz);
         // Line number center align to text center //
 
         Paint.FontMetrics metrics = lineNumberPaint.getFontMetrics();
-        float y = (editor.getRowBottom(row) + editor.getRowTop(row)) / 2f
+        float y = (bottomRow + topRow) / 2f
                 - (metrics.descent - metrics.ascent) / 2f - metrics.ascent
-                - editor.getOffsetY();
+                - yOffset;
         switch (mLineNumberAlign) {
             case LEFT:
-                canvas.drawText(computedText, 0, count, 0, y, lineNumberPaint);
+                canvas.drawText(computedText, 0, count, marginLeft, y - marginRight, lineNumberPaint);
                 break;
             case RIGHT:
-                canvas.drawText(computedText, 0, count, 0 + width, y, lineNumberPaint);
+                canvas.drawText(computedText, 0, count, marginLeft + textWidth, y - marginRight, lineNumberPaint);
                 break;
             case CENTER:
-                canvas.drawText(computedText, 0, count, 0 + width / 2f, y, lineNumberPaint);
+                canvas.drawText(computedText, 0, count, marginLeft + textWidth / 2f, y - marginRight, lineNumberPaint);
         }
     }
-//
+
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         handles.handleOnDraw(canvas);
-        //lineNumberPaint.setColor(0xFFFF0000);
-        //canvas.drawText("TEST",0,4,0,0,lineNumberPaint);
     }
-    //
-    /**
-     * PUBLIC
-     */
-    /*@Override
-    public void paint(Canvas canvas, CodeEditor editor) {
-
-    }*/
 }

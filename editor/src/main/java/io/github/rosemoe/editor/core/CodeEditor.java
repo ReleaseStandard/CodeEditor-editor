@@ -907,8 +907,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      */
     public void setTextSizePxDirect(float size) {
         mPaint.setTextSize(size);
-        WidgetExtensionController e = (WidgetExtensionController) systemPlugins.get("linenumberpanel");
-        if ( e != null ) { e.setTextSize(size); }
         miniGraphPaint.setTextSize(size * SCALE_MINI_GRAPH);
         mTextMetrics = mPaint.getFontMetricsInt();
         mGraphMetrics = miniGraphPaint.getFontMetricsInt();

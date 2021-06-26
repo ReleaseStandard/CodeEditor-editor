@@ -231,5 +231,10 @@ public class Extension implements EventSource, EventDestination, Comparable, Par
         // user defined configuration
         initFromJson(extension);
     }
+
+    /**
+     * Init an extension from a json this should be overrided by sub extensions.
+     * @param extension
+     */
     protected void initFromJson(JsonNode extension) { }
 }

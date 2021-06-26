@@ -24,10 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.OverScroller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.color.ColorManager;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.IntPair;
@@ -63,10 +60,12 @@ public class LineNumberPanelController extends WidgetExtensionController {
         editor.colorManager.register("lineNumberBackground", "base2");
         editor.colorManager.register("lineNumberPanelText", "base1");
     }
+
+    @Override
     public void attachView(View v) {
         editor.lineNumber.view = (WidgetExtensionView) v;
         getView().scroller = new OverScroller(v.getContext());
-        ((LineNumberPanelView)v).initialize(editor);
+        ((LineNumberPanelView)v).initialize();
         getView().handles = new LineNumberPanelViewHandles() {
             @Override
             public void handleOnDraw(Canvas canvas) {
@@ -74,14 +73,11 @@ public class LineNumberPanelController extends WidgetExtensionController {
             }
         };
         model.dividerWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, Resources.getSystem().getDisplayMetrics());
-        model.dividerMargin = model.dividerWidth;
-        setLineNumberAlign(ALIGN_CENTER);
+        model.margin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, Resources.getSystem().getDisplayMetrics());
     }
 
     @Override
     protected void handleEventDispatch(Event e, String subtype) {
-        Logger.debug();
-        e.dump();
         switch(subtype) {
             case LineNumberPanelEvent.CHANGE_ALIGN:
                 Integer align = (Integer) e.getArg(0);
@@ -95,10 +91,11 @@ public class LineNumberPanelController extends WidgetExtensionController {
                 if( prop != null ) {
                     if ( prop.equals("width") ) {
                         Float width = (Float) e.getArg(1);
-                        setDividerWidth(width);
+                        model.dividerWidth = width;
+                        view.invalidate();
                     } else if ( prop.equals("margin") ) {
                         Float margin = (Float) e.getArg(1);
-                        setDividerMargin(margin);
+                        model.margin = margin;
                     }
                 }
                 break;
@@ -132,19 +129,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
     @Override
     public void clear() {
         model.postDrawLineNumbers.clear();
-    }
-    @Override
-    public void setTextSize(float size) {
-
-    }
-
-    /**
-     * Init the widget from json.
-     * @param extension
-     */
-    @Override
-    protected void initFromJson(JsonNode extension) {
-
+        view.invalidate();
     }
 
     /**
@@ -193,13 +178,6 @@ public class LineNumberPanelController extends WidgetExtensionController {
     }
 
     /**
-     * @return Typeface of line number
-     */
-    public Typeface getTypefaceLineNumber() {
-        return getView().lineNumberPaint.getTypeface();
-    }
-
-    /**
      * Set line number's typeface
      *
      * @param typefaceLineNumber New typeface
@@ -241,36 +219,10 @@ public class LineNumberPanelController extends WidgetExtensionController {
     }
 
     /**
-     * Set divider line's left and right margin
-     *
-     * @param dividerMargin Margin for divider line
-     */
-    public void setDividerMargin(float dividerMargin) {
-        if (dividerMargin < 0) {
-            throw new IllegalArgumentException("margin can not be under zero");
-        }
-        model.dividerMargin = dividerMargin;
-        view.invalidate();
-    }
-
-    /**
      * @return Width of divider line
      */
     public float getDividerWidth() {
         return model.dividerWidth;
-    }
-
-    /**
-     * Set divider line's width
-     *
-     * @param dividerWidth Width of divider line
-     */
-    public void setDividerWidth(float dividerWidth) {
-        if (dividerWidth < 0) {
-            throw new IllegalArgumentException("width can not be under zero");
-        }
-        model.dividerWidth = dividerWidth;
-        view.invalidate();
     }
 
     /**
@@ -330,13 +282,13 @@ public class LineNumberPanelController extends WidgetExtensionController {
      * Draw single line number
      */
     private void drawLineNumber(Canvas canvas, int line, int row, int color) {
-        float width = width() - model.dividerWidth - model.dividerMargin;
-        if (width <= 0) {
+        float textWidth = width() - model.dividerWidth - model.margin;
+        if (textWidth <= 0) {
             Logger.debug("aborted ...");
             return;
         }
         int count = model.computeAndGetText(line);
-        getView().drawLineNumber(canvas,row,width,count,color,model.computedText,model.dividerMargin,getViewLineNumber());
+        getView().drawLineNumber(canvas,row,textWidth,count,color,model.computedText,model.margin,getViewLineNumber(),editor.getRowBottom(row),editor.getRowTop(row),editor.getOffsetY());
     }
 
     public void addNumber(int line, int row) {

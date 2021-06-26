@@ -17,8 +17,25 @@ public abstract class WidgetExtensionController extends SystemExtensionControlle
         super(editor);
     }
 
+    @Override
+    public void setEnabled(boolean state) {
+        super.setEnabled(state);
+        if( view == null ) {
+            Logger.debug("View is not ready, cannot paint");
+            return;
+        }
+
+        // part of the view
+        if ( state ) {
+            view.setVisibility(View.VISIBLE);
+        } else {
+            view.setVisibility(View.GONE);
+        }
+        view.invalidate();
+    }
+
     /**
-     * Feed the widget with new data.
+     * Feed the widget with new data, it will modify model and view.
      */
     public final void refresh(Canvas canvas, Object... args) {
         if (isDisabled()) {
@@ -30,14 +47,16 @@ public abstract class WidgetExtensionController extends SystemExtensionControlle
     protected void handleRefresh(Canvas canvas, Object... args) {
     }
 
-    public void clear() {
-    }
+    /**
+     * Method that attach View to the widget.
+     * @param v View to attach.
+     */
+    public abstract void attachView(View v);
 
     /**
-     * set text size inside this widget.
+     * Clear data in the model and invalidate the view.
      */
-    public void setTextSize(float size) {
-
+    public void clear() {
     }
 
     /**
@@ -48,20 +67,8 @@ public abstract class WidgetExtensionController extends SystemExtensionControlle
         return 0;
     }
 
-    @Override
-    public void setEnabled(boolean state) {
-        super.setEnabled(state);
-        if( view == null ) {
-            Logger.debug("View is not ready, cannot paint");
-            return;
-        }
-        if ( state ) {
-            view.setVisibility(View.VISIBLE);
-        } else {
-            view.setVisibility(View.GONE);
-        }
-        view.invalidate();
-    }
-
-    public abstract void attachView(View v);
+    /**
+     * An other method to init a widget.
+     */
+    public void initFromAttrs(){}
 }
