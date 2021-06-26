@@ -21,6 +21,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.OverScroller;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionCanvasPartView;
@@ -33,6 +34,7 @@ import io.github.rosemoe.editor.core.util.Logger;
  */
 public class LineNumberPanelView extends WidgetExtensionView {
     CodeEditor editor;
+    public OverScroller scroller;
     public Paint lineNumberPaint = new Paint();
 
     public LineNumberPanelViewHandles handles = new LineNumberPanelViewHandles();

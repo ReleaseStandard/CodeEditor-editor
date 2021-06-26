@@ -20,7 +20,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.OverScroller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -32,6 +34,7 @@ import io.github.rosemoe.editor.core.IntPair;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.handles.LineNumberPanelViewHandles;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.extension.LineNumberPanelEvent;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
@@ -53,6 +56,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
     public LineNumberPanelController(CodeEditor editor) {
         super(editor);
         subscribe(LineNumberPanelEvent.class);
+        subscribe(UserInputEvent.class);
         name        = "linenumberpanel";
         description = "This widget is responsible from displaying the linenumber panel";
         editor.colorManager.register("lineNumberPanel", "base2");
@@ -61,6 +65,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
     }
     public void attachView(View v) {
         editor.lineNumber.view = (WidgetExtensionView) v;
+        getView().scroller = new OverScroller(v.getContext());
         ((LineNumberPanelView)v).initialize(editor);
         getView().handles = new LineNumberPanelViewHandles() {
             @Override
@@ -75,26 +80,44 @@ public class LineNumberPanelController extends WidgetExtensionController {
 
     @Override
     protected void handleEventDispatch(Event e, String subtype) {
-        LineNumberPanelEvent uie = (LineNumberPanelEvent) e;
+        Logger.debug();
+        e.dump();
         switch(subtype) {
             case LineNumberPanelEvent.CHANGE_ALIGN:
-                Integer align = (Integer) uie.getArg(0);
+                Integer align = (Integer) e.getArg(0);
                 if ( align == null ) {
                     Logger.v("No arguments given to change align");
                 }
                 setLineNumberAlign(align);
                 break;
             case LineNumberPanelEvent.DIVIDER:
-                String prop = (String) uie.getArg(0);
+                String prop = (String) e.getArg(0);
                 if( prop != null ) {
                     if ( prop.equals("width") ) {
-                        Float width = (Float) uie.getArg(1);
+                        Float width = (Float) e.getArg(1);
                         setDividerWidth(width);
                     } else if ( prop.equals("margin") ) {
-                        Float margin = (Float) uie.getArg(1);
+                        Float margin = (Float) e.getArg(1);
                         setDividerMargin(margin);
                     }
                 }
+                break;
+            case UserInputEvent.ONSCROLL: {
+                android.view.MotionEvent e1 = (MotionEvent) e.getArg(0);
+                android.view.MotionEvent e2 = (MotionEvent) e.getArg(1);
+                Float distanceX = (Float) e.getArg(2);
+                Float distanceY = (Float) e.getArg(3);
+                Integer endX = (Integer) e.getArg(4);
+                Integer endY = (Integer) e.getArg(5);
+                Logger.debug("HERE : endX=", endX, ",endY=", endY);
+                OverScroller mScroller = getView().scroller;
+                mScroller.startScroll(mScroller.getCurrX(),
+                        mScroller.getCurrY(),
+                        endX - mScroller.getCurrX(),
+                        endY - mScroller.getCurrY(), 0);
+                view.invalidate();
+                break;
+            }
         }
     }
 

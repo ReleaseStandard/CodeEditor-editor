@@ -257,11 +257,11 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     }
 
     public static void recurse(CodeEditor editor, View rootView) { recurse(editor, rootView, true); }
-        /**
-         * Get views from the given root.
-         * @param rootView
-         * @return
-         */
+    /**
+     * Get views from the given root.
+     * @param rootView
+     * @return
+     */
     public static void recurse(CodeEditor editor, View rootView, Boolean attachWidgets) {
         if( rootView instanceof ViewGroup ) {
             for(int i = 0; i < ((ViewGroup) rootView).getChildCount(); i++) {
