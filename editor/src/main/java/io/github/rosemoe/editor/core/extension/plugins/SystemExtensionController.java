@@ -43,6 +43,7 @@ public abstract class SystemExtensionController extends Extension {
 
     @Override
     protected void handleEventEmit(Event e) {
+        editor.systemPlugins.dispatch(e);
         editor.plugins.dispatch(e);
     }
 

@@ -15,6 +15,7 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.loopback;
 
+import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.codeanalysis.LoopbackEvent;
@@ -34,7 +35,12 @@ public class LoopbackWidgetController extends SystemExtensionController {
     }
     @Override
     public void handleEventEmit(Event e) {
-        super.handleEventEmit(e);
+        for(Extension sec : editor.systemPlugins.extensions) {
+            if( sec instanceof LoopbackWidgetController ) {
+                continue;
+            }
+            sec.dispatch(e);
+        }
         editor.plugins.dispatch(e);
     }
 
