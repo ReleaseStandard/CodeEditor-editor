@@ -12,6 +12,8 @@ import io.github.rosemoe.editor.core.util.Logger;
  * it has facilities for painting on the screen.
  */
 public abstract class WidgetExtensionController extends SystemExtensionController {
+
+    public Class builderClass = null;
     public WidgetExtensionView view;
     public WidgetExtensionController(CodeEditor editor) {
         super(editor);

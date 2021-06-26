@@ -6,10 +6,12 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 
-public class WidgetExtensionView extends View {
+public class WidgetExtensionView extends LinearLayout {
     public WidgetExtensionView(Context context) {
         super(context);
     }

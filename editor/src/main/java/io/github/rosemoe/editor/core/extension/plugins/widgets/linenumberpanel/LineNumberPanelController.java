@@ -22,6 +22,7 @@ import android.graphics.Typeface;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.OverScroller;
 
 import io.github.rosemoe.editor.core.CodeEditor;
@@ -56,6 +57,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
         subscribe(UserInputEvent.class);
         name        = "linenumberpanel";
         description = "This widget is responsible from displaying the linenumber panel";
+        builderClass = LineNumberPanelView.class;
         editor.colorManager.register("lineNumberPanel", "base2");
         editor.colorManager.register("lineNumberBackground", "base2");
         editor.colorManager.register("lineNumberPanelText", "base1");
@@ -63,7 +65,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
 
     @Override
     public void attachView(View v) {
-        editor.lineNumber.view = (WidgetExtensionView) v;
+        view = (WidgetExtensionView) v;
         getView().scroller = new OverScroller(v.getContext());
         ((LineNumberPanelView)v).initialize();
         getView().handles = new LineNumberPanelViewHandles() {
@@ -283,10 +285,6 @@ public class LineNumberPanelController extends WidgetExtensionController {
      */
     private void drawLineNumber(Canvas canvas, int line, int row, int color) {
         float textWidth = width() - model.dividerWidth - model.margin;
-        if (textWidth <= 0) {
-            Logger.debug("aborted ...");
-            return;
-        }
         int count = model.computeAndGetText(line);
         getView().drawLineNumber(canvas,row,textWidth,count,color,model.computedText,model.margin,getViewLineNumber(),editor.getRowBottom(row),editor.getRowTop(row),editor.getOffsetY());
     }

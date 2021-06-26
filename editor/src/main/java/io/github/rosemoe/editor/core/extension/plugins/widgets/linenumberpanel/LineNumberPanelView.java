@@ -40,6 +40,7 @@ public class LineNumberPanelView extends WidgetExtensionView {
     }
     public LineNumberPanelView(Context context, android.util.AttributeSet attrs) {
         super(context,attrs);
+
     }
     public LineNumberPanelView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -50,6 +51,7 @@ public class LineNumberPanelView extends WidgetExtensionView {
     public void initialize() {
         lineNumberPaint.setAntiAlias(true);
         lineNumberPaint.setTypeface(Typeface.MONOSPACE);
+        setWillNotDraw(false); // https://stackoverflow.com/questions/10727225/drawing-something-on-my-linearlayout
     }
 
     /**

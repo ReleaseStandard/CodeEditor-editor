@@ -42,8 +42,6 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
 import android.widget.OverScroller;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -60,6 +58,7 @@ import java.util.Map;
 
 import io.github.rosemoe.editor.R;
 import io.github.rosemoe.editor.core.color.ColorManager;
+import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.ExtensionContainer;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
@@ -71,8 +70,8 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelController;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.LoopbackWidgetController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelView;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.controller.SymbolInputController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.view.SymbolInputView;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.SymbolInputController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.SymbolInputView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.controller.WidgetControllerManagerController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputConnexionView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
@@ -269,14 +268,17 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             }
         }
         if ( attachWidgets ) {
-            if (rootView instanceof LineNumberPanelView) {
-                Logger.debug("LineNumberPanelView has been found");
-                editor.lineNumber.attachView(rootView);
-            }
-            if (rootView instanceof SymbolInputView) {
-                SymbolInputController sic = (SymbolInputController) editor.systemPlugins.get("symbolinput");
-                sic.view = (WidgetExtensionView) rootView;
-                sic.attachView((SymbolInputView) rootView);
+            for(ExtensionContainer exts : new ExtensionContainer[] {editor.systemPlugins, editor.plugins}) {
+                for(Extension e : exts.extensions) {
+                    if ( e instanceof WidgetExtensionController ) {
+                        WidgetExtensionController wec = (WidgetExtensionController) e;
+                        if (wec.builderClass != null &&
+                            wec.builderClass == rootView.getClass() ) {
+                            Logger.debug("Found one : ", wec.builderClass.getName());
+                            wec.attachView(rootView); // imply a check inside loop.
+                        }
+                    }
+                }
             }
         } else {
             if (rootView instanceof CodeEditorView) {

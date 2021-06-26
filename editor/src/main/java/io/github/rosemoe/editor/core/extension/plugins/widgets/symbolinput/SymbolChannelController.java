@@ -13,8 +13,12 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.controller;
+package io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput;
 
+import android.view.View;
+
+import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CodeEditor;
 
@@ -23,12 +27,6 @@ import io.github.rosemoe.editor.core.CodeEditor;
  * @author Rosemoe
  */
 public class SymbolChannelController {
-
-    private CodeEditor mEditor;
-
-    public SymbolChannelController(CodeEditor editor) {
-        mEditor = editor;
-    }
 
     /**
      * Inserts the given text in the editor.
@@ -41,19 +39,19 @@ public class SymbolChannelController {
      * @param selectionOffset New selection position relative to the start of text to insert.
      *                        Ranging from 0 to symbolText.length()
      */
-    public void insertSymbol(String symbolText, int selectionOffset) {
+    public void insertSymbol(CodeEditor editor, String symbolText, int selectionOffset) {
         if (selectionOffset < 0 || selectionOffset > symbolText.length()) {
             throw new IllegalArgumentException("selectionOffset is invalid");
         }
-        CursorController cur = mEditor.getText().getCursor();
+        CursorController cur = editor.getText().getCursor();
         if (cur.isSelected()) {
             cur.onDeleteKeyPressed();
-            mEditor.notifyExternalCursorChange();
+            editor.notifyExternalCursorChange();
         }
-        mEditor.getText().insert(cur.getRightLine(), cur.getRightColumn(), symbolText);
-        mEditor.notifyExternalCursorChange();
+        editor.getText().insert(cur.getRightLine(), cur.getRightColumn(), symbolText);
+        editor.notifyExternalCursorChange();
         if (selectionOffset != symbolText.length()) {
-            mEditor.setSelection(cur.getRightLine(), cur.getRightColumn() - (symbolText.length() - selectionOffset));
+            editor.setSelection(cur.getRightLine(), cur.getRightColumn() - (symbolText.length() - selectionOffset));
         }
     }
 
