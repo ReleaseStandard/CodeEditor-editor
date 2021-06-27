@@ -114,4 +114,13 @@ public abstract class WidgetExtensionController extends SystemExtensionControlle
             }
         });
     }
+
+    /**
+     * Editor is painting this line at this row.
+     * @param line
+     * @param row
+     */
+    public void drawRow(int line, int row) {
+
+    }
 }

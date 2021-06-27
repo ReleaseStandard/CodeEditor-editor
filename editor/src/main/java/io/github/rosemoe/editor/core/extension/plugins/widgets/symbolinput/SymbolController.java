@@ -16,8 +16,9 @@ public class SymbolController implements Observer {
     private CodeEditor editor;
     private SymbolModel model = new SymbolModel();
     protected final SymbolView view;
-
-    public SymbolController(CodeEditor editor, Context ctx, String displayIcon, String actionText) {
+    protected String textColorKey = "";
+    protected String backgroundColorKey = "";
+    public SymbolController(CodeEditor editor, Context ctx, String displayIcon, String actionText,String textColorKey, String backgroundColorKey) {
         this.editor = editor;
         model.displayIcon = displayIcon;
         model.actionText = actionText;
@@ -32,10 +33,10 @@ public class SymbolController implements Observer {
                 SymbolController.this.handleOnDraw();
             }
         };
+        this.textColorKey = textColorKey;
+        this.backgroundColorKey = backgroundColorKey;
         view.setText(displayIcon);
-        view.setTextColor(editor.symbolInputController.getPrefixedColor("text"));
-        view.setBackgroundColor(editor.symbolInputController.getPrefixedColor("bg"));
-
+        update(null, null);
     }
     public void handleOnClick() {
 
@@ -46,9 +47,7 @@ public class SymbolController implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        int text = editor.symbolInputController.getPrefixedColor("text");
-        view.setTextColor(text);
-        int bg = editor.symbolInputController.getPrefixedColor("bg");
-        view.setBackgroundColor(bg);
+        view.setTextColor(editor.colorManager.getColor(textColorKey));
+        view.setBackgroundColor(editor.colorManager.getColor(backgroundColorKey));
     }
 }

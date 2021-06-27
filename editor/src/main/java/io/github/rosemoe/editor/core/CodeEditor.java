@@ -70,11 +70,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionVi
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.AbstractLayout;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelController;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.LoopbackWidgetController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelView;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.SymbolInputController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.SymbolInputView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.controller.WidgetControllerManagerController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputConnexionView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
@@ -212,7 +208,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     private ContextActionController contextAction;                          // Manage context action showing, eg copy paste
     public CompletionWindowController completionWindow;                     // Manage completion item showing
     public  UserInputController userInput;                                  // Manage all user input, eg scale scrolling
-    public SymbolInputController symbolInputController;                           // Manage symbol input view
     public ExtensionContainer systemPlugins = new ExtensionContainer();           // System plugins
     public ExtensionContainer plugins = new ExtensionContainer();                 // Plugins designed by users
 
@@ -634,12 +629,10 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         mConnection       = new UserInputConnexionController(this);
         systemPlugins.put(new ColorSchemeController(this));
         completionWindow  = new CompletionWindowController(this);
-        symbolInputController = new SymbolInputController(this);
         systemPlugins.put(
                 userInput,
                 new LoopbackWidgetController(this),
-                new WidgetControllerManagerController(this),
-                symbolInputController
+                new WidgetControllerManagerController(this)
         );
         mDpUnit = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, Resources.getSystem().getDisplayMetrics()) / 2;
         mDrag = false;
@@ -1043,8 +1036,8 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             int columnCount = contentLine.length();
             if (rowInf.model.isLeadingRow) {
                 for(Extension e : systemPlugins.extensions) {
-                    if ( e instanceof LineNumberPanelController) {
-                        ((LineNumberPanelController) e).addNumber(line, row);
+                    if ( e instanceof WidgetExtensionController) {
+                        ((WidgetExtensionController) e).drawRow(line, row);
                     }
                 }
             }

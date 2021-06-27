@@ -256,7 +256,8 @@ public class LineNumberPanelController extends WidgetExtensionController {
         getView().drawLineNumber(canvas,row,textWidth,count,color,model.computedText,model.margin,getViewLineNumber(),editor.getRowBottom(row),editor.getRowTop(row),editor.getOffsetY());
     }
 
-    public void addNumber(int line, int row) {
+    @Override
+    public void drawRow(int line, int row) {
         model.postDrawLineNumbers.add(IntPair.pack(line, row));
     }
 

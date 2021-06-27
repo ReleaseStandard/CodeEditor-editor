@@ -1,6 +1,5 @@
 package io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput;
 
-import android.graphics.Canvas;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -85,7 +84,7 @@ public class SymbolInputController extends WidgetExtensionController {
         for (int i = 0; i < count; i++) {
             String symbol = symbolsDisplayIcon[i];
             String actionText = symbolsTextAction[i];
-            SymbolController s = new SymbolController(editor,view.getContext(), symbol, actionText) {
+            SymbolController s = new SymbolController(editor,view.getContext(), symbol, actionText, prefixColor("text"),prefixColor("bg")) {
                 @Override
                 public void handleOnClick() {
                     channel.insertSymbol(editor, actionText, 1);
