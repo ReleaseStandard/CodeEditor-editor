@@ -1,6 +1,8 @@
 package io.github.rosemoe.editor.core.extension.plugins.widgets;
 
 import android.graphics.Canvas;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import java.util.Observable;
@@ -86,5 +88,30 @@ public abstract class WidgetExtensionController extends SystemExtensionControlle
     @Override
     public void update(Observable o, Object arg) {
 
+    }
+
+    static int menuId = 1000;
+    public void addItemToMenu(Menu menu) {
+        addItemToMenu(menu, name + " enabled");
+    }
+    public void addItemToMenu(Menu menu, String title) {
+        addItemToMenu(menu,title,Menu.NONE);
+    }
+    /**
+     * Add an enabled check case for this extension.
+     * @param menu
+     */
+    public void addItemToMenu(Menu menu, String title, int groupId) {
+        MenuItem mi = menu.add(groupId, menuId++, Menu.NONE, title);
+        mi.setCheckable(true);
+        mi.setChecked(isEnabled());
+        mi.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                WidgetExtensionController.this.toggleIsEnabled();
+                mi.setChecked(isEnabled());
+                return false;
+            }
+        });
     }
 }
