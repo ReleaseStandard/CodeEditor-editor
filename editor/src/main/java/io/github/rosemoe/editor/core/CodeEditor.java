@@ -240,6 +240,8 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     public KeyMetaStates mKeyMetaStates = new KeyMetaStates(this);
 
 
+    public AppCompatActivity activity = null;
+
     /**
      * Create a new instance of CodeEditor that will be find into the given root.
      * @param activity main activity.
@@ -249,6 +251,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     public static CodeEditor newInstance(AppCompatActivity activity, @IdRes int root ) {
         View rootView = activity.findViewById(root);
         CodeEditor editor = new CodeEditor();
+        editor.activity = activity;
         recurse(editor, rootView, false);
         editor.initialize();
         recurse(editor, rootView, true);

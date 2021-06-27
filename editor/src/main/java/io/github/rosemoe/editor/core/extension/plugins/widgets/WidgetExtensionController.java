@@ -3,6 +3,9 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets;
 import android.graphics.Canvas;
 import android.view.View;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.util.Logger;
@@ -11,12 +14,13 @@ import io.github.rosemoe.editor.core.util.Logger;
  * A widget is a subtype of extension.
  * it has facilities for painting on the screen.
  */
-public abstract class WidgetExtensionController extends SystemExtensionController {
+public abstract class WidgetExtensionController extends SystemExtensionController implements Observer {
 
     public Class builderClass = null;
     public WidgetExtensionView view;
     public WidgetExtensionController(CodeEditor editor) {
         super(editor);
+        editor.colorManager.attach(this);
     }
 
     @Override
@@ -73,4 +77,14 @@ public abstract class WidgetExtensionController extends SystemExtensionControlle
      * An other method to init a widget.
      */
     public void initFromAttrs(){}
+
+    /**
+     * How to update on observable change.
+     * @param o
+     * @param arg
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+
+    }
 }

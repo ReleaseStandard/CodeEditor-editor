@@ -16,6 +16,7 @@
 package io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
@@ -37,40 +38,25 @@ public class SymbolInputView extends WidgetExtensionView {
     public int textcolor = Color.BLACK;
     public int bgColor = Color.WHITE;
 
-    public SymbolChannelController channel;
-
-    /**
-     * View initialization.
-     */
-    public void init() { init(null, null); }
-    public void init(Integer textColor, Integer backgroundColor) {
-        super.initialize();
-        setBackgroundColor(bgColor);
-        if ( textColor != null ) {
-            this.textcolor = textColor;
-        }
-        if ( backgroundColor != null ) {
-            this.bgColor = backgroundColor;
-        }
-    }
     public SymbolInputView(Context context, int textColor, int backgroundColor) {
         super(context);
-        init(textColor, backgroundColor);
     }
 
     public SymbolInputView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
     public SymbolInputView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
     }
 
     public SymbolInputView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
     }
 
+    @Override
+    protected void onDraw(Canvas canvas) {
+        handles.handleOnDraw(canvas);
+        super.onDraw(canvas);
+    }
 }

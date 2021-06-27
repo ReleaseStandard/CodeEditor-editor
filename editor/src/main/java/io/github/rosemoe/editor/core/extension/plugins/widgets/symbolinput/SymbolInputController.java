@@ -1,10 +1,12 @@
 package io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput;
 
+import android.graphics.Canvas;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
@@ -18,6 +20,7 @@ import io.github.rosemoe.editor.core.util.Logger;
  */
 public class SymbolInputController extends WidgetExtensionController {
 
+    public SymbolChannelController channel;
     public ArrayList<SymbolController> symbols = new ArrayList<>();
     public SymbolInputModel model = new SymbolInputModel();
     public SymbolInputView getView() {
@@ -43,16 +46,13 @@ public class SymbolInputController extends WidgetExtensionController {
         SymbolInputView siv = getView();
         getView().setOrientation(LinearLayout.HORIZONTAL);
 
+        channel = new SymbolChannelController();
         siv.handles = new SymbolInputViewHandle() {
             @Override
-            public void handleOnClickSymbol(SymbolChannelController channel, String symbol, String insertText) {
-                super.handleOnClickSymbol(channel, symbol, insertText);
+            public void handleOnClickSymbol(String symbol, String insertText) {
                 channel.insertSymbol(editor, insertText, 1);
             }
         };
-        siv.channel = new SymbolChannelController();
-        siv.textcolor = getPrefixedColor( "text");
-        siv.bgColor = getPrefixedColor("bg");
         addSymbols(new String[]{"TAB", "{", "}", "(", ")", ",", ".", ";", "\"", "?", "+", "-", "*", "/"},
                 new String[]{"\t", "{}", "}", "(", ")", ",", ".", ";", "\"", "?", "+", "-", "*", "/"});
         Logger.debug("View attached");
@@ -62,6 +62,7 @@ public class SymbolInputController extends WidgetExtensionController {
      * @param state
      */
     @Override
+
     public void setEnabled(boolean state) {
         /*
         TODO
@@ -88,13 +89,24 @@ public class SymbolInputController extends WidgetExtensionController {
             SymbolController s = new SymbolController(editor,view.getContext(), symbol, actionText) {
                 @Override
                 public void handleOnClick() {
-                    getView().channel.insertSymbol(editor, actionText, 1);
+                    channel.insertSymbol(editor, actionText, 1);
                 }
             };
+            editor.colorManager.attach(s);
             symbols.add(s);
             getView().addView(s.view,new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
         view.invalidate();
         Logger.debug("symbols added");
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        editor.activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                view.setBackgroundColor(getPrefixedColor( "bg"));
+            }
+        });
     }
 }

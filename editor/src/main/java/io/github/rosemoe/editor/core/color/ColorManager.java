@@ -1,6 +1,9 @@
 package io.github.rosemoe.editor.core.color;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Observer;
 
 import io.github.rosemoe.editor.core.util.Logger;
 
@@ -16,6 +19,7 @@ import io.github.rosemoe.editor.core.util.Logger;
  */
 public class ColorManager {
 
+    private List<Observer> observers = new ArrayList<Observer>();
     HashMap<String, Object> colors = new HashMap<>();
     private static final Integer HIDDEN = 0;
     private static final Integer DEFAULT = HIDDEN;
@@ -24,6 +28,16 @@ public class ColorManager {
 
     public ColorManager() {
         init();
+    }
+
+    public void attach(Observer observer){
+        observers.add(observer);
+    }
+
+    public void notifyAllObservers(){
+        for (Observer observer : observers) {
+            observer.update(null,null);
+        }
     }
 
     /**
@@ -159,7 +173,12 @@ public class ColorManager {
      * @param value value of the color
      */
     public void register(String color, Object value) {
+        Object oldValue = colors.get(color);
         colors.put(color,value);
+        if ( oldValue != null &&
+                oldValue != value ) {
+            notifyAllObservers();
+        }
     }
 
     /**
@@ -181,6 +200,7 @@ public class ColorManager {
             this.colors.put(key1,this.colors.get(key2));
             this.colors.put(key2,this.colors.put(key2,value));
         }
+        notifyAllObservers();
     }
 
     public void dump() {
