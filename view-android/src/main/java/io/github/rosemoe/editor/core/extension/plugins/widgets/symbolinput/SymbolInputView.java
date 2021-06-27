@@ -17,17 +17,9 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-
-import java.util.ArrayList;
 
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.handles.SymbolInputViewHandle;
 
 /**
