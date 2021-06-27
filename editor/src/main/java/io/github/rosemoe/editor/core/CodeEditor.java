@@ -173,7 +173,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     private int cursorPosition;
     protected int mInputType;
     private int mNonPrintableOptions;
-    public int mCachedLineNumberWidth;
     public float mDpUnit;
     private float mBlockLineWidth;
     private float mLineInfoTextSize;
@@ -951,17 +950,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         float lineNumberWidth = lineNumber.measureLineNumber(getLineCount());
         float offsetX = -getOffsetX();
         float textOffset = offsetX;
-
-        if (isWordwrap()) {
-            if (mCachedLineNumberWidth == 0) {
-                mCachedLineNumberWidth = (int) lineNumberWidth;
-            } else if (mCachedLineNumberWidth != (int) lineNumberWidth && !userInput.isScaling()) {
-                mCachedLineNumberWidth = (int) lineNumberWidth;
-                mLayout.createLayout(this);
-            }
-        } else {
-            mCachedLineNumberWidth = 0;
-        }
 
         // update from the model
         lineNumber.clear();
