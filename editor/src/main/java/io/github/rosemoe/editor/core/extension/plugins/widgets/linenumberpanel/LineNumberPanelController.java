@@ -16,13 +16,11 @@
 package io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel;
 
 import android.content.res.Resources;
-import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.OverScroller;
 
 import io.github.rosemoe.editor.core.CodeEditor;
@@ -35,7 +33,6 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.h
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.extension.LineNumberPanelEvent;
-import io.github.rosemoe.editor.core.util.shortcuts.A;
 
 import static io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelModel.*;
 
@@ -70,7 +67,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
         ((LineNumberPanelView)v).initialize();
         getView().handles = new LineNumberPanelViewHandles() {
             @Override
-            public void handleOnDraw(Canvas canvas) {
+            public void handleOnDraw(Object canvas) {
                 LineNumberPanelController.this.refresh(canvas);
             }
         };
@@ -140,7 +137,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
      * @param canvas to paint on
      */
     @Override
-    protected void handleRefresh(Canvas canvas, Object ...args) {
+    protected void handleRefresh(Object canvas, Object ...args) {
         ColorManager colorManager = editor.colorManager;
         int lineNumberColor = colorManager.getColor("lineNumberPanelText");
         int lineNumberBackgroundColor = colorManager.getColor("lineNumberBackground");
@@ -233,7 +230,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
      * @param canvas  Canvas to draw
      * @param color   Color to draw divider
      */
-    private void drawDivider(Canvas canvas, int color) {
+    private void drawDivider(Object canvas, int color) {
 
         int offY = editor.getOffsetY();
         int editorHeight = editor.view.getHeight();
@@ -249,7 +246,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
         model.divider.right = model.divider.left + model.dividerWidth;
 
         // display view
-        WidgetExtensionView.drawColor(canvas, color, A.getRectF(model.divider));
+        WidgetExtensionView.drawColor(canvas, color, model.divider);
     }
 
     /**
@@ -258,7 +255,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
      * @param canvas  Canvas to draw
      * @param color   Color of line number background
      */
-    private void drawLineNumberBackground(Canvas canvas, int color) {
+    private void drawLineNumberBackground(Object canvas, int color) {
         float left = 0;
         float right = width();
         if (right < 0) {
@@ -277,13 +274,13 @@ public class LineNumberPanelController extends WidgetExtensionController {
         model.panelBg.right = right;
 
         // display view
-        editor.drawColor(canvas, color, A.getRectF(model.panelBg));
+        WidgetExtensionView.drawColor(canvas, color, model.panelBg);
     }
 
     /**
      * Draw single line number
      */
-    private void drawLineNumber(Canvas canvas, int line, int row, int color) {
+    private void drawLineNumber(Object canvas, int line, int row, int color) {
         float textWidth = width() - model.dividerWidth - model.margin;
         int count = model.computeAndGetText(line);
         getView().drawLineNumber(canvas,row,textWidth,count,color,model.computedText,model.margin,getViewLineNumber(),editor.getRowBottom(row),editor.getRowTop(row),editor.getOffsetY());

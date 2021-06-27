@@ -34,7 +34,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.handl
  */
 public class SymbolInputView extends WidgetExtensionView {
 
-    public SymbolInputViewHandle handles = new SymbolInputViewHandle();
+    protected SymbolInputViewHandle handles = new SymbolInputViewHandle();
 
     public SymbolInputView(Context context, int textColor, int backgroundColor) {
         super(context);

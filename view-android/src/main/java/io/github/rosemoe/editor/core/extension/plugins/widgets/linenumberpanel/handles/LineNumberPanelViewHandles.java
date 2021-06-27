@@ -3,7 +3,7 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.
 import android.graphics.Canvas;
 
 public class LineNumberPanelViewHandles {
-    public void handleOnDraw(Canvas canvas) {
+    public void handleOnDraw(Object canvas) {
 
     }
 }

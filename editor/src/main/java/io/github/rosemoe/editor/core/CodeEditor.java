@@ -933,7 +933,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             String text = "Formatting your code...";
             float centerY = view.getHeight() / 2f;
             // TODO : repair text formatting
-            WidgetExtensionView.drawColor(canvas, colorManager.getColor("lineNumberPanel"), new RectF());
+            WidgetExtensionView.drawColor(canvas, colorManager.getColor("lineNumberPanel"), io.github.rosemoe.editor.core.Rect.DEFAULT());
             float baseline = centerY - getRowHeight() / 2f + getRowBaseline(0);
             float centerX = view.getWidth() / 2f;
             mPaint.setColor(colorManager.getColor("lineNumberPanelText"));

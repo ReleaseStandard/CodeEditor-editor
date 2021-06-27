@@ -20,9 +20,9 @@ import io.github.rosemoe.editor.core.util.Logger;
  */
 public class SymbolInputController extends WidgetExtensionController {
 
-    public SymbolChannelController channel;
-    public ArrayList<SymbolController> symbols = new ArrayList<>();
-    public SymbolInputModel model = new SymbolInputModel();
+    private SymbolChannelController channel;
+    private ArrayList<SymbolController> symbols = new ArrayList<>();
+    private SymbolInputModel model = new SymbolInputModel();
     public SymbolInputView getView() {
         return (SymbolInputView) view;
     }
@@ -62,7 +62,6 @@ public class SymbolInputController extends WidgetExtensionController {
      * @param state
      */
     @Override
-
     public void setEnabled(boolean state) {
         /*
         TODO

@@ -15,6 +15,7 @@ public class Rect {
     public float left = 0;
     public float orientation = 0;
 
+    public static Rect DEFAULT() { return new Rect(); }
     public Rect(float left, float top, float right, float bottom) {
         this.bottom = bottom;
         this.left = left;

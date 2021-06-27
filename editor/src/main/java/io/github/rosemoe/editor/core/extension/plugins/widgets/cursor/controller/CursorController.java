@@ -610,7 +610,7 @@ public final class CursorController extends WidgetExtensionController {
     }
 
     @Override
-    public void handleRefresh(Canvas canvas, Object ...args) {
+    public void handleRefresh(Object canvas, Object ...args) {
 
         Integer firstVisibleChar = (Integer) args[0];
         Integer lastVisibleChar = (Integer) args[1];
@@ -637,7 +637,7 @@ public final class CursorController extends WidgetExtensionController {
 
         // call refresh on underlying objects
         for(CursorPartController part : parts) {
-            part.refresh(canvas);
+            part.refresh((Canvas)canvas);
         }
     }
     /**

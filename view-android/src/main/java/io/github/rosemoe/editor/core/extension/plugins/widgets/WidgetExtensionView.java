@@ -12,6 +12,9 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 
+import io.github.rosemoe.editor.core.Adaptater;
+import io.github.rosemoe.editor.core.Rect;
+
 public class WidgetExtensionView extends LinearLayout {
     public void initialize() {
         setWillNotDraw(false); // https://stackoverflow.com/questions/10727225/drawing-something-on-my-linearlayout
@@ -32,11 +35,12 @@ public class WidgetExtensionView extends LinearLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public static void drawColor(Canvas canvas, int color, RectF rect) {
+    public static void drawColor(Object canvasContainer, int color, Rect rect) {
+        Canvas canvas = (Canvas) canvasContainer;
         if (color != 0) {
             Paint mPaint = new Paint();
             mPaint.setColor(color);
-            canvas.drawRect(rect, mPaint);
+            canvas.drawRect(Adaptater.getRectF(rect), mPaint);
         }
     }
 }

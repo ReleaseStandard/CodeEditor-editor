@@ -594,12 +594,12 @@ public final class UserInputController extends WidgetExtensionController {
      * @param canvas The canvas to draw
      */
     @Override
-    protected void handleRefresh(Canvas canvas, Object ...args) {
+    protected void handleRefresh(Object canvas, Object ...args) {
         if (!model.shouldDrawScrollBar(scrollBarV.isHolding(),scrollBarH.isHolding())) {
             return;
         }
         if (editor.view.isVerticalScrollBarEnabled() && editor.getScrollMaxY() > editor.view.getHeight() / 2) {
-            scrollBarV.refresh(canvas,
+            scrollBarV.refresh((Canvas)canvas,
                     editor.mLayout.getLayoutHeight() + editor.view.getHeight() / 2f,
                     editor.getOffsetY(),
                     (int) (editor.view.getWidth() - scrollBarV.getWidth()),
@@ -607,7 +607,7 @@ public final class UserInputController extends WidgetExtensionController {
             );
         }
         if (editor.view.isHorizontalScrollBarEnabled() && !editor.isWordwrap() && editor.getScrollMaxX() > editor.view.getWidth() * 3 / 4) {
-            scrollBarH.refresh(canvas,
+            scrollBarH.refresh((Canvas)canvas,
                     editor.getScrollMaxX() + scrollBarH.getWidth(),
                     editor.getOffsetX(),
                     (int) (editor.view.getHeight() - scrollBarH.getWidth()),

@@ -13,9 +13,9 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.handl
 
 public class SymbolController implements Observer {
 
-    CodeEditor editor;
-    public SymbolModel model = new SymbolModel();
-    public final SymbolView view;
+    private CodeEditor editor;
+    private SymbolModel model = new SymbolModel();
+    protected final SymbolView view;
 
     public SymbolController(CodeEditor editor, Context ctx, String displayIcon, String actionText) {
         this.editor = editor;

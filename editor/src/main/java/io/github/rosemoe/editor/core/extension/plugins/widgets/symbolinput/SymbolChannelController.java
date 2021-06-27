@@ -39,7 +39,7 @@ public class SymbolChannelController {
      * @param selectionOffset New selection position relative to the start of text to insert.
      *                        Ranging from 0 to symbolText.length()
      */
-    public void insertSymbol(CodeEditor editor, String symbolText, int selectionOffset) {
+    protected void insertSymbol(CodeEditor editor, String symbolText, int selectionOffset) {
         if (selectionOffset < 0 || selectionOffset > symbolText.length()) {
             throw new IllegalArgumentException("selectionOffset is invalid");
         }

@@ -17,7 +17,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.handl
  */
 public class SymbolView extends androidx.appcompat.widget.AppCompatButton {
 
-    SymbolViewHandle handles = new SymbolViewHandle();
+    protected SymbolViewHandle handles = new SymbolViewHandle();
 
     public SymbolView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -30,7 +30,7 @@ public class SymbolView extends androidx.appcompat.widget.AppCompatButton {
         });
     }
     @Override
-    public void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         handles.handleOnDraw(canvas);
         super.onDraw(canvas);
     }

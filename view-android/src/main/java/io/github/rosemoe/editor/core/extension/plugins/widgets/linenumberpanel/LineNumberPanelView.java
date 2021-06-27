@@ -30,8 +30,8 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.h
  */
 public class LineNumberPanelView extends WidgetExtensionView {
 
-    public OverScroller scroller;
-    public Paint lineNumberPaint = new Paint();
+    protected OverScroller scroller;
+    protected Paint lineNumberPaint = new Paint();
 
     public LineNumberPanelViewHandles handles = new LineNumberPanelViewHandles();
 
@@ -66,7 +66,7 @@ public class LineNumberPanelView extends WidgetExtensionView {
 
     /**
      * Draw text of line number panel.
-     * @param canvas
+     * @param canvasContainer canvas to draw on.
      * @param row
      * @param textWidth
      * @param count
@@ -75,7 +75,8 @@ public class LineNumberPanelView extends WidgetExtensionView {
      * @param margin
      * @param mLineNumberAlign
      */
-    protected void drawLineNumber(Canvas canvas, int row, float textWidth, int count, int color, char[]computedText, float margin, Paint.Align mLineNumberAlign, int bottomRow, int topRow, int yOffset) {
+     protected void drawLineNumber(Object canvasContainer, int row, float textWidth, int count, int color, char[]computedText, float margin, Paint.Align mLineNumberAlign, int bottomRow, int topRow, int yOffset) {
+        Canvas canvas = (Canvas) canvasContainer;
         setTextAlign(mLineNumberAlign);
         lineNumberPaint.setColor(color);
         int sz = (int) Math.min((bottomRow - topRow), textWidth);
@@ -101,7 +102,7 @@ public class LineNumberPanelView extends WidgetExtensionView {
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         handles.handleOnDraw(canvas);
     }

@@ -45,14 +45,14 @@ public abstract class WidgetExtensionController extends SystemExtensionControlle
     /**
      * Feed the widget with new data, it will modify model and view.
      */
-    public final void refresh(Canvas canvas, Object... args) {
+    public final void refresh(Object canvas, Object... args) {
         if (isDisabled()) {
             return;
         }
         handleRefresh(canvas, args);
     }
 
-    protected void handleRefresh(Canvas canvas, Object... args) {
+    protected void handleRefresh(Object canvas, Object... args) {
     }
 
     /**
