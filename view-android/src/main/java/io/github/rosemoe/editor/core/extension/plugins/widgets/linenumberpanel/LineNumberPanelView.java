@@ -106,4 +106,8 @@ public class LineNumberPanelView extends WidgetExtensionView {
         super.onDraw(canvas);
         handles.handleOnDraw(canvas);
     }
+    @Override
+    public void setControllerName(Context ctx) {
+        controllerName = getClass().getPackage().getName() + ".LineNumberPanelController";
+    }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Observer;
+import java.util.concurrent.locks.ReentrantLock;
 
 import io.github.rosemoe.editor.core.util.Logger;
 
@@ -19,6 +20,7 @@ import io.github.rosemoe.editor.core.util.Logger;
  */
 public class ColorManager {
 
+    private ReentrantLock observersLock = new ReentrantLock();
     private List<Observer> observers = new ArrayList<Observer>();
     HashMap<String, Object> colors = new HashMap<>();
     private static final Integer HIDDEN = 0;
@@ -31,13 +33,16 @@ public class ColorManager {
     }
 
     public void attach(Observer observer){
+        observersLock.lock();
         observers.add(observer);
+        observersLock.unlock();
     }
-
     public void notifyAllObservers(){
+        observersLock.lock();
         for (Observer observer : observers) {
             observer.update(null,null);
         }
+        observersLock.unlock();
     }
 
     /**
@@ -178,6 +183,17 @@ public class ColorManager {
         if ( oldValue != null &&
                 oldValue != value ) {
             notifyAllObservers();
+        }
+    }
+
+    /**
+     * Register into the map if not in.
+     * @param color
+     * @param value
+     */
+    public void registerIfNotIn(String color, Object value) {
+        if ( colors.get(color) == null ) {
+            register(color, value);
         }
     }
 

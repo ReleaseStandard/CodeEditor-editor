@@ -55,9 +55,9 @@ public class LineNumberPanelController extends WidgetExtensionController {
         name        = "linenumberpanel";
         description = "This widget is responsible from displaying the linenumber panel";
         builderClass = LineNumberPanelView.class;
-        editor.colorManager.register("lineNumberPanel", "base2");
-        editor.colorManager.register("lineNumberBackground", "base2");
-        editor.colorManager.register("lineNumberPanelText", "base1");
+        registerColorIfNotIn("lineNumberPanel", "base2");
+        registerColorIfNotIn("lineNumberBackground", "base2");
+        registerColorIfNotIn("lineNumberPanelText", "base1");
     }
 
     @Override
@@ -68,7 +68,7 @@ public class LineNumberPanelController extends WidgetExtensionController {
         getView().handles = new LineNumberPanelViewHandles() {
             @Override
             public void handleOnDraw(Object canvas) {
-                LineNumberPanelController.this.refresh(canvas);
+                refresh(canvas);
             }
         };
         model.dividerWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, Resources.getSystem().getDisplayMetrics());
@@ -154,29 +154,6 @@ public class LineNumberPanelController extends WidgetExtensionController {
     }
 
     /**
-     * Get the width of line number region
-     * @param lineCount line count
-     * @return width of line number region
-     */
-    public float measureLineNumber(int lineCount) {
-        if (!isEnabled()) {
-            return 0f;
-        }
-        int count = 0;
-        while (lineCount > 0) {
-            count++;
-            lineCount /= 10;
-        }
-        final String[] charSet = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
-        float single = 0f;
-        for (String ch : charSet) {
-            single = Math.max(single, getView().lineNumberPaint.measureText(ch));
-        }
-        Logger.debug("single=",single,",count=",count);
-        return single * count;
-    }
-
-    /**
      * Set line number's typeface
      *
      * @param typefaceLineNumber New typeface
@@ -215,13 +192,6 @@ public class LineNumberPanelController extends WidgetExtensionController {
         model.alignment = align;
         getView().setTextAlign(getViewLineNumber());
         view.invalidate();
-    }
-
-    /**
-     * @return Width of divider line
-     */
-    public float getDividerWidth() {
-        return model.dividerWidth;
     }
 
     /**

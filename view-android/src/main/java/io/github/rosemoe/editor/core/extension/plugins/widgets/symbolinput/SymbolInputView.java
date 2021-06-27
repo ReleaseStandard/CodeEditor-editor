@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.linenumberpanel.LineNumberPanelView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.symbolinput.handles.SymbolInputViewHandle;
 
 /**
@@ -50,6 +51,11 @@ public class SymbolInputView extends WidgetExtensionView {
 
     public SymbolInputView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    @Override
+    public void setControllerName(Context ctx) {
+        controllerName = getClass().getPackage().getName() + ".SymbolInputController";
     }
 
     @Override

@@ -52,7 +52,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -209,7 +212,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     private ContextActionController contextAction;                          // Manage context action showing, eg copy paste
     public CompletionWindowController completionWindow;                     // Manage completion item showing
     public  UserInputController userInput;                                  // Manage all user input, eg scale scrolling
-    public LineNumberPanelController lineNumber;                            // Manage display of line number, computation
     public SymbolInputController symbolInputController;                           // Manage symbol input view
     public ExtensionContainer systemPlugins = new ExtensionContainer();           // System plugins
     public ExtensionContainer plugins = new ExtensionContainer();                 // Plugins designed by users
@@ -243,6 +245,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
 
     /**
      * Create a new instance of CodeEditor that will be find into the given root.
+     * It will dynamically instanciate widgets as they are found in the layout file.
      * @param activity main activity.
      * @param root id of the root.
      * @return
@@ -258,6 +261,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     }
 
     public static void recurse(CodeEditor editor, View rootView) { recurse(editor, rootView, true); }
+
     /**
      * Get views from the given root.
      * @param rootView
@@ -270,16 +274,24 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             }
         }
         if ( attachWidgets ) {
-            for(ExtensionContainer exts : new ExtensionContainer[] {editor.systemPlugins, editor.plugins}) {
-                for(Extension e : exts.extensions) {
-                    if ( e instanceof WidgetExtensionController ) {
-                        WidgetExtensionController wec = (WidgetExtensionController) e;
-                        if (wec.builderClass != null &&
-                            wec.builderClass == rootView.getClass() ) {
-                            Logger.debug("Found one : ", wec.builderClass.getName());
-                            wec.attachView(rootView); // imply a check inside loop.
+            if ( rootView instanceof WidgetExtensionView) {
+                WidgetExtensionView wec = (WidgetExtensionView) rootView;
+                try {
+                    Class c = Class.forName(wec.controllerName);
+                    try {
+                        Constructor<?> constructor = c.getConstructor(CodeEditor.class);
+                        try {
+                            WidgetExtensionController wwec = (WidgetExtensionController) constructor.newInstance(editor);
+                            wwec.attachView(rootView);
+                            editor.systemPlugins.put(wwec);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
                     }
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
             }
         } else {
@@ -619,7 +631,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         setAutoCompletionOnComposing(true);
         setTypefaceText(Typeface.DEFAULT);
         userInput         = new UserInputController(this,view.getContext());
-        lineNumber        = new LineNumberPanelController(this);
         mConnection       = new UserInputConnexionController(this);
         systemPlugins.put(new ColorSchemeController(this));
         completionWindow  = new CompletionWindowController(this);
@@ -628,10 +639,9 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                 userInput,
                 new LoopbackWidgetController(this),
                 new WidgetControllerManagerController(this),
-                lineNumber,
                 symbolInputController
         );
-        mDpUnit = lineNumber.getDividerWidth() / 2;
+        mDpUnit = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, Resources.getSystem().getDisplayMetrics()) / 2;
         mDrag = false;
         mWait = false;
         mBlockLineEnabled = true;
@@ -947,13 +957,16 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         // draw the background
         view.drawBackground(canvas);
 
-        float lineNumberWidth = lineNumber.measureLineNumber(getLineCount());
         float offsetX = -getOffsetX();
         float textOffset = offsetX;
 
         // update from the model
-        lineNumber.clear();
-        cursor.clear();
+        for(Extension e : systemPlugins.extensions) {
+            if ( e instanceof WidgetExtensionController ) {
+                WidgetExtensionController sec = (WidgetExtensionController) e;
+                sec.clear();
+            }
+        }
 
         // WARNING: data processing here: instanciation controllers
         drawRows(canvas, textOffset);
@@ -1029,7 +1042,11 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             ContentLineController contentLine = mText.getLine(line);
             int columnCount = contentLine.length();
             if (rowInf.model.isLeadingRow) {
-                lineNumber.addNumber(line, row);
+                for(Extension e : systemPlugins.extensions) {
+                    if ( e instanceof LineNumberPanelController) {
+                        ((LineNumberPanelController) e).addNumber(line, row);
+                    }
+                }
             }
 
             // Prepare data
@@ -1488,41 +1505,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                 invalidCount++;
             }
         }
-    }
-
-    /**
-     * Draw line number panel
-     *
-     * @param canvas  Canvas to draw
-     * @param centerY The center y on screen for the panel
-     * @param rightX  The right x on screen for the panel
-     */
-    public void drawLineInfoPanel(Canvas canvas, float centerY, float rightX) {
-        if (lineNumber.isDisabled()) {
-            return;
-        }
-        String text = getLnTip() + (1 + getFirstVisibleLine());
-        float backupSize = mPaint.getTextSize();
-        mPaint.setTextSize(getLineInfoTextSize());
-        Paint.FontMetricsInt backupMetrics = mTextMetrics;
-        mTextMetrics = mPaint.getFontMetricsInt();
-        float expand = mDpUnit * 3;
-        float textWidth = mPaint.measureText(text);
-        // OK
-        RectF mRect = new RectF();
-        mRect.top = centerY - getRowHeight() / 2f - expand;
-        mRect.bottom = centerY + getRowHeight() / 2f + expand;
-        mRect.right = rightX;
-        mRect.left = rightX - expand * 2 - textWidth;
-        drawColor(canvas, colorManager.getColor("lineNumberPanel"), mRect);
-        float baseline = centerY - getRowHeight() / 2f + getRowBaseline(0);
-        float centerX = (mRect.left + mRect.right) / 2;
-        mPaint.setColor(colorManager.getColor("lineNumberPanelText"));
-        mPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(text, centerX, baseline, mPaint);
-        mPaint.setTextAlign(Paint.Align.LEFT);
-        mPaint.setTextSize(backupSize);
-        mTextMetrics = backupMetrics;
     }
 
     /**

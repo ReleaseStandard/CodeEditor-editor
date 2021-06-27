@@ -104,7 +104,9 @@ public class SymbolInputController extends WidgetExtensionController {
         editor.activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                view.setBackgroundColor(getPrefixedColor( "bg"));
+                if ( view != null ) {
+                    view.setBackgroundColor(getPrefixedColor("bg"));
+                }
             }
         });
     }

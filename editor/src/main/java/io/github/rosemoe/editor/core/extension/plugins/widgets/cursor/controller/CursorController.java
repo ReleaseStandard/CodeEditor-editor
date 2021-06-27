@@ -15,8 +15,10 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller;
 
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -67,7 +69,7 @@ public final class CursorController extends WidgetExtensionController {
         mIndexer = new CachedIndexer(content);
         view     = new CursorView(editor);
         blink = new CursorBlinkController(editor, CursorBlinkController.DEFAULT_CURSOR_BLINK_PERIOD);
-        mInsertSelWidth = editor.lineNumber.getDividerWidth() / 2;
+        mInsertSelWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, Resources.getSystem().getDisplayMetrics()) / 2;
     }
 
     /**

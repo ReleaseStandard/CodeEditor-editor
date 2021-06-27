@@ -206,8 +206,14 @@ public class Extension implements EventSource, EventDestination, Comparable, Par
     public void registerPrefixedColor(String name, Object value) {
         editor.colorManager.register(prefixColor(name),value);
     }
+    public void registerPrefixedColorIfNotIn(String name, Object value) {
+        editor.colorManager.registerIfNotIn(name, value);
+    }
     public void registerColor(String name, Object value) {
         editor.colorManager.register(name,value);
+    }
+    public void registerColorIfNotIn(String name, Object value) {
+        editor.colorManager.registerIfNotIn(name, value);
     }
     public Integer getColor(String name) {
         return editor.colorManager.getColor(name);
