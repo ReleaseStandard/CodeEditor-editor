@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.extension.plugins.widgets.completion.view;
+package io.github.rosemoe.editor.core.extension.plugins.widgets.completion;
 
 import android.content.res.Resources;
 import android.util.TypedValue;
@@ -24,8 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import io.github.rosemoe.editor.R;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.CompletionItemController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.CompletionAdapter;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.CompletionItemController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.CompletionAdapter;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
 

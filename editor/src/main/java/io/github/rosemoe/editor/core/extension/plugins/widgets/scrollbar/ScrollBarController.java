@@ -22,9 +22,9 @@ public class ScrollBarController extends WidgetExtensionController {
         super(editor);
         view = new ScrollBarView(editor);
         model.orientation = orientation;
-        registerColor("scrollBarThumb", "base1");
-        registerColor("scrollBarThumbPressed", "base2");
-        registerColor("scrollBarTrack", "wholeBackground");
+        registerColorIfNotIn("scrollBarThumb", "base1");
+        registerColorIfNotIn("scrollBarThumbPressed", "base2");
+        registerColorIfNotIn("scrollBarTrack", "wholeBackground");
     }
     protected void handleRefresh(Canvas canvas, Object ...args) {
         int eWidth = editor.view.getWidth();

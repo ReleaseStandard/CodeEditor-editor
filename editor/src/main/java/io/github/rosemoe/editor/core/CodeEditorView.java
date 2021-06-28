@@ -3,7 +3,6 @@ package io.github.rosemoe.editor.core;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
@@ -16,7 +15,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.SymbolPairMatch;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.SymbolPairMatch;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentLineController;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.shortcuts.A;

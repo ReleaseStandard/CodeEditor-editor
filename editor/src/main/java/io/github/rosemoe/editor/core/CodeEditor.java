@@ -53,9 +53,7 @@ import androidx.annotation.Px;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,13 +81,13 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.control
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.ColorSchemeController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.RowController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.CompletionWindowController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.SymbolPairMatch;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.CompletionWindowController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.SymbolPairMatch;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.RowIterator;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.searcher.controller.SearcherController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contextaction.controller.ContextActionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.CompletionAdapter;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.CompletionAdapter;
 import io.github.rosemoe.editor.core.langs.empty.EmptyLanguage;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanMapController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanLineController;

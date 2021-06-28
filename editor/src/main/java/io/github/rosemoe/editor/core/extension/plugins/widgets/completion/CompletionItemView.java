@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.extension.plugins.widgets.completion.view;
+package io.github.rosemoe.editor.core.extension.plugins.widgets.completion;
 
 import android.graphics.drawable.Drawable;
 import android.view.View;

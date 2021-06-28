@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.extension.plugins.widgets.completion.view;
+package io.github.rosemoe.editor.core.extension.plugins.widgets.completion;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
@@ -28,7 +28,6 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.ana
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.EditorBasePopupWindow;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.CompletionAdapter;
 
 public class CompleteWindowView extends EditorBasePopupWindow {
     public CompletionAdapter mAdapter;

@@ -24,13 +24,12 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 
-import io.github.rosemoe.editor.core.CodeEditorView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.controller.SymbolPairMatch;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.SymbolPairMatch;
 
 public class UserInputConnexionView extends BaseInputConnection {
     public CodeEditor editor;
