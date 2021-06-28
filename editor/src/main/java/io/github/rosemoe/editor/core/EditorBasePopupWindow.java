@@ -26,6 +26,7 @@ import io.github.rosemoe.editor.core.CodeEditor;
  * @author Rose
  */
 public class EditorBasePopupWindow extends PopupWindow {
+
     private CodeEditor mEditor;
     private int[] mLocation;
     private int mTop;

@@ -54,11 +54,7 @@ public class CompletionItemController {
     }
 
     public CompletionItemController shiftCount(int shiftCount) {
-        return cursorOffset(model.commit.length() - shiftCount);
-    }
-
-    public CompletionItemController cursorOffset(int offset) {
-        model.cursorOffset(offset);
+        model.cursorOffset(model.commit.length() - shiftCount);
         return this;
     }
 

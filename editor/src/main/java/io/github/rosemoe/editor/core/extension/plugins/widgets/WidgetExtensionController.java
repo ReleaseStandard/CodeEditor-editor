@@ -18,7 +18,6 @@ import io.github.rosemoe.editor.core.util.Logger;
  */
 public abstract class WidgetExtensionController extends SystemExtensionController implements Observer {
 
-    public Class builderClass = null;
     public WidgetExtensionView view;
     public WidgetExtensionController(CodeEditor editor) {
         super(editor);
@@ -87,9 +86,30 @@ public abstract class WidgetExtensionController extends SystemExtensionControlle
      */
     @Override
     public void update(Observable o, Object arg) {
+        handleUpdate();
+        editor.activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if ( view != null ) {
+                    handleUpdateUIthread();
+                }
+            }
+        });
+    }
+
+    /**
+     * Defined for convenience, use this if you plan to modify a View.
+     */
+    public void handleUpdateUIthread() {
 
     }
 
+    /**
+     * Defined for convenience, use this to make change in the background.
+     */
+    public void handleUpdate() {
+
+    }
     static int menuId = 1000;
     public void addItemToMenu(Menu menu) {
         addItemToMenu(menu, name + " enabled");

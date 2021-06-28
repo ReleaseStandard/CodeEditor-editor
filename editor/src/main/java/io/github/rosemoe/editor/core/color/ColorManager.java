@@ -113,21 +113,10 @@ public class ColorManager {
         colors.put("selectionInsert", "textNormal");
         colors.put("selectionHandle", "textNormal");
         colors.put("nonPrintableChar", 0x00000000);
-        colors.put("completionPanelBackground", "base1");
-        colors.put("completionPanelCorner", "base2");
         colors.put("underline", "accent3");
         colors.put("lineDivider", "base1");
         colors.put("autoCompleteItemCurrentPosition", "base1");
         colors.put("autoCompleteItem", "base2");
-        colors.put("matchedTextBackground", "accent1");
-        colors.put("matchedTextBackground", "accent1");
-        colors.put("matchedTextBackground", "accent1");
-        colors.put("matchedTextBackground", "accent1");
-        colors.put("matchedTextBackground", "accent1");
-        colors.put("matchedTextBackground", "accent1");
-        colors.put("matchedTextBackground", "accent1");
-        colors.put("matchedTextBackground", "accent1");
-        colors.put("matchedTextBackground", "accent1");
     }
 
     /**

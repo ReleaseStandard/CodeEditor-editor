@@ -3108,20 +3108,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     //-------------------------------------------------------------------------------
 
     /**
-     * Called by ColorScheme to notify view.invalidate
-     *
-     * @param type Color type changed
-     */
-    public void onColorUpdated(int type) {
-        if (type == colorManager.getColor("completionPanelBackground") || type == colorManager.getColor("completionPanelCorner")) {
-            if (completionWindow != null)
-                completionWindow.applyColorScheme();
-            return;
-        }
-        view.invalidate();
-    }
-
-    /**
      * Get using InputMethodManager
      */
     public InputMethodManager getInputMethodManager() {

@@ -19,27 +19,27 @@ public class CompletionItemModel {
     /**
      * Text to commit when selected
      */
-    public String commit;
+    protected String commit;
 
     /**
      * Text to display as title in adapter
      */
-    public String label;
+    protected String label;
 
     /**
      * Text to display as description in adapter
      */
-    public String desc;
+    protected String desc;
 
     /**
      * CursorController offset in {@link CompletionItemModel#commit}
      */
-    public int cursorOffset;
+    protected int cursorOffset;
 
     /**
      * @param offset
      */
-    public void cursorOffset(int offset) {
+    protected void cursorOffset(int offset) {
         if (offset < 0 || offset > commit.length()) {
             throw new IllegalArgumentException();
         }

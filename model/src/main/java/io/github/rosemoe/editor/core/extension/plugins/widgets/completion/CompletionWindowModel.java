@@ -16,10 +16,10 @@
 package io.github.rosemoe.editor.core.extension.plugins.widgets.completion;
 
 public class CompletionWindowModel {
-    public boolean mCancelShowUp = false;
-    public int mCurrent = 0;
-    public long mRequestTime;
-    public String mLastPrefix;
-    public boolean mLoading;
-    public int mMaxHeight;
+    protected boolean mCancelShowUp = false;
+    protected int mCurrent = 0;
+    protected long mRequestTime;
+    protected String mLastPrefix;
+    protected boolean mLoading;
+    protected int mMaxHeight;
 }

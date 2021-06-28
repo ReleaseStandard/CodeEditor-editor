@@ -20,7 +20,6 @@ public abstract class WidgetExtensionView extends LinearLayout {
     /**
      * Defines which class control the view (useful for instanciation from xml).
      */
-    public Class controllerBuilder = null;
     public String controllerName = "";
     public void initialize() {
         setWillNotDraw(false); // https://stackoverflow.com/questions/10727225/drawing-something-on-my-linearlayout

@@ -29,14 +29,14 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.EditorBasePopupWindow;
 
-public class CompleteWindowView extends EditorBasePopupWindow {
+public class CompletionWindowView extends EditorBasePopupWindow {
     public CompletionAdapter mAdapter;
     public ListView mListView = null;
     public TextView mTip = null;
     public GradientDrawable mBg = null;
     private final CodeEditor mEditor;
 
-    public CompleteWindowView(CodeEditor editor) {
+    public CompletionWindowView(CodeEditor editor) {
         super(editor);
         mEditor = editor;
         Context ctx = editor.view.getContext();
@@ -47,8 +47,6 @@ public class CompleteWindowView extends EditorBasePopupWindow {
         mTip = new TextView(ctx);
         mTip.setText("Refreshing...");
         mTip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
-        mTip.setBackgroundColor(editor.colorManager.getColor("completionPanelBackground"));
-        mTip.setTextColor(editor.colorManager.getColor("textNormal"));
         layout.addView(mTip);
         ((RelativeLayout.LayoutParams) mTip.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         setContentView(layout);
@@ -64,10 +62,6 @@ public class CompleteWindowView extends EditorBasePopupWindow {
                 Toast.makeText(ctx, e.toString(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
-    public void applyColorScheme(ColorSchemeController theme) {
-        mBg.setStroke(1, mEditor.colorManager.getColor("completionPanelCorner"));
-        mBg.setColor(mEditor.colorManager.getColor("completionPanelBackground"));
     }
     public void setAdapter(CompletionAdapter adapter) {
         mAdapter = adapter;

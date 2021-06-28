@@ -21,6 +21,7 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.ColorSchemeController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
@@ -32,12 +33,10 @@ import io.github.rosemoe.editor.core.CodeEditor;
  *
  * @author Rose
  */
-public class CompletionWindowController {
-
-    private final CodeEditor mEditor;
+public class CompletionWindowController extends WidgetExtensionController {
 
     public CompletionWindowModel    model = new CompletionWindowModel();
-    public final CompleteWindowView view;
+    public final CompletionWindowView view;
     private AutoCompleteProviderController mProvider;
 
 
@@ -47,8 +46,10 @@ public class CompletionWindowController {
      * @param editor Target editor
      */
     public CompletionWindowController(CodeEditor editor) {
-        mEditor = editor;
-        view = new CompleteWindowView(editor) {
+        super(editor);
+        name = "completion";
+        description = "Auto complete window for editing code quicker";
+        view = new CompletionWindowView(editor) {
             @Override
             public void handleShow() {
                 if (model.mCancelShowUp) {
@@ -60,22 +61,30 @@ public class CompletionWindowController {
                 if (!cursor.isSelected()) {
                     CompletionItemController item = ((CompletionAdapter) mListView.getAdapter()).getItem(pos);
                     model.mCancelShowUp = true;
-                    mEditor.getText().delete(cursor.getLeftLine(), cursor.getLeftColumn() - model.mLastPrefix.length(), cursor.getLeftLine(), cursor.getLeftColumn());
+                    CompletionWindowController.this.editor.getText().delete(cursor.getLeftLine(), cursor.getLeftColumn() - model.mLastPrefix.length(), cursor.getLeftLine(), cursor.getLeftColumn());
                     cursor.onCommitText(item.model.commit);
                     if (item.model.cursorOffset != item.model.commit.length()) {
                         int delta = (item.model.commit.length() - item.model.cursorOffset);
                         if (delta != 0) {
-                            int newSel = Math.max(mEditor.getCursor().getLeft() - delta, 0);
-                            CharPosition charPosition = mEditor.getCursor().getIndexer().getCharPosition(newSel);
-                            mEditor.setSelection(charPosition.line, charPosition.column);
+                            int newSel = Math.max(CompletionWindowController.this.editor.getCursor().getLeft() - delta, 0);
+                            CharPosition charPosition = CompletionWindowController.this.editor.getCursor().getIndexer().getCharPosition(newSel);
+                            CompletionWindowController.this.editor.setSelection(charPosition.line, charPosition.column);
                         }
                     }
                     model.mCancelShowUp = false;
                 }
             }
         };
+        registerPrefixedColorIfNotIn("panelCorner", "base2");
+        registerPrefixedColorIfNotIn("panelBackground", "base1");
+        editor.colorManager.dump();
         setLoading(true);
         applyColorScheme();
+    }
+
+    @Override
+    public void attachView(View v) {
+
     }
 
     /**
@@ -90,7 +99,7 @@ public class CompletionWindowController {
 
 
     public Context getContext() {
-        return mEditor.view.getContext();
+        return editor.view.getContext();
     }
 
     public int getCurrentPosition() {
@@ -110,8 +119,10 @@ public class CompletionWindowController {
      * Apply colors for self
      */
     public void applyColorScheme() {
-        ColorSchemeController colors = mEditor.getColorScheme();
-        view.applyColorScheme(colors);
+        view.mBg.setStroke(1, getPrefixedColor("panelCorner"));
+        view.mBg.setColor(getPrefixedColor("panelBackground"));
+        view.mTip.setBackgroundColor(getPrefixedColor("panelBackground"));
+        view.mTip.setTextColor(getColor("textNormal"));
     }
 
     /**
@@ -122,7 +133,7 @@ public class CompletionWindowController {
     public void setLoading(boolean state) {
         model.mLoading = state;
         if (state) {
-            mEditor.view.postDelayed(() -> {
+            editor.view.postDelayed(() -> {
                 if (model.mLoading) {
                     view.mTip.setVisibility(View.VISIBLE);
                 }
@@ -205,7 +216,7 @@ public class CompletionWindowController {
         if (model.mRequestTime != requestTime) {
             return;
         }
-        mEditor.view.post(() -> {
+        editor.view.post(() -> {
             setLoading(false);
             if (results == null || results.isEmpty()) {
                 view.hide();
@@ -214,7 +225,7 @@ public class CompletionWindowController {
             view.mAdapter.attachAttributes(this, results);
             view.mListView.setAdapter(view.mAdapter);
             model.mCurrent = 0;
-            float newHeight = mEditor.getDpUnit() * 30 * results.size();
+            float newHeight = editor.getDpUnit() * 30 * results.size();
             if (view.isShowing()) {
                 view.update(view.getWidth(), (int) Math.min(newHeight, model.mMaxHeight));
             }
@@ -239,9 +250,9 @@ public class CompletionWindowController {
             mTime = requestTime;
             mPrefix = prefix;
             // get production ready result from here
-            colorResult = mEditor.getTextAnalyzeResult();
-            mLine = mEditor.getCursor().getLeftLine();
-            mInner = (!mEditor.isHighlightCurrentBlock()) || (mEditor.getBlockIndex() != -1);
+            colorResult = editor.getTextAnalyzeResult();
+            mLine = editor.getCursor().getLeftLine();
+            mInner = (!editor.isHighlightCurrentBlock()) || (editor.getBlockIndex() != -1);
         }
 
         @Override
@@ -275,5 +286,9 @@ public class CompletionWindowController {
         view.updatePosition();
     }
 
+    @Override
+    public void handleUpdateUIthread() {
+        applyColorScheme();
+    }
 }
 
