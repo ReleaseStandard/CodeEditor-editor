@@ -33,12 +33,17 @@ public abstract class WidgetExtensionController extends SystemExtensionControlle
         }
 
         // part of the view
-        if ( state ) {
-            view.setVisibility(View.VISIBLE);
-        } else {
-            view.setVisibility(View.GONE);
-        }
-        view.invalidate();
+        editor.activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if ( state ) {
+                    view.setVisibility(View.VISIBLE);
+                } else {
+                    view.setVisibility(View.GONE);
+                }
+                view.invalidate();
+            }
+        });
     }
 
     /**

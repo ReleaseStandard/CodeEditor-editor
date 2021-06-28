@@ -27,6 +27,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.cod
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.util.Logger;
 
 /**
  * Auto complete window for editing code quicker
@@ -77,7 +78,6 @@ public class CompletionWindowController extends WidgetExtensionController {
         };
         registerPrefixedColorIfNotIn("panelCorner", "base2");
         registerPrefixedColorIfNotIn("panelBackground", "base1");
-        editor.colorManager.dump();
         setLoading(true);
         applyColorScheme();
     }

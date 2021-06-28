@@ -26,6 +26,7 @@ public class CompletionItemView {
      * Icon for displaying in adapter
      */
     public Drawable icon;
+    TextView tv;
 
     /**
      * Set the content of a given CompletionItem.
@@ -34,7 +35,7 @@ public class CompletionItemView {
      * @param desc  description of the given complete item.
      */
     public void setContent(View root, String label, String desc) {
-        TextView tv = (TextView) root.findViewById(R.id.result_item_label);
+        tv = (TextView) root.findViewById(R.id.result_item_label);
         if ( tv != null ) {
             tv.setText(label);
         }
