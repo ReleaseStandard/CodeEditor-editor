@@ -19,6 +19,8 @@ import android.graphics.Paint;
 
 import java.util.Arrays;
 
+import io.github.rosemoe.editor.core.langs.helpers.TextUtils;
+
 /**
  * Cache to measure text quickly
  * This is very useful when text is long
@@ -36,10 +38,6 @@ public class FontCache {
     public FontCache() {
         cache = new float[65536];
         buffer = new char[3];
-    }
-
-    private static boolean isEmoji(char ch) {
-        return ch == 0xd83c || ch == 0xd83d || ch == 0xd83e;
     }
 
     /**
@@ -69,12 +67,12 @@ public class FontCache {
         float width = 0f;
         for (int i = start; i < end; i++) {
             char ch = chars[i];
-            if (isEmoji(ch) && i + 1 < end) {
+            if (TextUtils.isEmoji(ch) && i + 1 < end) {
                 buffer[0] = ch;
                 buffer[1] = chars[++i];
                 if( i + 1 < end ){
                     buffer [2] = chars [++i];
-                    if( !isEmoji(buffer [1]) || isEmoji(buffer [2]) ){
+                    if( !TextUtils.isEmoji(buffer [1]) || TextUtils.isEmoji(buffer [2]) ){
                         //当第2个字符不是Emoji或第3字符是Emoji时,只测量两个字符
                         i--;
                         width += p.measureText(buffer, 0, 2);
@@ -100,12 +98,12 @@ public class FontCache {
         float width = 0f;
         for (int i = start; i < end; i++) {
             char ch = str.charAt(i);
-            if (isEmoji(ch) && i + 1 < end) {
+            if (TextUtils.isEmoji(ch) && i + 1 < end) {
                 buffer[0] = ch;
                 buffer[1] = str.charAt(++i);
                 if( i + 1 < end ){
                     buffer [2] = str.charAt(++i);
-                    if( !isEmoji(buffer [1]) || isEmoji(buffer [2]) ){
+                    if( !TextUtils.isEmoji(buffer [1]) || TextUtils.isEmoji(buffer [2]) ){
                         //当第2个字符不是Emoji或第3字符是Emoji时,只测量两个字符
                         buffer [2] = 0;
                         i--;

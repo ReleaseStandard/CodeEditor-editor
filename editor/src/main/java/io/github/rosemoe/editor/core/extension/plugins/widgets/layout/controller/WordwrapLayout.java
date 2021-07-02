@@ -25,6 +25,8 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.c
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
 
+import static io.github.rosemoe.editor.core.langs.helpers.TextUtils.isEmoji;
+
 /**
  * Wordwrap layout for editor
  * <p>
@@ -57,21 +59,29 @@ public class WordwrapLayout extends AbstractLayout {
             public void breakLine(int line, List<Integer> breakpoints) {
                 ContentLineController sequence = text.getLine(line);
                 float currentWidth = 0;
-                for (int i = 0; i < sequence.length(); i++) {
+                int delta = 1;
+                for (int i = 0; i < sequence.length(); i+= delta) {
                     char ch = sequence.charAt(i);
-                    float single = fontCache.measureChar(ch, shadowPaint);
-                    if (ch == '\t') {
-                        single = fontCache.measureChar(' ', shadowPaint) * editor.getTabWidth();
+                    delta = 1;
+                    float single;
+                    if (isEmoji(ch) && i + 1 < text.length()) {
+                        delta = 2;
+                        single = shadowPaint.measureText(new char[]{ch, text.charAt(i + 1)}, 0, 2);
+                    } else {
+                        single = fontCache.measureChar(ch, shadowPaint);
+                        if (ch == '\t') {
+                            single = fontCache.measureChar(' ', shadowPaint) * editor.getTabWidth();
+                        }
                     }
                     if (currentWidth + single > model.width) {
                         int lastCommit = breakpoints.size() != 0 ? breakpoints.get(breakpoints.size() - 1) : 0;
                         if (i == lastCommit) {
-                            i++;
+                            i += delta;
                             continue;
                         }
                         breakpoints.add(i);
                         currentWidth = 0;
-                        i--;
+                        i -= delta;
                     } else {
                         currentWidth += single;
                     }
@@ -82,7 +92,7 @@ public class WordwrapLayout extends AbstractLayout {
             }
         };
         model.rowTable = new ArrayList<>();
-        model.width = editor.view.getWidth() - (int) editor.getDpUnit() * 5;
+        model.width = editor.view.getWidth();
         breakAllLines();
     }
 
