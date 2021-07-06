@@ -19,8 +19,8 @@ import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.NewlineHandler;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.extension.Extension;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.AutoCompleteProviderController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.IdentifierAutoComplete;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.AutoCompleteController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.IdentifierAutoCompleteController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.SymbolPairMatch;
 
 /**
@@ -54,8 +54,8 @@ public abstract class LanguagePlugin extends Extension {
         return analyzer;
     }
 
-    public AutoCompleteProviderController getAutoCompleteProvider() {
-        IdentifierAutoComplete autoComplete = new IdentifierAutoComplete();
+    public AutoCompleteController getAutoCompleteProvider() {
+        IdentifierAutoCompleteController autoComplete = new IdentifierAutoCompleteController(analyzer);
         autoComplete.setKeywords(new String[0]);
         return autoComplete;
     }

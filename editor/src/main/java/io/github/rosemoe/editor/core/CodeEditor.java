@@ -65,7 +65,7 @@ import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.AbstractLayout;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.LoopbackWidgetController;
@@ -78,7 +78,7 @@ import io.github.rosemoe.editor.plugins.debug.TestPlugin;
 import io.github.rosemoe.editor.plugins.debug.WidgetAnalyzerPlugin;
 import io.github.rosemoe.editor.plugins.debug.ExamplePlugin;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputConnexionController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.ColorSchemeController;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.ColorSchemeController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.RowController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.CompletionWindowController;
@@ -89,16 +89,16 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.contextaction.con
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.CompletionAdapter;
 import io.github.rosemoe.editor.core.langs.empty.EmptyLanguage;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanMapController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanLineController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.spans.SpanController;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanMapController;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanLineController;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentLineController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentListener;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputView;
 import io.github.rosemoe.editor.core.util.FontCache;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.processors.ContentLineRemoveListener;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.processors.SpanUpdater;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.processors.SpanUpdater;
 
 /**
  * CodeEditor is a editor that can highlight text regions by doing basic syntax analyzing

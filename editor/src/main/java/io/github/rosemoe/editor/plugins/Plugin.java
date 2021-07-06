@@ -18,8 +18,8 @@ package io.github.rosemoe.editor.plugins;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.extension.ColorSchemeEvent;
-import io.github.rosemoe.editor.core.extension.plugins.loopback.codeanalysis.LoopbackEvent;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.extension.ColorSchemeEvent;
+import io.github.rosemoe.editor.core.extension.plugins.loopback.extension.LoopbackEvent;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.extension.WidgetManagerEvent;
 

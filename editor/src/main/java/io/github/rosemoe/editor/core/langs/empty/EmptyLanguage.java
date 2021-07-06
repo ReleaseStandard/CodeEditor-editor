@@ -22,8 +22,8 @@ import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzerThread;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.AutoCompleteProviderController;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.AutoCompleteController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.CompletionItemController;
 
 /**
@@ -41,7 +41,7 @@ public class EmptyLanguage extends LanguagePlugin {
         analyzer = new EmptyCodeAnalyzer();
     }
     @Override
-    public AutoCompleteProviderController getAutoCompleteProvider() {
+    public AutoCompleteController getAutoCompleteProvider() {
         return new EmptyAutoCompleteProvider();
     }
 
@@ -50,7 +50,12 @@ public class EmptyLanguage extends LanguagePlugin {
         return false;
     }
 
-    public static class EmptyAutoCompleteProvider implements AutoCompleteProviderController {
+    public static class EmptyAutoCompleteProvider implements AutoCompleteController {
+
+        @Override
+        public void handleTokenInput(String token) {
+
+        }
 
         @Override
         public List<CompletionItemController> getAutoCompleteItems(String prefix, boolean isInCodeBlock, CodeAnalyzerResultColor colors, int line) {

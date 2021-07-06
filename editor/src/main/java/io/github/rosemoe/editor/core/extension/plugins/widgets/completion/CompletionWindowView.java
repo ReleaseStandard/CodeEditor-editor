@@ -24,7 +24,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.ColorSchemeController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.EditorBasePopupWindow;

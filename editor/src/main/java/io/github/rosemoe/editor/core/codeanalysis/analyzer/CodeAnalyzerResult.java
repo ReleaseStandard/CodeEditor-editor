@@ -25,7 +25,7 @@ public abstract class CodeAnalyzerResult {
     public abstract void dispatchResult(Object... args);
 
     /**
-     * Report if the result is computer/ready.
+     * Report if the result is computed/ready.
      * @return is the result computed
      */
     public boolean isReady() {

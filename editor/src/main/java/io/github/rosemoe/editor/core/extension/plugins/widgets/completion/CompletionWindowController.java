@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.analysis.ColorSchemeController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.CodeEditor;
@@ -38,7 +37,7 @@ public class CompletionWindowController extends WidgetExtensionController {
 
     public CompletionWindowModel    model = new CompletionWindowModel();
     public final CompletionWindowView view;
-    private AutoCompleteProviderController mProvider;
+    private AutoCompleteController mProvider;
 
 
     /**
@@ -111,7 +110,7 @@ public class CompletionWindowController extends WidgetExtensionController {
      *
      * @param provider New provider.can not be null
      */
-    public void setProvider(AutoCompleteProviderController provider) {
+    public void setProvider(AutoCompleteController provider) {
         mProvider = provider;
     }
 
@@ -119,6 +118,7 @@ public class CompletionWindowController extends WidgetExtensionController {
      * Apply colors for self
      */
     public void applyColorScheme() {
+        Logger.debug();
         view.mBg.setStroke(1, getPrefixedColor("panelCorner"));
         view.mBg.setColor(getPrefixedColor("panelBackground"));
         view.mTip.setBackgroundColor(getPrefixedColor("panelBackground"));
@@ -244,7 +244,7 @@ public class CompletionWindowController extends WidgetExtensionController {
         private final boolean mInner;
         private final CodeAnalyzerResultColor colorResult;
         private final int mLine;
-        private final AutoCompleteProviderController mLocalProvider = mProvider;
+        private final AutoCompleteController mLocalProvider = mProvider;
 
         public MatchThread(long requestTime, String prefix) {
             mTime = requestTime;
