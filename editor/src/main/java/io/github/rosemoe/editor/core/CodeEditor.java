@@ -63,12 +63,13 @@ import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.ExtensionContainer;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
+import io.github.rosemoe.editor.core.extension.plugins.appcompattweaker.AppCompatTweakerController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.AbstractLayout;
-import io.github.rosemoe.editor.core.extension.plugins.loopback.LoopbackWidgetController;
+import io.github.rosemoe.editor.core.extension.plugins.loopback.LoopbackController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.controller.WidgetControllerManagerController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputConnexionView;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
@@ -238,6 +239,13 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
 
     public AppCompatActivity activity = null;
 
+    public void attachMenu(Menu menu) {
+        for(Extension e : systemPlugins.extensions) {
+            if ( e instanceof AppCompatTweakerController) {
+                ((AppCompatTweakerController) e).attachMenu(menu);
+            }
+        }
+    }
     /**
      * Create a new instance of CodeEditor that will be find into the given root.
      * It will dynamically instanciate widgets as they are found in the layout file.
@@ -621,8 +629,9 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         completionWindow  = new CompletionWindowController(this);
         systemPlugins.put(
                 userInput,
-                new LoopbackWidgetController(this),
-                new WidgetControllerManagerController(this)
+                new LoopbackController(this),
+                new WidgetControllerManagerController(this),
+                new AppCompatTweakerController(this)
         );
         mDpUnit = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, Resources.getSystem().getDisplayMetrics()) / 2;
         mDrag = false;

@@ -25,8 +25,8 @@ import io.github.rosemoe.editor.core.CodeEditor;
 
 import static io.github.rosemoe.editor.core.extension.plugins.loopback.extension.LoopbackEvent.*;
 
-public class LoopbackWidgetController extends SystemExtensionController {
-    public LoopbackWidgetController(CodeEditor editor) {
+public class LoopbackController extends SystemExtensionController {
+    public LoopbackController(CodeEditor editor) {
         super(editor);
         subscribe(LoopbackEvent.class);
         Logger.debug("TYPE_LOOPBACK=",issubscribed(LoopbackEvent.class),",TYPE_USERINPUT=",issubscribed(UserInputEvent.class));
@@ -36,7 +36,7 @@ public class LoopbackWidgetController extends SystemExtensionController {
     @Override
     public void handleEventEmit(Event e) {
         for(Extension sec : editor.systemPlugins.extensions) {
-            if( sec instanceof LoopbackWidgetController ) {
+            if( sec instanceof LoopbackController) {
                 continue;
             }
             sec.dispatch(e);
