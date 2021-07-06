@@ -18,6 +18,8 @@ package io.github.rosemoe.editor.core.codeanalysis.analyzer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
@@ -25,6 +27,7 @@ import io.github.rosemoe.editor.core.util.CallStack;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanMapController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
+import io.github.rosemoe.editor.core.util.DeadLockChecker;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.codeanalysis.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.BlockLineModel;
@@ -73,44 +76,12 @@ public abstract class CodeAnalyzer {
     public ReentrantLock inProcessResultsLock = new ReentrantLock();
     public HashMap<String, CodeAnalyzerResult> inProcessResults = new HashMap<>();
 
-
     public static int instanceCount = 0;
 
     public CodeAnalyzer() {
-        if (Logger.DEBUG) {
-            instanceCount++;
-            new Thread() {
-                @Override
-                public void run() {
-                    int ic = instanceCount;
-                    while(true) {
-                        int checkSz = 100;
-                        int resultsLockCount = 0;
-                        int inProcessResultsLockCount = 0;
-                        for(int i = 0; i < checkSz ; i = i + 1 ) {
-                            try {
-                                if ( resultsLock.isLocked() ) {
-                                    resultsLockCount++;
-                                }
-                                if ( inProcessResultsLock.isLocked() ) {
-                                    inProcessResultsLockCount++;
-                                }
-                                Thread.sleep(10);
-
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        if (resultsLockCount == checkSz) {
-                            Logger.v("WARNING you probably have a deadlock on in builded resutls (view), ic=",ic,",results=",CodeAnalyzer.this.results.size());
-                        }
-                        if (inProcessResultsLockCount == checkSz) {
-                            Logger.v("WARNING you probably have a deadlock on in building resutls (processing), ic=",ic,",results=",CodeAnalyzer.this.results.size());
-                        }
-                    }
-                }
-            }.start();
-        }
+        instanceCount++;
+        DeadLockChecker.startChecker(resultsLock, "WARNING you probably have a deadlock on in builded resutls (view), ic=", instanceCount, ",results=", CodeAnalyzer.this.results.size());
+        DeadLockChecker.startChecker(inProcessResultsLock, "WARNING you probably have a deadlock on in building resutls (processing), ic=", instanceCount, ",inProcessResults=", CodeAnalyzer.this.inProcessResults.size());
     }
     /**
      * Method responsible from building results in inProcessResults HashMap.
