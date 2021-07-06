@@ -743,7 +743,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             analyzer.setCallback(null);
         }
         analyzer = lang.getAnalyzer();
-        analyzer.lockView();
         CodeAnalyzerResultColor result = ((CodeAnalyzerResultColor)analyzer.getResult("color"));
         if ( result != null ) {
             result.theme = getColorScheme();
@@ -773,7 +772,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             cursor.setLanguage(mLanguage);
         }
         view.invalidate();
-        analyzer.unlockView();
     }
 
     /**
@@ -995,13 +993,13 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * @param offset              Offset of text region start
      */
     private void drawRows(Canvas canvas, float offset) {
-        analyzer.lockView();
+
         RowIterator rowIterator = mLayout.obtainRowIterator(getFirstVisibleRow());
         CodeAnalyzerResultColor colRes = (CodeAnalyzerResultColor) analyzer.getResult("color");
         if ( colRes == null ) {
             Logger.debug("spanmap is not ready");
             analyzer.dump();
-            analyzer.unlockView();
+
             return;
         }
         SpanMapController spanMap = analyzer.getSpanMap();
@@ -1177,7 +1175,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             cursor.refresh(canvas,firstVisibleChar,lastVisibleChar,line,paintingOffset,row);
 
         }
-        analyzer.unlockView();
+
     }
 
     public void showTextActionPopup() {
@@ -1775,7 +1773,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * Whether span map is valid
      */
     private boolean isSpanMapPrepared(boolean insert, int delta) {
-        analyzer.lockView();
+
         SpanMapController map = analyzer.getSpanMap();
         boolean rv = false;
         if (map != null) {
@@ -1785,7 +1783,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                 rv=(map.size() == getLineCount() + delta);
             }
         }
-        analyzer.unlockView();
+
         return rv;
     }
 
@@ -2894,7 +2892,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * @param text the new text you want to display
      */
     public void setText(@Nullable CharSequence text) {
-        analyzer.lockView();
+
         if (text == null) {
             text = "";
         }
@@ -2940,7 +2938,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         mLayout.createLayout(this);
         view.invalidate();
 
-        analyzer.unlockView();
+
     }
     /**
      * Set the editor's text size in sp unit. This value must be > 0
@@ -3127,7 +3125,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
 
     @Override
     public void afterInsert(ContentMapController content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
-        analyzer.lockView();
+
         // Update spans
         if (isSpanMapPrepared(true, endLine - startLine)) {
             if (startLine == endLine) {
@@ -3184,12 +3182,12 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         if (mListener != null) {
             mListener.afterInsert(this, mText, startLine, startColumn, endLine, endColumn, insertedContent);
         }
-        analyzer.unlockView();
+
     }
 
     @Override
     public void afterDelete(ContentMapController content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
-        analyzer.lockView();
+
         if (isSpanMapPrepared(false, endLine - startLine)) {
             if (startLine == endLine) {
                 SpanUpdater.shiftSpansOnSingleLineDelete(analyzer.getSpanMap(), startLine, startColumn, endColumn);
@@ -3231,7 +3229,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         if (mListener != null) {
             mListener.afterDelete(this, mText, startLine, startColumn, endLine, endColumn, deletedContent);
         }
-        analyzer.unlockView();
+
     }
 
     @Override

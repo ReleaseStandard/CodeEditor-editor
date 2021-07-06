@@ -53,22 +53,18 @@ public class CodeAnalyzerThread extends Thread {
                 do {
                     waiting = false;
                     StringBuilder c = content.toStringBuilder();
-                    codeAnalyzer.lockBuild();
                     codeAnalyzer.analyze(c, d);
                     if (waiting) {
                         codeAnalyzer.clearInBuild();
                     }
-                    codeAnalyzer.unlockBuild();
                 } while (waiting);
 
                 codeAnalyzer.updateView();
 
-                codeAnalyzer.lockBuild();
                 CodeAnalyzerResultColor colorsResult = (CodeAnalyzerResultColor) codeAnalyzer.getResultInBuild("color");
                 if ( colorsResult != null ) {
                     colorsResult.map.addNormalIfNull();
                 }
-                codeAnalyzer.unlockBuild();
 
                 try {
                     if (mCallback != null) {
@@ -96,9 +92,7 @@ public class CodeAnalyzerThread extends Thread {
     }
 
     public void handleError() {
-        codeAnalyzer.lockBuild();
         codeAnalyzer.clearInBuild();
-        codeAnalyzer.unlockBuild();
     }
 
     /**

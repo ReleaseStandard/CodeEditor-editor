@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -68,20 +69,13 @@ public abstract class CodeAnalyzer {
      * results could be : CodeAnalyzerResultColor (display color on the screen), CodeAnalyzerResultContent (display content on the screen).
      *                    CodeAnalyzerResultSpellCheck, CodeAnalyzerResultSyntaxeErrors ...
      */
-    public ReentrantLock resultsLock = new ReentrantLock();
-    public HashMap<String, CodeAnalyzerResult> results = new HashMap<>();
+    public ConcurrentHashMap<String, CodeAnalyzerResult> results = new ConcurrentHashMap<>();
     /**
      * This is in processing results in the analyzer.
      */
-    public ReentrantLock inProcessResultsLock = new ReentrantLock();
-    public HashMap<String, CodeAnalyzerResult> inProcessResults = new HashMap<>();
-
-    public static int instanceCount = 0;
+    public ConcurrentHashMap<String, CodeAnalyzerResult> inProcessResults = new ConcurrentHashMap<>();
 
     public CodeAnalyzer() {
-        instanceCount++;
-        DeadLockChecker.startChecker(resultsLock, "WARNING you probably have a deadlock on in builded resutls (view), ic=", instanceCount, ",results=", CodeAnalyzer.this.results.size());
-        DeadLockChecker.startChecker(inProcessResultsLock, "WARNING you probably have a deadlock on in building resutls (processing), ic=", instanceCount, ",inProcessResults=", CodeAnalyzer.this.inProcessResults.size());
     }
     /**
      * Method responsible from building results in inProcessResults HashMap.
@@ -99,7 +93,6 @@ public abstract class CodeAnalyzer {
      * (No matter what type is expected by results)
      */
     public void dispatchResultPart(Object ...args) {
-        inProcessResultsLock.lock();
         for(CodeAnalyzerResult result : inProcessResults.values()) {
             if ( result != null ) {
                 result.dispatchResult(args);
@@ -107,7 +100,6 @@ public abstract class CodeAnalyzer {
                 Logger.debug("Cannot given results to the object since it is null");
             }
         }
-        inProcessResultsLock.unlock();
     }
 
     /**
@@ -115,36 +107,26 @@ public abstract class CodeAnalyzer {
      * @param listener
      */
     public void addResultListener(String name, CodeAnalyzerResult listener) {
-        lockView();
-        lockBuild();
-
         Logger.v("name=",name,",listener=",listener);
         results.put(name,listener);
         inProcessResults.put(name, listener.clone());
-
-        unlockBuild();
-        unlockView();
     }
     /**
      * Remove any CodeAnalyzerResult from the analysis process.
      */
     public void rmResultsListener() {
-        lockView();lockBuild();
         for(String key : results.keySet()) {
             results.remove(key);
             inProcessResults.remove(key);
         }
-        unlockView();unlockBuild();
     }
     /**
      * Remove a given CodeAnalyzerResult from the analysis process.
      * @param name name of the result to remove.
      */
     public void rmResultListener(String name) {
-        lockView();lockBuild();
         results.remove(name);
         inProcessResults.remove(name);
-        unlockBuild();unlockView();
     }
 
     /**
@@ -203,46 +185,11 @@ public abstract class CodeAnalyzer {
     // TODO : initially was named notify recycle
     public void recycle() {
         Logger.debug("recycle results");
-        /*lockView();
         for(CodeAnalyzerResult result : results.values()) {
             if ( result != null ) {
                 result.recycle();
             }
-        }*/
-        //for(CodeAnalyzerResult result : concurrentSafeGetValues(results)) {
-            //
-        //}
-    }
-
-    /**
-     * Lock modifications done to the view.
-     */
-    public void lockView() {
-        lock(resultsLock);
-    }
-    /**
-     * Allow again modifications to the view.
-     */
-    public void unlockView() {
-        unlock(resultsLock);
-    }
-    public boolean isViewLocked() {
-        return resultsLock.isLocked();
-    }
-    /**
-     * lock results being builded.
-     */
-    public void lockBuild() {
-        lock(inProcessResultsLock);
-    }
-    /**
-     * Unlock results beeing builded.
-     */
-    public void unlockBuild() {
-        unlock(inProcessResultsLock);
-    }
-    public boolean isBuildLocked() {
-        return inProcessResultsLock.isLocked();
+        }
     }
     private void unlock(ReentrantLock lock) {
         if ( lock != null &&
@@ -262,8 +209,6 @@ public abstract class CodeAnalyzer {
      * empty inProcessResults.
      */
     public void updateView() {
-        lockView();
-        lockBuild();
         Logger.debug("Update the view");
         for(Map.Entry<String, CodeAnalyzerResult> e : results.entrySet()) {
             CodeAnalyzerResult result = e.getValue();
@@ -276,8 +221,6 @@ public abstract class CodeAnalyzer {
             }
             inProcessResults.put(key, result);
         }
-        unlockView();
-        unlockBuild();
     }
 
     /**
@@ -322,7 +265,6 @@ public abstract class CodeAnalyzer {
         dump("");
     }
     public void dump(String offset) {
-        lockView();
         Logger.debug(offset,"CodeAnalyzer:");
         Logger.debug(offset,"  results = " + results.size());
         for(Map.Entry<String, CodeAnalyzerResult> entry : results.entrySet()) {
@@ -342,7 +284,6 @@ public abstract class CodeAnalyzer {
                 Logger.debug("entry getValue is null");
             }
         }
-        unlockView();
     }
 
     /**

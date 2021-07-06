@@ -18,7 +18,7 @@ package io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
 
 /**
- * This widget is important because it allows communication between plugins.
+ * Event that plugins send when they want to update colors of editor.
  */
 public class ColorSchemeEvent extends Event {
     // secondary keywords
