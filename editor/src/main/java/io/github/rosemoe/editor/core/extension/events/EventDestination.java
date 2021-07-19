@@ -30,6 +30,7 @@ public interface EventDestination {
      * @param type
      */
     void subscribe(Class type);
+
     /**
      * Unsubscribe to this type of events.
      * @param type event type to unsubscribe.

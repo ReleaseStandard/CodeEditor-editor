@@ -178,6 +178,27 @@ public class Extension implements EventSource, EventDestination, Comparable, Par
         subscribedEventTypes.put(type,true);
     }
 
+    /**
+     * Class name to subscribe to
+     * (for decoupling needs) :
+     * WARNING : you may experience
+     * @param type
+     */
+    public void subscribe(String type) {
+
+    }
+    /**
+     * Encapsulation for decoupling needs
+     * @param o
+     */
+    public void subscribe(Object o) {
+        if ( o instanceof Class) {
+            subscribe((Class)o);
+        } else {
+            subscribe((String)o);
+        }
+    }
+
     @Override
     public void unsubscribe(Class type) {
         subscribedEventTypes.put(type,false);

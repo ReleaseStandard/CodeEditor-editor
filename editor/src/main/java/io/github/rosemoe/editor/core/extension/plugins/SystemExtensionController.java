@@ -52,4 +52,6 @@ public abstract class SystemExtensionController extends Extension {
         super.dispatch(e);
         Logger.v("Dispatch on widget requested");
     }
+
+
 }
