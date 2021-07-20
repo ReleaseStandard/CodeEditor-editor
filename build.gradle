@@ -1,4 +1,4 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply from: 'buildSrc/outputs/build/build.module.gradle'
 
 buildscript {
     repositories {
@@ -7,18 +7,5 @@ buildscript {
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.2.1"
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-
-allprojects {
-    repositories {
-	    google()
-	    mavenCentral()
-	    jcenter() // Warning: this repository is going to shut down soon
-	    maven { url = 'https://jitpack.io' }
     }
 }

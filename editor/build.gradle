@@ -47,8 +47,6 @@ dependencies {
     implementation "org.antlr:antlr4-runtime:4.9.2"
     implementation 'com.github.Rosemoe:BlockLinkedList:1.0.0'
     implementation 'com.github.ReleaseStandard:CodeEditor-logger-debug:master-SNAPSHOT'
-    implementation project(path: ':CodeEditor-editor:model')
-    implementation project(path: ':CodeEditor-editor:view-android')
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.annotation:annotation:1.2.0'
@@ -56,16 +54,13 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.3'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.3'
+
+    implementationR ':model' 
+    implementationR ':view-android' 
 }
-
-
-//configurations.all {
-//    resolutionStrategy.dependencySubstitution {
-//        substitute project(':model') using project('/DATA/CodeEditor/CodeEditor/CodeEditor-editor/model/') because "test"
-//    }
-//}
 
