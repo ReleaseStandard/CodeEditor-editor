@@ -15,10 +15,6 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor;
 
-import android.graphics.RectF;
-
-import com.releasestandard.codeeditor.model.R;
-
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.Rect;
 
