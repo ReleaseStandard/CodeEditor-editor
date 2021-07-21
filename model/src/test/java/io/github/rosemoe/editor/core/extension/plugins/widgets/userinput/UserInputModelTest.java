@@ -1,7 +1,5 @@
 package io.github.rosemoe.editor.core.extension.plugins.widgets.userinput;
 
-import com.releasestandard.codeeditor.model.R;
-
 import org.junit.Test;
 
 import io.github.rosemoe.editor.core.util.Random;
