@@ -190,7 +190,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     private boolean mHighlightCurrentBlock;
     private boolean mHighlightCurrentLine;
     private boolean mSymbolCompletionEnabled;
-
+    private boolean mAllowFullscreen;
     private ClipboardManager mClipboardManager;
     private InputMethodManager mInputMethodManager;
     public ContentMapController mText;
@@ -622,6 +622,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         setSymbolCompletionEnabled(true);
         setEditable(true);
         setAutoCompletionOnComposing(true);
+        setAllowFullscreen(false);
         setTypefaceText(Typeface.DEFAULT);
         userInput         = new UserInputController(this,view.getContext());
         mConnection       = new UserInputConnexionController(this);
@@ -692,6 +693,27 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      */
     public void setAutoCompletionItemAdapter(@Nullable CompletionAdapter adapter) {
         completionWindow.view.setAdapter(adapter);
+    }
+    
+    /**
+     * Set to {@code false} if you don't want the editor to go fullscreen on devices with smaller screen size.
+     * Otherwise, set to {@code true}
+     *
+     * Default value is {@code false}
+     *
+     * @param fullscreen Enable or disable fullscreen
+     */
+    public void setAllowFullscreen(boolean fullscreen) {
+        this.mAllowFullscreen = fullscreen;
+    }
+    
+    /**
+     * Is the editor allowed to go fullscreen?
+     *
+     * @return {@code true} if fullscreen is allowed or {@code false} if it isn't
+     */
+    public boolean isFullscreenAllowed() {
+        return mAllowFullscreen;
     }
 
     /**

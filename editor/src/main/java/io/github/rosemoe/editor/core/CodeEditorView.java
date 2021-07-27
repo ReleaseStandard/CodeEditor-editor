@@ -146,6 +146,11 @@ public class CodeEditorView extends View {
         outAttrs.initialSelStart = editor.getCursor() != null ? editor.getCursor().getLeft() : 0;
         outAttrs.initialSelEnd = editor.getCursor() != null ? editor.getCursor().getRight() : 0;
         outAttrs.initialCapsMode = editor.mConnection.view.getCursorCapsMode(0);
+        // Prevent fullscreen when the screen height is too small
+        // Especially in landscape mode
+        if(!editor.isFullscreenAllowed()) {
+            outAttrs.imeOptions = EditorInfo.IME_FLAG_NO_EXTRACT_UI|EditorInfo.IME_FLAG_NO_FULLSCREEN;
+        }
         editor.mConnection.reset();
         editor.setExtracting(null);
         return editor.mConnection.view;
