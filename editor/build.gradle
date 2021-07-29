@@ -45,7 +45,7 @@ android {
 dependencies {
     implementation "org.antlr:antlr4-runtime:4.9.2"
     implementation 'com.github.Rosemoe:BlockLinkedList:1.0.0'
-    implementation 'com.github.ReleaseStandard.CodeEditor-logger-debug:logger-debug:master-SNAPSHOT'
+    implementation 'io.github.ReleaseStandard.CodeEditor:CodeEditor-logger-debug:6'
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.annotation:annotation:1.2.0'
