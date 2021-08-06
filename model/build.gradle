@@ -1,6 +1,6 @@
 apply plugin: 'java'
 
 dependencies {
-    implementation 'io.github.ReleaseStandard.CodeEditor:CodeEditor-logger-debug:9'
+    implementation 'io.github.ReleaseStandard.CodeEditor:logger-debug:28'
     testImplementation 'junit:junit:4.+'
 }
