@@ -1,4 +1,4 @@
-apply plugin: 'java'
+apply plugin: 'java-library'
 
 dependencies {
     implementation 'io.github.ReleaseStandard.CodeEditor:logger-debug:28'
