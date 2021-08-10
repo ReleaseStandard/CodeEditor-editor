@@ -59,7 +59,7 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.3'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.3'
 
+    implementationR ':view-android'
     implementationR ':model' 
-    implementationR ':view-android' 
 }
 
