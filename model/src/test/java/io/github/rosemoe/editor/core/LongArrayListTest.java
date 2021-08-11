@@ -53,7 +53,7 @@ public class LongArrayListTest {
     @Test
     public void clear() {
         LongArrayList lal = new LongArrayList();
-        for(int a = 0; 10 + a < r.nextUint() % 100; a = a + 1) {
+        for(int a = 0; a < 10 + r.nextUint() % 100; a = a + 1) {
             lal.add(r.nextUint());
         }
         assertFalse(lal.size() == 0);

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="11" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="CodeEditor-editor.buildSrc" target="11" />
+      <module name="CodeEditor-editor.controller" target="11" />
+      <module name="CodeEditor-editor.editor" target="11" />
+      <module name="CodeEditor-editor.model" target="11" />
+      <module name="CodeEditor-editor.view-android" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>
