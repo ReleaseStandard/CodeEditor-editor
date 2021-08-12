@@ -36,6 +36,7 @@ public interface EventDestination {
      * @param type event type to unsubscribe.
      */
     void unsubscribe(Class type);
+
     /**
      * Test if current event destination is subscribed to event.
      * @param type

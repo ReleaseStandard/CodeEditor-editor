@@ -110,8 +110,7 @@ public class Extension implements EventSource, EventDestination, Comparable, Par
         return 0;
     }
 
-    public static final Parcelable.Creator<Extension> CREATOR
-            = new Parcelable.Creator<Extension>() {
+    public static final Parcelable.Creator<Extension> CREATOR = new Parcelable.Creator<Extension>() {
         public Extension createFromParcel(Parcel in) {
             return new Extension(in);
         }

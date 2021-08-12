@@ -17,7 +17,6 @@ package io.github.rosemoe.editor.core.extension.events;
 
 import java.util.ArrayList;
 
-import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**
@@ -25,12 +24,12 @@ import io.github.rosemoe.editor.core.util.Logger;
  *
  * @author Release Standard
  */
-public abstract class Event implements Comparable {
+public class Event implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        if ( o instanceof Extension) {
-            Extension p = (Extension) o;
+        if ( o instanceof Event) {
+            Event p = (Event) o;
             if ( priorityRing < p.priorityRing ) {
                 return -1;
             } else if(priorityRing > p.priorityRing ) {
