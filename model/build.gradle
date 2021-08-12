@@ -1,6 +1,6 @@
 apply plugin: 'java-library'
 
 dependencies {
-    universalEmbed 'io.github.ReleaseStandard.CodeEditor:logger-debug:61'
+    universalEmbed 'io.github.ReleaseStandard.CodeEditor:logger-debug:+'
     testImplementation 'junit:junit:4.+'
 }
