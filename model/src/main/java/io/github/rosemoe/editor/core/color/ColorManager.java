@@ -125,17 +125,10 @@ public class ColorManager {
      * @return
      */
     public static int decodeHex(String hex) {
-        if ( hex.length() %2 != 0 ) {
-            hex="0"+hex;
-        }
         int value = 0;
-        for(int a = hex.length(); a > 0; a=a-2) {
-            String no = hex.substring(a-2,a);
-            int part = Integer.parseInt(no, 16);
-            part = part << ( 8 * ((a+2)/2) ) ;
-            value += part;
+        for ( int a = 0; a < hex.length(); a = a + 1 ) {
+            value ^= Integer.parseInt(String.valueOf(hex.charAt(hex.length() - 1 - a)),16) << (a * 4);
         }
-        Logger.debug("hex=",hex,",color=",value);
         return value;
     }
 

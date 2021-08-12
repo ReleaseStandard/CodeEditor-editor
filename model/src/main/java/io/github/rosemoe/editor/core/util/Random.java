@@ -23,6 +23,12 @@ public class Random extends java.util.Random {
         }
         return a;
     }
+
+    /**
+     *
+     * @param bound exclusive upper bound
+     * @return
+     */
     public int nextUint(int bound) {
         int a = nextInt(bound);
         while(a<0) {

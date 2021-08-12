@@ -1,6 +1,34 @@
 apply plugin: 'java-library'
 
+
+configurations {
+    // give tests access to annotationProcessor dependencies
+    testImplementation.extendsFrom annotationProcessor
+}
+
+
 dependencies {
-    universalEmbed 'io.github.ReleaseStandard.CodeEditor:logger-debug:+'
+    implementation 'io.github.ReleaseStandard.CodeEditor:logger-debug:+'
     testImplementation 'junit:junit:4.+'
+
+    implementation 'systems.manifold:manifold-json-rt:2021.1.14'
+    implementation 'systems.manifold:manifold-props-rt:2021.1.14'
+    annotationProcessor 'systems.manifold:manifold-json:2021.1.14'
+    annotationProcessor 'systems.manifold:manifold-props:2021.1.14'
+    implementation 'systems.manifold:manifold-ext:2021.1.14'
+    implementation 'systems.manifold:manifold-rt:2021.1.14'
+    annotationProcessor 'systems.manifold:manifold-ext:2021.1.14'
+}
+
+if (JavaVersion.current() != JavaVersion.VERSION_1_8 &&
+        sourceSets.main.allJava.files.any {it.name == "module-info.java"}) {
+    tasks.withType(JavaCompile) {
+        // if you DO define a module-info.java file:
+        options.compilerArgs += ['-Xplugin:Manifold', '--module-path', it.classpath.asPath]
+    }
+} else {
+    tasks.withType(JavaCompile) {
+        // If you DO NOT define a module-info.java file:
+        options.compilerArgs += ['-Xplugin:Manifold']
+    }
 }
