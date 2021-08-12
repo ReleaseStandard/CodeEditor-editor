@@ -8,7 +8,7 @@ configurations {
 
 
 dependencies {
-    implementation 'io.github.ReleaseStandard.CodeEditor:logger-debug:+'
+    implementation 'io.github.ReleaseStandard.CodeEditor:logger-debug:1.62.0'
     testImplementation 'junit:junit:4.+'
 
     implementation 'systems.manifold:manifold-json-rt:2021.1.14'
