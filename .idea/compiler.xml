@@ -15,7 +15,7 @@
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/systems.manifold/manifold-rt/2021.1.14/5a7ceec6bd71012060c6eb594617e72a18bceb41/manifold-rt-2021.1.14.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/systems.manifold/manifold-util/2021.1.14/81899b3aac78ea469b0b72b2e0ebe613857b5cbe/manifold-util-2021.1.14.jar" />
         </processorPath>
-        <module name="CodeEditor-editor.model" />
+        <module name="editor.model" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
@@ -24,6 +24,11 @@
       <module name="CodeEditor-editor.editor" target="11" />
       <module name="CodeEditor-editor.model" target="11" />
       <module name="CodeEditor-editor.view-android" target="11" />
+      <module name="editor.buildSrc" target="11" />
+      <module name="editor.controller" target="11" />
+      <module name="editor.editor" target="11" />
+      <module name="editor.model" target="11" />
+      <module name="editor.view-android" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

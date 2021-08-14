@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CodeEditor-editor.iml" filepath="$PROJECT_DIR$/.idea/modules/CodeEditor-editor.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CodeEditor-editor.buildSrc.iml" filepath="$PROJECT_DIR$/.idea/modules/CodeEditor-editor.buildSrc.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/controller/CodeEditor-editor.controller.iml" filepath="$PROJECT_DIR$/.idea/modules/controller/CodeEditor-editor.controller.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/editor/CodeEditor-editor.editor.iml" filepath="$PROJECT_DIR$/.idea/modules/editor/CodeEditor-editor.editor.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/model/CodeEditor-editor.model.iml" filepath="$PROJECT_DIR$/.idea/modules/model/CodeEditor-editor.model.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/view-android/CodeEditor-editor.view-android.iml" filepath="$PROJECT_DIR$/.idea/modules/view-android/CodeEditor-editor.view-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/editor.iml" filepath="$PROJECT_DIR$/.idea/modules/editor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/editor.buildSrc.iml" filepath="$PROJECT_DIR$/.idea/modules/editor.buildSrc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/controller/editor.controller.iml" filepath="$PROJECT_DIR$/.idea/modules/controller/editor.controller.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/editor/editor.editor.iml" filepath="$PROJECT_DIR$/.idea/modules/editor/editor.editor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/model/editor.model.iml" filepath="$PROJECT_DIR$/.idea/modules/model/editor.model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/view-android/editor.view-android.iml" filepath="$PROJECT_DIR$/.idea/modules/view-android/editor.view-android.iml" />
     </modules>
   </component>
 </project>
