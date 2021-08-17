@@ -21,25 +21,18 @@ import java.util.List;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.tokenemitter.TokenEmitterResult;
 import io.github.rosemoe.editor.core.BlockLineModel;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.BlockLineManager;
 
 /**
  * Manage how the analyzer show display the content to the screen.
  */
 public class CodeAnalyzerResultContent extends TokenEmitterResult {
+
     public final List<BlockLineModel> mBlocks;
+
     public CodeAnalyzerResultContent() {
         mBlocks = new ArrayList<>(1024);
     }
-    /**
-     * Get a new BlockLineModel object
-     * <strong>It fields maybe not initialized with zero</strong>
-     *
-     * @return An idle BlockLineModel
-     */
-    public BlockLineModel obtainNewBlock() {
-        return BlockLineManager.obtain();
-    }
+
     /**
      * Add a new code block info
      *
