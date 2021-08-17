@@ -19,19 +19,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentListener;
 import io.github.rosemoe.editor.core.CharPosition;
 
 /**
- * Indexer Impl for ContentMapController
+ * Indexer Impl for ContentMap
  * With cache
  *
  * @author Rose
  */
 public class CachedIndexer implements Indexer, ContentListener {
 
-    private final ContentMapController content;
+    private final ContentMap content;
     private final CharPosition mZeroPoint = new CharPosition().zero();
     private final CharPosition mEndPoint = new CharPosition();
     private final List<CharPosition> mCachePositions = new ArrayList<>();
@@ -44,9 +44,9 @@ public class CachedIndexer implements Indexer, ContentListener {
     /**
      * Create a new CachedIndexer for the given content
      *
-     * @param content ContentMapController to manage
+     * @param content ContentMap to manage
      */
-    public CachedIndexer(ContentMapController content) {
+    public CachedIndexer(ContentMap content) {
         this.content = content;
         detectException();
     }
@@ -401,12 +401,12 @@ public class CachedIndexer implements Indexer, ContentListener {
     }
 
     @Override
-    public void beforeReplace(ContentMapController content) {
+    public void beforeReplace(ContentMap content) {
         //Do nothing
     }
 
     @Override
-    public void afterInsert(ContentMapController content, int startLine, int startColumn, int endLine, int endColumn,
+    public void afterInsert(ContentMap content, int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence insertedContent) {
         if (isHandleEvent()) {
             for (CharPosition pos : mCachePositions) {
@@ -426,7 +426,7 @@ public class CachedIndexer implements Indexer, ContentListener {
     }
 
     @Override
-    public void afterDelete(ContentMapController content, int startLine, int startColumn, int endLine, int endColumn,
+    public void afterDelete(ContentMap content, int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence deletedContent) {
         if (isHandleEvent()) {
             List<CharPosition> garbage = new ArrayList<>();

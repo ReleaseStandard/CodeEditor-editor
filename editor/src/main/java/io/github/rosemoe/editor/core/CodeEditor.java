@@ -70,6 +70,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionVi
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.IdentifierAutoCompleteController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.IdentifierAutoCompleteModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.AbstractLayout;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.LoopbackController;
@@ -93,7 +94,6 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.contextaction.con
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.CompletionAdapter;
 import io.github.rosemoe.editor.core.langs.empty.EmptyLanguage;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentLineController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentListener;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputView;
@@ -193,7 +193,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     private boolean mAllowFullscreen;
     private ClipboardManager mClipboardManager;
     private InputMethodManager mInputMethodManager;
-    public ContentMapController mText;
+    public ContentMap mText;
     public CodeAnalyzer analyzer;
 
     public CodeEditorView view;
@@ -2911,7 +2911,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * @see CodeEditor#setText(CharSequence)
      */
     @NonNull
-    public ContentMapController getText() {
+    public ContentMap getText() {
         return mText;
     }
 
@@ -2930,7 +2930,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             mText.removeContentListener(this);
             mText.setLineListener(null);
         }
-        mText = new ContentMapController(text,this);
+        mText = new ContentMap(text,this);
         boolean isAutoIndented = CursorModel.DEFAULT_ISAUTO_IDENT;
         if ( cursor != null ) {
             isAutoIndented = cursor.isAutoIndent();
@@ -3144,7 +3144,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
 
 
     @Override
-    public void beforeReplace(ContentMapController content) {
+    public void beforeReplace(ContentMap content) {
         mWait = true;
         mLayout.beforeReplace(content);
         if (mListener != null) {
@@ -3153,7 +3153,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     }
 
     @Override
-    public void afterInsert(ContentMapController content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
+    public void afterInsert(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
 
         // Update spans
         if (isSpanMapPrepared(true, endLine - startLine)) {
@@ -3215,7 +3215,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     }
 
     @Override
-    public void afterDelete(ContentMapController content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
+    public void afterDelete(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
 
         if (isSpanMapPrepared(false, endLine - startLine)) {
             if (startLine == endLine) {
@@ -3270,7 +3270,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     }
 
     @Override
-    public void onRemove(ContentMapController content, ContentLineController line) {
+    public void onRemove(ContentMap content, ContentLineController line) {
         mLayout.onRemove(content, line);
     }
 

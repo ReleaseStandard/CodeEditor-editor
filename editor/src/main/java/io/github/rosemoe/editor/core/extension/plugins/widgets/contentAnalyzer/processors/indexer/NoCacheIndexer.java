@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.processors.indexer;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMap;
 
 /**
  * Indexer without cache
@@ -29,7 +29,7 @@ public final class NoCacheIndexer extends CachedIndexer implements Indexer {
      *
      * @param content Target content
      */
-    public NoCacheIndexer(ContentMapController content) {
+    public NoCacheIndexer(ContentMap content) {
         super(content);
         //Disable dynamic indexing
         if (super.getMaxCacheSize() != 0) {

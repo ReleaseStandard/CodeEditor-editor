@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentListener;
 
 /**
@@ -50,19 +50,19 @@ public interface EditorEventListener {
     void onNewTextSet(CodeEditor editor);
 
     /**
-     * @see ContentListener#afterDelete(ContentMapController, int, int, int, int, CharSequence)
+     * @see ContentListener#afterDelete(ContentMap, int, int, int, int, CharSequence)
      * Note:do not change content at this time
      */
     void afterDelete(CodeEditor editor, CharSequence content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent);
 
     /**
-     * @see ContentListener#afterInsert(ContentMapController, int, int, int, int, CharSequence)
+     * @see ContentListener#afterInsert(ContentMap, int, int, int, int, CharSequence)
      * Note:do not change content at this time
      */
     void afterInsert(CodeEditor editor, CharSequence content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent);
 
     /**
-     * @see ContentListener#beforeReplace(ContentMapController)
+     * @see ContentListener#beforeReplace(ContentMap)
      * Note:do not change content at this time
      */
     void beforeReplace(CodeEditor editor, CharSequence content);

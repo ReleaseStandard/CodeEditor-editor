@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.model.WordwrapModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentLineController;
 import io.github.rosemoe.editor.core.util.Logger;
@@ -42,7 +42,7 @@ public class WordwrapLayout extends AbstractLayout {
 
     public final WordwrapModel model;
 
-    public WordwrapLayout(CodeEditor editor, ContentMapController text) {
+    public WordwrapLayout(CodeEditor editor, ContentMap text) {
         super(editor, text);
         model = new WordwrapModel() {
             @Override
@@ -110,12 +110,12 @@ public class WordwrapLayout extends AbstractLayout {
     }
 
     @Override
-    public void beforeReplace(ContentMapController content) {
+    public void beforeReplace(ContentMap content) {
         // Intentionally empty
     }
 
     @Override
-    public void afterInsert(ContentMapController content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
+    public void afterInsert(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
         // Update line numbers
         int delta = endLine - startLine;
         if (delta != 0) {
@@ -128,7 +128,7 @@ public class WordwrapLayout extends AbstractLayout {
     }
 
     @Override
-    public void afterDelete(ContentMapController content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
+    public void afterDelete(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
         int delta = endLine - startLine;
         if (delta != 0) {
             int startRow = model.findRow(startLine);
@@ -148,7 +148,7 @@ public class WordwrapLayout extends AbstractLayout {
     }
 
     @Override
-    public void onRemove(ContentMapController content, ContentLineController line) {
+    public void onRemove(ContentMap content, ContentLineController line) {
 
     }
 

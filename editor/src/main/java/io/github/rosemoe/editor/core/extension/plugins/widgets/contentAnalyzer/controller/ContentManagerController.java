@@ -22,7 +22,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.C
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.view.ContentManagerView;
 
 /**
- * Helper class for ContentMapController to take down modification
+ * Helper class for ContentMap to take down modification
  * As well as provide Undo/Redo actions
  *
  * @author Rose
@@ -32,7 +32,7 @@ public final class ContentManagerController implements ContentListener {
     public ContentManagerModel model = new ContentManagerModel();
     public ContentManagerView view   = new ContentManagerView();
 
-    private final ContentMapController mContent;
+    private final ContentMap mContent;
     private final List<ContentAction> mActionStack;
     private InsertAction mInsertAction;
     private DeleteAction mDeleteAction;
@@ -42,9 +42,9 @@ public final class ContentManagerController implements ContentListener {
     /**
      * Create ContentManagerController with the target content
      *
-     * @param content The ContentMapController going to attach
+     * @param content The ContentMap going to attach
      */
-    public ContentManagerController(ContentMapController content) {
+    public ContentManagerController(ContentMap content) {
         mContent = content;
         mActionStack = new ArrayList<>();
         mInsertAction = null;
@@ -53,11 +53,11 @@ public final class ContentManagerController implements ContentListener {
     }
 
     /**
-     * Undo on the given ContentMapController
+     * Undo on the given ContentMap
      *
      * @param content Undo Target
      */
-    public void undo(ContentMapController content) {
+    public void undo(ContentMap content) {
         if (canUndo()) {
             model.ignoreModification = true;
             mActionStack.get(mStackPointer - 1).undo(content);
@@ -67,11 +67,11 @@ public final class ContentManagerController implements ContentListener {
     }
 
     /**
-     * Redo on the given ContentMapController
+     * Redo on the given ContentMap
      *
      * @param content Redo Target
      */
-    public void redo(ContentMapController content) {
+    public void redo(ContentMap content) {
         if (canRedo()) {
             model.ignoreModification = true;
             mActionStack.get(mStackPointer).redo(content);
@@ -197,7 +197,7 @@ public final class ContentManagerController implements ContentListener {
     }
 
     @Override
-    public void beforeReplace(ContentMapController content) {
+    public void beforeReplace(ContentMap content) {
         if (model.ignoreModification) {
             return;
         }
@@ -205,7 +205,7 @@ public final class ContentManagerController implements ContentListener {
     }
 
     @Override
-    public void afterInsert(ContentMapController content, int startLine, int startColumn, int endLine, int endColumn,
+    public void afterInsert(ContentMap content, int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence insertedContent) {
         if (model.ignoreModification) {
             return;
@@ -228,7 +228,7 @@ public final class ContentManagerController implements ContentListener {
     }
 
     @Override
-    public void afterDelete(ContentMapController content, int startLine, int startColumn, int endLine, int endColumn,
+    public void afterDelete(ContentMap content, int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence deletedContent) {
         if (model.ignoreModification) {
             return;
@@ -256,14 +256,14 @@ public final class ContentManagerController implements ContentListener {
          *
          * @param content On the given object
          */
-        void undo(ContentMapController content);
+        void undo(ContentMap content);
 
         /**
          * Redo this action
          *
          * @param content On the given object
          */
-        void redo(ContentMapController content);
+        void redo(ContentMap content);
 
         /**
          * Get whether the target action can be merged with this action
@@ -294,12 +294,12 @@ public final class ContentManagerController implements ContentListener {
         public CharSequence text;
 
         @Override
-        public void undo(ContentMapController content) {
+        public void undo(ContentMap content) {
             content.delete(startLine, startColumn, endLine, endColumn);
         }
 
         @Override
-        public void redo(ContentMapController content) {
+        public void redo(ContentMap content) {
             content.insert(startLine, startColumn, text);
         }
 
@@ -355,14 +355,14 @@ public final class ContentManagerController implements ContentListener {
         }
 
         @Override
-        public void undo(ContentMapController content) {
+        public void undo(ContentMap content) {
             for (int i = _actions.size() - 1; i >= 0; i--) {
                 _actions.get(i).undo(content);
             }
         }
 
         @Override
-        public void redo(ContentMapController content) {
+        public void redo(ContentMap content) {
             for (int i = 0; i < _actions.size(); i++) {
                 _actions.get(i).redo(content);
             }
@@ -392,12 +392,12 @@ public final class ContentManagerController implements ContentListener {
         public CharSequence text;
 
         @Override
-        public void undo(ContentMapController content) {
+        public void undo(ContentMap content) {
             content.insert(startLine, startColumn, text);
         }
 
         @Override
-        public void redo(ContentMapController content) {
+        public void redo(ContentMap content) {
             content.delete(startLine, startColumn, endLine, endColumn);
         }
 
@@ -441,13 +441,13 @@ public final class ContentManagerController implements ContentListener {
         public DeleteAction _delete;
 
         @Override
-        public void undo(ContentMapController content) {
+        public void undo(ContentMap content) {
             _insert.undo(content);
             _delete.undo(content);
         }
 
         @Override
-        public void redo(ContentMapController content) {
+        public void redo(ContentMap content) {
             _delete.redo(content);
             _insert.redo(content);
         }

@@ -22,7 +22,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.C
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.view.ContentLineView;
 
 /**
- * One line of content in the ContentMapController.
+ * One line of content in the ContentMap.
  */
 public class ContentLineController implements CharSequence, GetChars {
 

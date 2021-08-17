@@ -20,7 +20,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 
 import io.github.rosemoe.editor.core.CharPosition;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputConnexionModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputConnexionView;
 import io.github.rosemoe.editor.core.util.Logger;
@@ -196,7 +196,7 @@ public class UserInputConnexionController {
      * Get content region internally
      */
     private CharSequence getTextRegionInternal(int start, int end, int flags) {
-        ContentMapController origin = view.editor.getText();
+        ContentMap origin = view.editor.getText();
         if (start > end) {
             int tmp = start;
             start = end;
@@ -211,7 +211,7 @@ public class UserInputConnexionController {
         if (end < start) {
             start = end = 0;
         }
-        ContentMapController sub = (ContentMapController) origin.subSequence(start, end);
+        ContentMap sub = (ContentMap) origin.subSequence(start, end);
         if (flags == GET_TEXT_WITH_STYLES) {
             sub.beginStreamCharGetting(0);
             SpannableStringBuilder text = new SpannableStringBuilder(sub);

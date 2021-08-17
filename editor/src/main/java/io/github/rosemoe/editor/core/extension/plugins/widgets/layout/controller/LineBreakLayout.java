@@ -17,7 +17,7 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controlle
 
 import java.util.NoSuchElementException;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentLineController;
 import io.github.rosemoe.editor.core.util.BinaryHeap;
 import io.github.rosemoe.editor.core.IntPair;
@@ -33,7 +33,7 @@ public class LineBreakLayout extends AbstractLayout {
 
     private BinaryHeap widthMaintainer;
 
-    public LineBreakLayout(CodeEditor editor, ContentMapController text) {
+    public LineBreakLayout(CodeEditor editor, ContentMap text) {
         super(editor, text);
         measureAllLines();
     }
@@ -80,22 +80,22 @@ public class LineBreakLayout extends AbstractLayout {
     }
 
     @Override
-    public void beforeReplace(ContentMapController content) {
+    public void beforeReplace(ContentMap content) {
         // Intentionally empty
     }
 
     @Override
-    public void afterInsert(ContentMapController content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
+    public void afterInsert(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
         measureLines(startLine, endLine);
     }
 
     @Override
-    public void afterDelete(ContentMapController content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
+    public void afterDelete(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
         measureLines(startLine, startLine);
     }
 
     @Override
-    public void onRemove(ContentMapController content, ContentLineController line) {
+    public void onRemove(ContentMap content, ContentLineController line) {
         widthMaintainer.remove(line.getId());
     }
 

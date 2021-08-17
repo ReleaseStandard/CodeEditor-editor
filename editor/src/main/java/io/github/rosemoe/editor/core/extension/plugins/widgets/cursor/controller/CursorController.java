@@ -26,13 +26,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view.CursorView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.processors.indexer.CachedIndexer;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
 import io.github.rosemoe.editor.core.IntPair;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
@@ -47,7 +47,7 @@ import static io.github.rosemoe.editor.core.langs.helpers.TextUtils.isEmoji;
  */
 public final class CursorController extends WidgetExtensionController {
 
-    private final ContentMapController mContent;
+    private final ContentMap mContent;
     private final CachedIndexer mIndexer;
     private LanguagePlugin mLanguage;
     public float mInsertSelWidth;
@@ -59,11 +59,11 @@ public final class CursorController extends WidgetExtensionController {
     public ArrayList<CursorPartController> parts = new ArrayList<>();
 
     /**
-     * Create a new CursorController for ContentMapController
+     * Create a new CursorController for ContentMap
      *
      * @param content Target content
      */
-    public CursorController(ContentMapController content, CodeEditor editor) {
+    public CursorController(ContentMap content, CodeEditor editor) {
         super(editor);
         mContent = content;
         mIndexer = new CachedIndexer(content);

@@ -24,7 +24,7 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.util.Logger;
@@ -46,7 +46,7 @@ public class UserInputConnexionView extends BaseInputConnection {
     public synchronized void closeConnection() {
         //Logs.log("close connection");
         super.closeConnection();
-        ContentMapController content = editor.getText();
+        ContentMap content = editor.getText();
         while (content.isInBatchEdit()) {
             content.endBatchEdit();
         }
@@ -56,7 +56,7 @@ public class UserInputConnexionView extends BaseInputConnection {
 
     /**
      * Private use.
-     * Get the CursorController of ContentMapController displaying by Editor
+     * Get the CursorController of ContentMap displaying by Editor
      *
      * @return CursorController
      */
@@ -201,7 +201,7 @@ public class UserInputConnexionView extends BaseInputConnection {
             end = tmp;
         }
         editor.getAutoCompleteWindow().view.hide();
-        ContentMapController content = editor.getText();
+        ContentMap content = editor.getText();
         CharPosition startPos = content.getIndexer().getCharPosition(start);
         CharPosition endPos = content.getIndexer().getCharPosition(end);
         editor.setSelectionRegion(startPos.line, startPos.column, endPos.line, endPos.column, false);
@@ -235,7 +235,7 @@ public class UserInputConnexionView extends BaseInputConnection {
             if (start < 0) {
                 start = 0;
             }
-            ContentMapController content = editor.getText();
+            ContentMap content = editor.getText();
             if (end > content.length()) {
                 end = content.length();
             }

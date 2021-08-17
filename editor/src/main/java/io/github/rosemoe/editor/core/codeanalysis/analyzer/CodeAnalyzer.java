@@ -20,13 +20,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
+import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMap;
 import io.github.rosemoe.editor.core.util.CallStack;
 
 import io.github.rosemoe.editor.core.codeanalysis.results.AnalysisDoneCallback;
-import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanMap;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
-import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanMap;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.codeanalysis.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.BlockLineModel;
@@ -225,7 +225,7 @@ public abstract class CodeAnalyzer {
      * Start an analysis thread of a given text/code.
      */
     public CodeAnalyzerThread mThread = null;
-    public synchronized void analyze(ContentMapController origin) {
+    public synchronized void analyze(ContentMap origin) {
         CodeAnalyzerThread thread = this.mThread;
         if (thread == null || !thread.isAlive()) {
             thread = this.mThread = CodeAnalyzerThread.newInstance(origin, this);
