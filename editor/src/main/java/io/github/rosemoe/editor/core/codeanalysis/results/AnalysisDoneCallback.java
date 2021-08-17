@@ -18,11 +18,11 @@ package io.github.rosemoe.editor.core.codeanalysis.results;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 
 /**
- * Callback for text analyzing
+ * AnalysisDoneCallback for text analyzing
  *
  * @author Rose
  */
-public interface Callback {
+public interface AnalysisDoneCallback {
 
     /**
      * Called when analyze result is available

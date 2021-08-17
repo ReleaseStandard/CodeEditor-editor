@@ -16,7 +16,7 @@
 package io.github.rosemoe.editor.core.codeanalysis.analyzer;
 
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
-import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
+import io.github.rosemoe.editor.core.codeanalysis.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 
@@ -30,7 +30,7 @@ public class CodeAnalyzerThread extends Thread {
     private ContentMapController content;
     public long mOpStartTime;
     CodeAnalyzer codeAnalyzer;
-    public Callback mCallback;
+    public AnalysisDoneCallback mAnalysisDoneCallback;
     /**
      * Create a new thread
      * @param content The ContentMapController to analyze
@@ -67,8 +67,8 @@ public class CodeAnalyzerThread extends Thread {
                 }
 
                 try {
-                    if (mCallback != null) {
-                        mCallback.onAnalyzeDone(codeAnalyzer);
+                    if (mAnalysisDoneCallback != null) {
+                        mAnalysisDoneCallback.onAnalyzeDone(codeAnalyzer);
                     }
                 }
                 catch (NullPointerException e) {

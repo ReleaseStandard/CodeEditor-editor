@@ -58,11 +58,10 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.rosemoe.editor.R;
-import io.github.rosemoe.editor.core.color.ColorManager;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.ExtensionContainer;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
-import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
+import io.github.rosemoe.editor.core.codeanalysis.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.extension.plugins.appcompattweaker.AppCompatTweakerController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
@@ -116,7 +115,7 @@ import static io.github.rosemoe.editor.core.langs.helpers.TextUtils.isEmoji;
  *
  * @author Rosemoe
  */
-public class CodeEditor implements ContentListener, TextFormatter.FormatResultReceiver, ContentLineRemoveListener, Callback {
+public class CodeEditor implements ContentListener, TextFormatter.FormatResultReceiver, ContentLineRemoveListener, AnalysisDoneCallback {
 
     /**
      * Draw whitespace characters before line content start

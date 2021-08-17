@@ -15,22 +15,19 @@
  */
 package io.github.rosemoe.editor.core.codeanalysis.analyzer;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import io.github.rosemoe.editor.core.codeanalysis.results.Callback;
 import io.github.rosemoe.editor.core.util.CallStack;
+
+import io.github.rosemoe.editor.core.codeanalysis.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanMapController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
+
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.codeanalysis.CodeAnalyzerResultContent;
-
-
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.BlockLineModel;
 
@@ -292,9 +289,9 @@ public abstract class CodeAnalyzer {
      *
      * @param cb New callback
      */
-    public void setCallback(Callback cb) {
+    public void setCallback(AnalysisDoneCallback cb) {
         if ( isRunning() ) {
-            mThread.mCallback = cb;
+            mThread.mAnalysisDoneCallback = cb;
         }
     }
 
