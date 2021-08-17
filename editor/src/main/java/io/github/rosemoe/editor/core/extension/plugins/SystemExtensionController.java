@@ -20,7 +20,6 @@ import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.SystemExtensionModel;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.SystemExtensionView;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**
@@ -34,7 +33,6 @@ import io.github.rosemoe.editor.core.util.Logger;
 public abstract class SystemExtensionController extends Extension {
 
     protected SystemExtensionModel model = null;
-    protected SystemExtensionView view = null;
 
     public final CodeEditor editorController;
     public SystemExtensionController(CodeEditor editor) {
