@@ -614,7 +614,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         setScalable(true);
         view.setFocusable(true);
         view.setFocusableInTouchMode(true);
-        setEditorLanguage(new EmptyLanguage(this));
+        setEditorLanguage(new EmptyLanguage(model));
         setHighlightCurrentLine(true);
         setAutoCompletionEnabled(true);
         setHighlightCurrentBlock(true);
@@ -773,7 +773,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             analyzer.shutdown();
             analyzer.setCallback(null);
         }
-        analyzer = lang.analyzer;
+        analyzer = (CodeAnalyzer) lang.analyzer;
         CodeAnalyzerResultColor result = ((CodeAnalyzerResultColor)analyzer.getResult("color"));
         if ( result != null ) {
             result.theme = getColorScheme();
@@ -2951,7 +2951,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             analyzer.setCallback(null);
             analyzer.shutdown();
         }
-        analyzer = mLanguage.analyzer;
+        analyzer = (CodeAnalyzer) mLanguage.analyzer;
         CodeAnalyzerResultColor result = ((CodeAnalyzerResultColor)analyzer.getResult("color"));
         if ( result != null ) {
             result.theme = getColorScheme();

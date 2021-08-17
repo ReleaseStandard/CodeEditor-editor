@@ -60,20 +60,20 @@ public class LineNumberCalculator {
     }
 
     /**
-     * Get line start index
+     * Get index of start of the current line
      *
      * @return line start index
      */
-    public int findLineStart() {
+    public int findIndexLineStart() {
         return mOffset - mColumn;
     }
 
     /**
-     * Get line end index
+     * Get index of the end of the current line
      *
      * @return line end index
      */
-    public int findLineEnd() {
+    public int findIndexLineEnd() {
         int i = 0;
         for (; i + mOffset < mLength; i++) {
             if (mTarget.charAt(mOffset + i) == '\n') {

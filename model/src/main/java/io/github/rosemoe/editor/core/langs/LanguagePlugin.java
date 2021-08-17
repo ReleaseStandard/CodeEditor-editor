@@ -17,7 +17,6 @@ package io.github.rosemoe.editor.core.langs;
 
 import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.NewlineHandler;
-import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.IdentifierAutoCompleteModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.SymbolPairMatch;
@@ -42,7 +41,7 @@ public abstract class LanguagePlugin extends Extension {
         super(editor);
     }
 
-    public CodeAnalyzer analyzer;
+    public Object analyzer;
 
     public IdentifierAutoCompleteModel getAutoCompleteProvider() {
         IdentifierAutoCompleteModel autoComplete = new IdentifierAutoCompleteModel();

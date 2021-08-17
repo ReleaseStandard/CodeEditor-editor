@@ -13,5 +13,6 @@ public class CompletionItemModelTest {
         CompletionItemModel a = new CompletionItemModel();
         a.commit = "okokok";
         a.cursorOffset(0);
+        assertTrue(a.cursorOffset == 0);
     }
 }
