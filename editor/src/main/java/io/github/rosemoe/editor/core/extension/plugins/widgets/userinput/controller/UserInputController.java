@@ -597,20 +597,20 @@ public final class UserInputController extends WidgetExtensionController {
         if (!model.shouldDrawScrollBar(scrollBarV.isHolding(),scrollBarH.isHolding())) {
             return;
         }
-        if (editor.view.isVerticalScrollBarEnabled() && editor.getScrollMaxY() > editor.view.getHeight() / 2) {
+        if (editorController.view.isVerticalScrollBarEnabled() && editorController.getScrollMaxY() > editorController.view.getHeight() / 2) {
             scrollBarV.refresh((Canvas)canvas,
-                    editor.mLayout.getLayoutHeight() + editor.view.getHeight() / 2f,
-                    editor.getOffsetY(),
-                    (int) (editor.view.getWidth() - scrollBarV.getWidth()),
-                    editor.view.getHeight()
+                    editorController.mLayout.getLayoutHeight() + editorController.view.getHeight() / 2f,
+                    editorController.getOffsetY(),
+                    (int) (editorController.view.getWidth() - scrollBarV.getWidth()),
+                    editorController.view.getHeight()
             );
         }
-        if (editor.view.isHorizontalScrollBarEnabled() && !editor.isWordwrap() && editor.getScrollMaxX() > editor.view.getWidth() * 3 / 4) {
+        if (editorController.view.isHorizontalScrollBarEnabled() && !editorController.isWordwrap() && editorController.getScrollMaxX() > editorController.view.getWidth() * 3 / 4) {
             scrollBarH.refresh((Canvas)canvas,
-                    editor.getScrollMaxX() + scrollBarH.getWidth(),
-                    editor.getOffsetX(),
-                    (int) (editor.view.getHeight() - scrollBarH.getWidth()),
-                    editor.view.getWidth()
+                    editorController.getScrollMaxX() + scrollBarH.getWidth(),
+                    editorController.getOffsetX(),
+                    (int) (editorController.view.getHeight() - scrollBarH.getWidth()),
+                    editorController.view.getWidth()
                     );
         }
     }

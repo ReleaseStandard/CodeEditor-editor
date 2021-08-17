@@ -60,9 +60,9 @@ class DefaultCompletionItemAdapter extends CompletionAdapter {
         view.setTag(pos);
         Logger.debug("Get view");
         if (isCurrentCursorPosition) {
-            view.setBackgroundColor(editor.colorManager.getColor("autoCompleteItemCurrentPosition"));
+            view.setBackgroundColor(editor.model.colorManager.getColor("autoCompleteItemCurrentPosition"));
         } else {
-            view.setBackgroundColor(editor.colorManager.getColor("autoCompleteItem"));
+            view.setBackgroundColor(editor.model.colorManager.getColor("autoCompleteItem"));
         }
         ImageView iv = (ImageView) view.findViewById(R.id.result_item_image);
         iv.setImageDrawable(item.view.icon);

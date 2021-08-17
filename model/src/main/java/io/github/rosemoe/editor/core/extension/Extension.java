@@ -15,14 +15,14 @@
  */
 package io.github.rosemoe.editor.core.extension;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+//import android.os.Parcel;
+//import android.os.Parcelable;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.HashMap;
 
-import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.extension.events.EventDestination;
 import io.github.rosemoe.editor.core.extension.events.EventQueue;
@@ -39,7 +39,7 @@ import io.github.rosemoe.editor.core.util.Logger;
  * And the plugin as an higher level plugin.
  *
  */
-public class Extension implements EventSource, EventDestination, Comparable, Parcelable {
+public class Extension implements EventSource, EventDestination, Comparable/*, Parcelable*/ {
 
     /**
      * Plugin priority declaration : WARNING they should be putted from low to high priority.
@@ -82,6 +82,7 @@ public class Extension implements EventSource, EventDestination, Comparable, Par
     }
 
     public boolean enabled = true;
+
     /**
      * Is the plugin enabled
      * @param state
@@ -98,6 +99,7 @@ public class Extension implements EventSource, EventDestination, Comparable, Par
         return isEnabled();
     }
 
+    /** TODO integrate this (for needs of the widget/extension chooser)
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         Logger.debug("Writing parcel :",name,description);
@@ -128,7 +130,7 @@ public class Extension implements EventSource, EventDestination, Comparable, Par
             description = in.readString();
             setEnabled(in.readInt() == 1);
         }
-    }
+    }*/
 
 
     /**
@@ -214,10 +216,11 @@ public class Extension implements EventSource, EventDestination, Comparable, Par
      */
     protected void handleEventDispatch(Event e, String subtype) { }
 
-    public final CodeEditor editor;
-    public Extension(CodeEditor editor) {
+    public final CodeEditorModel editor;
+    public Extension(CodeEditorModel editor) {
         this.editor = editor;
     }
+    public Extension() { this.editor = null; }
 
     // color management facilities
     public String prefixColor(String name) {

@@ -75,7 +75,7 @@ public class ColorSchemeController extends SystemExtensionController {
     @Override
     public void handleEventEmit(Event e) {
         super.handleEventEmit(e);
-        editor.plugins.dispatch(e);
+        editorController.plugins.dispatch(e);
     }
 
 
@@ -122,6 +122,6 @@ public class ColorSchemeController extends SystemExtensionController {
         editor.setEditorLanguage(editor.mLanguage);
         editor.invalidate();
         */
-        editor.view.invalidate();
+        editorController.view.invalidate();
     }
 }

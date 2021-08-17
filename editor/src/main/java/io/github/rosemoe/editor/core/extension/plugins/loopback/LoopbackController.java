@@ -35,13 +35,13 @@ public class LoopbackController extends SystemExtensionController {
     }
     @Override
     public void handleEventEmit(Event e) {
-        for(Extension sec : editor.systemPlugins.extensions) {
+        for(Extension sec : editorController.systemPlugins.extensions) {
             if( sec instanceof LoopbackController) {
                 continue;
             }
             sec.dispatch(e);
         }
-        editor.plugins.dispatch(e);
+        editorController.plugins.dispatch(e);
     }
 
     @Override

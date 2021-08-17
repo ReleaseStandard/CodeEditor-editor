@@ -23,7 +23,7 @@ public abstract class WidgetExtensionController extends SystemExtensionControlle
 
     public WidgetExtensionController(CodeEditor editor) {
         super(editor);
-        editor.colorManager.attach(this);
+        this.editor.colorManager.attach(this);
     }
 
     @Override
@@ -35,7 +35,7 @@ public abstract class WidgetExtensionController extends SystemExtensionControlle
         }
 
         // part of the view
-        editor.activity.runOnUiThread(new Runnable() {
+        editorController.activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (state) {
@@ -98,7 +98,7 @@ public abstract class WidgetExtensionController extends SystemExtensionControlle
     @Override
     public void update(Observable o, Object arg) {
         handleUpdate();
-        editor.activity.runOnUiThread(new Runnable() {
+        editorController.activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (view != null) {

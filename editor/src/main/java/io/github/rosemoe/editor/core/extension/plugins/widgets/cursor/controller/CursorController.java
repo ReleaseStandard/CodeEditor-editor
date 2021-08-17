@@ -549,7 +549,7 @@ public final class CursorController extends WidgetExtensionController {
      */
     public void setBlinkPeriod(int period) {
         if (blink == null) {
-            blink = new CursorBlinkController(editor, period);
+            blink = new CursorBlinkController(editorController, period);
         } else {
             int before = blink.model.period;
             blink.model.period = period;
@@ -597,7 +597,7 @@ public final class CursorController extends WidgetExtensionController {
         if (!isSelected()) {
             model.mInsertHandle.clear();
         }
-        if (!editor.mTextActionPresenter.shouldShowCursor()) {
+        if (!editorController.mTextActionPresenter.shouldShowCursor()) {
             model.mLeftHandle.clear();
             model.mRightHandle.clear();
         }
@@ -613,20 +613,20 @@ public final class CursorController extends WidgetExtensionController {
         Integer row = (Integer) args[4];
 
         if (isSelected()) {
-            if (editor.mTextActionPresenter.shouldShowCursor()) {
+            if (editorController.mTextActionPresenter.shouldShowCursor()) {
                 if (getLeftLine() == line && isInside(getLeftColumn(), firstVisibleChar, lastVisibleChar, line)) {
-                    float centerX = paintingOffset + editor.measureText(editor.mBuffer, firstVisibleChar, getLeftColumn() - firstVisibleChar);
-                    parts.add(new CursorPartController(editor, row, centerX, A.getRectF(model.mLeftHandle), false, UserInputModel.LEFT));
+                    float centerX = paintingOffset + editorController.measureText(editorController.mBuffer, firstVisibleChar, getLeftColumn() - firstVisibleChar);
+                    parts.add(new CursorPartController(editorController, row, centerX, A.getRectF(model.mLeftHandle), false, UserInputModel.LEFT));
                 }
                 if (getRightLine() == line && isInside(getRightColumn(), firstVisibleChar, lastVisibleChar, line)) {
-                    float centerX = paintingOffset + editor.measureText(editor.mBuffer, firstVisibleChar, getRightColumn() - firstVisibleChar);
-                    parts.add(new CursorPartController(editor, row, centerX, A.getRectF(model.mRightHandle), false, UserInputModel.RIGHT));
+                    float centerX = paintingOffset + editorController.measureText(editorController.mBuffer, firstVisibleChar, getRightColumn() - firstVisibleChar);
+                    parts.add(new CursorPartController(editorController, row, centerX, A.getRectF(model.mRightHandle), false, UserInputModel.RIGHT));
 
                 }
             }
         } else if (getLeftLine() == line && isInside(getLeftColumn(), firstVisibleChar, lastVisibleChar, line)) {
-            float centerX = paintingOffset + editor.measureText(editor.mBuffer, firstVisibleChar, getLeftColumn() - firstVisibleChar);
-            parts.add(new CursorPartController(editor, row, centerX, editor.userInput.shouldDrawInsertHandle() ? A.getRectF(model.mInsertHandle) : null, true));
+            float centerX = paintingOffset + editorController.measureText(editorController.mBuffer, firstVisibleChar, getLeftColumn() - firstVisibleChar);
+            parts.add(new CursorPartController(editorController, row, centerX, editorController.userInput.shouldDrawInsertHandle() ? A.getRectF(model.mInsertHandle) : null, true));
         }
 
         // call refresh on underlying objects
@@ -645,7 +645,7 @@ public final class CursorController extends WidgetExtensionController {
      */
     public boolean isInside(int index, int start, int end, int line) {
         // Due not to draw duplicate cursors for a single one
-        if (index == end && editor.mText.getLine(line).length() != end) {
+        if (index == end && editorController.mText.getLine(line).length() != end) {
             return false;
         }
         return index >= start && index <= end;

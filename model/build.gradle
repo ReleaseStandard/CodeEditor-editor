@@ -18,6 +18,9 @@ dependencies {
     implementation 'systems.manifold:manifold-ext:2021.1.14'
     implementation 'systems.manifold:manifold-rt:2021.1.14'
     annotationProcessor 'systems.manifold:manifold-ext:2021.1.14'
+
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.3'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.3'
 }
 
 if (JavaVersion.current() != JavaVersion.VERSION_1_8 &&

@@ -46,7 +46,7 @@ public class CodeEditorView extends View {
         this.editor = editor;
     }
     public void drawBackground(Canvas canvas) {
-        editor.drawColor(canvas, editor.colorManager.getColor("wholeBackground"), A.getRectF(editor.model.background));
+        editor.drawColor(canvas, editor.model.colorManager.getColor("wholeBackground"), A.getRectF(editor.model.background));
     }
 
     @Override

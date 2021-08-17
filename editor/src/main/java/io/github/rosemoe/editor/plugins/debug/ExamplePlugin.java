@@ -89,7 +89,7 @@ public class ExamplePlugin extends DebugPlugin {
                 }
                 case UserInputEvent.LONGPRESS:
                     // emit event under the hood
-                    new ColorPluginDarcula(editor).apply();
+                    new ColorPluginDarcula(editorController).apply();
                     break;
                 case UserInputEvent.ONSCALEEND: {
                     Logger.debug("On scale end");

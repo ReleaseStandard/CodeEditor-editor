@@ -212,8 +212,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     public ExtensionContainer systemPlugins = new ExtensionContainer();           // System plugins
     public ExtensionContainer plugins = new ExtensionContainer();                 // Plugins designed by users
 
-    public ColorManager colorManager = new ColorManager();                  // retain all colors.
-
     public Paint mPaint;
     private Paint miniGraphPaint;
     public char[] mBuffer;
@@ -954,10 +952,10 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             String text = "Formatting your code...";
             float centerY = view.getHeight() / 2f;
             // TODO : repair text formatting
-            WidgetExtensionView.drawColor(canvas, colorManager.getColor("lineNumberPanel"), io.github.rosemoe.editor.core.Rect.DEFAULT());
+            WidgetExtensionView.drawColor(canvas, model.colorManager.getColor("lineNumberPanel"), io.github.rosemoe.editor.core.Rect.DEFAULT());
             float baseline = centerY - getRowHeight() / 2f + getRowBaseline(0);
             float centerX = view.getWidth() / 2f;
-            mPaint.setColor(colorManager.getColor("lineNumberPanelText"));
+            mPaint.setColor(model.colorManager.getColor("lineNumberPanelText"));
             mPaint.setTextAlign(Paint.Align.CENTER);
             canvas.drawText(text, centerX, baseline, mPaint);
             mPaint.setTextAlign(Paint.Align.LEFT);
@@ -1036,7 +1034,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         SpanMapController spanMap = analyzer.getSpanMap();
         List<Integer> matchedPositions = new ArrayList<>();
         int currentLine = cursor.isSelected() ? -1 : cursor.getLeftLine();
-        int currentLineBgColor = colorManager.getColor("currentLine");
+        int currentLineBgColor = model.colorManager.getColor("currentLine");
         int lastPreparedLine = -1;
         int leadingWhitespaceEnd = 0;
         int trailingWhitespaceStart = 0;
@@ -1094,7 +1092,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             // Draw matched text background
             if (!matchedPositions.isEmpty()) {
                 for (int position : matchedPositions) {
-                    drawRowRegionBackground(canvas, paintingOffset, row, firstVisibleChar, lastVisibleChar, position, position + searcher.model.searchText.length(), colorManager.getColor("textSelectedBackground"));
+                    drawRowRegionBackground(canvas, paintingOffset, row, firstVisibleChar, lastVisibleChar, position, position + searcher.model.searchText.length(), model.colorManager.getColor("textSelectedBackground"));
                 }
             }
 
@@ -1110,7 +1108,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                 if (line == cursor.getRightLine()) {
                     selectionEnd = cursor.getRightColumn();
                 }
-                drawRowRegionBackground(canvas, paintingOffset, row, firstVisibleChar, lastVisibleChar, selectionStart, selectionEnd, colorManager.getColor("textSelectedBackground"));
+                drawRowRegionBackground(canvas, paintingOffset, row, firstVisibleChar, lastVisibleChar, selectionStart, selectionEnd, model.colorManager.getColor("textSelectedBackground"));
             }
 
             // Draw current line background
@@ -1198,7 +1196,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                     mRect.bottom = mRect.top + getRowHeight() * 0.06f;
                     mRect.left = paintingOffset + measureText(mBuffer, firstVisibleChar, paintStart - firstVisibleChar);
                     mRect.right = mRect.left + measureText(mBuffer, paintStart, paintEnd - paintStart);
-                    drawColor(canvas, colorManager.getColor("underline"), mRect);
+                    drawColor(canvas, model.colorManager.getColor("underline"), mRect);
                 }
             }
 
@@ -1226,7 +1224,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      */
     private void drawSmallCharacter(Canvas canvas, float offset, int row, String graph) {
         // Draw
-        //miniGraphPaint.setColor(colorManager.getColor("nonPrintableChar"));
+        //miniGraphPaint.setColor(model.colorManager.getColor("nonPrintableChar"));
         float baseline = getRowBottom(row) - getOffsetY() - mGraphMetrics.descent;
         canvas.drawText(graph, 0, graph.length(), offset, baseline, miniGraphPaint);
     }
@@ -1240,7 +1238,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         int paintStart = Math.max(rowStart, Math.min(rowEnd, min));
         int paintEnd = Math.max(rowStart, Math.min(rowEnd, max));
 
-        paintWhitespaces.setColor(colorManager.getColor("nonPrintableChar"));
+        paintWhitespaces.setColor(model.colorManager.getColor("nonPrintableChar"));
         paintWhitespaces.setTypeface(Typeface.MONOSPACE);
         paintWhitespaces.setAntiAlias(true);
 
@@ -1380,7 +1378,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                         drawText(canvas, mBuffer, startIndex, selectionStart - startIndex, offsetX, baseline);
                         float deltaX = measureText(mBuffer, startIndex, selectionStart - startIndex);
                         //selectionStart - selectionEnd
-                        mPaint.setColor(colorManager.getColor("textSelected"));
+                        mPaint.setColor(model.colorManager.getColor("textSelected"));
                         drawText(canvas, mBuffer, selectionStart, selectionEnd - selectionStart, offsetX + deltaX, baseline);
                         deltaX += measureText(mBuffer, selectionStart, selectionEnd - selectionStart);
                         //selectionEnd - endIndex
@@ -1391,7 +1389,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                         //startIndex - selectionStart
                         drawText(canvas, mBuffer, startIndex, selectionStart - startIndex, offsetX, baseline);
                         //selectionStart - endIndex
-                        mPaint.setColor(colorManager.getColor("textSelected"));
+                        mPaint.setColor(model.colorManager.getColor("textSelected"));
                         drawText(canvas, mBuffer, selectionStart, endIndex - selectionStart, offsetX + measureText(mBuffer, startIndex, selectionStart - startIndex), baseline);
                     }
                 } else {
@@ -1401,11 +1399,11 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                         //selectionEnd - endIndex
                         drawText(canvas, mBuffer, selectionEnd, endIndex - selectionEnd, offsetX + measureText(mBuffer, startIndex, selectionEnd - startIndex), baseline);
                         //startIndex - selectionEnd
-                        mPaint.setColor(colorManager.getColor("textSelected"));
+                        mPaint.setColor(model.colorManager.getColor("textSelected"));
                         drawText(canvas, mBuffer, startIndex, selectionEnd - startIndex, offsetX, baseline);
                     } else {
                         //One region
-                        mPaint.setColor(colorManager.getColor("textSelected"));
+                        mPaint.setColor(model.colorManager.getColor("textSelected"));
                         drawText(canvas, mBuffer, startIndex, endIndex - startIndex, offsetX, baseline);
                     }
                 }
@@ -1505,7 +1503,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                     mRect.left = centerX - mDpUnit * mBlockLineWidth / 2;
                     mRect.right = centerX + mDpUnit * mBlockLineWidth / 2;
 
-                    drawColor(canvas, curr == cursorIdx ? colorManager.getColor("blockLineCurrent") : colorManager.getColor("blockLine"), mRect);
+                    drawColor(canvas, curr == cursorIdx ? model.colorManager.getColor("blockLineCurrent") : model.colorManager.getColor("blockLine"), mRect);
                 } catch (IndexOutOfBoundsException e) {
                     //Ignored
                     //Because the exception usually occurs when the content changed.

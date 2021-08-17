@@ -42,7 +42,7 @@ public abstract class LanguagePlugin extends Extension {
     protected CodeAnalyzer analyzer;
 
     public LanguagePlugin(CodeEditor editor) {
-        super(editor);
+        super(editor.model);
     }
 
     /**

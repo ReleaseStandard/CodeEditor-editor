@@ -15,9 +15,8 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins;
 
-import android.graphics.Canvas;
-
 import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.SystemExtensionModel;
@@ -37,14 +36,16 @@ public abstract class SystemExtensionController extends Extension {
     protected SystemExtensionModel model = null;
     protected SystemExtensionView view = null;
 
+    public final CodeEditor editorController;
     public SystemExtensionController(CodeEditor editor) {
-        super(editor);
+        super(editor.model);
+        editorController = editor;
     }
 
     @Override
     protected void handleEventEmit(Event e) {
-        editor.systemPlugins.dispatch(e);
-        editor.plugins.dispatch(e);
+        editorController.systemPlugins.dispatch(e);
+        editorController.plugins.dispatch(e);
     }
 
     @Override

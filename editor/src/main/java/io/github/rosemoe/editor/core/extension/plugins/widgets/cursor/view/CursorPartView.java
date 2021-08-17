@@ -30,7 +30,7 @@ public class CursorPartView extends SystemExtensionCanvasPartView {
             mRect.bottom = editor.getRowBottom(row) - editor.getOffsetY();
             mRect.left = centerX - editor.cursor.mInsertSelWidth / 2f;
             mRect.right = centerX + editor.cursor.mInsertSelWidth / 2f;
-            editor.drawColor(canvas, editor.colorManager.getColor("selectionInsert"), mRect);
+            editor.drawColor(canvas, editor.model.colorManager.getColor("selectionInsert"), mRect);
         }
         if (handle != null) {
             drawHandle(canvas, row, centerX, handle, handleType);
@@ -67,7 +67,7 @@ public class CursorPartView extends SystemExtensionCanvasPartView {
         resultRect.right = right;
         resultRect.top = top;
         resultRect.bottom = bottom;
-        editor.mPaint.setColor(editor.colorManager.getColor("selectionHandle"));
+        editor.mPaint.setColor(editor.model.colorManager.getColor("selectionHandle"));
         canvas.drawCircle(centerX, (top + bottom) / 2, radius, editor.mPaint);
     }
 }

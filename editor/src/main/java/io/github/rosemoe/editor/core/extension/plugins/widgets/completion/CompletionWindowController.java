@@ -61,14 +61,14 @@ public class CompletionWindowController extends WidgetExtensionController {
                 if (!cursor.isSelected()) {
                     CompletionItemController item = ((CompletionAdapter) mListView.getAdapter()).getItem(pos);
                     model.mCancelShowUp = true;
-                    CompletionWindowController.this.editor.getText().delete(cursor.getLeftLine(), cursor.getLeftColumn() - model.mLastPrefix.length(), cursor.getLeftLine(), cursor.getLeftColumn());
+                    CompletionWindowController.this.editorController.getText().delete(cursor.getLeftLine(), cursor.getLeftColumn() - model.mLastPrefix.length(), cursor.getLeftLine(), cursor.getLeftColumn());
                     cursor.onCommitText(item.model.commit);
                     if (item.model.cursorOffset != item.model.commit.length()) {
                         int delta = (item.model.commit.length() - item.model.cursorOffset);
                         if (delta != 0) {
-                            int newSel = Math.max(CompletionWindowController.this.editor.getCursor().getLeft() - delta, 0);
-                            CharPosition charPosition = CompletionWindowController.this.editor.getCursor().getIndexer().getCharPosition(newSel);
-                            CompletionWindowController.this.editor.setSelection(charPosition.line, charPosition.column);
+                            int newSel = Math.max(CompletionWindowController.this.editorController.getCursor().getLeft() - delta, 0);
+                            CharPosition charPosition = CompletionWindowController.this.editorController.getCursor().getIndexer().getCharPosition(newSel);
+                            CompletionWindowController.this.editorController.setSelection(charPosition.line, charPosition.column);
                         }
                     }
                     model.mCancelShowUp = false;
@@ -98,7 +98,7 @@ public class CompletionWindowController extends WidgetExtensionController {
 
 
     public Context getContext() {
-        return editor.view.getContext();
+        return editorController.view.getContext();
     }
 
     public int getCurrentPosition() {
@@ -133,7 +133,7 @@ public class CompletionWindowController extends WidgetExtensionController {
     public void setLoading(boolean state) {
         model.mLoading = state;
         if (state) {
-            editor.view.postDelayed(() -> {
+            editorController.view.postDelayed(() -> {
                 if (model.mLoading) {
                     view.mTip.setVisibility(View.VISIBLE);
                 }
@@ -216,7 +216,7 @@ public class CompletionWindowController extends WidgetExtensionController {
         if (model.mRequestTime != requestTime) {
             return;
         }
-        editor.view.post(() -> {
+        editorController.view.post(() -> {
             setLoading(false);
             if (results == null || results.isEmpty()) {
                 view.hide();
@@ -225,7 +225,7 @@ public class CompletionWindowController extends WidgetExtensionController {
             view.mAdapter.attachAttributes(this, results);
             view.mListView.setAdapter(view.mAdapter);
             model.mCurrent = 0;
-            float newHeight = editor.getDpUnit() * 30 * results.size();
+            float newHeight = editorController.getDpUnit() * 30 * results.size();
             if (view.isShowing()) {
                 view.update(view.getWidth(), (int) Math.min(newHeight, model.mMaxHeight));
             }
@@ -250,9 +250,9 @@ public class CompletionWindowController extends WidgetExtensionController {
             mTime = requestTime;
             mPrefix = prefix;
             // get production ready result from here
-            colorResult = editor.getTextAnalyzeResult();
-            mLine = editor.getCursor().getLeftLine();
-            mInner = (!editor.isHighlightCurrentBlock()) || (editor.getBlockIndex() != -1);
+            colorResult = editorController.getTextAnalyzeResult();
+            mLine = editorController.getCursor().getLeftLine();
+            mInner = (!editorController.isHighlightCurrentBlock()) || (editorController.getBlockIndex() != -1);
         }
 
         @Override

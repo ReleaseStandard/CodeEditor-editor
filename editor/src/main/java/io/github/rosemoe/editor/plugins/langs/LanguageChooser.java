@@ -35,6 +35,6 @@ public class LanguageChooser extends ExtensionChooser {
     @Override
     public void handleExtensionChoosed(Extension e ) {
         LanguagePlugin lp = (LanguagePlugin)e;
-        editor.setEditorLanguage(lp);
+        editorController.setEditorLanguage(lp);
     }
 }

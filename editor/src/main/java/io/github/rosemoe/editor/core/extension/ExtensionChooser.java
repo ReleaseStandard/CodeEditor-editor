@@ -38,8 +38,10 @@ public class ExtensionChooser extends Extension {
     private int checkedTheme = 0;
     public ArrayList<Class> filter = new ArrayList<>();
 
+    public final CodeEditor editorController;
     public ExtensionChooser(CodeEditor editor) {
-        super(editor);
+        super(editor.model);
+        editorController = editor;
     }
 
     public ExtensionChooser addFilter(Class c) {
@@ -52,7 +54,7 @@ public class ExtensionChooser extends Extension {
             filter.add(Plugin.class);
         }
         for(Class c : filter) {
-            for (Extension e : editor.plugins.extensions) {
+            for (Extension e : editorController.plugins.extensions) {
                 if (e.isEnabled() &&
                         c.isAssignableFrom(e.getClass())) {
                     extensions.add(e);
@@ -63,7 +65,7 @@ public class ExtensionChooser extends Extension {
         for(int i = 0; i < extensions.size(); i++) {
             names[i] = extensions.get(i).name;
         }
-        Context ctx = editor.view.getContext();
+        Context ctx = editorController.view.getContext();
         AlertDialog.Builder adb = new AlertDialog.Builder(ctx);
         adb.setTitle(popup_title);
         adb.setSingleChoiceItems(names,checkedTheme, ((dialog, which) ->

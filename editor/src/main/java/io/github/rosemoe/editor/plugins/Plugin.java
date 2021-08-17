@@ -18,6 +18,7 @@ package io.github.rosemoe.editor.plugins;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.extension.ColorSchemeEvent;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.extension.LoopbackEvent;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
@@ -29,7 +30,7 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.ext
  * then when using the plugin : .dispatch() and .emit()
  * @author ReleaseStandard
  */
-public abstract class Plugin extends Extension {
+public abstract class Plugin extends SystemExtensionController {
 
     /**
      * Below defined constantes are for convenience only.
@@ -76,7 +77,7 @@ public abstract class Plugin extends Extension {
     }
 
     @Override
-    protected void handleEventEmit(Event e) { editor.systemPlugins.dispatch(e); }
+    protected void handleEventEmit(Event e) { editorController.systemPlugins.dispatch(e); }
 
     public Plugin(CodeEditor editor) {
         super(editor);

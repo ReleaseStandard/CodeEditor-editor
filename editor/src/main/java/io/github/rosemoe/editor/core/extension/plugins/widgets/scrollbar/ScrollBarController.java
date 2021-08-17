@@ -27,8 +27,8 @@ public class ScrollBarController extends WidgetExtensionController {
         registerColorIfNotIn("scrollBarTrack", "wholeBackground");
     }
     protected void handleRefresh(Canvas canvas, Object ...args) {
-        int eWidth = editor.view.getWidth();
-        int eHeight = editor.view.getHeight();
+        int eWidth = editorController.view.getWidth();
+        int eHeight = editorController.view.getHeight();
 
         Float lenAllContent    = (Float) args[0];
         Integer offset         = (Integer) args[1]; // offsetX
@@ -46,12 +46,12 @@ public class ScrollBarController extends WidgetExtensionController {
         view.barTrack = A.getRectF(model.barTrack);
         view.bar      = A.getRectF(model.bar);
         if ( isHolding() ) {
-            editor.drawColor(canvas, getColor("scrollBarTrack"), view.barTrack);
+            editorController.drawColor(canvas, getColor("scrollBarTrack"), view.barTrack);
             //if ( isVertical ) {
-            //    editor.drawLineInfoPanel(canvas, 0, 0); // TODO : centerX
+            //    editorController.drawLineInfoPanel(canvas, 0, 0); // TODO : centerX
             //}
         }
-        editor.drawColor(canvas, isHolding() ? getColor("scrollBarThumbPressed") : getColor("scrollBarThumb"), view.bar);
+        editorController.drawColor(canvas, isHolding() ? getColor("scrollBarThumbPressed") : getColor("scrollBarThumb"), view.bar);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class ScrollBarController extends WidgetExtensionController {
      * @return the new width
      */
     public float updateWidth() {
-        return model.width = editor.mDpUnit * 10;
+        return model.width = editorController.mDpUnit * 10;
     }
     /**
      * Get width of the scroll bar.
