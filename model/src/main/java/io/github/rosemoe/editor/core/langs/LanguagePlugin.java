@@ -15,12 +15,11 @@
  */
 package io.github.rosemoe.editor.core.langs;
 
-import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.NewlineHandler;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.extension.Extension;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.AutoCompleteController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.IdentifierAutoCompleteController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.IdentifierAutoCompleteModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.SymbolPairMatch;
 
 /**
@@ -39,23 +38,14 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.Symbol
  */
 public abstract class LanguagePlugin extends Extension {
 
-    protected CodeAnalyzer analyzer;
-
-    public LanguagePlugin(CodeEditor editor) {
-        super(editor.model);
+    public LanguagePlugin(CodeEditorModel editor) {
+        super(editor);
     }
 
-    /**
-     * Get TRASHCodeAnalyzerController of this language object
-     *
-     * @return TRASHCodeAnalyzerController
-     */
-    public CodeAnalyzer getAnalyzer() {
-        return analyzer;
-    }
+    public CodeAnalyzer analyzer;
 
-    public AutoCompleteController getAutoCompleteProvider() {
-        IdentifierAutoCompleteController autoComplete = new IdentifierAutoCompleteController(analyzer);
+    public IdentifierAutoCompleteModel getAutoCompleteProvider() {
+        IdentifierAutoCompleteModel autoComplete = new IdentifierAutoCompleteModel();
         autoComplete.setKeywords(new String[0]);
         return autoComplete;
     }

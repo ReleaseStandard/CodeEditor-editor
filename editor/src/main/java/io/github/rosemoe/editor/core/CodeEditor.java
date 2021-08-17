@@ -67,6 +67,8 @@ import io.github.rosemoe.editor.core.extension.plugins.appcompattweaker.AppCompa
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.IdentifierAutoCompleteController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.IdentifierAutoCompleteModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.AbstractLayout;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.LoopbackController;
@@ -771,7 +773,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             analyzer.shutdown();
             analyzer.setCallback(null);
         }
-        analyzer = lang.getAnalyzer();
+        analyzer = lang.analyzer;
         CodeAnalyzerResultColor result = ((CodeAnalyzerResultColor)analyzer.getResult("color"));
         if ( result != null ) {
             result.theme = getColorScheme();
@@ -782,7 +784,9 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         }
         if (completionWindow != null) {
             completionWindow.view.hide();
-            completionWindow.setProvider(lang.getAutoCompleteProvider());
+            IdentifierAutoCompleteController autoComplete = new IdentifierAutoCompleteController(analyzer);
+            autoComplete.model = (IdentifierAutoCompleteModel) lang.getAutoCompleteProvider();
+            completionWindow.setProvider(autoComplete);
         }
 
         // Symbol pairs
@@ -2947,7 +2951,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             analyzer.setCallback(null);
             analyzer.shutdown();
         }
-        analyzer = mLanguage.getAnalyzer();
+        analyzer = mLanguage.analyzer;
         CodeAnalyzerResultColor result = ((CodeAnalyzerResultColor)analyzer.getResult("color"));
         if ( result != null ) {
             result.theme = getColorScheme();

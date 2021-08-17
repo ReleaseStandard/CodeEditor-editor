@@ -2,11 +2,11 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.completion.analy
 
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.tokenemitter.TokenEmitterResult;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.IdentifierAutoCompleteController;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.IdentifierAutoCompleteModel;
 
 public class CodeAnalyzerResultCompletion extends TokenEmitterResult {
 
-    public IdentifierAutoCompleteController.Identifiers identifiers = new IdentifierAutoCompleteController.Identifiers();
+    public IdentifierAutoCompleteModel.Identifiers identifiers = new IdentifierAutoCompleteModel.Identifiers();
 
     @Override
     public CodeAnalyzerResult clone() {

@@ -18,11 +18,9 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.completion;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.analysis.CodeAnalyzerResultCompletion;
-import io.github.rosemoe.editor.core.util.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -32,17 +30,15 @@ import java.util.List;
  *
  * Identifier auto-completion
  * You can use it to provide identifiers
- * <strong>Note:</strong> To use this, you must use {@link Identifiers} as
+ * <strong>Note:</strong> To use this, you must use {@link IdentifierAutoCompleteModel.Identifiers} as
  *
  */
 public class IdentifierAutoCompleteController implements AutoCompleteController {
 
     private ArrayList<CompletionItemController> items = new ArrayList<>();
+    public IdentifierAutoCompleteModel model = new IdentifierAutoCompleteModel();
 
     public CodeAnalyzer codeAnalyzer;
-
-    private String[] mKeywords;
-    private boolean mKeywordsAreLowCase = true;
 
     public IdentifierAutoCompleteController(CodeAnalyzer a) {
         codeAnalyzer = a;
@@ -50,39 +46,9 @@ public class IdentifierAutoCompleteController implements AutoCompleteController 
 
     public IdentifierAutoCompleteController(CodeAnalyzer a, String[] keywords) {
         this(a);
-        setKeywords(keywords);
+        model.setKeywords(keywords);
     }
 
-    public void setKeywords(String[] keywords) {
-        mKeywords = keywords;
-    }
-
-    public String[] getKeywords() {
-        Logger.debug("key words in the autocomplete provider : ", mKeywords.length);
-        return mKeywords;
-    }
-
-    public static class Identifiers {
-
-        private final List<String> identifiers = new ArrayList<>();
-        private HashMap<String, Object> cache = new HashMap<>();
-        private final static Object SIGN = new Object();
-
-        public void addIdentifier(String identifier) {
-            if (cache == null) {
-                throw new IllegalStateException("begin() has not been called");
-            }
-            if (cache.put(identifier, SIGN) == SIGN) {
-                return;
-            }
-            identifiers.add(identifier);
-        }
-
-        public List<String> getIdentifiers() {
-            return identifiers;
-        }
-
-    }
 
     @Override
     public void handleTokenInput(String token) {
@@ -100,8 +66,8 @@ public class IdentifierAutoCompleteController implements AutoCompleteController 
     @Override
     public List<CompletionItemController> getAutoCompleteItems(String prefix, boolean isInCodeBlock, CodeAnalyzerResultColor colors, int line) {
         List<CompletionItemController> keywords = new ArrayList<>();
-        final String[] keywordArray = mKeywords;
-        final boolean lowCase = mKeywordsAreLowCase;
+        final String[] keywordArray = model.mKeywords;
+        final boolean lowCase = model.mKeywordsAreLowCase;
         String match = prefix.toLowerCase();
         if (keywordArray != null) {
             if (lowCase) {

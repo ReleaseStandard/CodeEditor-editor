@@ -15,16 +15,11 @@
  */
 package io.github.rosemoe.editor.core.langs.empty;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.CodeEditorModel;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.IdentifierAutoCompleteModel;
 import io.github.rosemoe.editor.core.langs.LanguagePlugin;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzerThread;
-import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.AutoCompleteController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.CompletionItemController;
 
 /**
  * Empty language without any effect,
@@ -34,14 +29,14 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.Comple
  */
 public class EmptyLanguage extends LanguagePlugin {
 
-    public EmptyLanguage(CodeEditor editor) {
+    public EmptyLanguage(CodeEditorModel editor) {
         super(editor);
         name = "Empty language";
         description = "Empty language";
         analyzer = new EmptyCodeAnalyzer();
     }
     @Override
-    public AutoCompleteController getAutoCompleteProvider() {
+    public IdentifierAutoCompleteModel getAutoCompleteProvider() {
         return new EmptyAutoCompleteProvider();
     }
 
@@ -50,17 +45,7 @@ public class EmptyLanguage extends LanguagePlugin {
         return false;
     }
 
-    public static class EmptyAutoCompleteProvider implements AutoCompleteController {
-
-        @Override
-        public void handleTokenInput(String token) {
-
-        }
-
-        @Override
-        public List<CompletionItemController> getAutoCompleteItems(String prefix, boolean isInCodeBlock, CodeAnalyzerResultColor colors, int line) {
-            return new ArrayList<>();
-        }
+    public static class EmptyAutoCompleteProvider extends IdentifierAutoCompleteModel {
 
     }
 
