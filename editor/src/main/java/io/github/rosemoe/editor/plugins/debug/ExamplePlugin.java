@@ -39,8 +39,10 @@ public class ExamplePlugin extends DebugPlugin {
     long currentTime = 0;
     int taps = 0;
 
+    public final CodeEditor editorController;
     public ExamplePlugin(CodeEditor editor) {
         super(editor);
+        editorController = editor;
         name = "example plugin";
         description = "this plugin perform bunch of actions on various user input (ex: scroll, scale, doubletap)";
     }

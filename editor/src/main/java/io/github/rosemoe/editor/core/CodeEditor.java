@@ -59,7 +59,6 @@ import java.util.Map;
 
 import io.github.rosemoe.editor.R;
 import io.github.rosemoe.editor.core.extension.Extension;
-import io.github.rosemoe.editor.core.extension.ExtensionContainer;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.extension.plugins.appcompattweaker.AppCompatTweakerController;
@@ -80,7 +79,7 @@ import io.github.rosemoe.editor.plugins.debug.TestPlugin;
 import io.github.rosemoe.editor.plugins.debug.WidgetAnalyzerPlugin;
 import io.github.rosemoe.editor.plugins.debug.ExamplePlugin;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputConnexionController;
-import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.ColorSchemeController;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.ColorSchemeExtension;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.layout.controller.RowController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.CompletionWindowController;
@@ -210,8 +209,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     private ContextActionController contextAction;                          // Manage context action showing, eg copy paste
     public CompletionWindowController completionWindow;                     // Manage completion item showing
     public  UserInputController userInput;                                  // Manage all user input, eg scale scrolling
-    public ExtensionContainer systemPlugins = new ExtensionContainer();           // System plugins
-    public ExtensionContainer plugins = new ExtensionContainer();                 // Plugins designed by users
 
     public Paint mPaint;
     private Paint miniGraphPaint;
@@ -239,7 +236,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     public AppCompatActivity activity = null;
 
     public void attachMenu(Menu menu) {
-        for(Extension e : systemPlugins.extensions) {
+        for(Extension e : model.systemPlugins.extensions) {
             if ( e instanceof AppCompatTweakerController) {
                 ((AppCompatTweakerController) e).attachMenu(menu);
             }
@@ -285,7 +282,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                         try {
                             WidgetExtensionController wwec = (WidgetExtensionController) constructor.newInstance(editor);
                             wwec.attachView(rootView);
-                            editor.systemPlugins.put(wwec);
+                            editor.model.systemPlugins.put(wwec);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -362,7 +359,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             // configure extensions (widgets, plugins)
                 JsonNode extensions = rootNode.get("extensions");
                 if ( extensions != null ) {
-                    for(ExtensionContainer ec : new ExtensionContainer[]{plugins, systemPlugins}) {
+                    for(ExtensionContainer ec : new ExtensionContainer[]{model.plugins, model.systemPlugins}) {
                         for (Extension e : ec.extensions) {
                             Logger.debug("Trying extension : ",e.name);
                             JsonNode extension = extensions.get(e.name);
@@ -597,7 +594,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         miniGraphPaint.setAntiAlias(true);
         mBuffer = new char[256];
         mStartedActionMode = ACTION_MODE_NONE;
-        plugins.put(
+        model.plugins.put(
                 new ExamplePlugin(this),
                 new WidgetAnalyzerPlugin(this),
                 new TestPlugin(this)
@@ -625,11 +622,11 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         setTypefaceText(Typeface.DEFAULT);
         userInput         = new UserInputController(this,view.getContext());
         mConnection       = new UserInputConnexionController(this);
-        systemPlugins.put(new ColorSchemeController(this));
+        model.systemPlugins.put(new ColorSchemeExtension(model));
         completionWindow  = new CompletionWindowController(this);
-        systemPlugins.put(
+        model.systemPlugins.put(
                 userInput,
-                new LoopbackController(this),
+                new LoopbackController(model),
                 new WidgetControllerManagerController(this),
                 new AppCompatTweakerController(this)
         );
@@ -974,7 +971,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         float textOffset = offsetX;
 
         // update from the model
-        for(Extension e : systemPlugins.extensions) {
+        for(Extension e : model.systemPlugins.extensions) {
             if ( e instanceof WidgetExtensionController ) {
                 WidgetExtensionController sec = (WidgetExtensionController) e;
                 sec.clear();
@@ -1055,7 +1052,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             ContentLineController contentLine = mText.getLine(line);
             int columnCount = contentLine.length();
             if (rowInf.model.isLeadingRow) {
-                for(Extension e : systemPlugins.extensions) {
+                for(Extension e : model.systemPlugins.extensions) {
                     if ( e instanceof WidgetExtensionController) {
                         ((WidgetExtensionController) e).drawRow(line, row);
                     }
@@ -3008,8 +3005,8 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * @return ColorScheme object using
      */
     @NonNull
-    public ColorSchemeController getColorScheme() {
-        return (ColorSchemeController) systemPlugins.get("color");
+    public ColorSchemeExtension getColorScheme() {
+        return (ColorSchemeExtension) model.systemPlugins.get("color");
     }
 
     /**

@@ -24,9 +24,7 @@ import android.view.View;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
-import java.util.Observable;
 
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view.CursorView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.UserInputModel;

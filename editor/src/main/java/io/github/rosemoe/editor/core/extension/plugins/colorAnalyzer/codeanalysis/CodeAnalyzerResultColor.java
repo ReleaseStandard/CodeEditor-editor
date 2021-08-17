@@ -17,7 +17,7 @@ package io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalys
 
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.tokenemitter.TokenEmitterResult;
-import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.ColorSchemeController;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.ColorSchemeExtension;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanController;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanMapController;
 import io.github.rosemoe.editor.core.util.Logger;
@@ -30,7 +30,7 @@ public class CodeAnalyzerResultColor extends TokenEmitterResult {
     /**
      * A color result must have a theme attached to it.
      */
-    public ColorSchemeController theme = null;
+    public ColorSchemeExtension theme = null;
     public SpanMapController map = new SpanMapController();
 
     public CodeAnalyzerResultColor() {

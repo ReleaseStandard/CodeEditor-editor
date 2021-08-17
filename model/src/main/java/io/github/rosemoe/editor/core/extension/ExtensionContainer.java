@@ -18,7 +18,6 @@ package io.github.rosemoe.editor.core.extension;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 
-import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.util.Logger;
 

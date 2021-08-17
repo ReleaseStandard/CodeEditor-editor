@@ -1,6 +1,7 @@
 package io.github.rosemoe.editor.core;
 
 import io.github.rosemoe.editor.core.color.ColorManager;
+import io.github.rosemoe.editor.core.extension.ExtensionContainer;
 
 /**
  * Model for CodeEditor.
@@ -18,4 +19,7 @@ public class CodeEditorModel {
      * Background position of CodeEditor.
      */
     public Rect background = new Rect();
+
+    public ExtensionContainer systemPlugins = new ExtensionContainer();           // System plugins
+    public ExtensionContainer plugins = new ExtensionContainer();                 // Plugins designed by users
 }

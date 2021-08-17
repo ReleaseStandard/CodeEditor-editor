@@ -19,7 +19,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import io.github.rosemoe.editor.core.color.ColorManager;
-import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.ColorSchemeController;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.ColorSchemeExtension;
 
 /**
  * The span model
@@ -73,7 +73,7 @@ public class SpanController {
      * Set a underline for this region
      * Zero for no underline
      *
-     * @param color Color for this underline (not color id of {@link ColorSchemeController})
+     * @param color Color for this underline (not color id of {@link ColorSchemeExtension})
      * @return Self
      */
     public SpanController setUnderlineColor(int color) {

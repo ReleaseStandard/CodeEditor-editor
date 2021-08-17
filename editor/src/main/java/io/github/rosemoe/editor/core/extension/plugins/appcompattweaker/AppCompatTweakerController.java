@@ -3,30 +3,25 @@ package io.github.rosemoe.editor.core.extension.plugins.appcompattweaker;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import androidx.appcompat.view.menu.MenuItemImpl;
-
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.extension.plugins.appcompattweaker.extension.AppCompatTweakerEvent;
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtension;
 import io.github.rosemoe.editor.core.util.Logger;
 
 import static io.github.rosemoe.editor.core.extension.plugins.appcompattweaker.extension.AppCompatTweakerEvent.*;
 
-public class AppCompatTweakerController extends SystemExtensionController {
+public class AppCompatTweakerController extends SystemExtension {
 
     public ConcurrentHashMap<Integer, ArrayList<Object>> items = new ConcurrentHashMap<>();
 
     Menu menu = null;
 
     public AppCompatTweakerController(CodeEditor editor) {
-        super(editor);
+        super(editor.model);
         subscribe(AppCompatTweakerEvent.class);
         name = "appcompattweaker";
         description = "AppCompatActivity tweaker";

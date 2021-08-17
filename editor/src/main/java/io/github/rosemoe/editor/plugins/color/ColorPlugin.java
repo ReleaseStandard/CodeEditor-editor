@@ -28,10 +28,10 @@ public abstract class ColorPlugin extends Plugin {
 
     public static ColorPlugin DEFAULT(CodeEditor editor) { return new ColorPluginSolarized(editor); }
     public ColorPlugin(CodeEditor editor) {
-        super(editor);
+        super(editor.model);
     }
     public ColorPlugin(CodeEditor editor, boolean invert) {
-        super(editor);
+        super(editor.model);
         this.invert = invert;
     }
     public void init() {

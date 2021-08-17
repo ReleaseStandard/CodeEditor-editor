@@ -15,11 +15,9 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins;
 
-import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.SystemExtensionModel;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**
@@ -30,20 +28,16 @@ import io.github.rosemoe.editor.core.util.Logger;
  *
  * @author Release Standard
  */
-public abstract class SystemExtensionController extends Extension {
+public abstract class SystemExtension extends Extension {
 
-    protected SystemExtensionModel model = null;
-
-    public final CodeEditor editorController;
-    public SystemExtensionController(CodeEditor editor) {
-        super(editor.model);
-        editorController = editor;
+    public SystemExtension(CodeEditorModel editor) {
+        super(editor);
     }
 
     @Override
     protected void handleEventEmit(Event e) {
-        editorController.systemPlugins.dispatch(e);
-        editorController.plugins.dispatch(e);
+        editor.systemPlugins.dispatch(e);
+        editor.plugins.dispatch(e);
     }
 
     @Override

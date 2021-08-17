@@ -15,16 +15,13 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis;
 
-import android.content.res.TypedArray;
-import android.util.AttributeSet;
-
 import java.util.HashMap;
 
+import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.color.ColorManager;
 import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtension;
 import io.github.rosemoe.editor.core.util.Logger;
-import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.extension.ColorSchemeEvent;
 
 import static io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.extension.ColorSchemeEvent.*;
@@ -37,16 +34,16 @@ import static io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.exte
  * https://github.com/altercation/solarized
  * @author Rose
  */
-public class ColorSchemeController extends SystemExtensionController {
+public class ColorSchemeExtension extends SystemExtension {
 
     /**
      * For sub classes
      */
-    public ColorSchemeController(CodeEditor editor) {
+    public ColorSchemeExtension(CodeEditorModel editor) {
         super(editor);
         initialize(false);
     }
-    public ColorSchemeController(CodeEditor editor, boolean invert) {
+    public ColorSchemeExtension(CodeEditorModel editor, boolean invert) {
         super(editor);
         initialize(invert);
     }
@@ -58,24 +55,11 @@ public class ColorSchemeController extends SystemExtensionController {
             editor.colorManager.invertColorScheme();
         }
     }
-    public void initFromAttributeSets(AttributeSet attrs, TypedArray a) {
-        /*
-        int test = 235363207;
-
-        for(@StyleableRes int colorId : COLORS.keySet()) {
-            int colorValue = a.getColor(colorId,test);
-            if ( colorValue == test) { continue; }
-            //updateColor(colorId, colorValue);
-        }
-        a.recycle();
-
-         */
-    }
 
     @Override
     public void handleEventEmit(Event e) {
         super.handleEventEmit(e);
-        editorController.plugins.dispatch(e);
+        editor.plugins.dispatch(e);
     }
 
 
@@ -122,6 +106,6 @@ public class ColorSchemeController extends SystemExtensionController {
         editor.setEditorLanguage(editor.mLanguage);
         editor.invalidate();
         */
-        editorController.view.invalidate();
+        //editorController.view.invalidate();
     }
 }

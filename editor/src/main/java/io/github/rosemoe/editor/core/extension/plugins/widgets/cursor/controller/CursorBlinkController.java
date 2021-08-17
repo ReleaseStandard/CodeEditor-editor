@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller;
 
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtension;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.view.CursorBlinkView;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.CursorBlinkModel;
 import io.github.rosemoe.editor.core.CodeEditor;
@@ -25,7 +25,7 @@ import io.github.rosemoe.editor.core.CodeEditor;
  *
  * @author Rose
  */
-public final class CursorBlinkController extends SystemExtensionController implements Runnable {
+public final class CursorBlinkController extends SystemExtension implements Runnable {
 
     /**
      * The default cursor blinking period
@@ -35,7 +35,7 @@ public final class CursorBlinkController extends SystemExtensionController imple
     public final CursorBlinkView view;
 
     public CursorBlinkController(CodeEditor editor, int period) {
-        super(editor);
+        super(editor.model);
         model = new CursorBlinkModel(period);
         view  = new CursorBlinkView(editor);
     }

@@ -30,7 +30,7 @@ public abstract class DebugPlugin extends Plugin {
     }
 
     public DebugPlugin(CodeEditor editor) {
-        super(editor);
+        super(editor.model);
         setEnabled(Logger.DEBUG);
     }
 }

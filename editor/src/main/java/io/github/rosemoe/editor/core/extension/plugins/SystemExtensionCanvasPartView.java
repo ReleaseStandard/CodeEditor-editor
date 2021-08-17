@@ -3,12 +3,11 @@ package io.github.rosemoe.editor.core.extension.plugins;
 import android.graphics.Canvas;
 
 import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.SystemExtensionView;
 
 /**
  * This type of widget view is some pixel to draw on an instanciated canvas, ex: CodeEditor's View.
  */
-public abstract class SystemExtensionCanvasPartView extends SystemExtensionView {
+public abstract class SystemExtensionCanvasPartView {
 
     /**
      * Paint the canvas part on the canvas.

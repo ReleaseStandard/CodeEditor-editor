@@ -4,7 +4,6 @@ import android.graphics.Canvas;
 import android.view.View;
 
 import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.shortcuts.A;

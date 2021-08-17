@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.widgets.searcher.controller;
 
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtensionController;
+import io.github.rosemoe.editor.core.extension.plugins.SystemExtension;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.searcher.SearcherModel;
@@ -28,13 +28,13 @@ import io.github.rosemoe.editor.core.CodeEditor;
  * @author Rose
  */
 @SuppressWarnings("deprecated")
-public class SearcherController extends SystemExtensionController {
+public class SearcherController extends SystemExtension {
 
     public SearcherModel model = new SearcherModel();
     public SearcherView view   = new SearcherView();
 
     public SearcherController(CodeEditor editor) {
-        super(editor);
+        super(editor.model);
         // TODO : define an event
         view.editor = editor;
     }
