@@ -23,7 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import io.github.rosemoe.editor.core.util.CallStack;
 
 import io.github.rosemoe.editor.core.codeanalysis.results.AnalysisDoneCallback;
-import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanMapController;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanMap;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
 
@@ -298,7 +298,7 @@ public abstract class CodeAnalyzer {
 
 
     /// HACKISH easiers, they mut be removed
-    public SpanMapController getSpanMap() {
+    public SpanMap getSpanMap() {
         CodeAnalyzerResultColor color = (CodeAnalyzerResultColor)getResult("color");
         return color == null ? null : color.map;
     }

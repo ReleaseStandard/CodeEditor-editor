@@ -26,16 +26,22 @@ import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.Co
  *
  * @author Rose
  */
-public class SpanController {
+public class Span {
 
-    private static final BlockingQueue<SpanController> cacheQueue = new ArrayBlockingQueue<>(8192 * 2);
-    public SpanModel model = new SpanModel();
-    public SpanView view  = new SpanView();
+    public int column;
+    public int color;
+    public int underlineColor = 0;
+
+    public void clear() {
+        color = column = underlineColor = 0;
+    }
+
+    private static final BlockingQueue<Span> cacheQueue = new ArrayBlockingQueue<>(8192 * 2);
 
     /**
      * @return an empty span with default settings.
      */
-    public static SpanController EMPTY() {
+    public static Span EMPTY() {
         return obtain(0, ColorManager.DEFAULT_BACKGROUND_COLOR);
     }
     /**
@@ -43,26 +49,26 @@ public class SpanController {
      *
      * @param column  Start column of span
      * @param color Type of span
-     * @see SpanController#obtain(int, int)
+     * @see Span#obtain(int, int)
      */
-    private SpanController(int column, int color) {
-        model.column = column;
-        model.color = color;
+    private Span(int column, int color) {
+        column = column;
+        color = color;
     }
 
-    public static SpanController obtain(int column, int color) {
-        SpanController span = cacheQueue.poll();
+    public static Span obtain(int column, int color) {
+        Span span = cacheQueue.poll();
         if (span == null) {
-            return new SpanController(column, color);
+            return new Span(column, color);
         } else {
-            span.model.column = column;
-            span.model.color = color;
+            span.column = column;
+            span.color = color;
             return span;
         }
     }
 
-    public static void recycleAll(SpanController[] spans) {
-        for (SpanController span : spans) {
+    public static void recycleAll(Span[] spans) {
+        for (Span span : spans) {
             if (!span.recycle()) {
                 return;
             }
@@ -76,8 +82,8 @@ public class SpanController {
      * @param color Color for this underline (not color id of {@link ColorSchemeExtension})
      * @return Self
      */
-    public SpanController setUnderlineColor(int color) {
-        model.underlineColor = color;
+    public Span setUnderlineColor(int color) {
+        underlineColor = color;
         return this;
     }
 
@@ -87,28 +93,28 @@ public class SpanController {
      * @return Start column
      */
     public int getColumn() {
-        return model.column;
+        return column;
     }
 
     /**
      * Set column of this span
      */
-    public SpanController setColumn(int column) {
-        model.column = column;
+    public Span setColumn(int column) {
+        column = column;
         return this;
     }
 
     /**
      * Make a copy of this span
      */
-    public SpanController copy() {
-        SpanController copy = obtain(model.column, model.color);
-        copy.setUnderlineColor(model.underlineColor);
+    public Span copy() {
+        Span copy = obtain(column, color);
+        copy.setUnderlineColor(underlineColor);
         return copy;
     }
 
     public boolean recycle() {
-        model.clear();
+        clear();
         return cacheQueue.offer(this);
     }
 

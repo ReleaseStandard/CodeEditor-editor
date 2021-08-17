@@ -62,6 +62,9 @@ import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.codeanalysis.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.extension.plugins.appcompattweaker.AppCompatTweakerController;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.Span;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanLine;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanMap;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.WidgetExtensionView;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalysis.CodeAnalyzerResultColor;
@@ -90,9 +93,6 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.contextaction.con
 import io.github.rosemoe.editor.core.extension.plugins.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.CompletionAdapter;
 import io.github.rosemoe.editor.core.langs.empty.EmptyLanguage;
-import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanMapController;
-import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanLineController;
-import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentMapController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentLineController;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentListener;
@@ -1031,7 +1031,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
 
             return;
         }
-        SpanMapController spanMap = analyzer.getSpanMap();
+        SpanMap spanMap = analyzer.getSpanMap();
         List<Integer> matchedPositions = new ArrayList<>();
         int currentLine = cursor.isSelected() ? -1 : cursor.getLeftLine();
         int currentLineBgColor = model.colorManager.getColor("currentLine");
@@ -1120,20 +1120,20 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             // the result of the color analyzer
             {
                 // Get spans
-                SpanLineController spans = spanMap.get(line);
+                SpanLine spans = spanMap.get(line);
                 if (spans == null || spans.size() == 0) {
-                    spans = SpanLineController.EMPTY();
+                    spans = SpanLine.EMPTY();
                 }
-                Map.Entry<Integer, SpanController> [] keys = spans.line.entrySet().toArray(new Map.Entry[spans.size()]);
+                Map.Entry<Integer, Span> [] keys = spans.line.entrySet().toArray(new Map.Entry[spans.size()]);
                 for (int a = 0; a < keys.length; a=a+1) {
-                    SpanController span = keys[a].getValue();
+                    Span span = keys[a].getValue();
                     // Draw by spans
-                    SpanController nextSpan = null;
+                    Span nextSpan = null;
                     if ( a+1 < spans.size() ) {
                         nextSpan = keys[a+1].getValue();
                     }
-                    int spanStart = span.model.column;
-                    int spanEnd = nextSpan == null ? columnCount : nextSpan.model.column;
+                    int spanStart = span.column;
+                    int spanEnd = nextSpan == null ? columnCount : nextSpan.column;
                     int paintStart = Math.max(firstVisibleChar, spanStart);
                     int paintEnd = Math.min(lastVisibleChar, spanEnd);
                     if( spanStart > lastVisibleChar || spanEnd < firstVisibleChar ) { continue ; }
@@ -1142,17 +1142,17 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                     //Logger.debug("line=",line,",firstVisibleChar=",firstVisibleChar,",lastVisibleChar=",lastVisibleChar,",color=",span.model.color,",paintStart=",paintStart,",paintEnd=",paintEnd,",paintingOffset=",paintingOffset);
 
                     // Draw text
-                    drawRegionText(canvas, paintingOffset, getRowBaseline(row) - getOffsetY(), line, paintStart, paintEnd, columnCount, span.model.color);
+                    drawRegionText(canvas, paintingOffset, getRowBaseline(row) - getOffsetY(), line, paintStart, paintEnd, columnCount, span.color);
                     //drawRegionText(canvas,paintingOffset, getRowBaseline(row) - getOffsetY(),line,paintStart,paintEnd,columnCount,0xFF00FF00);
 
                     // Draw underline
-                    if (span.model.underlineColor != 0) {
+                    if (span.underlineColor != 0) {
                         RectF mRect = new RectF();
                         mRect.bottom = getRowBottom(line) - getOffsetY() - mDpUnit * 1;
                         mRect.top = mRect.bottom - getRowHeight() * 0.08f;
                         mRect.left = paintingOffset;
                         mRect.right = paintingOffset + width;
-                        drawColor(canvas, span.model.underlineColor, mRect);
+                        drawColor(canvas, span.underlineColor, mRect);
                     }
 
                     paintingOffset += width;
@@ -1803,7 +1803,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      */
     private boolean isSpanMapPrepared(boolean insert, int delta) {
 
-        SpanMapController map = analyzer.getSpanMap();
+        SpanMap map = analyzer.getSpanMap();
         boolean rv = false;
         if (map != null) {
             if (insert) {

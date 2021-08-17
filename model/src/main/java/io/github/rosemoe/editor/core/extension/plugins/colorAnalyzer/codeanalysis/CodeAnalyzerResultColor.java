@@ -18,8 +18,8 @@ package io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.codeanalys
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.codeanalysis.analyzer.tokenemitter.TokenEmitterResult;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.ColorSchemeExtension;
-import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanController;
-import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanMapController;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.Span;
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanMap;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**
@@ -31,10 +31,9 @@ public class CodeAnalyzerResultColor extends TokenEmitterResult {
      * A color result must have a theme attached to it.
      */
     public ColorSchemeExtension theme = null;
-    public SpanMapController map = new SpanMapController();
+    public SpanMap map = new SpanMap();
 
     public CodeAnalyzerResultColor() {
-        recycler = new ColorAnalyzerResultRecycler();
         map.addNormalIfNull();
     }
     @Override
@@ -75,7 +74,7 @@ public class CodeAnalyzerResultColor extends TokenEmitterResult {
      */
     private void addIfNeeded(Object spanLine, Object column, Object color) {
         Logger.debug("Add a new span into the line : spanLine=",spanLine,",column=",column,",color=",color);
-        add((Integer)spanLine, SpanController.obtain((Integer)column, (Integer)color));
+        add((Integer)spanLine, Span.obtain((Integer)column, (Integer)color));
     }
     private void addFromColorName(Object spanLine, Object column, String colorName) {
         Integer color = theme.editor.colorManager.getColor(colorName);
@@ -90,7 +89,7 @@ public class CodeAnalyzerResultColor extends TokenEmitterResult {
      * @param spanLine The line position of span
      * @param span     The span
      */
-    private void add(int spanLine, SpanController span) {
+    private void add(int spanLine, Span span) {
         if ( theme == null ) {
             Logger.debug("WARNING : the color result has no theme attached so you will get no colors.");
             return;
