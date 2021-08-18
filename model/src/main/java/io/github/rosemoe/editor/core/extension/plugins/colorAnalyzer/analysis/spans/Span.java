@@ -58,7 +58,7 @@ public class Span {
         this.column = column;
         this.color = color;
     }
-    private Span(int column, int color, int size) {
+    private Span(int column, int size, int color) {
         this.column = column;
         this.color = color;
         this.size = size;
@@ -125,12 +125,12 @@ public class Span {
         return column + size - 1;
     }
     public static Span obtain(int column, int color) {
-        return obtain(column,color,1);
+        return obtain(column, 1, color);
     }
-    public static Span obtain(int column, int color, int size) {
+    public static Span obtain(int column, int size, int color) {
         Span span = cacheQueue.poll();
         if (span == null) {
-            span = new Span(column, color, size);
+            span = new Span(column, size, color);
         } else {
             span.column = column;
             span.color = color;

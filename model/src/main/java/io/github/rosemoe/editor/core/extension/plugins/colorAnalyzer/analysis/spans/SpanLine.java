@@ -151,7 +151,7 @@ public class SpanLine {
                         final int oldSz = span.size;
                         span.size = col - span.column;
                         parts[0].add(span);
-                        Span otherPart = Span.obtain(0,span.color,oldSz-span.size);
+                        Span otherPart = Span.obtain(0, oldSz-span.size, span.color);
                         parts[1].add(otherPart);
                         break;
                 }
@@ -224,7 +224,7 @@ public class SpanLine {
                         int oldSz = s.size;
                         int index = col + size;
                         s.size = (col - s.column);
-                        line.put(index, Span.obtain(index, s.color, oldSz - s.size));
+                        line.put(index, Span.obtain(index, oldSz - s.size, s.color));
                         break;
                 }
             } else {
@@ -287,7 +287,7 @@ public class SpanLine {
         if ( endShift <= 0 ) {
             // NOTHING TO DO HERE
         } else {
-            line.put(col, Span.obtain(col, span.color, endShift));
+            line.put(col, Span.obtain(col, endShift, span.color));
         }
 
         if ( startShift <= 0 || startLength <= 0 ) {
@@ -327,19 +327,6 @@ public class SpanLine {
                 }
             }
         }
-    }
-
-    /**
-     * Get the length of the content in columns.
-     * Prerequisite : each Span of the span map is separated.
-     * @return size of the line in columns
-     */
-    public int lengthContent() {
-        Span[] arr = concurrentSafeGetValues();
-        if( arr.length == 0 ) {
-            return 0;
-        }
-        return arr[arr.length-1].column + arr[arr.length-1].size;
     }
 
     /**

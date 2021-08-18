@@ -99,7 +99,6 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.c
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.view.UserInputView;
 import io.github.rosemoe.editor.core.util.FontCache;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.processors.ContentLineRemoveListener;
-import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.processors.SpanUpdater;
 
 import static io.github.rosemoe.editor.core.langs.helpers.TextUtils.isEmoji;
 
@@ -3160,7 +3159,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         // Update spans
         if (isSpanMapPrepared(true, endLine - startLine)) {
             if (startLine == endLine) {
-                sm.get(startLine).insertContent(Span.obtain(startColumn, 0, endColumn - startColumn));
+                sm.get(startLine).insertContent(Span.obtain(startColumn, endColumn - startColumn, 0));
             } else {
                 sm.insertContent(startLine, startColumn, endLine, endColumn);
             }
@@ -3220,11 +3219,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     public void afterDelete(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
 
         if (isSpanMapPrepared(false, endLine - startLine)) {
-            if (startLine == endLine) {
-                SpanUpdater.shiftSpansOnSingleLineDelete(analyzer.getSpanMap(), startLine, startColumn, endColumn);
-            } else {
-                SpanUpdater.shiftSpansOnMultiLineDelete(analyzer.getSpanMap(), startLine, startColumn, endLine, endColumn);
-            }
+            analyzer.getSpanMap().removeContent(startLine,startColumn,endLine,endColumn);
         }
 
         cursor.blink.onSelectionChanged();
