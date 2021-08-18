@@ -32,6 +32,10 @@ public class SpanLine {
      * Column index 0..n-1, Span
      */
     public TreeMap<Integer, Span> line;
+    public static final int SPAN_SPLIT_EXTENDS = 0;
+    public static final int SPAN_SPLIT_INVALIDATE = 1;
+    public static final int SPAN_SPLIT_SPLITTING = 2;
+    public int behaviourOnSpanSplit = SPAN_SPLIT_INVALIDATE;
     public SpanLine() {
         line = new TreeMap<>();
     }
@@ -94,6 +98,7 @@ public class SpanLine {
     public Span remove(Span span) {
         return remove(span.column);
     }
+
     /**
      * Clear the span line.
      */
@@ -116,6 +121,7 @@ public class SpanLine {
     /**
      * Split the line at given column index.
      * WARNING: this operation is destructive on the original SpanLine (we do not create new Spans)
+     * if we split on a span rather than between spans, we remove the span
      * @param col index 0..n-1
      * @return newly created SpanLine with the column index updated.
      */
@@ -125,14 +131,30 @@ public class SpanLine {
         parts[1]=new SpanLine();
         int startOfNewLine = -1;
         for(Span span : line.values()) {
-            if ( span.column < col ) {
+            if ( (span.column + span.size) <= col  ) {
                 parts[0].add(span);
-            } else {
+            } else if ( span.column >= col ) {
                 if ( startOfNewLine == -1 ) {
                     startOfNewLine = span.column;
                 }
                 span.setColumn(span.column - startOfNewLine);
                 parts[1].add(span);
+            } else if (span.column < col && (span.column+span.size) > col ) {
+                switch ( behaviourOnSpanSplit ) {
+                    case SPAN_SPLIT_INVALIDATE:
+                        break;
+                    case SPAN_SPLIT_SPLITTING:
+                        if ( startOfNewLine == -1 ) {
+                            startOfNewLine = col;
+                        }
+                        final int oldSz = span.size;
+                        span.size = col - span.column;
+                        parts[0].add(span);
+                        Span otherPart = Span.obtain(0,span.color,oldSz-span.size);
+                        parts[1].add(otherPart);
+                        break;
+                }
+
             }
         }
         return parts;
@@ -169,20 +191,49 @@ public class SpanLine {
      * @param span the span to insert
      */
     public void insertContent(Span span) {
+        // here we got undefined :
+        //   - or do not insert the span (we just use fields)
+        //   - or do insert the span but do not respect the behaviourOnSpanSplit policy
+        if ( behaviourOnSpanSplit == SPAN_SPLIT_EXTENDS) {
+            throw new RuntimeException("Error : give insert a Span in SPAN_SPLIT_EXTENDS policy will produce undermined behaviour, aborting");
+        }
+        insertContent(span.column, span.size);
+        if ( span.size > 0 ) {
+            line.put(span.column, span);
+        }
+    }
+    public void insertContent(final int col, final int size) {
         Span[] arr = concurrentSafeGetValues();
         for(int a = arr.length-1; a >= 0; a --) {
             Span s = arr[a];
-            if ( s.column >= span.column ) {
+            if ( s.column >= col ) {
                 line.remove(s.column);
-                s.setColumn(s.column+span.size);
+                s.setColumn(s.column+size);
                 line.put(s.column,s);
+            } else if (s.column < col && (s.column + s.size) > col) {
+                switch (behaviourOnSpanSplit) {
+                    case SPAN_SPLIT_EXTENDS:
+                        line.remove(s.column);
+                        s.size += size;
+                        line.put(s.column, s);
+                        break;
+                    case SPAN_SPLIT_INVALIDATE:
+                        line.remove(s.column);
+                        break;
+                    case SPAN_SPLIT_SPLITTING:
+                        int oldSz = s.size;
+                        int index = col + size;
+                        s.size = (col - s.column);
+                        line.put(index, Span.obtain(index, s.color, oldSz - s.size));
+                        break;
+                }
             } else {
                 break;
             }
         }
-        if ( span.size > 0 ) {
-            line.put(span.column, span);
-        }
+    }
+    public void insertContent(int size) {
+        insertContent(0,size);
     }
 
     /**
@@ -193,9 +244,24 @@ public class SpanLine {
     public void removeContent(int col,int sz) {
         for(Span span : concurrentSafeGetValues()) {
             if ( span.column < col) {
-                if ( span.column + span.size  > col ) {
+                if ( (span.size) >= col ) {
                     int sizeToRemove = Math.min((span.column + span.size) - col, sz);
-                    span.size -= sizeToRemove;
+                    switch (behaviourOnSpanSplit) {
+                        case SPAN_SPLIT_EXTENDS:
+                            span.size -= sizeToRemove;
+                            break;
+                        case SPAN_SPLIT_SPLITTING:
+                            int oldSize = span.size;
+                            span.size = col - span.column;
+                            int remainSize = oldSize - span.size - sizeToRemove;
+                            if ( remainSize > 0 ) {
+                                add(col,Span.obtain(col,span.color,remainSize));
+                            }
+                            break;
+                        case SPAN_SPLIT_INVALIDATE:
+                            remove(span);
+                            break;
+                    }
                 }
             } else {
                 line.remove(span.column);

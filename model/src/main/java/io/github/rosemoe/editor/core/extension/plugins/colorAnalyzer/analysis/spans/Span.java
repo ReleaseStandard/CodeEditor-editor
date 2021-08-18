@@ -114,6 +114,16 @@ public class Span {
         }
     }
 
+    /**
+     * End column for the span (e.g. span of size 2 with column=0 will get his end at 1)
+     * @return
+     */
+    public int getColumnEnd() {
+        if ( size == 0 ) {
+            return column;
+        }
+        return column + size - 1;
+    }
     public static Span obtain(int column, int color) {
         return obtain(column,color,1);
     }

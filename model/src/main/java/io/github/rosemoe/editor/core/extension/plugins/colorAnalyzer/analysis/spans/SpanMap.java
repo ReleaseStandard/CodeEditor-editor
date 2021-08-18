@@ -129,11 +129,10 @@ public class SpanMap {
      * @param cutSize size 1..n the cut size, eg a cut of one will split a line in to lines, a cut of two will split line in two lines plus insert an empty line.
      */
     public void splitLine(int line, int col, int cutSize) {
-        dump();
-        Logger.debug("cutDown line=",line,",col=",col,",cutSize=",cutSize);
         SpanLine startLine = map.get(line);
         SpanLine[]parts = startLine.split(col);
         map.put(line,parts[0]);
+
         for(int i = size()-1; i > line+cutSize; i=i-1 ) {
             map.put(i,map.get(i-1));
         }
@@ -143,6 +142,10 @@ public class SpanMap {
         map.put(line,parts[0]);
         map.put(line+cutSize,parts[1]);
     }
+    public void splitLine(int line, int col) {
+        splitLine(line,col,0);
+    }
+
     /**
      * Insert the Specified content (Spanlines) at the specified position.
      * @param lines lines to insert
@@ -167,9 +170,16 @@ public class SpanMap {
     public void cutLines(int startLine, int startColumn, int endLine, int endColumn) {
         SpanLine startSpanLine = map.get(startLine);
         SpanLine stopSpanLine = map.get(endLine);
-        startSpanLine.removeContent(startColumn,Integer.MAX_VALUE);
-        stopSpanLine.removeContent(0,endColumn);
-        SpanLine newLine = SpanLine.concat(startSpanLine,stopSpanLine);
+        SpanLine newLine = null;
+        if ( startLine != endLine ) {
+            startSpanLine.removeContent(startColumn, Integer.MAX_VALUE);
+            stopSpanLine.removeContent(0, endColumn);
+            newLine = SpanLine.concat(startSpanLine,stopSpanLine);
+        } else {
+            startSpanLine.removeContent(startColumn, endColumn - startColumn);
+            newLine = startSpanLine;
+        }
+
         map.put(startLine,newLine);
 
         for(int i = startLine + 1; i <= endLine; i=i+1) {
@@ -182,20 +192,47 @@ public class SpanMap {
     }
 
     /**
-     * Insert some content(a Span) into the desired line.
-     * @param line
-     * @param col
-     * @param sz
+     * Called when we want to insert some content in the specified line.
      */
-    public void insertContent(int line, int col, int sz) {
-        insertContent(Span.EMPTY(),line,col,sz);
+    public void insertContent(int lineStart, int colStart, int lineStop, int colStop) {
+        // ---+|+++      ---+|+++
+        // ***        =>
+        //               ***
+        // where x is insertion, | insertion point
+        int lineShift = lineStop - lineStart;
+        if ( lineShift > 0 ) {
+            for (int a = map.size() - 1; a >= lineStart + 1; a = a - 1) {
+                SpanLine sl = map.remove(a);
+                map.put(a + lineShift, sl);
+            }
+        }
+        // ---+|+++      ---+
+        // ***        => xx+++
+        //               ***
+        Logger.debug("lineStart="+lineStart+",colStart="+colStart+",lineStop="+lineStop+",colStop="+colStop);
+        if ( lineStart > lineStop ) {
+            throw new RuntimeException("INVALID : lineStart=" + lineStart + ",lineStop=" + lineStop);
+        }
+        else if ( lineStart == lineStop ) {
+            map.get(lineStart).insertContent(colStart, colStop - colStart);
+        } else {
+            SpanLine[] startParts = map.get(lineStart).split(colStart);
+            map.put(lineStart, startParts[0]);
+            startParts[1].insertContent(0, colStop);
+            map.put(lineStart+lineShift, startParts[1]);
+        }
     }
-    public void insertContent(Span span, int line, int col, int sz) {
+    public void insertContent(int line, int colStart, int colStop) {
+        insertContent(line, colStart, line, colStop);
+    }
+    public void insertContent(int line) {
+        insertContent(line, Span.EMPTY());
+    }
+    public void insertContent(int line, Span span) {
         SpanLine dest = map.get(line);
-        span.column = col;
-        span.size = sz;
         dest.insertContent(span);
     }
+    //public void insertContent()
     /**
      * Dump debug information on this class.
      */

@@ -3,7 +3,11 @@ package io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.s
 import org.junit.Test;
 
 import io.github.rosemoe.editor.core.util.Random;
+import manifold.ext.rt.api.Jailbreak;
 
+import static io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanLine.SPAN_SPLIT_EXTENDS;
+import static io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanLine.SPAN_SPLIT_INVALIDATE;
+import static io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanLine.SPAN_SPLIT_SPLITTING;
 import static org.junit.Assert.*;
 
 public class SpanLineTest {
@@ -12,12 +16,10 @@ public class SpanLineTest {
     @Test
     public void split() {
         // subs[0] | subs[1]
-        // 0                 sz
-        // |------------------
-        // ------------|------
-        // ------------------|
-        //
-        //
+        //     0  sz
+        //     |---
+        //     -|--
+        //     ---|
         {
             {
                 SpanLine s = new SpanLine();
@@ -57,6 +59,43 @@ public class SpanLineTest {
             SpanLine[] subs = s.split(split);
             assertTrue("sz=" + sz + ",s.size()=" + s.size() + ",subs[0].size()=" + subs[0].size() + ",split=" + split, subs[0].size() == split);
             assertTrue("sz=" + sz + ",s.size()=" + s.size() + ",split=" + split + ",subs[1].size()=" + subs[1].size() + ",(s.size()-split)=" + (s.size() - split), subs[1].size() == (s.size() - split));
+        }
+        {
+            //
+            // ---*|**
+            //
+            // ---
+            //
+            @Jailbreak  SpanLine s = new SpanLine();
+            s.behaviourOnSpanSplit = SpanLine.SPAN_SPLIT_INVALIDATE;
+            s.add(Span.obtain(0,0,3));
+            s.add(Span.obtain(3,0,3));
+            SpanLine[] lines = s.split(4);
+            assertTrue(lines[0].size() == 1);
+            assertTrue(lines[0].get(0).column == 0);
+            assertTrue(lines[0].get(0).size == 3);
+            assertTrue(lines[1].size() == 0);
+        }
+        {
+            //
+            // ---*|**
+            //
+            // ---*
+            // **
+            //
+            @Jailbreak  SpanLine s = new SpanLine();
+            s.behaviourOnSpanSplit = SPAN_SPLIT_SPLITTING;
+            s.add(Span.obtain(0,0,3));
+            s.add(Span.obtain(3,0,3));
+            SpanLine[] lines = s.split(4);
+            assertTrue(lines[0].size() == 2);
+            assertTrue(lines[0].get(0).column == 0);
+            assertTrue(lines[0].get(0).size == 3);
+            assertTrue(lines[0].get(3).column == 3);
+            assertTrue(lines[0].get(3).size == 1);
+            assertTrue(lines[1].size() == 1);
+            assertTrue(lines[1].get(0).column == 0);
+            assertTrue(lines[1].get(0).size == 2);
         }
     }
 
@@ -127,17 +166,9 @@ public class SpanLineTest {
         }
         {
             //
-            // --++**|***
+            // |---**-----
             //
             //
-            SpanLine s1 = new SpanLine();
-            s1.add(Span.obtain(0, 0, 2));
-            s1.add(Span.obtain(2, 0, 2));
-            s1.add(Span.obtain(4, 0, 5));
-            s1.insertContent(Span.obtain(5,0, 2));
-            assertTrue("s1.size()=" + s1.size(), s1.size() == 4);
-        }
-        {
             SpanLine s1 = new SpanLine();
             s1.add(Span.obtain(0, 0, 2));
             s1.add(Span.obtain(2, 0, 2));
@@ -145,6 +176,62 @@ public class SpanLineTest {
             s1.insertContent(Span.obtain(0,0, 0));
             assertTrue("s1.size()=" + s1.size(), s1.size() == 3);
         }
+        {
+            //
+            // --++*|****
+            //
+            //
+            SpanLine s1 = new SpanLine();
+            s1.behaviourOnSpanSplit = SPAN_SPLIT_INVALIDATE;
+            s1.add(Span.obtain(0, 0, 2));
+            s1.add(Span.obtain(2, 0, 2));
+            s1.add(Span.obtain(4, 0, 5));
+            System.out.println("BEFORE");
+            s1.dump();
+            s1.insertContent(Span.obtain(5,0, 2));
+            s1.dump();
+            assertTrue("s1.size()=" + s1.size(), s1.size() == 3);
+        }
+        {
+            //
+            // --++*|****
+            //
+            //
+            SpanLine s1 = new SpanLine();
+            s1.behaviourOnSpanSplit = SPAN_SPLIT_SPLITTING;
+            s1.add(Span.obtain(0, 0, 2));
+            s1.add(Span.obtain(2, 0, 2));
+            s1.add(Span.obtain(4, 0, 5));
+            s1.insertContent(Span.obtain(5,0, 2));
+            assertTrue("s1.size()=" + s1.size(), s1.size() == 5);
+        }
+        {
+            //
+            // --++*|****
+            //
+            //
+            SpanLine s1 = new SpanLine();
+            s1.behaviourOnSpanSplit = SPAN_SPLIT_EXTENDS;
+            s1.add(Span.obtain(0, 0, 2));
+            s1.add(Span.obtain(2, 0, 2));
+            s1.add(Span.obtain(4, 0, 5));
+            s1.insertContent(5,2);
+            assertTrue("s1.size()=" + s1.size(), s1.size() == 3);
+        }
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testInsertContent() {
+        //
+        // --++*|****
+        //
+        //
+        SpanLine s1 = new SpanLine();
+        s1.behaviourOnSpanSplit = SPAN_SPLIT_EXTENDS;
+        s1.add(Span.obtain(0, 0, 2));
+        s1.add(Span.obtain(2, 0, 2));
+        s1.add(Span.obtain(4, 0, 5));
+        s1.insertContent(Span.obtain(5,0, 2));
     }
 
     @Test
@@ -155,6 +242,7 @@ public class SpanLineTest {
             // -*ttttt
             //
             SpanLine s1 = new SpanLine();
+            s1.behaviourOnSpanSplit = SPAN_SPLIT_EXTENDS;
             s1.add(Span.obtain(0, 0, 2));
             s1.add(Span.obtain(2, 0, 2));
             s1.add(Span.obtain(4, 0, 5));
@@ -174,6 +262,7 @@ public class SpanLineTest {
             // ----**+
             //
             SpanLine s = new SpanLine();
+            s.behaviourOnSpanSplit = SPAN_SPLIT_EXTENDS;
             s.add(Span.obtain(0, 0, 6));
             s.add(Span.obtain(6, 0, 2));
             s.add(Span.obtain(8, 0, 1));
@@ -186,9 +275,10 @@ public class SpanLineTest {
         {
             //
             // ------**+
-            // ------+
+            // ------*
             //
             SpanLine s = new SpanLine();
+            s.behaviourOnSpanSplit = SPAN_SPLIT_EXTENDS;
             s.add(Span.obtain(0, 0, 6));
             s.add(Span.obtain(6, 0, 2));
             s.add(Span.obtain(8, 0, 1));
@@ -209,6 +299,38 @@ public class SpanLineTest {
             s.add(Span.obtain(8, 0, 1));
             s.removeContent(0, 0);
             assertTrue(s.size() == 3);
+        }
+        {
+            //
+            // ------**+
+            //     **+
+            //
+            SpanLine s = new SpanLine();
+            s.behaviourOnSpanSplit = SPAN_SPLIT_INVALIDATE;
+            s.add(Span.obtain(0, 0, 6));
+            s.add(Span.obtain(6, 0, 2));
+            s.add(Span.obtain(8, 0, 1));
+            s.removeContent(2, 2);
+            assertTrue(s.size() == 2);
+            Span[] arr = s.concurrentSafeGetValues();
+            assertTrue(arr[0].column == 4);
+            assertTrue(arr[0].size == 2);
+        }
+        {
+            //
+            // ------**+
+            // xx--**+
+            //
+            SpanLine s = new SpanLine();
+            s.behaviourOnSpanSplit = SPAN_SPLIT_SPLITTING;
+            s.add(Span.obtain(0, 0, 6));
+            s.add(Span.obtain(6, 0, 2));
+            s.add(Span.obtain(8, 0, 1));
+            s.removeContent(2, 2);
+            assertTrue(s.size() == 4);
+            Span[] arr = s.concurrentSafeGetValues();
+            assertTrue(arr[0].column == 0);
+            assertTrue(arr[0].size == 2);
         }
     }
 }

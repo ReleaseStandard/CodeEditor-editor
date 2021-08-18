@@ -3155,10 +3155,12 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     @Override
     public void afterInsert(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
 
+        SpanMap sm = analyzer.getSpanMap();
+
         // Update spans
         if (isSpanMapPrepared(true, endLine - startLine)) {
             if (startLine == endLine) {
-                SpanUpdater.shiftSpansOnSingleLineInsert(analyzer.getSpanMap(), startLine, startColumn, endColumn);
+                sm.get(startLine).insertContent(Span.obtain(startColumn, 0, endColumn - startColumn));
             } else {
                 SpanUpdater.shiftSpansOnMultiLineInsert(analyzer.getSpanMap(), startLine, startColumn, endLine, endColumn);
             }

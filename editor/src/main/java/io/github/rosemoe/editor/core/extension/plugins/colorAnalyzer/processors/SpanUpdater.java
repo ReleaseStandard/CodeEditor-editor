@@ -15,6 +15,7 @@
  */
 package io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.processors;
 
+import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.Span;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanLine;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanMap;
 import io.github.rosemoe.editor.core.util.Logger;
@@ -61,8 +62,7 @@ public class SpanUpdater {
      * @param endCol index 0..n-1 the end column of modification.
      */
     public static void shiftSpansOnSingleLineInsert(SpanMap map, int line, int startCol, int endCol) {
-        Logger.debug("line=",line,",startCol=",startCol,",endCol=",endCol);
-        map.insertContent(line,startCol,endCol-startCol);
+        map.get(line).insertContent(Span.obtain(startCol, 0, endCol - startCol));
     }
 
     /**
