@@ -98,10 +98,73 @@ public class SpanLineTest {
             assertTrue(lines[1].get(0).column == 0);
             assertTrue(lines[1].get(0).size == 2);
         }
+        {
+            // *|*
+            SpanLine s = new SpanLine();
+            s.behaviourOnSpanSplit = SPAN_SPLIT_EXTENDS;
+            s.add(Span.obtain(0, 0, 2));
+            assertTrue(s.size() == 1);
+            assertTrue(s.get(0).size == 2);
+            SpanLine[] parts = s.split(1);
+            assertTrue(parts[0].size() == 1);
+            assertTrue(parts[0].get(0).size == 1);
+            assertTrue(parts[1].size() == 1);
+            assertTrue(parts[1].get(0).size == 1);
+        }
+        for(int behave : new int[]{ SPAN_SPLIT_EXTENDS, SPAN_SPLIT_SPLITTING }) {
+            {
+                // *|*
+                SpanLine s = new SpanLine();
+                s.behaviourOnSpanSplit = behave;
+                s.add(Span.obtain(0, 0, 2));
+                assertTrue(s.size() == 1);
+                assertTrue(s.get(0).size == 2);
+                SpanLine[] parts = s.split(1);
+                assertTrue("behave=" + behave,parts[0].size() == 1);
+                assertTrue(parts[0].get(0).size == 1);
+                assertTrue(parts[1].size() == 1);
+                assertTrue(parts[1].get(0).size == 1);
+            }
+            {
+                // |**
+                SpanLine s = new SpanLine();
+                s.behaviourOnSpanSplit = behave;
+                s.add(Span.obtain(0, 0, 2));
+                assertTrue(s.size() == 1);
+                SpanLine[] parts = s.split(0);
+                assertTrue(parts[0].size() == 0);
+                assertTrue(parts[1].size() == 1);
+                assertTrue(parts[1].get(0).size == 2);
+            }
+            {
+                // **|
+                SpanLine s = new SpanLine();
+                s.behaviourOnSpanSplit = behave;
+                s.add(Span.obtain(0, 0, 2));
+                SpanLine[] parts = s.split(2);
+                assertTrue(parts[0].size() == 1);
+                assertTrue(parts[0].get(0).size == 2);
+                assertTrue(parts[1].size() == 0);
+            }
+        }
     }
 
     @Test
     public void concat() {
+        {
+            {
+                // -
+                //  +
+                SpanLine s = new SpanLine();
+                s.add(Span.obtain(0,0,1));
+                SpanLine s1 = new SpanLine();
+                s1.add(Span.obtain(1,0,1));
+                SpanLine aux = SpanLine.concat(s,s1);
+                assertTrue(aux.size() == 2);
+                assertTrue(aux.get(0).size==1);
+                assertTrue(aux.get(2).size == 1);
+            }
+        }
         {
             {
                 SpanLine s1 = new SpanLine();

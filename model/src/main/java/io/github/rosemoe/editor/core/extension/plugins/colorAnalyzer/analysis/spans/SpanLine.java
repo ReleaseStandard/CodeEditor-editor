@@ -143,6 +143,7 @@ public class SpanLine {
                 switch ( behaviourOnSpanSplit ) {
                     case SPAN_SPLIT_INVALIDATE:
                         break;
+                    case SPAN_SPLIT_EXTENDS:
                     case SPAN_SPLIT_SPLITTING:
                         if ( startOfNewLine == -1 ) {
                             startOfNewLine = col;
@@ -177,9 +178,8 @@ public class SpanLine {
             index = lastSpan.column + lastSpan.size;
         }
         for(Span span : two.line.values()) {
-            span.setColumn(index);
-            result.add(index,span);
-            index = span.column + span.size;
+            span.setColumn(index + span.column);
+            result.add(span);
         }
         one.clear();
         two.clear();
