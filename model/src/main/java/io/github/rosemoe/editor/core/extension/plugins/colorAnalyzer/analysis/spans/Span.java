@@ -20,6 +20,7 @@ import java.util.concurrent.BlockingQueue;
 
 import io.github.rosemoe.editor.core.color.ColorManager;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.ColorSchemeExtension;
+import io.github.rosemoe.editor.core.util.Logger;
 
 /**
  * The span model - it could end to variety of implementation in the view (e.g. Canvas, Span)
@@ -30,11 +31,12 @@ import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.Co
 public class Span {
 
     public int column;
+    public int size;
     public int color;
     public int underlineColor = 0;
 
     public void clear() {
-        color = column = underlineColor = 0;
+        size = color = column = underlineColor = 0;
     }
 
     private static final BlockingQueue<Span> cacheQueue = new ArrayBlockingQueue<>(8192 * 2);
@@ -56,7 +58,11 @@ public class Span {
         this.column = column;
         this.color = color;
     }
-
+    private Span(int column, int color, int size) {
+        this.column = column;
+        this.color = color;
+        this.size = size;
+    }
     /**
      * Set a underline for this region
      * Zero for no underline
@@ -109,14 +115,24 @@ public class Span {
     }
 
     public static Span obtain(int column, int color) {
+        return obtain(column,color,1);
+    }
+    public static Span obtain(int column, int color, int size) {
         Span span = cacheQueue.poll();
         if (span == null) {
-            return new Span(column, color);
+            span = new Span(column, color, size);
         } else {
             span.column = column;
             span.color = color;
-            return span;
+            span.size = size;
         }
+        return span;
     }
-    
+
+    public void dump() {
+        dump("");
+    }
+    public void dump(String offset) {
+        Logger.debug(offset + "column=" + column + ",color="+ color+",underlineColor="+underlineColor+",size="+size);
+    }
 }

@@ -22,6 +22,7 @@ import io.github.rosemoe.editor.core.util.Logger;
 
 /**
  * The class handle one line in the text editor.
+ * We assume that Span do not merge (ex: you cannot put red and green brackground, that's an error).
  *
  * @author Release Standard
  */
@@ -40,11 +41,11 @@ public class SpanLine {
      * @param col column index 0..n-1
      * @param span
      */
-    public void add(int col, Span span) {
-        line.put(col,span);
+    public Span add(int col, Span span) {
+        return line.put(col,span);
     }
-    public void add(Span span) {
-        add(span.column,span);
+    public Span add(Span span) {
+        return add(span.column,span);
     }
     public void add(SpanLine line) {
         for(Span span : line.line.values()){
@@ -53,7 +54,7 @@ public class SpanLine {
     }
 
     /**
-     * Get the size of the span line.
+     * Get the number of elements in the SpanLine
      * @return
      */
     public int size() {
@@ -107,10 +108,14 @@ public class SpanLine {
     }
     public void dump(String offset) {
         Logger.debug(offset + "span in the line="+size());
+        for(Span s : concurrentSafeGetValues()) {
+            s.dump(offset);
+        }
     }
 
     /**
      * Split the line at given column index.
+     * WARNING: this operation is destructive on the original SpanLine (we do not create new Spans)
      * @param col index 0..n-1
      * @return newly created SpanLine with the column index updated.
      */
@@ -118,57 +123,66 @@ public class SpanLine {
         SpanLine[] parts = new SpanLine[2];
         parts[0]=new SpanLine();
         parts[1]=new SpanLine();
-        int columnIndex = 0;
+        int startOfNewLine = -1;
         for(Span span : line.values()) {
             if ( span.column < col ) {
                 parts[0].add(span);
             } else {
-                int length = span.column - col;
-                span.setColumn(columnIndex);
-                columnIndex += length;
+                if ( startOfNewLine == -1 ) {
+                    startOfNewLine = span.column;
+                }
+                span.setColumn(span.column - startOfNewLine);
                 parts[1].add(span);
             }
         }
         return parts;
     }
     /**
-     * This function merge two SpanLines together and returns the merged span line.
+     * This function merge two SpanLines together and returns the concatened span line.
+     * Warning : this operation in destructive on given entry lines
      * @param one
      * @param two
      * @return
      */
-    public static SpanLine merge(SpanLine one, SpanLine two) {
+    public static SpanLine concat(SpanLine one, SpanLine two) {
+        SpanLine result = new SpanLine();
+        for(Span span : one.line.values()) {
+            result.add(span);
+        }
         int index = 0;
-        if ( one.size() > 0) {
+        if ( one.size() > 0 ) {
             Span lastSpan = one.line.lastEntry().getValue();
-            index = lastSpan.column;
+            index = lastSpan.column + lastSpan.size;
         }
-        int lastCol = 0;
         for(Span span : two.line.values()) {
-            lastCol = span.column - lastCol;
-            index += lastCol;
             span.setColumn(index);
-            one.add(index,span);
+            result.add(index,span);
+            index = span.column + span.size;
         }
-        return one;
+        one.clear();
+        two.clear();
+        return result;
     }
 
     /**
      * Insert content into the SpanLine at specified position.
      * @param span the span to insert
-     * @param col index 0..n-1
-     * @param sz size 0..n
      */
-    public void insertContent(Span span, int col, int sz) {
-        for(Span s : line.values()) {
-            if ( s.column >= col ) {
+    public void insertContent(Span span) {
+        Span[] arr = concurrentSafeGetValues();
+        for(int a = arr.length-1; a >= 0; a --) {
+            Span s = arr[a];
+            if ( s.column >= span.column ) {
                 line.remove(s.column);
-                s.setColumn(s.column+sz);
-                line.put(s.column,span);
+                s.setColumn(s.column+span.size);
+                line.put(s.column,s);
+            } else {
+                break;
             }
         }
-        span.setColumn(col);
-        line.put(col,span);
+        if ( span.size > 0 ) {
+            line.put(span.column, span);
+        }
     }
 
     /**
@@ -177,18 +191,45 @@ public class SpanLine {
      * @param sz size 0..n
      */
     public void removeContent(int col,int sz) {
-        for(Span span : line.values()) {
+        for(Span span : concurrentSafeGetValues()) {
             if ( span.column < col) {
-
+                if ( span.column + span.size  > col ) {
+                    int sizeToRemove = Math.min((span.column + span.size) - col, sz);
+                    span.size -= sizeToRemove;
+                }
             } else {
+                line.remove(span.column);
                 if ( span.column < col+sz) {
-                    remove(span);
+                    if (span.column + span.size <= col + sz) {
+                        remove(span);
+                    }
+                    else {
+                        int sizeToRemove = (col+sz) - span.column;
+                        span.size -= sizeToRemove;
+                        span.setColumn(span.column - sizeToRemove);
+                        line.put(span.column, span);
+                    }
                 } else {
-                    span.setColumn(span.column-sz);
+                    span.setColumn(span.column - sz);
+                    line.put(span.column,span);
                 }
             }
         }
     }
+
+    /**
+     * Get the length of the content in columns.
+     * Prerequisite : each Span of the span map is separated.
+     * @return size of the line in columns
+     */
+    public int lengthContent() {
+        Span[] arr = concurrentSafeGetValues();
+        if( arr.length == 0 ) {
+            return 0;
+        }
+        return arr[arr.length-1].column + arr[arr.length-1].size;
+    }
+
     /**
      * Empty spanline.
      * @return returns an empty spanline

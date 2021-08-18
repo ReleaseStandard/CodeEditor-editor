@@ -169,7 +169,7 @@ public class SpanMap {
         SpanLine stopSpanLine = map.get(endLine);
         startSpanLine.removeContent(startColumn,Integer.MAX_VALUE);
         stopSpanLine.removeContent(0,endColumn);
-        SpanLine newLine = SpanLine.merge(startSpanLine,stopSpanLine);
+        SpanLine newLine = SpanLine.concat(startSpanLine,stopSpanLine);
         map.put(startLine,newLine);
 
         for(int i = startLine + 1; i <= endLine; i=i+1) {
@@ -192,7 +192,9 @@ public class SpanMap {
     }
     public void insertContent(Span span, int line, int col, int sz) {
         SpanLine dest = map.get(line);
-        dest.insertContent(span,col,sz);
+        span.column = col;
+        span.size = sz;
+        dest.insertContent(span);
     }
     /**
      * Dump debug information on this class.
