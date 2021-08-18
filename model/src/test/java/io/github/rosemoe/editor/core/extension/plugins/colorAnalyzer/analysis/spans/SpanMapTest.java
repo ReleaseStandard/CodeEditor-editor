@@ -1,5 +1,6 @@
 package io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import io.github.rosemoe.editor.core.util.Logger;
@@ -21,62 +22,6 @@ public class SpanMapTest {
 
     @Test
     public void insertLines() {
-    }
-
-    @Test
-    public void cutLines() {
-        {
-            //
-            // --
-            //
-            // -
-            // -
-            //
-            SpanMap s = new SpanMap();
-            s.behaviourOnSpanSplit = SPAN_SPLIT_SPLITTING;
-            SpanLine sl = new SpanLine();
-            sl.add(Span.obtain(0, 2, 0));
-            s.add(0, sl);
-            s.cutLines(0,1,0, 1);
-            s.dump();
-            assertTrue(s.size() == 2);
-        }
-        {
-            //
-            // --+++
-            //
-            // -
-            // -+++
-            //
-            SpanMap s = new SpanMap();
-            SpanLine sl = new SpanLine();
-            sl.add(Span.obtain(0, 2, 0));
-            sl.add(Span.obtain(2, 3, 0));
-            s.add(0, sl);
-            s.cutLines(0,1,0, 1);
-            assertTrue(s.size() == 2);
-        }
-        {
-            //
-            // --+++
-            // *****
-            //
-            // -
-            // ***
-            //
-            SpanMap s = new SpanMap();
-            SpanLine sl = new SpanLine();
-            sl.add(Span.obtain(0, 2, 0));
-            sl.add(Span.obtain(2, 3, 0));
-            s.add(0, sl);
-            sl = new SpanLine();
-            sl.add(Span.obtain(0, 5, 0));
-            s.cutLines(0,1,1, 2);
-            assertTrue(s.size() == 2);
-            assertTrue(s.lines[0].size() == 1);
-            assertTrue(s.lines[1].size() == 1);
-            assertTrue(s.lines[1].line.get(0).size == 3);
-        }
     }
 
     @Test
@@ -105,8 +50,8 @@ public class SpanMapTest {
             //
             //
             SpanMap map = new SpanMap();
+            map.behaviourOnSpanSplit = SPAN_SPLIT_INVALIDATE;
             SpanLine s1 = new SpanLine();
-            s1.behaviourOnSpanSplit = SPAN_SPLIT_INVALIDATE;
             s1.add(Span.obtain(0, 2, 0));
             s1.add(Span.obtain(2, 2, 0));
             s1.add(Span.obtain(4, 5, 0));
@@ -122,6 +67,7 @@ public class SpanMapTest {
             //
             // **--+++++
             SpanMap map = new SpanMap();
+            map.behaviourOnSpanSplit = SPAN_SPLIT_INVALIDATE;
             SpanLine s1 = new SpanLine();
             s1.add(Span.obtain(0, 2, 0));
             s1.add(Span.obtain(2, 2, 0));
@@ -332,6 +278,10 @@ public class SpanMapTest {
             assertTrue("map.get(0).get(3).size="+map.get(0).get(3).size, map.get(0).get(3).size==1);
             assertTrue("map.get(0).get(4).size="+map.get(0).get(4).size, map.get(0).get(4).size==2);
         }
+    }
+    @Test
+    @Ignore("SPAN_SPLIT_INVALIDATE on a SpanMap could cause implevisible span shift, you should better use SPAN_SPLIT_SPLITTING")
+    public void testRemoveContentBug() {
         {
             //
             // ---+|+++

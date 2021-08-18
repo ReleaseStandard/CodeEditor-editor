@@ -21,6 +21,7 @@ import java.util.TreeMap;
 import io.github.rosemoe.editor.core.util.Logger;
 
 import static io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanLine.SPAN_SPLIT_INVALIDATE;
+import static io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanLine.SPAN_SPLIT_SPLITTING;
 
 /**
  * This class is a SpanLine container (line displayed to the screen).
@@ -30,7 +31,7 @@ import static io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.anal
  */
 public class SpanMap {
 
-    public int behaviourOnSpanSplit = SPAN_SPLIT_INVALIDATE;
+    public int behaviourOnSpanSplit = SPAN_SPLIT_SPLITTING;
 
     /**
      * lineindex, SpanLine
@@ -127,37 +128,6 @@ public class SpanMap {
 
     public SpanLine[] getLines() {
         return concurrentSafeGetValues();
-    }
-
-    /**
-     * Remove spans and lines of all lines found between bounds.
-     * @param startLine index 0..n-1 of the start line
-     * @param startColumn index 0..n-1 of the start column
-     * @param endLine index 0..n-1 of the end line
-     * @param endColumn index 0..n-1 of the end column
-     */
-    public void cutLines(int startLine, int startColumn, int endLine, int endColumn) {
-        SpanLine startSpanLine = map.get(startLine);
-        SpanLine stopSpanLine = map.get(endLine);
-        SpanLine newLine = null;
-        if ( startLine != endLine ) {
-            startSpanLine.removeContent(startColumn, Integer.MAX_VALUE);
-            stopSpanLine.removeContent(0, endColumn);
-            newLine = SpanLine.concat(startSpanLine,stopSpanLine);
-        } else {
-            startSpanLine.removeContent(startColumn, endColumn - startColumn);
-            newLine = startSpanLine;
-        }
-        newLine.behaviourOnSpanSplit = behaviourOnSpanSplit;
-        map.put(startLine,newLine);
-
-        for(int i = startLine + 1; i <= endLine; i=i+1) {
-            remove(i);
-        }
-        for(int i = endLine ; i < map.size();i=i+1) {
-            SpanLine line = map.remove(i);
-            map.put(i - (endLine-startLine),line);
-        }
     }
 
     public void removeContent(int lineStart, int colStart, int lineStop, int colStop) {
