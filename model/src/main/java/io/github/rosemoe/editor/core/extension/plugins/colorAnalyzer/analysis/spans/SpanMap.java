@@ -170,11 +170,10 @@ public class SpanMap {
         else if ( lineStart == lineStop ) {
             map.get(lineStart).removeContent(colStart, colStop - colStart);
         } else {
-            System.out.println("map.get(lineStart).size()="+map.get(lineStart).size()+",v="+map.get(lineStart).get(0).size+",colStart="+colStart);
             SpanLine[] startParts = map.get(lineStart).split(colStart);
             SpanLine[] stopParts = map.get(lineStop).split(colStop);
-            Logger.debug("stopParts[0]=",stopParts[0].size(),",startParts[1]=",startParts[1].size());
-            Logger.debug("stopParts[1]=",stopParts[1].size(),",startParts[0]=",startParts[0].size());
+            Logger.debug("startParts: {0: ",startParts[0].size(),", 1: ",startParts[1].size(),"}");
+            Logger.debug("stopParts: {0: ",stopParts[0].size(),", 1: ",stopParts[1].size(),"}");
             SpanLine sl = SpanLine.concat(startParts[0],stopParts[1]);
             Logger.debug("concat="+sl.size());
             map.put(lineStop, sl);
@@ -185,9 +184,13 @@ public class SpanMap {
         int lineShift = lineStop - lineStart;
         if ( lineShift > 0 ) {
             final int sz = map.size();
-            for (int a = lineStart; a+1 < sz; a=a+1) {
-                SpanLine sl = map.remove(a + 1);
-                map.put(a, sl);
+            for (int a = lineStart; a < sz; a=a+1) {
+                if ( a + lineShift < sz ) {
+                    SpanLine sl = map.remove(a + lineShift);
+                    map.put(a, sl);
+                } else {
+                    map.remove(a);
+                }
             }
         }
     }

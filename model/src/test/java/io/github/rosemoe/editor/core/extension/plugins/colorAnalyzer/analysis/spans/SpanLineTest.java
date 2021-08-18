@@ -164,6 +164,38 @@ public class SpanLineTest {
                 assertTrue(aux.get(0).size==1);
                 assertTrue(aux.get(2).size == 1);
             }
+            {
+                //  -
+                // +++
+                SpanLine l = new SpanLine();
+                l.add(Span.obtain(1,0, 1));
+                SpanLine l1 = new SpanLine();
+                l1.add(Span.obtain(0,0,3));
+                SpanLine aux = SpanLine.concat(l,l1);
+                assertTrue(aux.size() == 2);
+                assertTrue(aux.get(1).size == 1);
+                assertTrue(aux.get(2).size == 3);
+            }
+            {
+                //  -=t
+                // +-*
+                SpanLine l = new SpanLine();
+                l.add(Span.obtain(1,0, 1));
+                l.add(Span.obtain(2,0, 1));
+                l.add(Span.obtain(3,0, 1));
+                SpanLine l1 = new SpanLine();
+                l1.add(Span.obtain(0,0,1));
+                l1.add(Span.obtain(1,0,1));
+                l1.add(Span.obtain(2,0,1));
+                SpanLine aux = SpanLine.concat(l,l1);
+                assertTrue(aux.size() == 6);
+                assertTrue(aux.get(1).size == 1);
+                assertTrue(aux.get(2).size == 1);
+                assertTrue(aux.get(3).size == 1);
+                assertTrue(aux.get(4).size == 1);
+                assertTrue(aux.get(5).size == 1);
+                assertTrue(aux.get(6).size == 1);
+            }
         }
         {
             {
