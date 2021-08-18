@@ -22,7 +22,8 @@ import io.github.rosemoe.editor.core.color.ColorManager;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.ColorSchemeExtension;
 
 /**
- * The span model
+ * The span model - it could end to variety of implementation in the view (e.g. Canvas, Span)
+ * it is just a region on the editor that should get a given color.
  *
  * @author Rose
  */
@@ -52,27 +53,8 @@ public class Span {
      * @see Span#obtain(int, int)
      */
     private Span(int column, int color) {
-        column = column;
-        color = color;
-    }
-
-    public static Span obtain(int column, int color) {
-        Span span = cacheQueue.poll();
-        if (span == null) {
-            return new Span(column, color);
-        } else {
-            span.column = column;
-            span.color = color;
-            return span;
-        }
-    }
-
-    public static void recycleAll(Span[] spans) {
-        for (Span span : spans) {
-            if (!span.recycle()) {
-                return;
-            }
-        }
+        this.column = column;
+        this.color = color;
     }
 
     /**
@@ -100,7 +82,7 @@ public class Span {
      * Set column of this span
      */
     public Span setColumn(int column) {
-        column = column;
+        this.column = column;
         return this;
     }
 
@@ -118,4 +100,23 @@ public class Span {
         return cacheQueue.offer(this);
     }
 
+    public static void recycleAll(Span[] spans) {
+        for (Span span : spans) {
+            if (!span.recycle()) {
+                return;
+            }
+        }
+    }
+
+    public static Span obtain(int column, int color) {
+        Span span = cacheQueue.poll();
+        if (span == null) {
+            return new Span(column, color);
+        } else {
+            span.column = column;
+            span.color = color;
+            return span;
+        }
+    }
+    
 }
