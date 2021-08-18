@@ -20,6 +20,8 @@ import java.util.TreeMap;
 
 import io.github.rosemoe.editor.core.util.Logger;
 
+import static io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanLine.SPAN_SPLIT_INVALIDATE;
+
 /**
  * This class is a SpanLine container (line displayed to the screen).
  * All indexes are from 0 to n
@@ -27,6 +29,8 @@ import io.github.rosemoe.editor.core.util.Logger;
  * @author Release Standard
  */
 public class SpanMap {
+
+    public int behaviourOnSpanSplit = SPAN_SPLIT_INVALIDATE;
 
     /**
      * lineindex, SpanLine
@@ -45,13 +49,16 @@ public class SpanMap {
      */
     public SpanLine appendLine() {
         int newIndex = map.size();
-        map.put(newIndex, SpanLine.EMPTY());
+        SpanLine l = SpanLine.EMPTY();
+        l.behaviourOnSpanSplit = behaviourOnSpanSplit;
+        map.put(newIndex, l);
         return map.get(newIndex);
     }
     /**
      * Insert a SpanLine at a specific position in the span map.
      */
     public void add(int index, SpanLine line) {
+        line.behaviourOnSpanSplit = behaviourOnSpanSplit;
         map.put(index,line);
     }
     /**
@@ -123,44 +130,6 @@ public class SpanMap {
     }
 
     /**
-     * Split the specified line at specified position and put it down.
-     * @param line index 0..n-1
-     * @param col index 0..n-1
-     * @param cutSize size 1..n the cut size, eg a cut of one will split a line in to lines, a cut of two will split line in two lines plus insert an empty line.
-     */
-    public void splitLine(int line, int col, int cutSize) {
-        SpanLine startLine = map.get(line);
-        SpanLine[]parts = startLine.split(col);
-        map.put(line,parts[0]);
-
-        for(int i = size()-1; i > line+cutSize; i=i-1 ) {
-            map.put(i,map.get(i-1));
-        }
-        for(int i = line +1 ; i < line + cutSize ; i=i+1 ) {
-            map.put(i, SpanLine.EMPTY());
-        }
-        map.put(line,parts[0]);
-        map.put(line+cutSize,parts[1]);
-    }
-    public void splitLine(int line, int col) {
-        splitLine(line,col,0);
-    }
-
-    /**
-     * Insert the Specified content (Spanlines) at the specified position.
-     * @param lines lines to insert
-     * @param line index 0..n-1
-     * @param col index 0..n-1
-     */
-    public void insertLines(SpanLine[]lines, int line, int col) {
-        splitLine(line,col,lines.length);
-        for(int i = 0; i < lines.length;i=i+1) {
-            SpanLine spanLine = map.get(line+i);
-            spanLine.add(lines[i]);
-        }
-    }
-
-    /**
      * Remove spans and lines of all lines found between bounds.
      * @param startLine index 0..n-1 of the start line
      * @param startColumn index 0..n-1 of the start column
@@ -179,7 +148,7 @@ public class SpanMap {
             startSpanLine.removeContent(startColumn, endColumn - startColumn);
             newLine = startSpanLine;
         }
-
+        newLine.behaviourOnSpanSplit = behaviourOnSpanSplit;
         map.put(startLine,newLine);
 
         for(int i = startLine + 1; i <= endLine; i=i+1) {
@@ -191,8 +160,32 @@ public class SpanMap {
         }
     }
 
+    public void removeContent(int lineStart, int colStart, int lineStop, int colStop) {
+        // ---+|+++      ---++++
+        // ***        => ***
+        // yy|yyy        ---+yyy
+        if ( lineStart > lineStop ) {
+            throw new RuntimeException("INVALID : lineStart=" + lineStart + ",lineStop=" + lineStop);
+        }
+        else if ( lineStart == lineStop ) {
+            map.get(lineStart).removeContent(colStart, colStop - colStart);
+        } else {
+            SpanLine[] startParts = map.get(lineStart).split(colStart);
+            map.put(lineStop, SpanLine.concat(startParts[0],map.get(lineStop)));
+        }
+        // ---+      ---+yyy
+        // ***    =>
+        // ---+yyy
+        int lineShift = lineStop - lineStart;
+        if ( lineShift > 0 ) {
+            for (int a = lineStart; a < map.size()-1; a=a+1) {
+                SpanLine sl = map.remove(a+1);
+                map.put(a,sl);
+            }
+        }
+    }
     /**
-     * Called when we want to insert some content in the specified line.
+     * Insert some content in the span map.
      */
     public void insertContent(int lineStart, int colStart, int lineStop, int colStop) {
         // ---+|+++      ---+|+++
@@ -224,13 +217,6 @@ public class SpanMap {
     }
     public void insertContent(int line, int colStart, int colStop) {
         insertContent(line, colStart, line, colStop);
-    }
-    public void insertContent(int line) {
-        insertContent(line, Span.EMPTY());
-    }
-    public void insertContent(int line, Span span) {
-        SpanLine dest = map.get(line);
-        dest.insertContent(span);
     }
     //public void insertContent()
     /**

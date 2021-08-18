@@ -232,52 +232,98 @@ public class SpanLine {
             }
         }
     }
-    public void insertContent(int size) {
-        insertContent(0,size);
-    }
 
     /**
      * Remove spans on affected region by the deletion.
      * @param col index 0..n-1
      * @param sz size 0..n
      */
+    private void removeContentExtend(int col, int sz, Span span) {
+        int startIndex = span.column;
+        int startLength = span.size;
+        int startShift = col - span.column;
+        if ( startShift < 0 ) {
+            startIndex = col;
+            startLength = 0;
+        } else {
+            startLength = span.column + startShift;
+        }
+
+        int endShift = (span.column+span.size) - (col+sz);
+        if ( endShift <= 0 ) {
+            // NOTHING TO DO HERE
+        } else {
+            startLength += endShift;
+        }
+
+        Logger.debug("startIndex="+startIndex+",startShift="+startShift+",startLength="+startLength+",endShift="+endShift+",startLength="+startLength);
+
+        if ( startShift <= 0 && endShift <= 0 ) {
+            remove(span);
+        } else {
+            line.remove(span.column);
+            span.column = startIndex;
+            span.size = startLength;
+            line.put(span.column, span);
+        }
+    }
+    private void removeContentInvalidate(int col, int sz, Span span) {
+        remove(span);
+    }
+    private void removeContentSplitting(int col, int sz, Span span) {
+        int startIndex = span.column;
+        int startLength = span.size;
+        int startShift = col - span.column;
+        if ( startShift < 0 ) {
+            startIndex = col;
+            startLength = 0;
+        } else {
+            startLength = startShift;
+        }
+        if ( startShift <= 0 || startLength <= 0 ) {
+            remove(span);
+        }
+        int endShift = (span.column+span.size) - (col+sz);
+        if ( endShift <= 0 ) {
+            // NOTHING TO DO HERE
+        } else {
+            line.put(col, Span.obtain(col, span.color, endShift));
+        }
+
+        if ( startShift <= 0 || startLength <= 0 ) {
+        } else {
+            line.remove(span.column);
+            span.column = startIndex;
+            span.size = startLength;
+            line.put(span.column, span);
+        }
+    }
+    /**
+     * This function permit to remove elements from the SpanLine (e.g. span shift).
+     * @param col index 0..n-1 where to start removing.
+     * @param sz size 1..n size of the remove.
+     */
     public void removeContent(int col,int sz) {
         for(Span span : concurrentSafeGetValues()) {
-            if ( span.column < col) {
-                if ( (span.size) >= col ) {
-                    int sizeToRemove = Math.min((span.column + span.size) - col, sz);
-                    switch (behaviourOnSpanSplit) {
-                        case SPAN_SPLIT_EXTENDS:
-                            span.size -= sizeToRemove;
-                            break;
-                        case SPAN_SPLIT_SPLITTING:
-                            int oldSize = span.size;
-                            span.size = col - span.column;
-                            int remainSize = oldSize - span.size - sizeToRemove;
-                            if ( remainSize > 0 ) {
-                                add(col,Span.obtain(col,span.color,remainSize));
-                            }
-                            break;
-                        case SPAN_SPLIT_INVALIDATE:
-                            remove(span);
-                            break;
-                    }
-                }
-            } else {
+            if ( (span.column+span.size) <= col ) {
+                // 1. NOTHING happen here we just keep the spans as it is
+            } else if ( (span.column) >= col+sz ) {
+                // 3. we must shift this span
                 line.remove(span.column);
-                if ( span.column < col+sz) {
-                    if (span.column + span.size <= col + sz) {
-                        remove(span);
-                    }
-                    else {
-                        int sizeToRemove = (col+sz) - span.column;
-                        span.size -= sizeToRemove;
-                        span.setColumn(span.column - sizeToRemove);
-                        line.put(span.column, span);
-                    }
-                } else {
-                    span.setColumn(span.column - sz);
-                    line.put(span.column,span);
+                span.column -= sz;
+                line.put(span.column, span);
+            } else {
+                // 2. we must move column or size or both (prerequisite: col=0, sz=0)
+                switch (behaviourOnSpanSplit) {
+                    case SPAN_SPLIT_EXTENDS:
+                        removeContentExtend(col, sz, span);
+                        break;
+                    case SPAN_SPLIT_SPLITTING:
+                        removeContentSplitting(col, sz, span);
+                        break;
+                    case SPAN_SPLIT_INVALIDATE:
+                        removeContentInvalidate(col,sz,span);
+                        break;
                 }
             }
         }

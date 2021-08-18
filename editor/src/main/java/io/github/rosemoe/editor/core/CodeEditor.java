@@ -3162,7 +3162,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             if (startLine == endLine) {
                 sm.get(startLine).insertContent(Span.obtain(startColumn, 0, endColumn - startColumn));
             } else {
-                SpanUpdater.shiftSpansOnMultiLineInsert(analyzer.getSpanMap(), startLine, startColumn, endLine, endColumn);
+                sm.insertContent(startLine, startColumn, endLine, endColumn);
             }
         }
 

@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import io.github.rosemoe.editor.core.util.Random;
 
-import static io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanLine.SPAN_SPLIT_INVALIDATE;
+import static io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.spans.SpanLine.*;
 import static org.junit.Assert.*;
 
 public class SpanMapTest {
@@ -16,33 +16,6 @@ public class SpanMapTest {
         int sz = r.nextUint(400);
         s.appendLines(sz);
         assertTrue(sz == s.size());
-    }
-
-    @Test
-    public void splitLine() {
-        {
-            //
-            // ----------
-            //
-            // --
-            // --------
-            //
-            SpanMap s = new SpanMap();
-            SpanLine sl = new SpanLine();
-            sl.add(Span.obtain(0, 0, 10));
-            s.add(0, sl);
-            System.out.println("DUMPING");
-            s.dump();
-            System.out.println("DUMPING END");
-            s.splitLine(0, 2);
-            System.out.println("After");
-            s.dump();
-            assertTrue(s.size() == 2);
-            SpanLine l1 = s.get(0);
-            SpanLine l2 = s.get(1);
-            assertTrue(l1.size() == 2);
-            assertTrue(l2.size() == 8);
-        }
     }
 
     @Test
@@ -59,6 +32,7 @@ public class SpanMapTest {
             // -
             //
             SpanMap s = new SpanMap();
+            s.behaviourOnSpanSplit = SPAN_SPLIT_SPLITTING;
             SpanLine sl = new SpanLine();
             sl.add(Span.obtain(0, 0, 2));
             s.add(0, sl);
@@ -161,10 +135,11 @@ public class SpanMapTest {
             // yymmmmm
             //
             // --
-            // xx
+            //
             // yymmmmm
             //
             SpanMap map = new SpanMap();
+            map.behaviourOnSpanSplit = SPAN_SPLIT_INVALIDATE;
             SpanLine l = new SpanLine(), l1 = new SpanLine();
             l.add(Span.obtain(0, 0, 2));
             l.add(Span.obtain(2, 0, 3));
@@ -176,17 +151,85 @@ public class SpanMapTest {
             assertTrue(map.size() == 3);
             SpanLine[] lines = map.getLines();
             System.out.println("OK3");
-            lines[0].dump();
+            map.dump();
             assertTrue(lines[0].get(0).column==0);
             assertTrue(lines[0].get(0).size==2);
-            assertTrue(lines[0].get(2).column==2);
-            assertTrue(lines[0].get(2).size==1);
-            assertTrue(lines[1].get(2).column==2);
-            assertTrue(lines[1].get(2).size==2);
+            assertTrue(lines[1].size()==0);
             assertTrue(lines[2].get(0).column==0);
             assertTrue(lines[2].get(0).size==2);
             assertTrue(lines[2].get(2).column==2);
             assertTrue(lines[2].get(2).size==5);
         }
     }
+
+    @Test
+    public void testRemoveContent() {
+        {
+            //
+            // -|+|+
+            //
+            SpanMap map = new SpanMap();
+            map.behaviourOnSpanSplit = SPAN_SPLIT_SPLITTING;
+            SpanLine l = new SpanLine();
+            l.add(Span.obtain(0,0,1));
+            l.add(Span.obtain(1,0,2));
+            map.add(0,l);
+            assertTrue(map.size() == 1);
+            assertTrue(map.get(0).size() == 2);
+            assertTrue(map.get(0).get(0).size==1);
+            assertTrue(map.get(0).get(0).column==0);
+            assertTrue(map.get(0).get(1).column==1);
+            assertTrue(map.get(0).get(1).size==2);
+            map.removeContent(0, 1,0,1);
+            map.dump();
+            assertTrue(map.size() == 1);
+            assertTrue(map.get(0).size() == 2);
+            assertTrue(map.get(0).get(0).size==1);
+            assertTrue(map.get(0).get(0).column==0);
+            assertTrue(map.get(0).get(1).column==1);
+            assertTrue(map.get(0).get(1).size==1);
+        }
+        {
+            //
+            // ---+|+++
+            // xxxxxxx
+            // zzzz|mm
+            //
+            // --- mm
+            //
+            SpanMap map = new SpanMap();
+            map.behaviourOnSpanSplit = SPAN_SPLIT_INVALIDATE;
+            SpanLine l = new SpanLine();
+            l.add(Span.obtain(0,0,4));
+            l.add(Span.obtain(4,0,3));
+            map.add(0,l);
+            SpanLine l1 = new SpanLine();
+            l1.add(Span.obtain(0,0,7));
+            map.add(1,l1);
+            SpanLine l2 = new SpanLine();
+            l2.add(Span.obtain(0,0,4));
+            l2.add(Span.obtain(4,0,2));
+            map.add(2,l2);
+            map.removeContent(0,4,2,4);
+            map.dump();
+            assertTrue(map.size() == 1);
+            assertTrue(map.get(0).size() == 2);
+            assertTrue(map.get(0).get(0).size==3);
+            assertTrue(map.get(0).get(0).column==0);
+            assertTrue(map.get(0).get(1).size==2);
+            assertTrue(map.get(0).get(1).column==3);
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+

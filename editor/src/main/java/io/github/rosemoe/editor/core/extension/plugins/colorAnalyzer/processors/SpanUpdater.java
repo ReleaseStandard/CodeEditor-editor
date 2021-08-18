@@ -54,30 +54,5 @@ public class SpanUpdater {
         spanLine.removeContent(startCol,endCol-startCol);
     }
 
-    /**
-     * Called when user insert on a single line : eg newline on its input.
-     * @param map the map to work on.
-     * @param line index 0..n-1 the line to modify.
-     * @param startCol index 0..n-1 the start column of modification.
-     * @param endCol index 0..n-1 the end column of modification.
-     */
-    public static void shiftSpansOnSingleLineInsert(SpanMap map, int line, int startCol, int endCol) {
-        map.get(line).insertContent(Span.obtain(startCol, 0, endCol - startCol));
-    }
-
-    /**
-     * Called when user insert on multiple lines : eg newline, copy paste into.
-     * @param map SpanMap to update.
-     * @param startLine start of insert line index.
-     * @param startColumn start of insert column index.
-     * @param endLine end of insert line index.
-     * @param endColumn end of insert column index.
-     */
-    public static void shiftSpansOnMultiLineInsert(SpanMap map, int startLine, int startColumn, int endLine, int endColumn) {
-
-        Logger.debug("startLine=",startLine,",startColumn=",startColumn,",endLine=",endLine,",endColumn=",endColumn);
-        int cutSize = endLine-startLine;
-        map.splitLine(startLine,startColumn,cutSize);
-    }
 
 }
