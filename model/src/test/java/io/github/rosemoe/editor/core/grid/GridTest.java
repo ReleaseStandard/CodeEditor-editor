@@ -3,13 +3,14 @@ package io.github.rosemoe.editor.core.grid;
 import org.junit.Test;
 
 import io.github.rosemoe.editor.core.grid.instances.color.Span;
-import io.github.rosemoe.editor.core.grid.instances.color.SpanLine;
-import io.github.rosemoe.editor.core.grid.instances.color.SpanMap;
 import io.github.rosemoe.editor.core.util.Logger;
+import io.github.rosemoe.editor.core.util.Random;
 
 import static org.junit.Assert.*;
 
 public class GridTest {
+    Random r = new Random();
+
     @Test
     public void insertContent() {
         {
@@ -17,8 +18,8 @@ public class GridTest {
             // |--++*****
             //
             //
-            SpanMap map = new SpanMap();
-            SpanLine s1 = new SpanLine();
+            Grid map = new Grid();
+            Line s1 = new Line();
             s1.put(Span.obtain(0, 2, 0));
             s1.put(Span.obtain(2, 2, 0));
             s1.put(Span.obtain(4, 5, 0));
@@ -35,9 +36,9 @@ public class GridTest {
             // --++*|****
             //
             //
-            SpanMap map = new SpanMap();
+            Grid map = new Grid();
             map.behaviourOnCellSplit = Line.SPAN_SPLIT_INVALIDATE;
-            SpanLine s1 = new SpanLine();
+            Line s1 = new Line();
             s1.put(Span.obtain(0, 2, 0));
             s1.put(Span.obtain(2, 2, 0));
             s1.put(Span.obtain(4, 5, 0));
@@ -52,9 +53,9 @@ public class GridTest {
             //
             //
             // **--+++++
-            SpanMap map = new SpanMap();
+            Grid map = new Grid();
             map.behaviourOnCellSplit = Line.SPAN_SPLIT_INVALIDATE;
-            SpanLine s1 = new SpanLine();
+            Line s1 = new Line();
             s1.put(Span.obtain(0, 2, 0));
             s1.put(Span.obtain(2, 2, 0));
             s1.put(Span.obtain(4, 5, 0));
@@ -71,9 +72,9 @@ public class GridTest {
             //   **
             // yymmmmm
             //
-            SpanMap map = new SpanMap();
+            Grid map = new Grid();
             map.behaviourOnCellSplit = Line.SPAN_SPLIT_INVALIDATE;
-            SpanLine l = new SpanLine(), l1 = new SpanLine();
+            Line l = new Line(), l1 = new Line();
             l.put(Span.obtain(0, 2, 0));
             l.put(Span.obtain(2, 3, 0));
             l1.put(Span.obtain(0, 2, 0));
@@ -101,9 +102,9 @@ public class GridTest {
             //
             // -|+|+
             //
-            SpanMap map = new SpanMap();
+            Grid map = new Grid();
             map.behaviourOnCellSplit = Line.SPAN_SPLIT_SPLITTING;
-            SpanLine l = new SpanLine();
+            Line l = new Line();
             l.put(Span.obtain(0, 1, 0));
             l.put(Span.obtain(1, 2, 0));
             map.put(0,l);
@@ -125,13 +126,13 @@ public class GridTest {
         {
             // ++|+--
             // ***|**
-            SpanMap map = new SpanMap();
+            Grid map = new Grid();
             map.behaviourOnCellSplit = Line.SPAN_SPLIT_INVALIDATE;
-            SpanLine l = new SpanLine();
+            Line l = new Line();
             l.put(Span.obtain(0, 3, 0));
             l.put(Span.obtain(3, 2, 0));
             map.put(0, l);
-            SpanLine l1 = new SpanLine();
+            Line l1 = new Line();
             l1.put(Span.obtain(0, 5, 0));
             map.put(1, l1);
             map.removeContent(0, 2,1,3);
@@ -145,12 +146,12 @@ public class GridTest {
         {
             // **|*--
             // ===|==
-            SpanMap map = new SpanMap();
+            Grid map = new Grid();
             map.behaviourOnCellSplit = Line.SPAN_SPLIT_SPLITTING;
-            SpanLine l = new SpanLine();
+            Line l = new Line();
             l.put(Span.obtain(0, 3, 0));
             l.put(Span.obtain(3, 2, 0));
-            SpanLine l1 = new SpanLine();
+            Line l1 = new Line();
             l1.put(Span.obtain(0, 5, 0));
             map.put(0, l);
             map.put(1, l1);
@@ -168,12 +169,12 @@ public class GridTest {
             Logger.debug("< === >");
             // -|-
             // *|*
-            SpanMap map = new SpanMap();
+            Grid map = new Grid();
             map.behaviourOnCellSplit = Line.SPAN_SPLIT_EXTENDS;
-            SpanLine l = new SpanLine();
+            Line l = new Line();
             l.put(Span.obtain(0, 2, 0));
             map.put(0,l);
-            SpanLine l2 = new SpanLine();
+            Line l2 = new Line();
             l2.put(Span.obtain(0, 2, 0));
             map.put(1, l2);
             assertTrue(map.size() == 2);
@@ -194,19 +195,19 @@ public class GridTest {
             // *===|==|===*
             // $$$$$--$$$$$
             // $$$$++++$$$$
-            SpanMap map = new SpanMap();
+            Grid map = new Grid();
             map.behaviourOnCellSplit = Line.SPAN_SPLIT_EXTENDS;
-            SpanLine l = new SpanLine();
+            Line l = new Line();
             l.put(Span.obtain(0, 1, 0));
             l.put(Span.obtain(1, 8, 0));
             l.put(Span.obtain(9, 1, 0));
             map.put(0, l);
-            SpanLine l1 = new SpanLine();
+            Line l1 = new Line();
             l1.put(Span.obtain(0, 5, 0));
             l1.put(Span.obtain(5, 2, 0));
             l1.put(Span.obtain(7, 5, 0));
             map.put(1, l1);
-            SpanLine l2 = new SpanLine();
+            Line l2 = new Line();
             l2.put(Span.obtain(0, 4, 0));
             l2.put(Span.obtain(4, 4, 0));
             l2.put(Span.obtain(8, 4, 0));
@@ -219,19 +220,19 @@ public class GridTest {
             // *==|=======*
             // $$$$$**$$$|$
             // $$$$++++$$$$
-            SpanMap map = new SpanMap();
+            Grid map = new Grid();
             map.behaviourOnCellSplit = Line.SPAN_SPLIT_EXTENDS;
-            SpanLine l = new SpanLine();
+            Line l = new Line();
             l.put(Span.obtain(0, 1, 0));
             l.put(Span.obtain(1, 8, 0));
             l.put(Span.obtain(9, 1, 0));
             map.put(0, l);
-            SpanLine l1 = new SpanLine();
+            Line l1 = new Line();
             l1.put(Span.obtain(0, 5, 0));
             l1.put(Span.obtain(5, 2, 0));
             l1.put(Span.obtain(7, 5, 0));
             map.put(1, l1);
-            SpanLine l2 = new SpanLine();
+            Line l2 = new Line();
             l2.put(Span.obtain(0, 4, 0));
             l2.put(Span.obtain(4, 4, 0));
             l2.put(Span.obtain(8, 4, 0));
@@ -250,16 +251,16 @@ public class GridTest {
             //
             // ---+mm
             //
-            SpanMap map = new SpanMap();
+            Grid map = new Grid();
             map.behaviourOnCellSplit = Line.SPAN_SPLIT_SPLITTING;
-            SpanLine l = new SpanLine();
+            Line l = new Line();
             l.put(Span.obtain(0, 3, 0));
             l.put(Span.obtain(3, 4, 0));
             map.put(0,l);
-            SpanLine l1 = new SpanLine();
+            Line l1 = new Line();
             l1.put(Span.obtain(0, 7, 0));
             map.put(1,l1);
-            SpanLine l2 = new SpanLine();
+            Line l2 = new Line();
             l2.put(Span.obtain(0, 4, 0));
             l2.put(Span.obtain(4, 2, 0));
             map.put(2,l2);
@@ -273,6 +274,7 @@ public class GridTest {
             assertTrue("map.get(0).get(4).size="+map.get(0).get(4).size, map.get(0).get(4).size==2);
         }
     }
+
     @Test
     public void testRemoveContentBug() {
         {
@@ -283,16 +285,16 @@ public class GridTest {
             //
             // --- mm
             //
-            SpanMap map = new SpanMap();
+            Grid map = new Grid();
             map.behaviourOnCellSplit = Line.SPAN_SPLIT_INVALIDATE;
-            SpanLine l = new SpanLine();
+            Line l = new Line();
             l.put(Span.obtain(0, 3, 0));
             l.put(Span.obtain(3, 4, 0));
             map.put(0,l);
-            SpanLine l1 = new SpanLine();
+            Line l1 = new Line();
             l1.put(Span.obtain(0, 7, 0));
             map.put(1,l1);
-            SpanLine l2 = new SpanLine();
+            Line l2 = new Line();
             l2.put(Span.obtain(0, 4, 0));
             l2.put(Span.obtain(4, 2, 0));
             map.put(2,l2);
@@ -305,5 +307,13 @@ public class GridTest {
             assertTrue("map.get(0).get(3).size="+map.get(0).get(3).size, map.get(0).get(3).size==1);
             assertTrue(map.get(0).get(4).size == 2);
         }
+    }
+
+    @Test
+    public void appendLine() {
+        Grid s = new Grid();
+        int sz = r.nextUint(400);
+        s.appendLines(sz);
+        assertTrue(sz == s.size());
     }
 }

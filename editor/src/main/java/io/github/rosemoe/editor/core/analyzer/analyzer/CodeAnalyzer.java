@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
-import io.github.rosemoe.editor.core.grid.instances.color.SpanMap;
+import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.util.CallStack;
@@ -299,7 +299,7 @@ public abstract class CodeAnalyzer {
 
 
     /// HACKISH easiers, they mut be removed
-    public SpanMap getSpanMap() {
+    public Grid getSpanMap() {
         CodeAnalyzerResultColor color = (CodeAnalyzerResultColor)getResult("color");
         return color == null ? null : color.map;
     }

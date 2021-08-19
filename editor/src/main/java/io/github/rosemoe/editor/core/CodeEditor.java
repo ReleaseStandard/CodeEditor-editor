@@ -62,9 +62,8 @@ import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.extension.extensions.appcompattweaker.AppCompatTweakerController;
+import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.grid.instances.color.Span;
-import io.github.rosemoe.editor.core.grid.instances.color.SpanLine;
-import io.github.rosemoe.editor.core.grid.instances.color.SpanMap;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionView;
 import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
@@ -1031,7 +1030,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
 
             return;
         }
-        SpanMap spanMap = analyzer.getSpanMap();
+        Grid spanMap = analyzer.getSpanMap();
         List<Integer> matchedPositions = new ArrayList<>();
         int currentLine = cursor.isSelected() ? -1 : cursor.getLeftLine();
         int currentLineBgColor = model.colorManager.getColor("currentLine");
@@ -1122,7 +1121,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                 // Get spans
                 Line spans = spanMap.get(line);
                 if (spans == null || spans.size() == 0) {
-                    spans = SpanLine.EMPTY();
+                    spans = new Line();
                 }
                 Map.Entry<Integer, Span> [] keys = spans.entrySet().toArray(new Map.Entry[spans.size()]);
                 for (int a = 0; a < keys.length; a=a+1) {
@@ -1803,7 +1802,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      */
     private boolean isSpanMapPrepared(boolean insert, int delta) {
 
-        SpanMap map = analyzer.getSpanMap();
+        Grid map = analyzer.getSpanMap();
         boolean rv = false;
         if (map != null) {
             if (insert) {
@@ -3155,7 +3154,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     @Override
     public void afterInsert(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
 
-        SpanMap sm = analyzer.getSpanMap();
+        Grid sm = analyzer.getSpanMap();
 
         // Update spans
         if (isSpanMapPrepared(true, endLine - startLine)) {

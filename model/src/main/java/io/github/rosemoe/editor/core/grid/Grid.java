@@ -1,6 +1,7 @@
 package io.github.rosemoe.editor.core.grid;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import io.github.rosemoe.editor.core.util.Logger;
@@ -105,5 +106,56 @@ public class Grid extends ConcurrentSkipListMap<Integer, Line> implements Iterab
         Line sl = (Line) get(index);
         if ( sl == null ) { return null; }
         return (Line) super.remove(index);
+    }
+    /**
+     * Append an empty line to the span 
+     * @return
+     */
+    public Line appendLine() {
+        int newIndex = size();
+        Line l = new Line();
+        l.behaviourOnCellSplit = behaviourOnCellSplit;
+        put(newIndex, l);
+        return get(newIndex);
+    }
+    /**
+     * Complete the current spansuch as it while contains finalSizeInLines.
+     * It will not remove extra lines
+     *
+     * @param finalSizeInLines 0..n
+     */
+    public void appendLines(int finalSizeInLines) {
+        while(size() < finalSizeInLines) {
+            appendLine();
+        }
+    }
+    public Line addNormalIfNull() {
+        appendLines(1);
+        return (Line) get(0);
+    }
+    /**
+     * This will get the required span line or create it if it doesn't exists.
+     * lineno : 0..n-1 the span line to get.
+     * @param lineno
+     * @return
+     */
+    public Line getAddIfNeeded(int lineno) {
+        appendLines(lineno+1);
+        return (Line) get(lineno);
+    }
+    /**
+     * Dump debug information on this class.
+     */
+    public void dump() {
+        dump("");
+    }
+    public void dump(String offset) {
+        if ( !Logger.DEBUG ) { return; }
+        Logger.debug(offset+"number of lines in : "+ size());
+        //noinspection unchecked
+        for(Map.Entry<Integer, Line> sl : entrySet().toArray(new Map.Entry[keySet().size()])) {
+            Logger.debug(offset+"dump for line index " + sl.getKey());
+            sl.getValue().dump(Logger.OFFSET);
+        }
     }
 }
