@@ -95,7 +95,6 @@ public class GridTest {
             assertTrue(map.get(2).get(2).size==5);
         }
     }
-
     @Test
     public void testRemoveContent() {
         {

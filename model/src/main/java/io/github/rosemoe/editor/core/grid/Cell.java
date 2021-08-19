@@ -50,7 +50,4 @@ public abstract class Cell extends CEObject implements CellData {
     public Cell obtain(Object ...args) {
         return null;
     }
-    public Cell clone(Object ...args) {
-        return null;
-    }
 }

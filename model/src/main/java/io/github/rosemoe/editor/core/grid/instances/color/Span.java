@@ -107,9 +107,4 @@ public class Span extends Cell {
         }
         return span;
     }
-
-    @Override
-    public Span clone(Object... args) {
-        return Span.obtain((Integer)args[0],(Integer)args[1],color);
-    }
 }

@@ -199,7 +199,10 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
                         int oldSz = s.size;
                         int index = col + size;
                         s.size = (col - s.column);
-                        put(index, s.clone(index, oldSz- s.size));
+                        Cell c = s.clone();
+                        c.column = index;
+                        c.size = oldSz - s.size;
+                        put(index, c);
                         break;
                 }
             } else {
@@ -262,7 +265,10 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
         if ( endShift <= 0 ) {
             // NOTHING TO DO HERE
         } else {
-            put(col, cell.clone(col,endShift));
+            Cell c = cell.clone();
+            c.column = col;
+            c.size = endShift;
+            put(col, c);
         }
 
         if ( startShift <= 0 || startLength <= 0 ) {
