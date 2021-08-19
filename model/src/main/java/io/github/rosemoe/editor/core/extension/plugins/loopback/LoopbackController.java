@@ -19,8 +19,6 @@ import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.extension.LoopbackEvent;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
-import io.github.rosemoe.editor.core.util.Logger;
 
 import static io.github.rosemoe.editor.core.extension.plugins.loopback.extension.LoopbackEvent.*;
 
@@ -28,7 +26,6 @@ public class LoopbackController extends Extension {
     public LoopbackController(CodeEditorModel editor) {
         super(editor);
         subscribe(LoopbackEvent.class);
-        Logger.debug("TYPE_LOOPBACK=",issubscribed(LoopbackEvent.class),",TYPE_USERINPUT=",issubscribed(UserInputEvent.class));
         name        = "loopback";
         description = "SystemExtension that allow interactions between plugins";
     }
