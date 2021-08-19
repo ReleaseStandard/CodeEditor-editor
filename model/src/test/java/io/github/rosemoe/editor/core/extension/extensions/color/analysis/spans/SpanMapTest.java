@@ -1,11 +1,11 @@
-package io.github.rosemoe.editor.core.extension.extensions.colorChange.analysis.spans;
+package io.github.rosemoe.editor.core.extension.extensions.color.analysis.spans;
 
 import org.junit.Test;
 
 import io.github.rosemoe.editor.core.grid.Line;
-import io.github.rosemoe.editor.core.color.spans.Span;
-import io.github.rosemoe.editor.core.color.spans.SpanLine;
-import io.github.rosemoe.editor.core.color.spans.SpanMap;
+import io.github.rosemoe.editor.core.grid.instances.color.Span;
+import io.github.rosemoe.editor.core.grid.instances.color.SpanLine;
+import io.github.rosemoe.editor.core.grid.instances.color.SpanMap;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.Random;
 

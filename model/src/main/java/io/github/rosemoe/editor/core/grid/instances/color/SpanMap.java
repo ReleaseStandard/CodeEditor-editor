@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.color.spans;
+package io.github.rosemoe.editor.core.grid.instances.color;
 
 import java.util.Map;
 

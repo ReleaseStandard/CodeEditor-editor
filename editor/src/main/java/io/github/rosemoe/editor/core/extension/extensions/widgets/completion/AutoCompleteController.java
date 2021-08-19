@@ -17,7 +17,7 @@ package io.github.rosemoe.editor.core.extension.extensions.widgets.completion;
 
 import java.util.List;
 
-import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
 
 /**
  * Interface for auto completion when writing code.

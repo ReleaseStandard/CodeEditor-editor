@@ -13,11 +13,13 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.analyzer.result;
+package io.github.rosemoe.editor.core.analyzer.result.instances;
 
-import io.github.rosemoe.editor.core.color.spans.Span;
-import io.github.rosemoe.editor.core.color.spans.SpanMap;
-import io.github.rosemoe.editor.core.extension.extensions.colorChange.ColorSchemeExtension;
+import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
+import io.github.rosemoe.editor.core.analyzer.result.TokenEmitterResult;
+import io.github.rosemoe.editor.core.grid.instances.color.Span;
+import io.github.rosemoe.editor.core.grid.instances.color.SpanMap;
+import io.github.rosemoe.editor.core.extension.extensions.color.ColorSchemeExtension;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**

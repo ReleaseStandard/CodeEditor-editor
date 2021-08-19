@@ -62,12 +62,12 @@ import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.extension.extensions.appcompattweaker.AppCompatTweakerController;
-import io.github.rosemoe.editor.core.color.spans.Span;
-import io.github.rosemoe.editor.core.color.spans.SpanLine;
-import io.github.rosemoe.editor.core.color.spans.SpanMap;
+import io.github.rosemoe.editor.core.grid.instances.color.Span;
+import io.github.rosemoe.editor.core.grid.instances.color.SpanLine;
+import io.github.rosemoe.editor.core.grid.instances.color.SpanMap;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionView;
-import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.IdentifierAutoCompleteController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.IdentifierAutoCompleteModel;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentMap;
@@ -77,13 +77,14 @@ import io.github.rosemoe.editor.core.extension.extensions.loopback.LoopbackContr
 import io.github.rosemoe.editor.core.extension.extensions.widgets.widgetmanager.controller.WidgetControllerManagerController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.view.UserInputConnexionView;
 import io.github.rosemoe.editor.core.extension.extensions.langs.LanguagePlugin;
+import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
 import io.github.rosemoe.editor.plugins.debug.TestPlugin;
 import io.github.rosemoe.editor.plugins.debug.ExtensionsAnalyzerPlugin;
 import io.github.rosemoe.editor.plugins.debug.ExamplePlugin;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.controller.UserInputConnexionController;
-import io.github.rosemoe.editor.core.extension.extensions.colorChange.ColorSchemeExtension;
+import io.github.rosemoe.editor.core.extension.extensions.color.ColorSchemeExtension;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.layout.controller.RowController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.controller.UserInputController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.CompletionWindowController;
@@ -1119,7 +1120,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             // the result of the color analyzer
             {
                 // Get spans
-                SpanLine spans = spanMap.get(line);
+                Line spans = spanMap.get(line);
                 if (spans == null || spans.size() == 0) {
                     spans = SpanLine.EMPTY();
                 }

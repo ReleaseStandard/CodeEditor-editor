@@ -4,6 +4,9 @@ import java.lang.reflect.Field;
 
 import io.github.rosemoe.editor.core.util.Logger;
 
+/**
+ * CodeEditorObject : base harness for CodeEditor objects.
+ */
 public class CEObject {
     public void dump() {
         dump("");

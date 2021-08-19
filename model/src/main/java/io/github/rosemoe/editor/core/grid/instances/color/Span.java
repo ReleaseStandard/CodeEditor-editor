@@ -13,13 +13,13 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.color.spans;
+package io.github.rosemoe.editor.core.grid.instances.color;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import io.github.rosemoe.editor.core.grid.Cell;
 import io.github.rosemoe.editor.core.color.ColorManager;
+import io.github.rosemoe.editor.core.grid.Cell;
 
 /**
  * The span model - it could end to variety of implementation in the view (e.g. Canvas, Span)

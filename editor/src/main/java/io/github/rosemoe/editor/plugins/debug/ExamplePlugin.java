@@ -16,7 +16,7 @@
 package io.github.rosemoe.editor.plugins.debug;
 
 import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.extension.extensions.colorChange.ColorSchemeEvent;
+import io.github.rosemoe.editor.core.extension.extensions.color.ColorSchemeEvent;
 import io.github.rosemoe.editor.core.extension.extensions.loopback.LoopbackEvent;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.extension.UserInputEvent;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.widgetmanager.extension.WidgetManagerEvent;

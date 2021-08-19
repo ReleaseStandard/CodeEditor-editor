@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
-import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResultColor;
-import io.github.rosemoe.editor.core.color.spans.SpanMap;
+import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.grid.instances.color.SpanMap;
 import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.util.CallStack;

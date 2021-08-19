@@ -18,7 +18,7 @@ package io.github.rosemoe.editor.core.analyzer.analyzer;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentMap;
 import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.util.Logger;
-import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
 
 /**
  * AnalyzeThread to control

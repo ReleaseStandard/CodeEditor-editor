@@ -1,4 +1,6 @@
-package io.github.rosemoe.editor.core.analyzer.result;
+package io.github.rosemoe.editor.core.analyzer.result.instances;
+
+import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
 
 /**
  * Empty result, nothing appends.

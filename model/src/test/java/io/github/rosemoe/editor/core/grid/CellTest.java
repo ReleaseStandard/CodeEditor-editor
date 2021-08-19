@@ -1,4 +1,4 @@
-package io.github.rosemoe.editor.core;
+package io.github.rosemoe.editor.core.grid;
 
 import org.junit.Test;
 

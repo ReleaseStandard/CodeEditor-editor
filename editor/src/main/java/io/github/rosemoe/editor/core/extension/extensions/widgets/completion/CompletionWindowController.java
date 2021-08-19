@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionController;
-import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.CodeEditor;

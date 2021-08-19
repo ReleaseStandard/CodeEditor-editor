@@ -16,7 +16,7 @@
 package io.github.rosemoe.editor.core.extension.extensions.widgets.completion;
 
 import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
-import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.analysis.CodeAnalyzerResultCompletion;
 
 import java.util.ArrayList;

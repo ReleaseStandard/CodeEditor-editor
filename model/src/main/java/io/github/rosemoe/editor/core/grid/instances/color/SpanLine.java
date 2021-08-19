@@ -13,10 +13,10 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.color.spans;
+package io.github.rosemoe.editor.core.grid.instances.color;
 
-import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.color.ColorManager;
+import io.github.rosemoe.editor.core.grid.Line;
 
 /**
  * The class handle one line in the text editor.

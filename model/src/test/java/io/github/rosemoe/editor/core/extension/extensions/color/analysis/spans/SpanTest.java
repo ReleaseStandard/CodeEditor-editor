@@ -1,8 +1,8 @@
-package io.github.rosemoe.editor.core.extension.extensions.colorChange.analysis.spans;
+package io.github.rosemoe.editor.core.extension.extensions.color.analysis.spans;
 
 import org.junit.Test;
 
-import io.github.rosemoe.editor.core.color.spans.Span;
+import io.github.rosemoe.editor.core.grid.instances.color.Span;
 import io.github.rosemoe.editor.core.util.Random;
 import manifold.ext.rt.api.Jailbreak;
 
