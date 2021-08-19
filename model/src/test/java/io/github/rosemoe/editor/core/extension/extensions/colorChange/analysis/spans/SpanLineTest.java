@@ -1,22 +1,17 @@
 package io.github.rosemoe.editor.core.extension.extensions.colorChange.analysis.spans;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListMap;
-
-import io.github.rosemoe.editor.core.Cell;
-import io.github.rosemoe.editor.core.Line;
+import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.color.spans.Span;
 import io.github.rosemoe.editor.core.color.spans.SpanLine;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.Random;
 import manifold.ext.rt.api.Jailbreak;
 
-import static io.github.rosemoe.editor.core.Line.SPAN_SPLIT_EXTENDS;
-import static io.github.rosemoe.editor.core.Line.SPAN_SPLIT_INVALIDATE;
-import static io.github.rosemoe.editor.core.Line.SPAN_SPLIT_SPLITTING;
+import static io.github.rosemoe.editor.core.grid.Line.SPAN_SPLIT_EXTENDS;
+import static io.github.rosemoe.editor.core.grid.Line.SPAN_SPLIT_INVALIDATE;
+import static io.github.rosemoe.editor.core.grid.Line.SPAN_SPLIT_SPLITTING;
 import static org.junit.Assert.*;
 
 public class SpanLineTest {
@@ -63,7 +58,7 @@ public class SpanLineTest {
         //     ---|
         {
             {
-                Line<Span> s = new Line();
+                Line s = new Line();
                 s.put(Span.obtain(0, 0));
                 s.put(Span.obtain(1, 0));
                 s.put(Span.obtain(2, 0));
@@ -371,24 +366,6 @@ public class SpanLineTest {
     }
 
     @Test
-    public void removeContentBugs() {
-        {
-            //
-            // ------**+
-            //       **+
-            //
-            SpanLine s = new SpanLine();
-            s.behaviourOnCellSplit = SPAN_SPLIT_INVALIDATE;
-            s.put(Span.obtain(0, 6, 0));
-            s.put(Span.obtain(6, 2, 0));
-            s.put(Span.obtain(8, 1, 0));
-            s.removeContent(2, 2);
-            assertTrue(s.size() == 2);
-            assertTrue("s.get(6).size=" + s.get(6).size, s.get(6).size == 2);
-            assertTrue(s.get(8).size == 1);
-        }
-    }
-    @Test
     public void removeContent() {
         {
             Logger.debug("Testing");
@@ -644,6 +621,33 @@ public class SpanLineTest {
                 l.removeContent(0,index+49);
                 assertTrue(l.size()==0);
             }
+        }
+        {
+            // ------**+
+            SpanLine s = new SpanLine();
+            s.behaviourOnCellSplit = SPAN_SPLIT_INVALIDATE;
+            s.put(Span.obtain(0, 6, 0));
+            s.put(Span.obtain(6, 2, 0));
+            s.put(Span.obtain(8, 1, 0));
+            assertTrue(s.size() == 3);
+            assertTrue(s.get(0).size == 6);
+            assertTrue(s.get(6).size == 2);
+            assertTrue(s.get(8).size == 1);
+        }
+        {
+            // ------**+
+            //     **+
+            SpanLine s = new SpanLine();
+            s.behaviourOnCellSplit = SPAN_SPLIT_INVALIDATE;
+            s.put(Span.obtain(0, 6, 0));
+            s.put(Span.obtain(6, 2, 0));
+            s.put(Span.obtain(8, 1, 0));
+            s.dump();
+            s.removeContent(2, 2);
+            s.dump();
+            assertTrue(s.size() == 2);
+            assertTrue("s.get(4).size=" + s.get(4).size, s.get(4).size == 2);
+            assertTrue(s.get(6).size == 1);
         }
     }
 }

@@ -1,9 +1,11 @@
-package io.github.rosemoe.editor.core;
+package io.github.rosemoe.editor.core.grid;
 
-public class Cell<T> extends CEObject {
+import io.github.rosemoe.editor.core.CEObject;
+
+public abstract class Cell extends CEObject implements CellData {
     public int size = 0;
     public int column = 0;
-    T delegate = null;
+
     public Cell(int column) {
         this.column = column;
         this.size = 1;
@@ -27,6 +29,7 @@ public class Cell<T> extends CEObject {
     }
     public void clear() {
         size = column = 0;
+        dataClear();
     }
     public Cell obtain(Object ...args) {
         return null;

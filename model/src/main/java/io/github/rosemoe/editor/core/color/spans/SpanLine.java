@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core.color.spans;
 
-import io.github.rosemoe.editor.core.Line;
+import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.color.ColorManager;
 
 /**
@@ -25,7 +25,7 @@ import io.github.rosemoe.editor.core.color.ColorManager;
  *
  * @author Release Standard
  */
-public class SpanLine extends Line<Span> {
+public class SpanLine extends Line {
 
     public SpanLine() {
     }

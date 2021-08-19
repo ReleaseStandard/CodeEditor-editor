@@ -15,14 +15,11 @@
  */
 package io.github.rosemoe.editor.core.color.spans;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import io.github.rosemoe.editor.core.Cell;
+import io.github.rosemoe.editor.core.grid.Cell;
 import io.github.rosemoe.editor.core.color.ColorManager;
-import io.github.rosemoe.editor.core.extension.extensions.colorChange.ColorSchemeExtension;
-import io.github.rosemoe.editor.core.util.Logger;
 
 /**
  * The span model - it could end to variety of implementation in the view (e.g. Canvas, Span)
@@ -30,13 +27,13 @@ import io.github.rosemoe.editor.core.util.Logger;
  *
  * @author Rose
  */
-public class Span extends Cell<Span> {
+public class Span extends Cell {
 
     public int color;
     public int underlineColor = 0;
 
-    public void clear() {
-        super.clear();
+    @Override
+    public void dataClear() {
         color = underlineColor = 0;
     }
 

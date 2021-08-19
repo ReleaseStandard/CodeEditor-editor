@@ -16,13 +16,14 @@ public class CEObject {
     }
     public static void dump(Object obj, String offset){
         String res = "";
-        for(Field f : obj.getClass().getDeclaredFields()) {
+        Class c = obj.getClass();
+        for(Field f : c.getFields()) {
             f.setAccessible(true);
             Object o = null;
             try {
                 o = f.get(obj);
             } catch (IllegalAccessException e) { }
-            res += f.name + "=" + o;
+            res += "," + f.getName() + "=" + o;
         }
         Logger.debug(offset + res);
     }

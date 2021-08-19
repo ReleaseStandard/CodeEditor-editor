@@ -15,12 +15,10 @@
  */
 package io.github.rosemoe.editor.core.color.spans;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import io.github.rosemoe.editor.core.Grid;
-import io.github.rosemoe.editor.core.Line;
+import io.github.rosemoe.editor.core.grid.Grid;
+import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**
@@ -29,7 +27,7 @@ import io.github.rosemoe.editor.core.util.Logger;
  *
  * @author Release Standard
  */
-public class SpanMap extends Grid<Span> {
+public class SpanMap extends Grid {
 
     public int behaviourOnCellSplit = Line.SPAN_SPLIT_SPLITTING;
 
@@ -120,10 +118,7 @@ public class SpanMap extends Grid<Span> {
         } else {
             Line[] startParts = get(lineStart).split(colStart);
             Line[] stopParts = get(lineStop).split(colStop);
-            Logger.debug("startParts: {0: ",startParts[0].size(),",startParts[0].size=",startParts[0].get(0).size,", 1: ",startParts[1].size(),"}");
-            Logger.debug("stopParts: {0: ",stopParts[0].size(),", 1: ",stopParts[1].size(),"}");
             SpanLine sl = (SpanLine) SpanLine.concat(startParts[0],stopParts[1]);
-            Logger.debug("concat="+sl.size());
             put(lineStop, sl);
         }
         // ---+      ---+yyy
@@ -134,7 +129,7 @@ public class SpanMap extends Grid<Span> {
             final int sz = size();
             for (int a = lineStart; a < sz; a=a+1) {
                 if ( a + lineShift < sz ) {
-                    SpanLine sl = remove(a + lineShift);
+                    SpanLine sl = (SpanLine) super.remove(a + lineShift);
                     put(a, sl);
                 } else {
                     remove(a);

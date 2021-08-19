@@ -1,9 +1,8 @@
 package io.github.rosemoe.editor.core.extension.extensions.colorChange.analysis.spans;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import io.github.rosemoe.editor.core.Line;
+import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.color.spans.Span;
 import io.github.rosemoe.editor.core.color.spans.SpanLine;
 import io.github.rosemoe.editor.core.color.spans.SpanMap;
@@ -167,7 +166,10 @@ public class SpanMapTest {
             l1.put(Span.obtain(0, 5, 0));
             map.add(0, l);
             map.add(1, l1);
+            System.out.println("<=== OK ===>");
+            map.dump();
             map.removeContent(0,2,1,3);
+            map.dump();
             assertTrue(map.size() == 1);
             assertTrue(map.get(0).size() == 2);
             assertTrue("map.get(0).get(0)=" +map.get(0).get(0).size, map.get(0).get(0).size == 2);

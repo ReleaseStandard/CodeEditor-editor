@@ -1,13 +1,13 @@
-package io.github.rosemoe.editor.core;
+package io.github.rosemoe.editor.core.grid;
 
 import java.util.Iterator;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import io.github.rosemoe.editor.core.CEObject;
 import io.github.rosemoe.editor.core.util.Logger;
 
 
-public class Line<T> extends ConcurrentSkipListMap<Integer, Cell> implements Iterable<Cell> {
+public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterable<Cell> {
     public static final int SPAN_SPLIT_EXTENDS = 0;
     public static final int SPAN_SPLIT_INVALIDATE = 1;
     public static final int SPAN_SPLIT_SPLITTING = 2;
@@ -28,7 +28,6 @@ public class Line<T> extends ConcurrentSkipListMap<Integer, Cell> implements Ite
      * @return
      */
     public Cell remove(Cell cell) {
-
         return remove(cell.column);
     }
 
@@ -36,17 +35,21 @@ public class Line<T> extends ConcurrentSkipListMap<Integer, Cell> implements Ite
      * Dump the current state of the Line.
      */
     public void dump() {
-        CEObject.dump(this);
+        dump("");
     }
     public void dump(String offset) {
         CEObject.dump(this,offset);
+        for(Cell c:this) {
+            c.dump(offset);
+        }
+        System.out.println("<== end dump ==>");
     }
 
     public Cell put(Cell cell) {
-        return put(cell.column, cell);
+        return super.put(cell.column, cell);
     }
 
-    public void put(Line<T> line) {
+    public void put(Line line) {
         for(Cell cell : line){
             put(cell);
         }
@@ -91,7 +94,10 @@ public class Line<T> extends ConcurrentSkipListMap<Integer, Cell> implements Ite
                         cell.size = col - cell.column;
                         parts[0].put(cell);
                         Cell otherPart = (Cell) cell.clone(0, oldSz-cell.size);
-                        parts[1].put(otherPart);
+                        System.out.println("oldSz=" + oldSz + ",cell.size=" + cell.size);
+                        if ( otherPart != null ) {
+                            parts[1].put(otherPart);
+                        }
                         break;
                 }
 

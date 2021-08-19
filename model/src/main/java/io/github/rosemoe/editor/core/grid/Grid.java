@@ -1,10 +1,9 @@
-package io.github.rosemoe.editor.core;
+package io.github.rosemoe.editor.core.grid;
 
 import java.util.Iterator;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-public class Grid<T> extends ConcurrentSkipListMap<Integer, Line> implements Iterable<Line> {
+public class Grid extends ConcurrentSkipListMap<Integer, Line> implements Iterable<Line> {
 
     @Override
     public Iterator<Line> iterator() {
