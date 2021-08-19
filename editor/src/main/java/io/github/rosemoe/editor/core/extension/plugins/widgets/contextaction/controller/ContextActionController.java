@@ -17,7 +17,7 @@ package io.github.rosemoe.editor.core.extension.plugins.widgets.contextaction.co
 
 import android.view.MotionEvent;
 
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtension;
+import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contextaction.ContextActionModel;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contextaction.view.ContextActionView;
 import io.github.rosemoe.editor.core.CodeEditor;
@@ -28,7 +28,7 @@ import io.github.rosemoe.editor.core.CodeEditor;
  *
  * @author Rose
  */
-public class ContextActionController extends SystemExtension {
+public class ContextActionController extends Extension {
 
     public ContextActionModel model = new ContextActionModel();
     public final ContextActionView view;

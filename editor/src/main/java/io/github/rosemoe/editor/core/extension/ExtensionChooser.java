@@ -54,7 +54,7 @@ public class ExtensionChooser extends Extension {
             filter.add(Plugin.class);
         }
         for(Class c : filter) {
-            for (Extension e : editor.plugins.extensions) {
+            for (Extension e : editor.plugins) {
                 if (e.isEnabled() &&
                         c.isAssignableFrom(e.getClass())) {
                     extensions.add(e);

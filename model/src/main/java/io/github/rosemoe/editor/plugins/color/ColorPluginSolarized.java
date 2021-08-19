@@ -15,12 +15,9 @@
  */
 package io.github.rosemoe.editor.plugins.color;
 
-import androidx.annotation.Nullable;
-
 import java.util.HashMap;
 
-import io.github.rosemoe.editor.R;
-import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.CodeEditorModel;
 
 /**
  * https://ethanschoonover.com/solarized/
@@ -29,13 +26,12 @@ import io.github.rosemoe.editor.core.CodeEditor;
  */
 public class ColorPluginSolarized extends ColorPlugin {
 
-    public ColorPluginSolarized(CodeEditor editor) {
+    public ColorPluginSolarized(CodeEditorModel editor) {
         super(editor);
         name = "Solarized theme";
         description = "https://ethanschoonover.com/solarized/";
     }
 
-    @Nullable
     @Override
     public HashMap<String, Integer> getColors() {
         return new HashMap<String, Integer>() {{

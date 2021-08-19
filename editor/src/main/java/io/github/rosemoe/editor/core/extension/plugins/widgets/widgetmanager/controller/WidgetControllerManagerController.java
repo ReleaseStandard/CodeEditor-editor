@@ -23,14 +23,13 @@ import java.util.concurrent.locks.ReentrantLock;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtension;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.extension.WidgetManagerEvent;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.view.WidgetManagerView;
 
 /**
  * This widget disable any other, based on the Event defined with each.
  */
-public class WidgetControllerManagerController extends SystemExtension {
+public class WidgetControllerManagerController extends Extension {
 
     /**
      * Used to pass some data between activities.
@@ -71,20 +70,20 @@ public class WidgetControllerManagerController extends SystemExtension {
             case WidgetManagerEvent.ISENABLED: {
                 String wname = (String) wme.getArg(0);
                 Boolean state = (Boolean) wme.getArg(1);
-                SystemExtension w = (SystemExtension) editor.systemPlugins.get(wname);
+                Extension w = (Extension) editor.plugins.get(wname);
                 w.setEnabled(state);
                 break;
             }
             case WidgetManagerEvent.TOGGLE: {
                 String wname = (String) wme.getArg(0);
-                SystemExtension w = (SystemExtension) editor.systemPlugins.get(wname);
+                Extension w = (Extension) editor.plugins.get(wname);
                 w.toggleIsEnabled();
                 break;
             }
             case WidgetManagerEvent.GUI: {
                 Intent intent = new Intent(editorController.view.getContext(), WidgetManagerView.class);
-                intent.putExtra("widgets", editor.systemPlugins.extensions.toArray(new Extension[editor.systemPlugins.extensions.size()]));
-                intent.putExtra("plugins", editor.plugins.extensions.toArray(new Extension[editor.plugins.extensions.size()]));
+                intent.putExtra("widgets", editor.plugins.toArray(new Extension[editor.plugins.size()]));
+                intent.putExtra("plugins", editor.plugins.toArray(new Extension[editor.plugins.size()]));
                 editorController.view.getContext().startActivity(intent);
                 new Thread() {
                     @Override
@@ -100,7 +99,7 @@ public class WidgetControllerManagerController extends SystemExtension {
                         String kind = (String) DataHolder.get("kind");
                         Extension e = (Extension) DataHolder.get("extension");
                         if ( kind.equals("widgets") ) {
-                            editor.systemPlugins.get(e.name).setEnabled(e.isEnabled());
+                            editor.plugins.get(e.name).setEnabled(e.isEnabled());
                         }
                         if ( kind.equals("plugins") ) {
                             editor.plugins.get(e.name).setEnabled(e.isEnabled());

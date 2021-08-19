@@ -15,11 +15,10 @@
  */
 package io.github.rosemoe.editor.plugins.color;
 
-import androidx.annotation.Nullable;
 
 import java.util.HashMap;
 
-import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.CodeEditorModel;
 
 /**
  * This theme does not show any color to the screen.
@@ -28,13 +27,12 @@ import io.github.rosemoe.editor.core.CodeEditor;
  */
 public class ColorPluginNone extends ColorPlugin {
 
-    public ColorPluginNone(CodeEditor editor) {
+    public ColorPluginNone(CodeEditorModel editor) {
         super(editor);
         name = "None theme";
         description = "Text will be displayed with no colors";
     }
 
-    @Nullable
     @Override
     public HashMap<String, Integer> getColors() {
         return null;

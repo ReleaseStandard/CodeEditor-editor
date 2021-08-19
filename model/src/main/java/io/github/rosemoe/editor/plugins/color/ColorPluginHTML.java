@@ -16,13 +16,11 @@
 package io.github.rosemoe.editor.plugins.color;
 
 import java.util.HashMap;
-
-import io.github.rosemoe.editor.R;
-import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.CodeEditorModel;
 
 public class ColorPluginHTML extends ColorPlugin {
 
-    public ColorPluginHTML(CodeEditor editor) {
+    public ColorPluginHTML(CodeEditorModel editor) {
         super(editor);
         name = "HTML theme";
         description = "ColorScheme for HTML Language for editor";

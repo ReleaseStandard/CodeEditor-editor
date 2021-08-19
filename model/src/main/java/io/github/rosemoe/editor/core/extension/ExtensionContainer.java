@@ -27,7 +27,7 @@ import io.github.rosemoe.editor.core.util.Logger;
  * You can connect the bus an other.
  * Extensions in the communicate with others with some rules defined in the handle{emit,dispatch} function.
  */
-public class ExtensionContainer extends Extension {
+public class ExtensionContainer extends Extension implements Iterable<Extension> {
 
     public PriorityQueue<Extension> extensions = new PriorityQueue<Extension>();
 
@@ -100,5 +100,19 @@ public class ExtensionContainer extends Extension {
             }
         }
         return null;
+    }
+
+    @Override
+    public Iterator<Extension> iterator() {
+        return extensions.iterator();
+    }
+    public Object[] toArray() {
+        return extensions.toArray();
+    }
+    public Extension[] toArray(Extension [] tab) {
+        return extensions.toArray(tab);
+    }
+    public int size() {
+        return extensions.size();
     }
 }

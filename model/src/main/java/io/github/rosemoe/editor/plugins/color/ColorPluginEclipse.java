@@ -17,12 +17,11 @@ package io.github.rosemoe.editor.plugins.color;
 
 import java.util.HashMap;
 
-import io.github.rosemoe.editor.R;
-import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.CodeEditorModel;
 
 public class ColorPluginEclipse extends ColorPlugin {
 
-    public ColorPluginEclipse(CodeEditor editor) {
+    public ColorPluginEclipse(CodeEditorModel editor) {
         super(editor);
         name = "Eclipse theme";
         description = "picked from Eclipse IDE for Java Developers Version 2019-12 (4.14.0)";

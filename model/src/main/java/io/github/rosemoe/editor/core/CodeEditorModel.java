@@ -20,6 +20,5 @@ public class CodeEditorModel {
      */
     public Rect background = new Rect();
 
-    public ExtensionContainer systemPlugins = new ExtensionContainer();           // System plugins
-    public ExtensionContainer plugins = new ExtensionContainer();                 // Plugins designed by users
+    public ExtensionContainer plugins = new ExtensionContainer();           // Plugins
 }

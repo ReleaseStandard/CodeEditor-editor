@@ -17,8 +17,7 @@ package io.github.rosemoe.editor.plugins.color;
 
 import java.util.HashMap;
 
-import io.github.rosemoe.editor.R;
-import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.CodeEditorModel;
 
 /**
  * This theme is useful for debugging.
@@ -27,7 +26,7 @@ import io.github.rosemoe.editor.core.CodeEditor;
  */
 public class ColorPluginDebug extends ColorPlugin {
 
-    public ColorPluginDebug(CodeEditor editor) {
+    public ColorPluginDebug(CodeEditorModel editor) {
         super(editor);
         name = "Debug theme";
         description = "Take care it can hurt your eyes";

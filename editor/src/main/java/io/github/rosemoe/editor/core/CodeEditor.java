@@ -235,7 +235,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     public AppCompatActivity activity = null;
 
     public void attachMenu(Menu menu) {
-        for(Extension e : model.systemPlugins.extensions) {
+        for(Extension e : model.plugins) {
             if ( e instanceof AppCompatTweakerController) {
                 ((AppCompatTweakerController) e).attachMenu(menu);
             }
@@ -281,7 +281,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                         try {
                             WidgetExtensionController wwec = (WidgetExtensionController) constructor.newInstance(editor);
                             wwec.attachView(rootView);
-                            editor.model.systemPlugins.put(wwec);
+                            editor.model.plugins.put(wwec);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -621,9 +621,9 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         setTypefaceText(Typeface.DEFAULT);
         userInput         = new UserInputController(this,view.getContext());
         mConnection       = new UserInputConnexionController(this);
-        model.systemPlugins.put(new ColorSchemeExtension(model));
+        model.plugins.put(new ColorSchemeExtension(model));
         completionWindow  = new CompletionWindowController(this);
-        model.systemPlugins.put(
+        model.plugins.put(
                 userInput,
                 new LoopbackController(model),
                 new WidgetControllerManagerController(this),
@@ -970,7 +970,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         float textOffset = offsetX;
 
         // update from the model
-        for(Extension e : model.systemPlugins.extensions) {
+        for(Extension e : model.plugins) {
             if ( e instanceof WidgetExtensionController ) {
                 WidgetExtensionController sec = (WidgetExtensionController) e;
                 sec.clear();
@@ -1051,7 +1051,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             ContentLineController contentLine = mText.getLine(line);
             int columnCount = contentLine.length();
             if (rowInf.model.isLeadingRow) {
-                for(Extension e : model.systemPlugins.extensions) {
+                for(Extension e : model.plugins) {
                     if ( e instanceof WidgetExtensionController) {
                         ((WidgetExtensionController) e).drawRow(line, row);
                     }
@@ -3005,7 +3005,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      */
     @NonNull
     public ColorSchemeExtension getColorScheme() {
-        return (ColorSchemeExtension) model.systemPlugins.get("color");
+        return (ColorSchemeExtension) model.plugins.get("color");
     }
 
     /**

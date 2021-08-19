@@ -17,12 +17,11 @@ package io.github.rosemoe.editor.plugins.color;
 
 import java.util.HashMap;
 
-import io.github.rosemoe.editor.R;
-import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.CodeEditorModel;
 
 public class ColorPluginDarcula extends ColorPlugin {
 
-    public ColorPluginDarcula(CodeEditor editor) {
+    public ColorPluginDarcula(CodeEditorModel editor) {
         super(editor);
         name        = "Darcula theme";
         description = "picked from Android Studio, Thanks to liyujiang-gzu (GitHub @liyujiang-gzu)";

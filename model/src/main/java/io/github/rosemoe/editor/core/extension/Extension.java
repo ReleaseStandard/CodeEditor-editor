@@ -137,7 +137,9 @@ public class Extension implements EventSource, EventDestination, Comparable/*, P
      * Override this method of the widget to provide action in the widget on event emission.
      * @param e
      */
-    protected void handleEventEmit(Event e) { }
+    protected void handleEventEmit(Event e) {
+        editor.plugins.dispatch(e);
+    }
 
     @Override
     public void emit(Event e) {

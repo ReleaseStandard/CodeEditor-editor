@@ -17,6 +17,7 @@ package io.github.rosemoe.editor.plugins.debug;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.events.Event;
+import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
 
 import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent.*;
 
@@ -30,7 +31,7 @@ public class TestPlugin extends DebugPlugin {
 
     @Override
     protected void handleEventDispatch(Event e, String subtype) {
-        if ( e.getType() == E_USERINPUT ) {
+        if ( e.getType() == UserInputEvent.class) {
             if ( subtype.equals(ONDOUBLETAP) ) {
                 /**LineNumberPanelEvent lnpe = new LineNumberPanelEvent(LineNumberPanelEvent.CHANGE_ALIGN);
                 lnpe.putArgs(LineNumberPanelModel.ALIGN_CENTER);

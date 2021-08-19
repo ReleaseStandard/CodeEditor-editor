@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.extension.plugins.appcompattweaker.extension.AppCompatTweakerEvent;
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtension;
 import io.github.rosemoe.editor.core.util.Logger;
 
 import static io.github.rosemoe.editor.core.extension.plugins.appcompattweaker.extension.AppCompatTweakerEvent.*;
 
-public class AppCompatTweakerController extends SystemExtension {
+public class AppCompatTweakerController extends Extension {
 
     public ConcurrentHashMap<Integer, ArrayList<Object>> items = new ConcurrentHashMap<>();
 

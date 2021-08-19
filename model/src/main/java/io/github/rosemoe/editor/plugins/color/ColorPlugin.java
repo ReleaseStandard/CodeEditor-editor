@@ -13,24 +13,16 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.plugins;
+package io.github.rosemoe.editor.plugins.color;
+
+
+import java.util.HashMap;
 
 import io.github.rosemoe.editor.core.CodeEditorModel;
-import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtension;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.extension.ColorSchemeEvent;
-import io.github.rosemoe.editor.core.extension.plugins.loopback.extension.LoopbackEvent;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.extension.WidgetManagerEvent;
+import io.github.rosemoe.editor.plugins.Plugin;
 
-
-/**
- * You may implement handleEventDispatch, handleEventEmit
- * then when using the plugin : .dispatch() and .emit()
- * @author ReleaseStandard
- */
-public abstract class Plugin extends SystemExtension {
-
+public abstract class ColorPlugin extends Plugin {
     /**
      * Below defined constantes are for convenience only.
      * As a good citizen, you should not use them.
@@ -61,24 +53,35 @@ public abstract class Plugin extends SystemExtension {
     public static final String LITERAL = ACCENT7;
     public static final String ACCENT8 = "accent8";
     public static final String PUNCT = ACCENT8;
-    public final static Class E_LOOPBACK      = LoopbackEvent.class;
-    public final static Class E_USERINPUT     = UserInputEvent.class;
-    public final static Class E_COLOR         = ColorSchemeEvent.class;
-    //public final static Class E_LINENUMBER    = LineNumberPanelEvent.class;
-    public final static Class E_WMANAGER      = WidgetManagerEvent.class;
-    /**
-     * Override this method to execute action when a given event is dispatched.
-     * @param e
-     */
-    @Override
-    protected void handleEventDispatch(Event e, String subtype) {
 
-    }
+    boolean invert = false;
 
-    @Override
-    protected void handleEventEmit(Event e) { editor.systemPlugins.dispatch(e); }
-
-    public Plugin(CodeEditorModel editor) {
+    public static ColorPlugin DEFAULT(CodeEditorModel editor) { return new ColorPluginSolarized(editor); }
+    public ColorPlugin(CodeEditorModel editor) {
         super(editor);
     }
+    public ColorPlugin(CodeEditorModel editor, boolean invert) {
+        super(editor);
+        this.invert = invert;
+    }
+    public void init() {
+        name = "colorplugin";
+        description = "plugin that will change editor's colors";
+    }
+
+
+    public void apply() {
+        HashMap<String,Integer> colors = getColors();
+        if ( colors == null ) {
+            colors = new HashMap<>();
+        }
+        emit(new ColorSchemeEvent(ColorSchemeEvent.UPDATE_THEME,colors));
+    }
+
+    /**
+     * Define you color scheme here.
+     * @return
+     */
+    public abstract HashMap<String,Integer> getColors();
+
 }

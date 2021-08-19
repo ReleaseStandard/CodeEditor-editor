@@ -18,14 +18,13 @@ package io.github.rosemoe.editor.core.extension.plugins.loopback;
 import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtension;
 import io.github.rosemoe.editor.core.extension.plugins.loopback.extension.LoopbackEvent;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
 import io.github.rosemoe.editor.core.util.Logger;
 
 import static io.github.rosemoe.editor.core.extension.plugins.loopback.extension.LoopbackEvent.*;
 
-public class LoopbackController extends SystemExtension {
+public class LoopbackController extends Extension {
     public LoopbackController(CodeEditorModel editor) {
         super(editor);
         subscribe(LoopbackEvent.class);
@@ -35,7 +34,7 @@ public class LoopbackController extends SystemExtension {
     }
     @Override
     public void handleEventEmit(Event e) {
-        for(Extension sec : editor.systemPlugins.extensions) {
+        for(Extension sec : editor.plugins) {
             if( sec instanceof LoopbackController) {
                 continue;
             }

@@ -8,7 +8,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtension;
+import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.plugins.appcompattweaker.extension.AppCompatTweakerEvent;
 import io.github.rosemoe.editor.core.util.Logger;
 
@@ -16,7 +16,7 @@ import io.github.rosemoe.editor.core.util.Logger;
  * A widget is a subtype of extension.
  * it has facilities for painting on the screen.
  */
-public abstract class WidgetExtensionController extends SystemExtension implements Observer {
+public abstract class WidgetExtensionController extends Extension implements Observer {
 
     public WidgetExtensionView view;
 

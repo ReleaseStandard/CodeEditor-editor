@@ -15,22 +15,19 @@
  */
 package io.github.rosemoe.editor.plugins.color;
 
-import androidx.annotation.Nullable;
 
 import java.util.HashMap;
 
-import io.github.rosemoe.editor.R;
-import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.CodeEditorModel;
 
 public class ColorPluginVS2019 extends ColorPlugin {
 
-    public ColorPluginVS2019(CodeEditor editor) {
+    public ColorPluginVS2019(CodeEditorModel editor) {
         super(editor);
         name = "VS2019 theme";
         description = "picked from Visual Studio 2019, Thanks to liyujiang-gzu (GitHub @liyujiang-gzu)";
     }
 
-    @Nullable
     @Override
     public HashMap<String, Integer> getColors() {
         return new HashMap<String, Integer>() {{

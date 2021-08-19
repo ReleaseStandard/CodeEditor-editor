@@ -48,7 +48,7 @@ public class WidgetAnalyzerPlugin extends DebugPlugin {
             c++;
         }
         eventCount.put(e.getType(),c);
-        if (e.getType() == E_USERINPUT) {
+        if (e.getType() == UserInputEvent.class) {
             if (e.getSubType().equals(UserInputEvent.ONDOUBLETAP)) {
                 print();
             }

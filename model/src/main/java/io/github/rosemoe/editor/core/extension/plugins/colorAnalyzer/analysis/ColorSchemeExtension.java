@@ -19,8 +19,8 @@ import java.util.HashMap;
 
 import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.color.ColorManager;
+import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.extension.plugins.SystemExtension;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.extension.ColorSchemeEvent;
 
@@ -34,7 +34,7 @@ import static io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.exte
  * https://github.com/altercation/solarized
  * @author Rose
  */
-public class ColorSchemeExtension extends SystemExtension {
+public class ColorSchemeExtension extends Extension {
 
     /**
      * For sub classes

@@ -13,27 +13,18 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.plugins.color;
+package io.github.rosemoe.editor.plugins;
 
-import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.extension.Extension;
-import io.github.rosemoe.editor.core.extension.ExtensionChooser;
 
 /**
- * Will show all color plugin that are enabled, and allow user to pick up one.
+ * User defined plugins
+ * @author ReleaseStandard
  */
-public class ColorChooser extends ExtensionChooser {
+public abstract class Plugin extends Extension {
 
-
-    public ColorChooser(CodeEditor editor) {
+    public Plugin(CodeEditorModel editor) {
         super(editor);
-        popup_title = "Color theme chooser";
-        addFilter(ColorPlugin.class);
-    }
-
-    @Override
-    public void handleExtensionChoosed(Extension e ) {
-        ColorPlugin cp = (ColorPlugin) e;
-        cp.apply();
     }
 }

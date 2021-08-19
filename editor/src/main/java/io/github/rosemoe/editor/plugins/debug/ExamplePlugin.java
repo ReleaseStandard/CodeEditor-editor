@@ -68,7 +68,7 @@ public class ExamplePlugin extends DebugPlugin {
     @Override
     protected void handleEventDispatch(Event e, String subtype) {
         Logger.debug("Event e, subtype=",subtype," has been received");
-        if (e.getType() == E_USERINPUT) {
+        if (e.getType() == UserInputEvent.class) {
             switch (subtype) {
                 case UserInputEvent.ONDOUBLETAP: {
                     WidgetManagerEvent wme = new WidgetManagerEvent(WidgetManagerEvent.GUI);
@@ -91,7 +91,7 @@ public class ExamplePlugin extends DebugPlugin {
                 }
                 case UserInputEvent.LONGPRESS:
                     // emit event under the hood
-                    new ColorPluginDarcula(editorController).apply();
+                    new ColorPluginDarcula(editor).apply();
                     break;
                 case UserInputEvent.ONSCALEEND: {
                     Logger.debug("On scale end");
@@ -102,7 +102,7 @@ public class ExamplePlugin extends DebugPlugin {
                 }
             }
         }
-        if (e.getType() == E_LOOPBACK) {
+        if (e.getType() == LoopbackEvent.class) {
             if (subtype.equals(LoopbackEvent.PLUGINS_BROADCAST)) {
                 Logger.v("Response from the widget received");
             }
