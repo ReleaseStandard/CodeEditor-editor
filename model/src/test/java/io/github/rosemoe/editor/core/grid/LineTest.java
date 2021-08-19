@@ -61,7 +61,7 @@ public class LineTest {
             assertTrue(lines[0].get(3).size == 1);
             assertTrue(lines[1].size() == 2);
             assertTrue(lines[1].get(0).size == 2);
-            assertTrue(lines[1].get(1).size == 1);
+            assertTrue(lines[1].get(2).size == 1);
         }
         {
             // +++-|--m
@@ -76,10 +76,13 @@ public class LineTest {
             Line[] lines = s.split(4);
             assertTrue(lines[0].size() == 2);
             assertTrue(lines[0].get(0).size == 3);
-            assertTrue(lines[0].get(1).size == 1);
+            assertTrue(lines[0].get(3).size == 1);
+            assertTrue(lines[0].get(3).enabled == false);
             assertTrue(lines[1].size() == 2);
             assertTrue(lines[1].get(0).size == 2);
-            assertTrue(lines[1].get(1).size == 1);
+            assertTrue(lines[1].get(0).enabled == false);
+            assertTrue(lines[1].get(2).size == 1);
+            assertTrue(lines[1].get(2).enabled);
         }
     }
 
@@ -221,10 +224,10 @@ public class LineTest {
             s.put(Span.obtain(0, 3, 0));
             s.put(Span.obtain(3, 3, 0));
             Line[] lines = (Line[]) s.split(4);
-            assertTrue(lines[0].size() == 1);
+            assertTrue(lines[0].size() == 2);
             assertTrue(lines[0].get(0).column == 0);
             assertTrue(lines[0].get(0).size == 3);
-            assertTrue(lines[1].size() == 0);
+            assertTrue(lines[1].size() == 1);
         }
         {
             //

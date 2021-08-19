@@ -74,17 +74,19 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
         int startOfNewLine = -1;
         for(Cell cell : values()) {
             if ( (cell.column + cell.size) <= col  ) {
+                Logger.debug("Case 1");
                 parts[0].put(cell);
             } else if ( cell.column >= col ) {
+                Logger.debug("Case 2");
                 if ( startOfNewLine == -1 ) {
                     startOfNewLine = cell.column;
                 }
                 cell.column = cell.column - startOfNewLine;
                 parts[1].put(cell);
             } else if (cell.column < col && (cell.column+cell.size) > col ) {
+                Logger.debug("Case 3");
                 switch ( behaviourOnCellSplit ) {
                     case SPAN_SPLIT_INVALIDATE:
-                        break;
                     case SPAN_SPLIT_EXTENDS:
                     case SPAN_SPLIT_SPLITTING:
                         if ( startOfNewLine == -1 ) {
@@ -92,10 +94,15 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
                         }
                         final int oldSz = cell.size;
                         cell.size = col - cell.column;
-                        parts[0].put(cell);
-                        Cell otherPart = (Cell) cell.clone(0, oldSz-cell.size);
-                        System.out.println("oldSz=" + oldSz + ",cell.size=" + cell.size);
-                        if ( otherPart != null ) {
+                        if ( cell.size > 0 ) {
+                            cell.enabled = !(behaviourOnCellSplit == SPAN_SPLIT_INVALIDATE);
+                            parts[0].put(cell);
+                        }
+                        Cell otherPart = cell.clone();
+                        otherPart.size = oldSz - cell.size;
+                        otherPart.column = 0;
+                        otherPart.enabled = !(behaviourOnCellSplit == SPAN_SPLIT_INVALIDATE);
+                        if ( otherPart.size > 0 ) {
                             parts[1].put(otherPart);
                         }
                         break;

@@ -37,6 +37,14 @@ public class Span extends Cell {
         color = underlineColor = 0;
     }
 
+    @Override
+    public Cell dataClone(Cell cloning) {
+        Span c = (Span) cloning;
+        c.color = color;
+        c.underlineColor = underlineColor;
+        return c;
+    }
+
     private static final BlockingQueue<Span> cacheQueue = new ArrayBlockingQueue<>(8192 * 2);
 
     /**
@@ -46,6 +54,7 @@ public class Span extends Cell {
         return obtain(0, ColorManager.DEFAULT_BACKGROUND_COLOR);
     }
 
+    public Span() {}
     /**
      * Create a new span
      *

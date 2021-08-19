@@ -1,4 +1,4 @@
-package io.github.rosemoe.editor.core.extension.extensions.color.analysis.spans;
+package io.github.rosemoe.editor.core.grid.instances.color;
 
 import org.junit.Test;
 
@@ -83,8 +83,8 @@ public class SpanMapTest {
             // --*|**
             // yymmmmm
             //
-            // --
-            //
+            // --*
+            //   **
             // yymmmmm
             //
             SpanMap map = new SpanMap();
@@ -96,17 +96,18 @@ public class SpanMapTest {
             l1.put(Span.obtain(2, 5, 0));
             map.add(0,l);
             map.add(1,l1);
+            map.dump();
             map.insertContent(0, 3, 1, 2);
             assertTrue(map.size() == 3);
             SpanLine[] lines = map.getLines();
             System.out.println("OK3");
             map.dump();
-            assertTrue(lines[0].get(0).column==0);
+            assertTrue(lines[0].size() == 2);
             assertTrue(lines[0].get(0).size==2);
-            assertTrue(lines[1].size()==0);
-            assertTrue(lines[2].get(0).column==0);
-            assertTrue("lines[2].get(0)=" + lines[2].get(0), lines[2].get(0).size==2);
-            assertTrue(lines[2].get(2).column==2);
+            assertTrue(lines[0].get(2).size==1);
+            assertTrue(lines[1].size()==1);
+            assertTrue(lines[1].get(2).size==2);
+            assertTrue(lines[2].get(0).size==2);
             assertTrue(lines[2].get(2).size==5);
         }
     }
@@ -151,8 +152,12 @@ public class SpanMapTest {
             l1.put(Span.obtain(0, 5, 0));
             map.add(1, l1);
             map.removeContent(0, 2,1,3);
+            map.dump();
             assertTrue("map.size()=" + map.size(), map.size() == 1);
-            assertTrue("map.get(0).size()=" + map.get(0).size(), map.get(0).size()==0);
+            assertTrue("map.get(0).size()=" + map.get(0).size(), map.get(0).size()==2);
+            assertTrue(map.get(0).size() == 2);
+            assertTrue(map.get(0).get(0).size == 2);
+            assertTrue(map.get(0).get(2).size == 2);
         }
         {
             // **|*--
@@ -312,10 +317,10 @@ public class SpanMapTest {
             System.out.println("|================================|");
             map.dump();
             assertTrue("map.size()=" + map.size(), map.size() == 1);
-            assertTrue("map.get(0).size()=" + map.get(0).size(),map.get(0).size() == 2);
+            assertTrue("map.get(0).size()=" + map.get(0).size(),map.get(0).size() == 3);
             assertTrue("map.get(0).get(0).size=" + map.get(0).get(0).size,map.get(0).get(0).size==3);
-            assertTrue("map.get(0).get(0).column="+map.get(0).get(0).column, map.get(0).get(0).column==0);
-            assertTrue("map.get(0).get(4).size="+map.get(0).get(4).size, map.get(0).get(4).size==2);
+            assertTrue("map.get(0).get(3).size="+map.get(0).get(3).size, map.get(0).get(3).size==1);
+            assertTrue(map.get(0).get(4).size == 2);
         }
     }
 }

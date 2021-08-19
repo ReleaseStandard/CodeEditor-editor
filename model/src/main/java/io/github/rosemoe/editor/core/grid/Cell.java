@@ -3,9 +3,12 @@ package io.github.rosemoe.editor.core.grid;
 import io.github.rosemoe.editor.core.CEObject;
 
 public abstract class Cell extends CEObject implements CellData {
+
+    public boolean enabled = true;
     public int size = 0;
     public int column = 0;
 
+    public Cell() { }
     public Cell(int column) {
         this.column = column;
         this.size = 1;
@@ -30,6 +33,19 @@ public abstract class Cell extends CEObject implements CellData {
     public void clear() {
         size = column = 0;
         dataClear();
+    }
+    public Cell clone() {
+        Cell c = null;
+        try {
+            c = this.getClass().newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        c.column = column;
+        c.size = size;
+        dataClone(c);
+        return c;
     }
     public Cell obtain(Object ...args) {
         return null;
