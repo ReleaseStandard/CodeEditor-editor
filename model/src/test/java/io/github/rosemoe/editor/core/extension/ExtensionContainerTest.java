@@ -78,7 +78,10 @@ public class ExtensionContainerTest {
                 countLock.unlock();
                 Thread.sleep(100);
             }
-            countLock.unlock();
+            if (countLock.isHeldByCurrentThread()) {
+                countLock.unlock();
+            }
+
             assertTrue("count="+count+",sz="+sz,sz == count);
         }
         {
@@ -116,7 +119,9 @@ public class ExtensionContainerTest {
                 count2Lock.unlock();
                 Thread.sleep(100);
             }
-            count2Lock.unlock();
+            if (count2Lock.isHeldByCurrentThread()) {
+                count2Lock.unlock();
+            }
             assertTrue("count2="+count2+",sz="+sz+",instances="+instances+","+sz*instances+" == "+count2,sz*instances == count2);
         }
     }

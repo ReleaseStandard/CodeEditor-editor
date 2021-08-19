@@ -17,6 +17,7 @@ package io.github.rosemoe.editor.core.grid.instances.color;
 
 import java.util.Map;
 
+import io.github.rosemoe.editor.core.CEObject;
 import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.util.Logger;
@@ -28,8 +29,6 @@ import io.github.rosemoe.editor.core.util.Logger;
  * @author Release Standard
  */
 public class SpanMap extends Grid {
-
-    public int behaviourOnCellSplit = Line.SPAN_SPLIT_SPLITTING;
 
     public void SpanMap() {
 
@@ -43,15 +42,9 @@ public class SpanMap extends Grid {
         SpanLine l = SpanLine.EMPTY();
         l.behaviourOnCellSplit = behaviourOnCellSplit;
         put(newIndex, l);
-        return get(newIndex);
+        return (SpanLine) get(newIndex);
     }
-    /**
-     * Insert a SpanLine at a specific position in the span 
-     */
-    public void add(int index, SpanLine line) {
-        line.behaviourOnCellSplit = behaviourOnCellSplit;
-        put(index,line);
-    }
+
     /**
      * Complete the current spansuch as it while contains finalSizeInLines.
      * It will not remove extra lines
@@ -65,13 +58,6 @@ public class SpanMap extends Grid {
     }
 
     /**
-     * lineno : 0..n-1 the span line to get
-     * @return null if the line is not in the spanmap
-     */
-    public SpanLine get(Object key) {
-        return (SpanLine) super.get(key);
-    }
-    /**
      * This will get the required span line or create it if it doesn't exists.
      * lineno : 0..n-1 the span line to get.
      * @param lineno
@@ -79,98 +65,9 @@ public class SpanMap extends Grid {
      */
     public SpanLine getAddIfNeeded(int lineno) {
         appendLines(lineno+1);
-        return get(lineno);
+        return (SpanLine) get(lineno);
     }
 
-    /**
-     * Test if the spanis empty.
-     * @return
-     */
-    public boolean isEmpty() {
-        return size()==0;
-    }
-
-    /**
-     * Remove the SpanLine at the specified index.
-     * @param index
-     */
-    public SpanLine remove(int index) {
-        SpanLine sl = get(index);
-        if ( sl == null ) { return null; }
-        int newSz = sl.size();
-        Span.recycleAll((Span[]) sl.values().toArray(new Span[newSz]));
-        return (SpanLine) super.remove(index);
-    }
-
-    public SpanLine[] getLines() {
-        return concurrentSafeGetValues();
-    }
-
-    public void removeContent(int lineStart, int colStart, int lineStop, int colStop) {
-        // ---+|+++      ---++++
-        // ***        => ***
-        // yy|yyy        ---+yyy
-        if ( lineStart > lineStop ) {
-            throw new RuntimeException("INVALID : lineStart=" + lineStart + ",lineStop=" + lineStop);
-        }
-        else if ( lineStart == lineStop ) {
-            get(lineStart).removeContent(colStart, colStop - colStart);
-        } else {
-            Line[] startParts = get(lineStart).split(colStart);
-            Line[] stopParts = get(lineStop).split(colStop);
-            SpanLine sl = (SpanLine) SpanLine.concat(startParts[0],stopParts[1]);
-            put(lineStop, sl);
-        }
-        // ---+      ---+yyy
-        // ***    =>
-        // ---+yyy
-        int lineShift = lineStop - lineStart;
-        if ( lineShift > 0 ) {
-            final int sz = size();
-            for (int a = lineStart; a < sz; a=a+1) {
-                if ( a + lineShift < sz ) {
-                    SpanLine sl = (SpanLine) super.remove(a + lineShift);
-                    put(a, sl);
-                } else {
-                    remove(a);
-                }
-            }
-        }
-    }
-    /**
-     * Insert some content in the span 
-     */
-    public void insertContent(int lineStart, int colStart, int lineStop, int colStop) {
-        // ---+|+++      ---+|+++
-        // ***        =>
-        //               ***
-        // where x is insertion, | insertion point
-        int lineShift = lineStop - lineStart;
-        if ( lineShift > 0 ) {
-            for (int a = size() - 1; a >= lineStart + 1; a = a - 1) {
-                SpanLine sl = remove(a);
-                put(a + lineShift, sl);
-            }
-        }
-        // ---+|+++      ---+
-        // ***        => xx+++
-        //               ***
-        Logger.debug("lineStart="+lineStart+",colStart="+colStart+",lineStop="+lineStop+",colStop="+colStop);
-        if ( lineStart > lineStop ) {
-            throw new RuntimeException("INVALID : lineStart=" + lineStart + ",lineStop=" + lineStop);
-        }
-        else if ( lineStart == lineStop ) {
-            get(lineStart).insertContent(colStart, colStop - colStart);
-        } else {
-            Line[] startParts = get(lineStart).split(colStart);
-            put(lineStart, startParts[0]);
-            startParts[1].insertContent(0, colStop);
-            put(lineStart+lineShift, startParts[1]);
-        }
-    }
-    public void insertContent(int line, int colStart, int colStop) {
-        insertContent(line, colStart, line, colStop);
-    }
     //public void insertContent()
     /**
      * Dump debug information on this class.
@@ -190,23 +87,6 @@ public class SpanMap extends Grid {
 
     public SpanLine addNormalIfNull() {
         appendLines(1);
-        return get(0);
-    }
-    /**
-     * This function is used to avoid concurrent exception when working with Collections.
-     * @return
-     */
-    public SpanLine[] concurrentSafeGetValues() {
-        SpanLine[] lines = null;
-        while (lines == null ) {
-            try {
-                lines = values().toArray(new SpanLine[size()]);
-            } catch (java.util.ConcurrentModificationException e) {
-                Logger.debug("This error is harmless if not repeat to much");
-                e.printStackTrace();
-                lines=null;
-            }
-        }
-        return lines;
+        return (SpanLine) get(0);
     }
 }
