@@ -17,14 +17,14 @@ package io.github.rosemoe.editor.plugins.debug;
 
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
+import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.extension.UserInputEvent;
 
-import static io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent.*;
+import static io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.extension.UserInputEvent.*;
 
 public class TestPlugin extends DebugPlugin {
 
     public TestPlugin(CodeEditor editor) {
-        super(editor);
+        super(editor.model);
         name = "test";
         description = "Test plugin";
     }

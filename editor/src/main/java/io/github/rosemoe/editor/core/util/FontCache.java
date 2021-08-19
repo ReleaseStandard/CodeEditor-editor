@@ -19,7 +19,7 @@ import android.graphics.Paint;
 
 import java.util.Arrays;
 
-import io.github.rosemoe.editor.core.langs.helpers.TextUtils;
+import io.github.rosemoe.editor.core.extension.extensions.langs.helpers.TextUtils;
 
 /**
  * Cache to measure text quickly

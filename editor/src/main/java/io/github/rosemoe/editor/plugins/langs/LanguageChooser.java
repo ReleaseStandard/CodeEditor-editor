@@ -18,8 +18,7 @@ package io.github.rosemoe.editor.plugins.langs;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.ExtensionChooser;
-import io.github.rosemoe.editor.core.langs.LanguagePlugin;
-import io.github.rosemoe.editor.plugins.color.ColorPlugin;
+import io.github.rosemoe.editor.core.extension.extensions.langs.LanguagePlugin;
 
 
 /**

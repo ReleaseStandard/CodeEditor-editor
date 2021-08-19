@@ -18,6 +18,6 @@
     package="io.github.rosemoe.editor">
 
     <application>
-        <activity android:name=".core.extension.plugins.widgets.widgetmanager.view.WidgetManagerView"></activity>
+        <activity android:name=".core.extension.extensions.widgets.widgetmanager.view.WidgetManagerView"></activity>
     </application>
 </manifest>

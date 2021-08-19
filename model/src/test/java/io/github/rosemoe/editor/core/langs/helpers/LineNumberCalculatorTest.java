@@ -2,6 +2,7 @@ package io.github.rosemoe.editor.core.langs.helpers;
 
 import org.junit.Test;
 
+import io.github.rosemoe.editor.core.extension.extensions.langs.helpers.LineNumberCalculator;
 import io.github.rosemoe.editor.core.util.Random;
 import manifold.ext.rt.api.Jailbreak;
 

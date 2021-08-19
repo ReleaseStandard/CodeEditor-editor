@@ -16,10 +16,10 @@
 package io.github.rosemoe.editor.core.langs.empty;
 
 import io.github.rosemoe.editor.core.CodeEditorModel;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.IdentifierAutoCompleteModel;
-import io.github.rosemoe.editor.core.langs.LanguagePlugin;
-import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzer;
-import io.github.rosemoe.editor.core.codeanalysis.analyzer.CodeAnalyzerThread;
+import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.IdentifierAutoCompleteModel;
+import io.github.rosemoe.editor.core.extension.extensions.langs.LanguagePlugin;
+import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
+import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzerThread;
 
 /**
  * Empty language without any effect,

@@ -2,7 +2,7 @@ package io.github.rosemoe.editor.core.langs.helpers;
 
 import org.junit.Test;
 
-import java.util.TreeMap;
+import io.github.rosemoe.editor.core.extension.extensions.langs.helpers.TextUtils;
 
 import static org.junit.Assert.*;
 

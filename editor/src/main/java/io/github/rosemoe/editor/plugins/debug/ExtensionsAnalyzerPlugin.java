@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
+import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.extension.UserInputEvent;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**

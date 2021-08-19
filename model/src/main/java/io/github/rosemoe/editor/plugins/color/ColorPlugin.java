@@ -19,7 +19,7 @@ package io.github.rosemoe.editor.plugins.color;
 import java.util.HashMap;
 
 import io.github.rosemoe.editor.core.CodeEditorModel;
-import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.extension.ColorSchemeEvent;
+import io.github.rosemoe.editor.core.extension.extensions.colorChange.ColorSchemeEvent;
 import io.github.rosemoe.editor.plugins.Plugin;
 
 public abstract class ColorPlugin extends Plugin {

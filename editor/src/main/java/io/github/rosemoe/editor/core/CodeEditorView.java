@@ -15,8 +15,8 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
-import io.github.rosemoe.editor.core.extension.plugins.widgets.completion.SymbolPairMatch;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.controller.ContentLineController;
+import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.SymbolPairMatch;
+import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentLineController;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
 

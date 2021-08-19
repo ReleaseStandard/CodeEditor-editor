@@ -16,10 +16,10 @@
 package io.github.rosemoe.editor.plugins.debug;
 
 import io.github.rosemoe.editor.core.extension.events.Event;
-import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.extension.ColorSchemeEvent;
-import io.github.rosemoe.editor.core.extension.plugins.loopback.extension.LoopbackEvent;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.widgetmanager.extension.WidgetManagerEvent;
+import io.github.rosemoe.editor.core.extension.extensions.colorChange.ColorSchemeEvent;
+import io.github.rosemoe.editor.core.extension.extensions.loopback.LoopbackEvent;
+import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.extension.UserInputEvent;
+import io.github.rosemoe.editor.core.extension.extensions.widgets.widgetmanager.extension.WidgetManagerEvent;
 import io.github.rosemoe.editor.plugins.color.ColorPluginDarcula;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
@@ -41,7 +41,7 @@ public class ExamplePlugin extends DebugPlugin {
 
     public final CodeEditor editorController;
     public ExamplePlugin(CodeEditor editor) {
-        super(editor);
+        super(editor.model);
         editorController = editor;
         name = "example plugin";
         description = "this plugin perform bunch of actions on various user input (ex: scroll, scale, doubletap)";
