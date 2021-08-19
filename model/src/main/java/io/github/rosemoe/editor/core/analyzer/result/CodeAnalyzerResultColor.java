@@ -92,7 +92,7 @@ public class CodeAnalyzerResultColor extends TokenEmitterResult {
             Logger.debug("WARNING : the color result has no theme attached so you will get no colors.");
             return;
         }
-        map.getAddIfNeeded(spanLine).add(span);
+        map.getAddIfNeeded(spanLine).put(span);
     }
 
     public void determine(int line) {

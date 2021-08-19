@@ -1123,7 +1123,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                 if (spans == null || spans.size() == 0) {
                     spans = SpanLine.EMPTY();
                 }
-                Map.Entry<Integer, Span> [] keys = spans.line.entrySet().toArray(new Map.Entry[spans.size()]);
+                Map.Entry<Integer, Span> [] keys = spans.entrySet().toArray(new Map.Entry[spans.size()]);
                 for (int a = 0; a < keys.length; a=a+1) {
                     Span span = keys[a].getValue();
                     // Draw by spans

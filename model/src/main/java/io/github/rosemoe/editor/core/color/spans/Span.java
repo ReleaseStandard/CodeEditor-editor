@@ -15,9 +15,11 @@
  */
 package io.github.rosemoe.editor.core.color.spans;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import io.github.rosemoe.editor.core.Cell;
 import io.github.rosemoe.editor.core.color.ColorManager;
 import io.github.rosemoe.editor.core.extension.extensions.colorChange.ColorSchemeExtension;
 import io.github.rosemoe.editor.core.util.Logger;
@@ -28,15 +30,14 @@ import io.github.rosemoe.editor.core.util.Logger;
  *
  * @author Rose
  */
-public class Span {
+public class Span extends Cell<Span> {
 
-    public int column;
-    public int size;
     public int color;
     public int underlineColor = 0;
 
     public void clear() {
-        size = color = column = underlineColor = 0;
+        super.clear();
+        color = underlineColor = 0;
     }
 
     private static final BlockingQueue<Span> cacheQueue = new ArrayBlockingQueue<>(8192 * 2);
@@ -47,6 +48,7 @@ public class Span {
     public static Span EMPTY() {
         return obtain(0, ColorManager.DEFAULT_BACKGROUND_COLOR);
     }
+
     /**
      * Create a new span
      *
@@ -55,41 +57,12 @@ public class Span {
      * @see Span#obtain(int, int)
      */
     private Span(int column, int color) {
-        this.column = column;
+        super(column);
         this.color = color;
     }
     private Span(int column, int size, int color) {
-        this.column = column;
+        super(column, size);
         this.color = color;
-        this.size = size;
-    }
-    /**
-     * Set a underline for this region
-     * Zero for no underline
-     *
-     * @param color Color for this underline (not color id of {@link ColorSchemeExtension})
-     * @return Self
-     */
-    public Span setUnderlineColor(int color) {
-        underlineColor = color;
-        return this;
-    }
-
-    /**
-     * Get span start column
-     *
-     * @return Start column
-     */
-    public int getColumn() {
-        return column;
-    }
-
-    /**
-     * Set column of this span
-     */
-    public Span setColumn(int column) {
-        this.column = column;
-        return this;
     }
 
     /**
@@ -97,7 +70,7 @@ public class Span {
      */
     public Span copy() {
         Span copy = obtain(column, color);
-        copy.setUnderlineColor(underlineColor);
+        copy.underlineColor = underlineColor;
         return copy;
     }
 
@@ -114,16 +87,6 @@ public class Span {
         }
     }
 
-    /**
-     * End column for the span (e.g. span of size 2 with column=0 will get his end at 1)
-     * @return
-     */
-    public int getColumnEnd() {
-        if ( size == 0 ) {
-            return column;
-        }
-        return column + size - 1;
-    }
     public static Span obtain(int column, int color) {
         return obtain(column, 1, color);
     }
@@ -139,10 +102,8 @@ public class Span {
         return span;
     }
 
-    public void dump() {
-        dump("");
-    }
-    public void dump(String offset) {
-        Logger.debug(offset + "column=" + column + ",color="+ color+",underlineColor="+underlineColor+",size="+size);
+    @Override
+    public Span clone(Object... args) {
+        return Span.obtain((Integer)args[0],(Integer)args[1],color);
     }
 }

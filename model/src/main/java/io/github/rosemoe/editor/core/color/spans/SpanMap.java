@@ -16,11 +16,10 @@
 package io.github.rosemoe.editor.core.color.spans;
 
 import java.util.Map;
-import java.util.TreeMap;
 
-import io.github.rosemoe.editor.core.analyzer.analysis.AbstractMap;
+import io.github.rosemoe.editor.core.Grid;
+import io.github.rosemoe.editor.core.Line;
 import io.github.rosemoe.editor.core.util.Logger;
-import static io.github.rosemoe.editor.core.color.spans.SpanLine.*;
 
 /**
  * This class is a SpanLine container (line displayed to the screen).
@@ -28,58 +27,49 @@ import static io.github.rosemoe.editor.core.color.spans.SpanLine.*;
  *
  * @author Release Standard
  */
-public class SpanMap extends AbstractMap {
+public class SpanMap extends Grid<Span> {
 
-    public int behaviourOnSpanSplit = SPAN_SPLIT_SPLITTING;
-
-    /**
-     * lineindex, SpanLine
-     * This associate a TreeMap with each line.
-     * This allow row shifting durign analysis.
-     * line 0..n-1
-     */
-    private TreeMap<Integer, SpanLine> map = new TreeMap<Integer, SpanLine>();
+    public int behaviourOnCellSplit = Line.SPAN_SPLIT_SPLITTING;
 
     public void SpanMap() {
 
     }
     /**
-     * Append an empty line to the span map.
+     * Append an empty line to the span 
      * @return
      */
     public SpanLine appendLine() {
-        int newIndex = map.size();
+        int newIndex = size();
         SpanLine l = SpanLine.EMPTY();
-        l.behaviourOnSpanSplit = behaviourOnSpanSplit;
-        map.put(newIndex, l);
-        return map.get(newIndex);
+        l.behaviourOnCellSplit = behaviourOnCellSplit;
+        put(newIndex, l);
+        return get(newIndex);
     }
     /**
-     * Insert a SpanLine at a specific position in the span map.
+     * Insert a SpanLine at a specific position in the span 
      */
     public void add(int index, SpanLine line) {
-        line.behaviourOnSpanSplit = behaviourOnSpanSplit;
-        map.put(index,line);
+        line.behaviourOnCellSplit = behaviourOnCellSplit;
+        put(index,line);
     }
     /**
-     * Complete the current spanmap such as it while contains finalSizeInLines.
+     * Complete the current spansuch as it while contains finalSizeInLines.
      * It will not remove extra lines
      *
      * @param finalSizeInLines 0..n
      */
     public void appendLines(int finalSizeInLines) {
-        while(map.size() < finalSizeInLines) {
+        while(size() < finalSizeInLines) {
             appendLine();
         }
     }
 
     /**
      * lineno : 0..n-1 the span line to get
-     * @param lineno
      * @return null if the line is not in the spanmap
      */
-    public SpanLine get(int lineno) {
-        return map.get(lineno);
+    public SpanLine get(Object key) {
+        return (SpanLine) super.get(key);
     }
     /**
      * This will get the required span line or create it if it doesn't exists.
@@ -93,36 +83,23 @@ public class SpanMap extends AbstractMap {
     }
 
     /**
-     * returns the size of the map.
-     * @return
-     */
-    public int size() {
-        return map.size();
-    }
-
-    /**
-     * clear the spanmap, it will remove everything from the spanmap
-     */
-    public void clear() {
-        map.clear();
-    }
-
-    /**
-     * Test if the spanmap is empty.
+     * Test if the spanis empty.
      * @return
      */
     public boolean isEmpty() {
-        return map.size()==0;
+        return size()==0;
     }
 
     /**
      * Remove the SpanLine at the specified index.
      * @param index
      */
-    public void remove(int index) {
-        SpanLine sl = map.get(index);
-        Span.recycleAll(sl.concurrentSafeGetValues());
-        map.remove(index);
+    public SpanLine remove(int index) {
+        SpanLine sl = get(index);
+        if ( sl == null ) { return null; }
+        int newSz = sl.size();
+        Span.recycleAll((Span[]) sl.values().toArray(new Span[newSz]));
+        return (SpanLine) super.remove(index);
     }
 
     public SpanLine[] getLines() {
@@ -137,34 +114,34 @@ public class SpanMap extends AbstractMap {
             throw new RuntimeException("INVALID : lineStart=" + lineStart + ",lineStop=" + lineStop);
         }
         else if ( lineStart == lineStop ) {
-            map.get(lineStart).removeContent(colStart, colStop - colStart);
+            get(lineStart).removeContent(colStart, colStop - colStart);
         } else {
-            SpanLine[] startParts = map.get(lineStart).split(colStart);
-            SpanLine[] stopParts = map.get(lineStop).split(colStop);
+            Line[] startParts = get(lineStart).split(colStart);
+            Line[] stopParts = get(lineStop).split(colStop);
             Logger.debug("startParts: {0: ",startParts[0].size(),", 1: ",startParts[1].size(),"}");
             Logger.debug("stopParts: {0: ",stopParts[0].size(),", 1: ",stopParts[1].size(),"}");
-            SpanLine sl = SpanLine.concat(startParts[0],stopParts[1]);
+            SpanLine sl = (SpanLine) SpanLine.concat(startParts[0],stopParts[1]);
             Logger.debug("concat="+sl.size());
-            map.put(lineStop, sl);
+            put(lineStop, sl);
         }
         // ---+      ---+yyy
         // ***    =>
         // ---+yyy
         int lineShift = lineStop - lineStart;
         if ( lineShift > 0 ) {
-            final int sz = map.size();
+            final int sz = size();
             for (int a = lineStart; a < sz; a=a+1) {
                 if ( a + lineShift < sz ) {
-                    SpanLine sl = map.remove(a + lineShift);
-                    map.put(a, sl);
+                    SpanLine sl = remove(a + lineShift);
+                    put(a, sl);
                 } else {
-                    map.remove(a);
+                    remove(a);
                 }
             }
         }
     }
     /**
-     * Insert some content in the span map.
+     * Insert some content in the span 
      */
     public void insertContent(int lineStart, int colStart, int lineStop, int colStop) {
         // ---+|+++      ---+|+++
@@ -173,9 +150,9 @@ public class SpanMap extends AbstractMap {
         // where x is insertion, | insertion point
         int lineShift = lineStop - lineStart;
         if ( lineShift > 0 ) {
-            for (int a = map.size() - 1; a >= lineStart + 1; a = a - 1) {
-                SpanLine sl = map.remove(a);
-                map.put(a + lineShift, sl);
+            for (int a = size() - 1; a >= lineStart + 1; a = a - 1) {
+                SpanLine sl = remove(a);
+                put(a + lineShift, sl);
             }
         }
         // ---+|+++      ---+
@@ -186,12 +163,12 @@ public class SpanMap extends AbstractMap {
             throw new RuntimeException("INVALID : lineStart=" + lineStart + ",lineStop=" + lineStop);
         }
         else if ( lineStart == lineStop ) {
-            map.get(lineStart).insertContent(colStart, colStop - colStart);
+            get(lineStart).insertContent(colStart, colStop - colStart);
         } else {
-            SpanLine[] startParts = map.get(lineStart).split(colStart);
-            map.put(lineStart, startParts[0]);
+            Line[] startParts = get(lineStart).split(colStart);
+            put(lineStart, startParts[0]);
             startParts[1].insertContent(0, colStop);
-            map.put(lineStart+lineShift, startParts[1]);
+            put(lineStart+lineShift, startParts[1]);
         }
     }
     public void insertContent(int line, int colStart, int colStop) {
@@ -206,9 +183,9 @@ public class SpanMap extends AbstractMap {
     }
     public void dump(String offset) {
         if ( !Logger.DEBUG ) { return; }
-        Logger.debug(offset+"number of lines in : "+ map.size());
+        Logger.debug(offset+"number of lines in : "+ size());
         //noinspection unchecked
-        for(Map.Entry<Integer, SpanLine> sl : map.entrySet().toArray(new Map.Entry[map.keySet().size()])) {
+        for(Map.Entry<Integer, SpanLine> sl : entrySet().toArray(new Map.Entry[keySet().size()])) {
             Logger.debug(offset+"dump for line index " + sl.getKey());
             sl.getValue().dump(Logger.OFFSET);
         }
@@ -226,7 +203,7 @@ public class SpanMap extends AbstractMap {
         SpanLine[] lines = null;
         while (lines == null ) {
             try {
-                lines = map.values().toArray(new SpanLine[size()]);
+                lines = values().toArray(new SpanLine[size()]);
             } catch (java.util.ConcurrentModificationException e) {
                 Logger.debug("This error is harmless if not repeat to much");
                 e.printStackTrace();
