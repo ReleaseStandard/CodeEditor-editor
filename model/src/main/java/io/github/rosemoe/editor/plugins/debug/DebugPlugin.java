@@ -13,30 +13,24 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.plugins.base;
+package io.github.rosemoe.editor.plugins.debug;
 
-import io.github.rosemoe.editor.core.CodeEditor;
+import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.plugins.Plugin;
+import io.github.rosemoe.editor.core.util.Logger;
 
 /**
- * This simple plugin allow you to send message to  widgets.
- * Then you simply use :
- *  Emitter e = new Emitter(editor);
- *  e.emit(new Event());
- *  eg.
- *    e.emit(new WidgetManagerEvent(TOGGLE));
- *
+ * Provide base implementation for a debug plugin.
  */
-public class Emitter extends Plugin {
+public abstract class DebugPlugin extends Plugin {
 
     @Override
     public boolean issubscribed(Class type) {
-        return false;
+        return true;
     }
 
-    public Emitter(CodeEditor editor) {
-        super(editor.model);
-        name = "emitter";
-        description = "simply allow calls to emit() by others plugins";
+    public DebugPlugin(CodeEditorModel editor) {
+        super(editor);
+        setEnabled(Logger.DEBUG);
     }
 }

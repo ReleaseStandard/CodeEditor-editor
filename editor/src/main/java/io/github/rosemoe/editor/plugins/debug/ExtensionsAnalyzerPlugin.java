@@ -17,10 +17,10 @@ package io.github.rosemoe.editor.plugins.debug;
 
 import java.util.HashMap;
 
+import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.extension.UserInputEvent;
 import io.github.rosemoe.editor.core.util.Logger;
-import io.github.rosemoe.editor.core.CodeEditor;
 
 /**
  * WARNING : it is disabled by default, you have to set Logger.DEBUG=true in the Logger.java file.
@@ -29,9 +29,9 @@ import io.github.rosemoe.editor.core.CodeEditor;
  * This plugin analyze the event system.
  *
  */
-public class WidgetAnalyzerPlugin extends DebugPlugin {
+public class ExtensionsAnalyzerPlugin extends DebugPlugin {
 
-    public WidgetAnalyzerPlugin(CodeEditor editor) {
+    public ExtensionsAnalyzerPlugin(CodeEditorModel editor) {
         super(editor);
         name = "widget analyzer";
         description = "widget analyzer plugin, make stats on widgets";

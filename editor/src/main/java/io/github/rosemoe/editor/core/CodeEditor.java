@@ -80,7 +80,7 @@ import io.github.rosemoe.editor.core.langs.LanguagePlugin;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
 import io.github.rosemoe.editor.plugins.debug.TestPlugin;
-import io.github.rosemoe.editor.plugins.debug.WidgetAnalyzerPlugin;
+import io.github.rosemoe.editor.plugins.debug.ExtensionsAnalyzerPlugin;
 import io.github.rosemoe.editor.plugins.debug.ExamplePlugin;
 import io.github.rosemoe.editor.core.extension.plugins.widgets.userinput.controller.UserInputConnexionController;
 import io.github.rosemoe.editor.core.extension.plugins.colorAnalyzer.analysis.ColorSchemeExtension;
@@ -595,7 +595,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         mStartedActionMode = ACTION_MODE_NONE;
         model.plugins.put(
                 new ExamplePlugin(this),
-                new WidgetAnalyzerPlugin(this),
+                new ExtensionsAnalyzerPlugin(model),
                 new TestPlugin(this)
         );
         model.background = new io.github.rosemoe.editor.core.Rect(0,0,0,0);

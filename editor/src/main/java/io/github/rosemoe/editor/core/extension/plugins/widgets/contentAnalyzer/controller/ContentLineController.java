@@ -19,7 +19,6 @@ import android.text.GetChars;
 import android.text.TextUtils;
 
 import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.ContentLineModel;
-import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.view.ContentLineView;
 
 /**
  * One line of content in the ContentMap.
@@ -27,7 +26,6 @@ import io.github.rosemoe.editor.core.extension.plugins.widgets.contentAnalyzer.v
 public class ContentLineController implements CharSequence, GetChars {
 
     public ContentLineModel model = new ContentLineModel();
-    public ContentLineView view   = new ContentLineView();
 
     public ContentLineController() {
         this(true);
