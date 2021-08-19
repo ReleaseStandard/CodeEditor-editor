@@ -190,6 +190,7 @@ public class Extension implements EventSource, EventDestination, Comparable/*, P
     public void subscribe(String type) {
 
     }
+
     /**
      * Encapsulation for decoupling needs
      * @param o

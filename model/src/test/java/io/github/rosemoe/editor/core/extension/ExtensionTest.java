@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import manifold.ext.rt.api.Jailbreak;
 
@@ -70,5 +71,14 @@ public class ExtensionTest {
         e1.priorityRing = Extension.PRIORITY_STD;
         e2.priorityRing = Extension.PRIORITY_STD;
         assertTrue(e1.compareTo(e2) == 0);
+    }
+
+    @Test
+    public void testColorRegistration() {
+        CodeEditorModel editor = new CodeEditorModel();
+        Extension e1 = new Extension(editor);
+        int color = 0xFF00FF00;
+        e1.registerPrefixedColorIfNotIn("test",color);
+        assertTrue(e1.getPrefixedColor("test") == color);
     }
 }

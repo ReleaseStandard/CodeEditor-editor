@@ -51,8 +51,7 @@ public class ExtensionContainer extends Extension implements Iterable<Extension>
     protected void handleEventDispatch(Event e, String subtype) {
         Logger.debug("Event dispatched : subtype=",subtype);
         Extension olde = null;
-        for (Iterator<Extension> it = extensions.iterator(); it.hasNext(); ) {
-            Extension extension = it.next();
+        for(Extension extension : this) {
             Logger.debug("plugin : enabled=",extension.enabled);
             extension.dispatch(e);
             if( e.stopHorizontalPropagation ) {
