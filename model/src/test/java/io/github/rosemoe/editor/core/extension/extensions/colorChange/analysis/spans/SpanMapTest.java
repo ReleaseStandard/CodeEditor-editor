@@ -284,7 +284,6 @@ public class SpanMapTest {
         }
     }
     @Test
-    @Ignore("SPAN_SPLIT_INVALIDATE on a SpanMap could cause implevisible span shift, you should better use SPAN_SPLIT_SPLITTING")
     public void testRemoveContentBug() {
         {
             //

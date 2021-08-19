@@ -3,6 +3,9 @@ package io.github.rosemoe.editor.core.extension.extensions.colorChange.analysis.
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+
 import io.github.rosemoe.editor.core.Cell;
 import io.github.rosemoe.editor.core.Line;
 import io.github.rosemoe.editor.core.color.spans.Span;
@@ -368,7 +371,6 @@ public class SpanLineTest {
     }
 
     @Test
-    @Ignore("TODO")
     public void removeContentBugs() {
         {
             //
@@ -382,7 +384,7 @@ public class SpanLineTest {
             s.put(Span.obtain(8, 1, 0));
             s.removeContent(2, 2);
             assertTrue(s.size() == 2);
-            assertTrue("s.get(6).size=" + s.get(6).size, s.get(6).size == 1);
+            assertTrue("s.get(6).size=" + s.get(6).size, s.get(6).size == 2);
             assertTrue(s.get(8).size == 1);
         }
     }

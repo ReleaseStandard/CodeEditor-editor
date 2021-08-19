@@ -15,7 +15,9 @@
  */
 package io.github.rosemoe.editor.core.color.spans;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import io.github.rosemoe.editor.core.Grid;
 import io.github.rosemoe.editor.core.Line;
@@ -118,7 +120,7 @@ public class SpanMap extends Grid<Span> {
         } else {
             Line[] startParts = get(lineStart).split(colStart);
             Line[] stopParts = get(lineStop).split(colStop);
-            Logger.debug("startParts: {0: ",startParts[0].size(),", 1: ",startParts[1].size(),"}");
+            Logger.debug("startParts: {0: ",startParts[0].size(),",startParts[0].size=",startParts[0].get(0).size,", 1: ",startParts[1].size(),"}");
             Logger.debug("stopParts: {0: ",stopParts[0].size(),", 1: ",stopParts[1].size(),"}");
             SpanLine sl = (SpanLine) SpanLine.concat(startParts[0],stopParts[1]);
             Logger.debug("concat="+sl.size());

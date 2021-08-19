@@ -2,11 +2,12 @@ package io.github.rosemoe.editor.core;
 
 import java.util.Iterator;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import io.github.rosemoe.editor.core.util.Logger;
 
 
-public class Line<T> extends TreeMap<Integer, Cell> implements Iterable<Cell> {
+public class Line<T> extends ConcurrentSkipListMap<Integer, Cell> implements Iterable<Cell> {
     public static final int SPAN_SPLIT_EXTENDS = 0;
     public static final int SPAN_SPLIT_INVALIDATE = 1;
     public static final int SPAN_SPLIT_SPLITTING = 2;
@@ -265,7 +266,7 @@ public class Line<T> extends TreeMap<Integer, Cell> implements Iterable<Cell> {
      * @param sz size 1..n size of the remove.
      */
     public void removeContent(int col,int sz) {
-        for(Cell cell : (Cell[]) values().toArray(new Cell[size()])) {
+        for(Cell cell : this) {
             if ( (cell.column+cell.size) <= col ) {
                 // 1. NOTHING happen here we just keep the spans as it is
             } else if ( (cell.column) >= col+sz ) {
@@ -288,23 +289,5 @@ public class Line<T> extends TreeMap<Integer, Cell> implements Iterable<Cell> {
                 }
             }
         }
-    }
-
-    /**
-     * This function is used to avoid concurrent exception when working with Collections.
-     * @return
-     */
-    public Cell[] concurrentSafeGetValues() {
-        Cell[] cells = null;
-        while (cells == null ) {
-            try {
-                cells = values().toArray(new Cell[size()]);
-            } catch (java.util.ConcurrentModificationException e) {
-                Logger.debug("This error is harmless if not repeat to much");
-                e.printStackTrace();
-                cells=null;
-            }
-        }
-        return cells;
     }
 }
