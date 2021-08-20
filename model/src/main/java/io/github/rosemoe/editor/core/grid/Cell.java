@@ -2,7 +2,7 @@ package io.github.rosemoe.editor.core.grid;
 
 import io.github.rosemoe.editor.core.CEObject;
 
-public abstract class Cell extends CEObject implements CellData {
+public abstract class Cell extends CEObject {
 
     public boolean enabled = true;
     public int size = 0;
@@ -50,4 +50,6 @@ public abstract class Cell extends CEObject implements CellData {
     public Cell obtain(Object ...args) {
         return null;
     }
+    protected abstract void dataClear();
+    protected abstract Cell dataClone(Cell cloning);
 }
