@@ -13,18 +13,19 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller;
+package io.github.rosemoe.editor.core.content.controller;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.processors.ContentLineRemoveListener;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.processors.indexer.CachedIndexer;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.processors.indexer.Indexer;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.processors.indexer.NoCacheIndexer;
+import io.github.rosemoe.editor.core.content.processors.ContentLineRemoveListener;
+import io.github.rosemoe.editor.core.content.processors.indexer.CachedIndexer;
+import io.github.rosemoe.editor.core.content.processors.indexer.Indexer;
+import io.github.rosemoe.editor.core.content.processors.indexer.NoCacheIndexer;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.grid.Grid;
+import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.util.annotations.Experimental;
@@ -61,7 +62,7 @@ public class ContentMap extends Grid implements CharSequence {
 
     private List<ContentLineController> lines;
     private Indexer indexer;
-    private ContentManagerController contentManager;
+    private ContentActionStack contentManager;
     private CursorController cursor;
     private List<ContentListener> mListeners;
     private ContentLineRemoveListener mLineListener;
@@ -94,7 +95,7 @@ public class ContentMap extends Grid implements CharSequence {
             lines = new BlockLinkedList<>(5000);
         lines.add(new ContentLineController());
         mListeners = new ArrayList<>();
-        contentManager = new ContentManagerController(this);
+        contentManager = new ContentActionStack(this);
         setMaxUndoStackSize(ContentMap.DEFAULT_MAX_UNDO_STACK_SIZE);
         indexer = new NoCacheIndexer(this);
         if (src.length() == 0) {
@@ -264,7 +265,7 @@ public class ContentMap extends Grid implements CharSequence {
             if (c == '\n') {
                 ContentLineController newLine = new ContentLineController();
                 newLine.append(currLine, workIndex, currLine.length());
-                currLine.delete(workIndex, currLine.length());
+                currLine.removeContent(workIndex, currLine.length());
                 lines.add(workLine + 1, newLine);
                 currLine = newLine;
                 workIndex = 0;
@@ -328,13 +329,13 @@ public class ContentMap extends Grid implements CharSequence {
                     cursor.beforeDelete(startLine == 0 ? 0 : startLine - 1, startLine == 0 ? 0 : getColumnCount(startLine - 1), endLine, columnOnEndLine);
 
             changedContent.append(curr, beginIdx, columnOnEndLine);
-            curr.delete(beginIdx, columnOnEndLine);
+            curr.removeContent(beginIdx, columnOnEndLine-beginIdx);
             textLength -= columnOnEndLine - columnOnStartLine;
             if (columnOnStartLine == -1) {
                 if (startLine == 0) {
                     textLength++;
                 } else {
-                    ContentLineController previous = lines.get(startLine - 1);
+                    Line previous = lines.get(startLine - 1);
                     previous.append(curr);
                     ContentLineController rm = lines.remove(startLine);
                     if (mLineListener != null) {
@@ -366,10 +367,10 @@ public class ContentMap extends Grid implements CharSequence {
             ContentLineController end = lines.get(currEnd);
             textLength -= start.length() - columnOnStartLine;
             changedContent.insert(0, start, columnOnStartLine, start.length());
-            start.delete(columnOnStartLine, start.length());
+            start.removeContent(columnOnStartLine, start.length());
             textLength -= columnOnEndLine;
             changedContent.append('\n').append(end, 0, columnOnEndLine);
-            end.delete(0, columnOnEndLine);
+            end.removeContent(0, columnOnEndLine);
             textLength--;
             ContentLineController r = lines.remove(currEnd);
             if (mLineListener != null) {
@@ -427,7 +428,7 @@ public class ContentMap extends Grid implements CharSequence {
 
     /**
      * Undo the last modification
-     * NOTE:When there are too much modification,old modification will be deleted from ContentManagerController
+     * NOTE:When there are too much modification,old modification will be deleted from ContentActionStack
      */
     public void undo() {
         contentManager.undo(this);
@@ -459,27 +460,27 @@ public class ContentMap extends Grid implements CharSequence {
     }
 
     /**
-     * Get whether ContentManagerController is enabled
+     * Get whether ContentActionStack is enabled
      *
-     * @return Whether ContentManagerController is enabled
+     * @return Whether ContentActionStack is enabled
      */
     public boolean isUndoEnabled() {
         return contentManager.model.isUndoEnabled();
     }
 
     /**
-     * Set whether enable the ContentManagerController.
+     * Set whether enable the ContentActionStack.
      * If false,any modification will not be taken down and previous modification that
-     * is already in ContentManagerController will be removed.Does not make changes to content.
+     * is already in ContentActionStack will be removed.Does not make changes to content.
      *
-     * @param enabled New state for ContentManagerController
+     * @param enabled New state for ContentActionStack
      */
     public void setUndoEnabled(boolean enabled) {
         contentManager.setUndoEnabled(enabled);
     }
 
     /**
-     * Get current max stack size of ContentManagerController
+     * Get current max stack size of ContentActionStack
      *
      * @return current max stack size
      */
@@ -488,7 +489,7 @@ public class ContentMap extends Grid implements CharSequence {
     }
 
     /**
-     * Set the max size of stack in ContentManagerController
+     * Set the max size of stack in ContentActionStack
      *
      * @param maxSize New max size
      */
@@ -498,7 +499,7 @@ public class ContentMap extends Grid implements CharSequence {
 
     /**
      * A delegate method.
-     * Notify the ContentManagerController to begin batch edit(enter a new layer).
+     * Notify the ContentActionStack to begin batch edit(enter a new layer).
      * NOTE: batch edit in Android can be nested.
      *
      * @return Whether in batch edit
@@ -510,7 +511,7 @@ public class ContentMap extends Grid implements CharSequence {
 
     /**
      * A delegate method.
-     * Notify the ContentManagerController to end batch edit(exit current layer).
+     * Notify the ContentActionStack to end batch edit(exit current layer).
      *
      * @return Whether in batch edit
      */

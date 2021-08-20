@@ -13,6 +13,9 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
     public static final int SPAN_SPLIT_SPLITTING = 2;
     public int behaviourOnCellSplit = SPAN_SPLIT_INVALIDATE;
 
+    public int getBehaviourOnCellSplit() {
+        return behaviourOnCellSplit;
+    }
     @Override
     public Cell get(Object key) {
         return super.get(key);
@@ -56,6 +59,23 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
     }
 
     /**
+     * Append a cell at the end of this line.
+     * @param cell
+     */
+    public Cell append(Cell cell) {
+        if ( lastEntry() != null ) {
+            Cell c = lastEntry().value;
+            cell.column += c.column+c.size;
+        }
+        return put(cell);
+    }
+    public void append(Line line) {
+        for(Cell c : line) {
+            append(c);
+        }
+    }
+
+    /**
      * Split the line at given column index.
      * WARNING: this operation is destructive on the original Line (we do not create new Cells)
      * if we split on a span rather than between spans, we remove the span
@@ -85,7 +105,7 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
                 parts[1].put(cell);
             } else if (cell.column < col && (cell.column+cell.size) > col ) {
                 Logger.debug("Case 3");
-                switch ( behaviourOnCellSplit ) {
+                switch ( getBehaviourOnCellSplit() ) {
                     case SPAN_SPLIT_INVALIDATE:
                     case SPAN_SPLIT_EXTENDS:
                     case SPAN_SPLIT_SPLITTING:
@@ -95,13 +115,13 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
                         final int oldSz = cell.size;
                         cell.size = col - cell.column;
                         if ( cell.size > 0 ) {
-                            cell.enabled = !(behaviourOnCellSplit == SPAN_SPLIT_INVALIDATE);
+                            cell.enabled = !(getBehaviourOnCellSplit() == SPAN_SPLIT_INVALIDATE);
                             parts[0].put(cell);
                         }
                         Cell otherPart = cell.clone();
                         otherPart.size = oldSz - cell.size;
                         otherPart.column = 0;
-                        otherPart.enabled = !(behaviourOnCellSplit == SPAN_SPLIT_INVALIDATE);
+                        otherPart.enabled = !(getBehaviourOnCellSplit() == SPAN_SPLIT_INVALIDATE);
                         if ( otherPart.size > 0 ) {
                             parts[1].put(otherPart);
                         }
@@ -169,7 +189,7 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
         // here we got undefined :
         //   - or do not insert the span (we just use fields)
         //   - or do insert the span but do not respect the behaviourOnSpanSplit policy
-        if ( behaviourOnCellSplit == SPAN_SPLIT_EXTENDS) {
+        if ( getBehaviourOnCellSplit() == SPAN_SPLIT_EXTENDS) {
             throw new RuntimeException("Error : give insert a Span in SPAN_SPLIT_EXTENDS policy will produce undermined behaviour, aborting");
         }
         insertContent(cell.column, cell.size);
@@ -186,7 +206,7 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
                 s.column = s.column+size;
                 put(s.column, s);
             } else if (s.column < col && (s.column + s.size) > col) {
-                switch (behaviourOnCellSplit) {
+                switch (getBehaviourOnCellSplit()) {
                     case SPAN_SPLIT_EXTENDS:
                         remove(s.column);
                         s.size += size;
@@ -295,7 +315,7 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
                 put(cell.column, cell);
             } else {
                 // 2. we must move column or size or both (prerequisite: col=0, sz=0)
-                switch (behaviourOnCellSplit) {
+                switch (getBehaviourOnCellSplit()) {
                     case SPAN_SPLIT_EXTENDS:
                         removeContentExtend(col, sz, cell);
                         break;

@@ -13,14 +13,14 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.processors.indexer;
+package io.github.rosemoe.editor.core.content.processors.indexer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentMap;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentListener;
+import io.github.rosemoe.editor.core.content.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentListener;
 import io.github.rosemoe.editor.core.CharPosition;
 
 /**

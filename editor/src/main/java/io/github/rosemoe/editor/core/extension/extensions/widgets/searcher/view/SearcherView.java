@@ -18,7 +18,7 @@ package io.github.rosemoe.editor.core.extension.extensions.widgets.searcher.view
 import android.app.ProgressDialog;
 import android.widget.Toast;
 
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CodeEditor;
 

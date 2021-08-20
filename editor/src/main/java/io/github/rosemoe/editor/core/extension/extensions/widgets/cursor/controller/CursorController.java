@@ -26,8 +26,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionController;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentMap;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.processors.indexer.CachedIndexer;
+import io.github.rosemoe.editor.core.content.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.processors.indexer.CachedIndexer;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.view.CursorView;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.UserInputModel;
 import io.github.rosemoe.editor.core.extension.extensions.langs.LanguagePlugin;

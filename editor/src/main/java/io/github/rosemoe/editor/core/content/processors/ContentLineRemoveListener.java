@@ -13,10 +13,10 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.processors;
+package io.github.rosemoe.editor.core.content.processors;
 
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentMap;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentLineController;
+import io.github.rosemoe.editor.core.content.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentLineController;
 
 /**
  * A listener to know when a ContentLineController object is removed from ContentMap object

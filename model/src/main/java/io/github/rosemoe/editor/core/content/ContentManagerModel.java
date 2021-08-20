@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer;
+package io.github.rosemoe.editor.core.content;
 
 /**
  * Model for the content manager (text).

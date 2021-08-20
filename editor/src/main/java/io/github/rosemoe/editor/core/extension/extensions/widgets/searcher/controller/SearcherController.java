@@ -16,7 +16,7 @@
 package io.github.rosemoe.editor.core.extension.extensions.widgets.searcher.controller;
 
 import io.github.rosemoe.editor.core.extension.Extension;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.searcher.SearcherModel;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.searcher.view.SearcherView;

@@ -1,4 +1,4 @@
-package io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer;
+package io.github.rosemoe.editor.core.content;
 
 import org.junit.Test;
 

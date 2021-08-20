@@ -69,7 +69,7 @@ import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensio
 import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.IdentifierAutoCompleteController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.IdentifierAutoCompleteModel;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.CursorModel;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.layout.controller.AbstractLayout;
 import io.github.rosemoe.editor.core.extension.extensions.loopback.LoopbackController;
@@ -94,11 +94,11 @@ import io.github.rosemoe.editor.core.extension.extensions.widgets.contextaction.
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.CompletionAdapter;
 import io.github.rosemoe.editor.core.langs.empty.EmptyLanguage;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentLineController;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentListener;
+import io.github.rosemoe.editor.core.content.controller.ContentLineController;
+import io.github.rosemoe.editor.core.content.controller.ContentListener;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.view.UserInputView;
 import io.github.rosemoe.editor.core.util.FontCache;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.processors.ContentLineRemoveListener;
+import io.github.rosemoe.editor.core.content.processors.ContentLineRemoveListener;
 
 import static io.github.rosemoe.editor.core.extension.extensions.langs.helpers.TextUtils.isEmoji;
 

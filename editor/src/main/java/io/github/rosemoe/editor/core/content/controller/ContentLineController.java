@@ -13,19 +13,25 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller;
+package io.github.rosemoe.editor.core.content.controller;
 
 import android.text.GetChars;
 import android.text.TextUtils;
 
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.ContentLineModel;
+import io.github.rosemoe.editor.core.content.ContentLineModel;
+import io.github.rosemoe.editor.core.grid.Line;
 
 /**
  * One line of content in the ContentMap.
  */
-public class ContentLineController implements CharSequence, GetChars {
+public class ContentLineController extends Line implements CharSequence, GetChars {
 
     public ContentLineModel model = new ContentLineModel();
+
+    @Override
+    public int getBehaviourOnCellSplit() {
+        return SPAN_SPLIT_SPLITTING;
+    }
 
     public ContentLineController() {
         this(true);
@@ -91,24 +97,6 @@ public class ContentLineController implements CharSequence, GetChars {
         model.insert(dstOffset,s,start,end);
         return this;
     }
-    /**
-     * Removes the characters in a substring of this sequence.
-     * The substring begins at the specified {@code start} and extends to
-     * the character at index {@code end - 1} or to the end of the
-     * sequence if no such character exists. If
-     * {@code start} is equal to {@code end}, no changes are made.
-     *
-     * @param start The beginning index, inclusive.
-     * @param end   The ending index, exclusive.
-     * @return This object.
-     * @throws StringIndexOutOfBoundsException if {@code start}
-     *                                         is negative, greater than {@code length()}, or
-     *                                         greater than {@code end}.
-     */
-    public ContentLineController delete(int start, int end) {
-        model.delete(start,end);
-        return this;
-    }
 
     public ContentLineController insert(int offset, char c) {
         model.insert(offset,c);
@@ -118,10 +106,6 @@ public class ContentLineController implements CharSequence, GetChars {
     public ContentLineController append(CharSequence s, int start, int end) {
         model.append(s,start,end);
         return this;
-    }
-
-    public ContentLineController append(CharSequence text) {
-        return insert(model.length, text);
     }
 
     public int indexOf(CharSequence text, int index) {

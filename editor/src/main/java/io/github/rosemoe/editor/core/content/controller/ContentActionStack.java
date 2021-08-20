@@ -13,13 +13,13 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller;
+package io.github.rosemoe.editor.core.content.controller;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.ContentManagerModel;
+import io.github.rosemoe.editor.core.content.ContentManagerModel;
 
 /**
  * Helper class for ContentMap to take down modification
@@ -27,7 +27,7 @@ import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyze
  *
  * @author Rose
  */
-public final class ContentManagerController extends Stack<ContentManagerController.ContentAction> implements ContentListener {
+public final class ContentActionStack extends Stack<ContentActionStack.ContentAction> implements ContentListener {
 
     public ContentManagerModel model = new ContentManagerModel();
 
@@ -38,11 +38,11 @@ public final class ContentManagerController extends Stack<ContentManagerControll
     private int mStackPointer;
 
     /**
-     * Create ContentManagerController with the target content
+     * Create ContentActionStack with the target content
      *
      * @param content The ContentMap going to attach
      */
-    public ContentManagerController(ContentMap content) {
+    public ContentActionStack(ContentMap content) {
         mContent = content;
         mInsertAction = null;
         mDeleteAction = null;
@@ -108,7 +108,7 @@ public final class ContentManagerController extends Stack<ContentManagerControll
     }
 
     /**
-     * Set a max stack size for this ContentManagerController
+     * Set a max stack size for this ContentActionStack
      *
      * @param maxSize max stack size
      */
@@ -280,7 +280,7 @@ public final class ContentManagerController extends Stack<ContentManagerControll
     }
 
     /**
-     * Insert action model for ContentManagerController
+     * Insert action model for ContentActionStack
      *
      * @author Rose
      */
@@ -330,7 +330,7 @@ public final class ContentManagerController extends Stack<ContentManagerControll
     }
 
     /**
-     * MultiAction saves several actions for ContentManagerController
+     * MultiAction saves several actions for ContentActionStack
      *
      * @author Rose
      */
@@ -378,7 +378,7 @@ public final class ContentManagerController extends Stack<ContentManagerControll
     }
 
     /**
-     * Delete action model for ContentManagerController
+     * Delete action model for ContentActionStack
      *
      * @author Rose
      */
@@ -428,7 +428,7 @@ public final class ContentManagerController extends Stack<ContentManagerControll
     }
 
     /**
-     * Replace action model for ContentManagerController
+     * Replace action model for ContentActionStack
      *
      * @author Rose
      */

@@ -17,7 +17,7 @@ package io.github.rosemoe.editor.core.extension.extensions.widgets.layout.contro
 
 import android.graphics.Paint;
 
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentMap;
 import io.github.rosemoe.editor.core.util.FontCache;
 import io.github.rosemoe.editor.core.CodeEditor;
 

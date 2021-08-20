@@ -26,9 +26,9 @@ import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.util.CallStack;
 
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentMap;
 
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.codeanalysis.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.BlockLineModel;
 

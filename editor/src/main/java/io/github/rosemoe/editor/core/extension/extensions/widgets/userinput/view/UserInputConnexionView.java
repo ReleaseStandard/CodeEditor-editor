@@ -25,7 +25,7 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.SymbolPairMatch;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.util.Logger;

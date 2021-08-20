@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentLineController;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentLineController;
+import io.github.rosemoe.editor.core.content.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.layout.model.WordwrapModel;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;

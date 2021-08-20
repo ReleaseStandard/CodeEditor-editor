@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.Random;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.ContentLineModel;
+import io.github.rosemoe.editor.core.content.ContentLineModel;
 
 public class ContentLineModelTest extends TestCase {
     final static Random r = new Random();

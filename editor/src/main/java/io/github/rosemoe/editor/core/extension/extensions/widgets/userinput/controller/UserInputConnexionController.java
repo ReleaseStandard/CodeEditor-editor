@@ -20,7 +20,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 
 import io.github.rosemoe.editor.core.CharPosition;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.UserInputConnexionModel;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.view.UserInputConnexionView;
 import io.github.rosemoe.editor.core.util.Logger;

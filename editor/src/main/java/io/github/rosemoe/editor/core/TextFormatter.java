@@ -16,7 +16,7 @@
 package io.github.rosemoe.editor.core;
 
 import io.github.rosemoe.editor.core.extension.extensions.langs.LanguagePlugin;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentMap;
 
 /**
  * Process text formatting.
