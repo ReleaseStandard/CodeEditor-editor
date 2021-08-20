@@ -3159,7 +3159,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         // Update spans
         if (isSpanMapPrepared(true, endLine - startLine)) {
             if (startLine == endLine) {
-                sm.get(startLine).insertContent(Span.obtain(startColumn, endColumn - startColumn, 0));
+                sm.get(startLine).insertCell(Span.obtain(startColumn, endColumn - startColumn, 0));
             } else {
                 sm.insertContent(startLine, startColumn, endLine, endColumn);
             }

@@ -25,14 +25,8 @@ public class ContentLineModel {
      */
     public int id;
 
-    /**
-     * Measured width of line
-     */
-    public int width;
-
     public void initialise(boolean extended) {
         id = -1;
-        width = 0;
 
         if ( extended ) {
             length = 0;

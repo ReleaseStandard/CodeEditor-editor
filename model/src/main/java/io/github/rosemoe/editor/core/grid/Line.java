@@ -8,10 +8,7 @@ import io.github.rosemoe.editor.core.util.Logger;
 
 
 public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterable<Cell> {
-    public static final int SPAN_SPLIT_EXTENDS = 0;
-    public static final int SPAN_SPLIT_INVALIDATE = 1;
-    public static final int SPAN_SPLIT_SPLITTING = 2;
-    public int behaviourOnCellSplit = SPAN_SPLIT_INVALIDATE;
+    public int behaviourOnCellSplit = Cell.SPLIT_INVALIDATE;
 
     public int getBehaviourOnCellSplit() {
         return behaviourOnCellSplit;
@@ -26,6 +23,17 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
         return super.values().iterator();
     }
 
+    /**
+     * Clone this line.
+     * @return cloned line.
+     */
+    public Line clone() {
+        Line cloned = new Line();
+        for(Cell c : this) {
+            cloned.append(c.clone());
+        }
+        return cloned;
+    }
     /**
      * Remove a span from the span line.
      * @return
@@ -106,22 +114,22 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
             } else if (cell.column < col && (cell.column+cell.size) > col ) {
                 Logger.debug("Case 3");
                 switch ( getBehaviourOnCellSplit() ) {
-                    case SPAN_SPLIT_INVALIDATE:
-                    case SPAN_SPLIT_EXTENDS:
-                    case SPAN_SPLIT_SPLITTING:
+                    case Cell.SPLIT_INVALIDATE:
+                    case Cell.SPLIT_EXTENDS:
+                    case Cell.SPLIT_SPLITTING:
                         if ( startOfNewLine == -1 ) {
                             startOfNewLine = col;
                         }
                         final int oldSz = cell.size;
                         cell.size = col - cell.column;
                         if ( cell.size > 0 ) {
-                            cell.enabled = !(getBehaviourOnCellSplit() == SPAN_SPLIT_INVALIDATE);
+                            cell.enabled = !(getBehaviourOnCellSplit() == Cell.SPLIT_INVALIDATE);
                             parts[0].put(cell);
                         }
                         Cell otherPart = cell.clone();
                         otherPart.size = oldSz - cell.size;
                         otherPart.column = 0;
-                        otherPart.enabled = !(getBehaviourOnCellSplit() == SPAN_SPLIT_INVALIDATE);
+                        otherPart.enabled = !(getBehaviourOnCellSplit() == Cell.SPLIT_INVALIDATE);
                         if ( otherPart.size > 0 ) {
                             parts[1].put(otherPart);
                         }
@@ -182,22 +190,26 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
 
 
     /**
-     * Insert content into the SpanLine at specified position.
-     * @param cell the span to insert
+     * Insert a cell in the line.
+     *  behaviours:
+     *  - it extend a cell
+     *  - it split existing cell and insert between
+     *  - it invalidate existing cell and insert between
+     * @param cell the cell to insert
      */
-    public void insertContent(Cell cell) {
+    public void insertCell(Cell cell) {
         // here we got undefined :
         //   - or do not insert the span (we just use fields)
         //   - or do insert the span but do not respect the behaviourOnSpanSplit policy
-        if ( getBehaviourOnCellSplit() == SPAN_SPLIT_EXTENDS) {
+        if ( getBehaviourOnCellSplit() == Cell.SPLIT_EXTENDS) {
             throw new RuntimeException("Error : give insert a Span in SPAN_SPLIT_EXTENDS policy will produce undermined behaviour, aborting");
         }
-        insertContent(cell.column, cell.size);
+        insertCell(cell.column, cell.size);
         if ( cell.size > 0 ) {
             put(cell.column, cell);
         }
     }
-    public void insertContent(final int col, final int size) {
+    public void insertCell(final int col, final int size) {
         Cell[] arr = (Cell[]) values().toArray(new Cell[size()]);
         for(int a = arr.length-1; a >= 0; a --) {
             Cell s = arr[a];
@@ -207,15 +219,15 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
                 put(s.column, s);
             } else if (s.column < col && (s.column + s.size) > col) {
                 switch (getBehaviourOnCellSplit()) {
-                    case SPAN_SPLIT_EXTENDS:
+                    case Cell.SPLIT_EXTENDS:
                         remove(s.column);
                         s.size += size;
                         put(s.column, s);
                         break;
-                    case SPAN_SPLIT_INVALIDATE:
+                    case Cell.SPLIT_INVALIDATE:
                         remove(s.column);
                         break;
-                    case SPAN_SPLIT_SPLITTING:
+                    case Cell.SPLIT_SPLITTING:
                         int oldSz = s.size;
                         int index = col + size;
                         s.size = (col - s.column);
@@ -236,7 +248,7 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
      * @param col index 0..n-1
      * @param sz size 0..n
      */
-    private void removeContentExtend(int col, int sz, Cell cell) {
+    private void removeCellsExtend(int col, int sz, Cell cell) {
         int startIndex = cell.column;
         int startLength = cell.size;
         int startShift = col - cell.column;
@@ -265,10 +277,10 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
             put(cell.column, cell);
         }
     }
-    private void removeContentInvalidate(int col, int sz, Cell cell) {
+    private void removeCellsInvalidate(int col, int sz, Cell cell) {
         remove(cell);
     }
-    private void removeContentSplitting(int col, int sz, Cell cell) {
+    private void removeCellsSplitting(int col, int sz, Cell cell) {
         int startIndex = cell.column;
         int startLength = cell.size;
         int startShift = col - cell.column;
@@ -304,7 +316,7 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
      * @param col index 0..n-1 where to start removing.
      * @param sz size 1..n size of the remove.
      */
-    public void removeContent(int col,int sz) {
+    public void removeCells(int col, int sz) {
         for(Cell cell : this) {
             if ( (cell.column+cell.size) <= col ) {
                 // 1. NOTHING happen here we just keep the spans as it is
@@ -316,14 +328,14 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
             } else {
                 // 2. we must move column or size or both (prerequisite: col=0, sz=0)
                 switch (getBehaviourOnCellSplit()) {
-                    case SPAN_SPLIT_EXTENDS:
-                        removeContentExtend(col, sz, cell);
+                    case Cell.SPLIT_EXTENDS:
+                        removeCellsExtend(col, sz, cell);
                         break;
-                    case SPAN_SPLIT_SPLITTING:
-                        removeContentSplitting(col, sz, cell);
+                    case Cell.SPLIT_SPLITTING:
+                        removeCellsSplitting(col, sz, cell);
                         break;
-                    case SPAN_SPLIT_INVALIDATE:
-                        removeContentInvalidate(col,sz,cell);
+                    case Cell.SPLIT_INVALIDATE:
+                        removeCellsInvalidate(col,sz,cell);
                         break;
                 }
             }
@@ -334,7 +346,7 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
      * Return size of the content in this line.
      * @return size of the content.
      */
-    public int sizeContent() {
+    public int getWidth() {
         if ( lastEntry() == null ) { return 0; }
         Cell c = lastEntry().value;
         return c.column+c.size;

@@ -37,7 +37,7 @@ public class GridTest {
             //
             //
             Grid map = new Grid();
-            map.behaviourOnCellSplit = Line.SPAN_SPLIT_INVALIDATE;
+            map.behaviourOnCellSplit = Cell.SPLIT_INVALIDATE;
             Line s1 = new Line();
             s1.put(Span.obtain(0, 2, 0));
             s1.put(Span.obtain(2, 2, 0));
@@ -54,7 +54,7 @@ public class GridTest {
             //
             // **--+++++
             Grid map = new Grid();
-            map.behaviourOnCellSplit = Line.SPAN_SPLIT_INVALIDATE;
+            map.behaviourOnCellSplit = Cell.SPLIT_INVALIDATE;
             Line s1 = new Line();
             s1.put(Span.obtain(0, 2, 0));
             s1.put(Span.obtain(2, 2, 0));
@@ -73,7 +73,7 @@ public class GridTest {
             // yymmmmm
             //
             Grid map = new Grid();
-            map.behaviourOnCellSplit = Line.SPAN_SPLIT_INVALIDATE;
+            map.behaviourOnCellSplit = Cell.SPLIT_INVALIDATE;
             Line l = new Line(), l1 = new Line();
             l.put(Span.obtain(0, 2, 0));
             l.put(Span.obtain(2, 3, 0));
@@ -102,7 +102,7 @@ public class GridTest {
             // -|+|+
             //
             Grid map = new Grid();
-            map.behaviourOnCellSplit = Line.SPAN_SPLIT_SPLITTING;
+            map.behaviourOnCellSplit = Cell.SPLIT_SPLITTING;
             Line l = new Line();
             l.put(Span.obtain(0, 1, 0));
             l.put(Span.obtain(1, 2, 0));
@@ -126,7 +126,7 @@ public class GridTest {
             // ++|+--
             // ***|**
             Grid map = new Grid();
-            map.behaviourOnCellSplit = Line.SPAN_SPLIT_INVALIDATE;
+            map.behaviourOnCellSplit = Cell.SPLIT_INVALIDATE;
             Line l = new Line();
             l.put(Span.obtain(0, 3, 0));
             l.put(Span.obtain(3, 2, 0));
@@ -146,7 +146,7 @@ public class GridTest {
             // **|*--
             // ===|==
             Grid map = new Grid();
-            map.behaviourOnCellSplit = Line.SPAN_SPLIT_SPLITTING;
+            map.behaviourOnCellSplit = Cell.SPLIT_SPLITTING;
             Line l = new Line();
             l.put(Span.obtain(0, 3, 0));
             l.put(Span.obtain(3, 2, 0));
@@ -169,7 +169,7 @@ public class GridTest {
             // -|-
             // *|*
             Grid map = new Grid();
-            map.behaviourOnCellSplit = Line.SPAN_SPLIT_EXTENDS;
+            map.behaviourOnCellSplit = Cell.SPLIT_EXTENDS;
             Line l = new Line();
             l.put(Span.obtain(0, 2, 0));
             map.put(0,l);
@@ -195,7 +195,7 @@ public class GridTest {
             // $$$$$--$$$$$
             // $$$$++++$$$$
             Grid map = new Grid();
-            map.behaviourOnCellSplit = Line.SPAN_SPLIT_EXTENDS;
+            map.behaviourOnCellSplit = Cell.SPLIT_EXTENDS;
             Line l = new Line();
             l.put(Span.obtain(0, 1, 0));
             l.put(Span.obtain(1, 8, 0));
@@ -220,7 +220,7 @@ public class GridTest {
             // $$$$$**$$$|$
             // $$$$++++$$$$
             Grid map = new Grid();
-            map.behaviourOnCellSplit = Line.SPAN_SPLIT_EXTENDS;
+            map.behaviourOnCellSplit = Cell.SPLIT_EXTENDS;
             Line l = new Line();
             l.put(Span.obtain(0, 1, 0));
             l.put(Span.obtain(1, 8, 0));
@@ -251,7 +251,7 @@ public class GridTest {
             // ---+mm
             //
             Grid map = new Grid();
-            map.behaviourOnCellSplit = Line.SPAN_SPLIT_SPLITTING;
+            map.behaviourOnCellSplit = Cell.SPLIT_SPLITTING;
             Line l = new Line();
             l.put(Span.obtain(0, 3, 0));
             l.put(Span.obtain(3, 4, 0));
@@ -285,7 +285,7 @@ public class GridTest {
             // --- mm
             //
             Grid map = new Grid();
-            map.behaviourOnCellSplit = Line.SPAN_SPLIT_INVALIDATE;
+            map.behaviourOnCellSplit = Cell.SPLIT_INVALIDATE;
             Line l = new Line();
             l.put(Span.obtain(0, 3, 0));
             l.put(Span.obtain(3, 4, 0));

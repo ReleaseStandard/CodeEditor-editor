@@ -12,7 +12,7 @@ import io.github.rosemoe.editor.core.util.Logger;
  */
 public class Grid extends ConcurrentSkipListMap<Integer, Line> implements Iterable<Line> {
 
-    public int behaviourOnCellSplit = Line.SPAN_SPLIT_SPLITTING;
+    public int behaviourOnCellSplit = Cell.SPLIT_SPLITTING;
 
     @Override
     public Iterator<Line> iterator() {
@@ -59,7 +59,7 @@ public class Grid extends ConcurrentSkipListMap<Integer, Line> implements Iterab
             throw new RuntimeException("INVALID : lineStart=" + lineStart + ",lineStop=" + lineStop);
         }
         else if ( lineStart == lineStop ) {
-            get(lineStart).removeContent(colStart, colStop - colStart);
+            get(lineStart).removeCells(colStart, colStop - colStart);
         } else {
             Line[] startParts = get(lineStart).split(colStart);
             Line[] stopParts = get(lineStop).split(colStop);
@@ -105,11 +105,11 @@ public class Grid extends ConcurrentSkipListMap<Integer, Line> implements Iterab
             throw new RuntimeException("INVALID : lineStart=" + lineStart + ",lineStop=" + lineStop);
         }
         else if ( lineStart == lineStop ) {
-            get(lineStart).insertContent(colStart, colStop - colStart);
+            get(lineStart).insertCell(colStart, colStop - colStart);
         } else {
             Line[] startParts = get(lineStart).split(colStart);
             put(lineStart, startParts[0]);
-            startParts[1].insertContent(0, colStop);
+            startParts[1].insertCell(0, colStop);
             put(lineStart+lineShift, startParts[1]);
         }
     }

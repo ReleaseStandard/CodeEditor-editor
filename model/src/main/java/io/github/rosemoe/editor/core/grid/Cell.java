@@ -4,6 +4,10 @@ import io.github.rosemoe.editor.core.CEObject;
 
 public abstract class Cell extends CEObject {
 
+    public static final int SPLIT_EXTENDS = 0;
+    public static final int SPLIT_INVALIDATE = 1;
+    public static final int SPLIT_SPLITTING = 2;
+
     public boolean enabled = true;
     public int size = 0;
     public int column = 0;

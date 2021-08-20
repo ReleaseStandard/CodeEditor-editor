@@ -265,7 +265,7 @@ public class ContentMap extends Grid implements CharSequence {
             if (c == '\n') {
                 ContentLineController newLine = new ContentLineController();
                 newLine.append(currLine, workIndex, currLine.length());
-                currLine.removeContent(workIndex, currLine.length());
+                currLine.removeCells(workIndex, currLine.length());
                 lines.add(workLine + 1, newLine);
                 currLine = newLine;
                 workIndex = 0;
@@ -329,7 +329,7 @@ public class ContentMap extends Grid implements CharSequence {
                     cursor.beforeDelete(startLine == 0 ? 0 : startLine - 1, startLine == 0 ? 0 : getColumnCount(startLine - 1), endLine, columnOnEndLine);
 
             changedContent.append(curr, beginIdx, columnOnEndLine);
-            curr.removeContent(beginIdx, columnOnEndLine-beginIdx);
+            curr.removeCells(beginIdx, columnOnEndLine-beginIdx);
             textLength -= columnOnEndLine - columnOnStartLine;
             if (columnOnStartLine == -1) {
                 if (startLine == 0) {
@@ -367,10 +367,10 @@ public class ContentMap extends Grid implements CharSequence {
             ContentLineController end = lines.get(currEnd);
             textLength -= start.length() - columnOnStartLine;
             changedContent.insert(0, start, columnOnStartLine, start.length());
-            start.removeContent(columnOnStartLine, start.length());
+            start.removeCells(columnOnStartLine, start.length());
             textLength -= columnOnEndLine;
             changedContent.append('\n').append(end, 0, columnOnEndLine);
-            end.removeContent(0, columnOnEndLine);
+            end.removeCells(0, columnOnEndLine);
             textLength--;
             ContentLineController r = lines.remove(currEnd);
             if (mLineListener != null) {

@@ -47,7 +47,6 @@ public class LineBreakLayout extends AbstractLayout {
         for (int i = 0; i < text.getLineCount(); i++) {
             ContentLineController line = text.getLine(i);
             int width = (int) measureText(line, 0, line.length());
-            line.setWidth(width);
             line.setId(widthMaintainer.push(width));
         }
     }
@@ -69,7 +68,6 @@ public class LineBreakLayout extends AbstractLayout {
                 continue;
             }
             line.setId(widthMaintainer.push(width));
-            line.setWidth(width);
             startLine++;
         }
     }

@@ -19,6 +19,7 @@ import android.text.GetChars;
 import android.text.TextUtils;
 
 import io.github.rosemoe.editor.core.content.ContentLineModel;
+import io.github.rosemoe.editor.core.grid.Cell;
 import io.github.rosemoe.editor.core.grid.Line;
 
 /**
@@ -30,7 +31,7 @@ public class ContentLineController extends Line implements CharSequence, GetChar
 
     @Override
     public int getBehaviourOnCellSplit() {
-        return SPAN_SPLIT_SPLITTING;
+        return Cell.SPLIT_SPLITTING;
     }
 
     public ContentLineController() {
@@ -54,14 +55,6 @@ public class ContentLineController extends Line implements CharSequence, GetChar
 
     public void setId(int id) {
         model.id = id;
-    }
-
-    public int getWidth() {
-        return model.width;
-    }
-
-    public void setWidth(int width) {
-        model.width = width;
     }
 
     /**

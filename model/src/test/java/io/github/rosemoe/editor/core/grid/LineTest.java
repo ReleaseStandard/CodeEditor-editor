@@ -1,5 +1,6 @@
 package io.github.rosemoe.editor.core.grid;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import io.github.rosemoe.editor.core.grid.instances.color.Span;
@@ -7,9 +8,9 @@ import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.Random;
 import manifold.ext.rt.api.Jailbreak;
 
-import static io.github.rosemoe.editor.core.grid.Line.SPAN_SPLIT_EXTENDS;
-import static io.github.rosemoe.editor.core.grid.Line.SPAN_SPLIT_INVALIDATE;
-import static io.github.rosemoe.editor.core.grid.Line.SPAN_SPLIT_SPLITTING;
+import static io.github.rosemoe.editor.core.grid.Cell.SPLIT_EXTENDS;
+import static io.github.rosemoe.editor.core.grid.Cell.SPLIT_INVALIDATE;
+import static io.github.rosemoe.editor.core.grid.Cell.SPLIT_SPLITTING;
 import static org.junit.Assert.*;
 
 public class LineTest {
@@ -32,7 +33,7 @@ public class LineTest {
         {
             // ------**+
             Line s = new Line();
-            s.behaviourOnCellSplit = SPAN_SPLIT_INVALIDATE;
+            s.behaviourOnCellSplit = SPLIT_INVALIDATE;
             s.put(new BaseCell(0,6));
             s.put(new BaseCell(6,2));
             s.put(new BaseCell(8,1));
@@ -43,7 +44,7 @@ public class LineTest {
         }
         {
             Line s = new Line();
-            s.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            s.behaviourOnCellSplit = SPLIT_SPLITTING;
             s.put(new BaseCell(0,6));
             s.put(new BaseCell(6,2));
             s.put(new BaseCell(8,1));
@@ -56,7 +57,7 @@ public class LineTest {
         }
         {
             Line l = new Line();
-            l.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
             l.append(new BaseCell(6));
             l.append(new BaseCell(2));
             l.append(new BaseCell(1));
@@ -66,7 +67,7 @@ public class LineTest {
         }
         {
             Line l = new Line();
-            l.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
             l.put(new BaseCell(0,6));
             l.put(new BaseCell(6,2));
             l.put(new BaseCell(8,1));
@@ -93,7 +94,7 @@ public class LineTest {
             // +++-
             // --m
             Line s = new Line();
-            s.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            s.behaviourOnCellSplit = SPLIT_SPLITTING;
             s.put(new BaseCell(0,3));
             s.put(new BaseCell(3,3));
             s.put(new BaseCell(6,1));
@@ -111,7 +112,7 @@ public class LineTest {
             // +++
             //   m
             Line s = new Line();
-            s.behaviourOnCellSplit = SPAN_SPLIT_INVALIDATE;
+            s.behaviourOnCellSplit = SPLIT_INVALIDATE;
             s.put(new BaseCell(0,3));
             s.put(new BaseCell(3,3));
             s.put(new BaseCell(6,1));
@@ -217,7 +218,7 @@ public class LineTest {
                 l.append(new BaseCell(sz));
                 length += sz;
             }
-            assertTrue(l.sizeContent()==length);
+            assertTrue(l.getWidth()==length);
         }
     }
 
@@ -275,7 +276,7 @@ public class LineTest {
             // ---
             //
             @Jailbreak Line s = new Line();
-            s.behaviourOnCellSplit = Line.SPAN_SPLIT_INVALIDATE;
+            s.behaviourOnCellSplit = Cell.SPLIT_INVALIDATE;
             s.put(Span.obtain(0, 3, 0));
             s.put(Span.obtain(3, 3, 0));
             Line[] lines = (Line[]) s.split(4);
@@ -292,7 +293,7 @@ public class LineTest {
             // **
             //
             @Jailbreak  Line s = new Line();
-            s.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            s.behaviourOnCellSplit = SPLIT_SPLITTING;
             s.put(Span.obtain(0, 3, 0));
             s.put(Span.obtain(3, 3, 0));
             Line[] lines = (Line[]) s.split(4);
@@ -308,7 +309,7 @@ public class LineTest {
         {
             // *|*
             Line s = new Line();
-            s.behaviourOnCellSplit = SPAN_SPLIT_EXTENDS;
+            s.behaviourOnCellSplit = SPLIT_EXTENDS;
             s.put(Span.obtain(0, 2, 0));
             assertTrue(s.size() == 1);
             assertTrue(s.get(0).size == 2);
@@ -318,7 +319,7 @@ public class LineTest {
             assertTrue(parts[1].size() == 1);
             assertTrue(parts[1].get(0).size == 1);
         }
-        for(int behave : new int[]{ SPAN_SPLIT_EXTENDS, SPAN_SPLIT_SPLITTING }) {
+        for(int behave : new int[]{SPLIT_EXTENDS, SPLIT_SPLITTING}) {
             {
                 // *|*
                 Line s = new Line();
@@ -357,58 +358,58 @@ public class LineTest {
     }
 
     @Test
-    public void testRemoveContentExtrems() {
+    public void testRemoveCellsExtrems() {
         {
             // |       |
             Line l = new Line();
-            l.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
-            l.removeContent(0, 9);
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
+            l.removeCells(0, 9);
         }
         {
             // ||
             Line l = new Line();
-            l.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
-            l.removeContent(0,0);
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
+            l.removeCells(0,0);
         }
         {
             // *|                                               |
             Line l = new Line();
-            l.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
             l.put(new BaseCell(0,1));
-            l.removeContent(1, 100);
+            l.removeCells(1, 100);
             assertTrue(l.size() == 1);
             assertTrue(l.get(0).size == 1);
         }
         {
             // |            |*
             Line l = new Line();
-            l.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
             l.put(new BaseCell(0,14));
             l.put(new BaseCell(14, 1));
-            l.removeContent(0, 14);
+            l.removeCells(0, 14);
             assertTrue(l.size()==1);
             assertTrue(l.get(0).size == 1);
         }
         {
             // |****|*
             Line l = new Line();
-            l.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
             l.put(new BaseCell(0,5));
-            l.removeContent(0,4);
+            l.removeCells(0,4);
             assertTrue(l.size()==1);
             assertTrue(l.get(0).size == 1);
         }
     }
     @Test
-    public void testRemoveContentCommons() {
+    public void testRemoveCellsCommons() {
         {
             // -|-+++-|-
             Line l = new Line();
-            l.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
             l.put(new BaseCell(0,2));
             l.put(new BaseCell(2,3));
             l.put(new BaseCell(5,2));
-            l.removeContent(1,5);
+            l.removeCells(1,5);
             assertTrue(l.size() == 2);
             assertTrue(l.get(0).size == 1);
             assertTrue(l.get(1).size == 1);
@@ -417,11 +418,11 @@ public class LineTest {
         {
             // --+|++-|-
             Line l = new Line();
-            l.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
             l.put(new BaseCell(0,2));
             l.put(new BaseCell(2,3));
             l.put(new BaseCell(5,2));
-            l.removeContent(3,3);
+            l.removeCells(3,3);
             assertTrue(l.size()==3);
             assertTrue(l.get(0).size == 2);
             assertTrue(l.get(2).size == 1);
@@ -430,11 +431,11 @@ public class LineTest {
         {
             // --|+++|--
             Line l = new Line();
-            l.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
             l.put(new BaseCell(0,2));
             l.put(new BaseCell(2,3));
             l.put(new BaseCell(5,2));
-            l.removeContent(2,3);
+            l.removeCells(2,3);
             assertTrue(l.size() == 2);
             assertTrue(l.get(0).size == 2);
             assertTrue(l.get(2).size == 2);
@@ -442,11 +443,11 @@ public class LineTest {
         {
             // --+|+|+--
             Line l = new Line();
-            l.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
             l.put(new BaseCell(0,2));
             l.put(new BaseCell(2,3));
             l.put(new BaseCell(5,2));
-            l.removeContent(3,1);
+            l.removeCells(3,1);
             assertTrue(l.get(0).size==2);
             assertTrue(l.get(2).size == 1);
             assertTrue(l.get(3).size == 1);
@@ -455,11 +456,11 @@ public class LineTest {
         {
             // -|-+|++--
             Line l = new Line();
-            l.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
             l.put(new BaseCell(0,2));
             l.put(new BaseCell(2,3));
             l.put(new BaseCell(5,2));
-            l.removeContent(1,2);
+            l.removeCells(1,2);
             assertTrue(l.get(0).size==1);
             assertTrue(l.get(1).size==2);
             assertTrue(l.get(3).size==2);
@@ -560,7 +561,7 @@ public class LineTest {
     }
 
     @Test
-    public void insertContent() {
+    public void insertCells() {
         {
             //
             // |--++*****
@@ -570,7 +571,7 @@ public class LineTest {
             s1.put(Span.obtain(0, 2, 0));
             s1.put(Span.obtain(2, 2, 0));
             s1.put(Span.obtain(4, 5, 0));
-            s1.insertContent(Span.obtain(0, 2, 0));
+            s1.insertCell(Span.obtain(0, 2, 0));
             assertTrue("s1.size()=" + s1.size(), s1.size() == 4);
             assertTrue(s1.get(0).column == 0);
             assertTrue(s1.get(2).column == 2);
@@ -586,69 +587,102 @@ public class LineTest {
             s1.put(Span.obtain(0, 2, 0));
             s1.put(Span.obtain(2, 2, 0));
             s1.put(Span.obtain(4, 5, 0));
-            s1.insertContent(Span.obtain(0, 0, 0));
+            s1.insertCell(Span.obtain(0, 0, 0));
             assertTrue("s1.size()=" + s1.size(), s1.size() == 3);
         }
         {
-            //
             // --++*|****
-            //
-            //
+            // --++*--****
             Line s1 = new Line();
-            s1.behaviourOnCellSplit = SPAN_SPLIT_INVALIDATE;
+            s1.behaviourOnCellSplit = SPLIT_SPLITTING;
+            s1.put(Span.obtain(0, 2, 0));
+            s1.put(Span.obtain(2, 2, 0));
+            s1.put(Span.obtain(4, 5, 0));
+            s1.insertCell(Span.obtain(5, 2, 0));
+            assertTrue("s1.size()=" + s1.size(), s1.size() == 5);
+            assertTrue(s1.get(0).size == 2);
+            assertTrue(s1.get(2).size == 2);
+            assertTrue(s1.get(4).size == 1);
+            assertTrue(s1.get(5).size == 2);
+            assertTrue(s1.get(7).size == 4);
+        }
+        {
+            // --++*|****
+            // --++*******
+            Line s1 = new Line();
+            s1.behaviourOnCellSplit = SPLIT_EXTENDS;
+            s1.put(Span.obtain(0, 2, 0));
+            s1.put(Span.obtain(2, 2, 0));
+            s1.put(Span.obtain(4, 5, 0));
+            s1.insertCell(5,2);
+            assertTrue("s1.size()=" + s1.size(), s1.size() == 3);
+            assertTrue(s1.get(0).size == 2);
+            assertTrue(s1.get(2).size == 2);
+            assertTrue(s1.get(4).size == 7);
+        }
+    }
+
+    // Test that all behaviour lead to the same length on the content
+    @Test
+    @Ignore("This test coud lead to bug")
+    public void testGenericity() {
+        Line l = new Line();
+        int n = r.nextUint(20);
+        for(int a = 0; a < n; a = a + 1) {
+            l.append(new BaseCell(r.nextUint(100)));
+        }
+        int insertSize = r.nextUint(100);
+        int insertCol = r.nextUint(l.getWidth());
+        int [] behaves = new int[]{SPLIT_EXTENDS, SPLIT_INVALIDATE, SPLIT_SPLITTING};
+        int [] results = new int[behaves.length];
+        for(int a = 0; a < behaves.length; a = a + 1) {
+            Line l2 = l.clone();
+            l2.behaviourOnCellSplit = behaves[a];
+            l2.insertCell(insertCol, insertSize);
+            results[a] = l2.getWidth() + l2.size();
+        }
+        assertTrue("{cut: {insertSize: " + insertSize+", insertCol: " + insertCol + "}, n: "+n+"}", results[0]==results[1] && results[1]==results[2]);
+    }
+
+    @Test
+    @Ignore("TODO")
+    public void testInsertBug() {
+        {
+            // --++*|****
+            // --++ xx
+            Line s1 = new Line();
+            s1.behaviourOnCellSplit = SPLIT_INVALIDATE;
             s1.put(Span.obtain(0, 2, 0));
             s1.put(Span.obtain(2, 2, 0));
             s1.put(Span.obtain(4, 5, 0));
             System.out.println("BEFORE");
             s1.dump();
-            s1.insertContent(Span.obtain(5, 2, 0));
+            s1.insertCell(new BaseCell(5, 2));
             s1.dump();
-            assertTrue("s1.size()=" + s1.size(), s1.size() == 3);
-        }
-        {
-            //
-            // --++*|****
-            //
-            //
-            Line s1 = new Line();
-            s1.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
-            s1.put(Span.obtain(0, 2, 0));
-            s1.put(Span.obtain(2, 2, 0));
-            s1.put(Span.obtain(4, 5, 0));
-            s1.insertContent(Span.obtain(5, 2, 0));
             assertTrue("s1.size()=" + s1.size(), s1.size() == 5);
-        }
-        {
-            //
-            // --++*|****
-            //
-            //
-            Line s1 = new Line();
-            s1.behaviourOnCellSplit = SPAN_SPLIT_EXTENDS;
-            s1.put(Span.obtain(0, 2, 0));
-            s1.put(Span.obtain(2, 2, 0));
-            s1.put(Span.obtain(4, 5, 0));
-            s1.insertContent(5,2);
-            assertTrue("s1.size()=" + s1.size(), s1.size() == 3);
+            assertTrue(s1.get(0).size == 2);
+            assertTrue(s1.get(2).size == 2);
+            assertTrue(s1.get(4).size == 1);
+            assertTrue(s1.get(5).size == 2);
+            assertTrue(s1.get(7).size == 4);
         }
     }
-
     @Test(expected = RuntimeException.class)
-    public void testInsertContent() {
+    public void testInsertCells() {
         //
         // --++*|****
         //
         //
         Line s1 = new Line();
-        s1.behaviourOnCellSplit = SPAN_SPLIT_EXTENDS;
+        s1.behaviourOnCellSplit = SPLIT_EXTENDS;
         s1.put(Span.obtain(0, 2, 0));
         s1.put(Span.obtain(2, 2, 0));
         s1.put(Span.obtain(4, 5, 0));
-        s1.insertContent(Span.obtain(5, 2, 0));
+        s1.insertCell(Span.obtain(5, 2, 0));
     }
 
     @Test
-    public void removeContent() {
+    public void removeCells() {
         {
             Logger.debug("Testing");
             //
@@ -657,7 +691,7 @@ public class LineTest {
             //
             Line s1 = new Line();
             s1.put(Span.obtain(0, 1, 0));
-            s1.removeContent(0,0);
+            s1.removeCells(0,0);
             assertTrue(s1.size()==1);
             assertTrue(s1.get(0).column == 0);
             assertTrue(s1.get(0).size == 1);
@@ -667,7 +701,7 @@ public class LineTest {
             // |
             //
             Line s1 = new Line();
-            s1.removeContent(0,0);
+            s1.removeCells(0,0);
             assertTrue(s1.size()==0);
         }
         {
@@ -675,10 +709,10 @@ public class LineTest {
             // +|++-|
             //
             Line s1 = new Line();
-            s1.behaviourOnCellSplit = SPAN_SPLIT_EXTENDS;
+            s1.behaviourOnCellSplit = SPLIT_EXTENDS;
             s1.put(Span.obtain(0, 3, 0));
             s1.put(Span.obtain(3, 1, 0));
-            s1.removeContent(1,3);
+            s1.removeCells(1,3);
             assertTrue(s1.size()==1);
             assertTrue(s1.get(0).size == 1 && s1.get(0).column == 0);
         }
@@ -687,11 +721,11 @@ public class LineTest {
             // +++|---n|n
             //
             Line s1 = new Line();
-            s1.behaviourOnCellSplit = SPAN_SPLIT_EXTENDS;
+            s1.behaviourOnCellSplit = SPLIT_EXTENDS;
             s1.put(Span.obtain(0, 3, 0));
             s1.put(Span.obtain(3, 3, 0));
             s1.put(Span.obtain(6, 2, 0));
-            s1.removeContent(3,4);
+            s1.removeCells(3,4);
             assertTrue(s1.size()==2);
             assertTrue(s1.get(0).size==3 && s1.get(0).column == 0);
             assertTrue(s1.get(3).size==1 && s1.get(3).column == 3);
@@ -701,11 +735,11 @@ public class LineTest {
             // --|-+|++-
             //
             Line s1 = new Line();
-            s1.behaviourOnCellSplit = SPAN_SPLIT_EXTENDS;
+            s1.behaviourOnCellSplit = SPLIT_EXTENDS;
             s1.put(Span.obtain(0, 3, 0));
             s1.put(Span.obtain(3, 3, 0));
             s1.put(Span.obtain(6, 1, 0));
-            s1.removeContent(2,2);
+            s1.removeCells(2,2);
             assertTrue(s1.size()==3);
             assertTrue(s1.get(0).size==2 && s1.get(0).column == 0);
             assertTrue(s1.get(2).size==2 && s1.get(2).column == 2);
@@ -716,9 +750,9 @@ public class LineTest {
             // +|++|++
             //
             Line s1 = new Line();
-            s1.behaviourOnCellSplit = SPAN_SPLIT_EXTENDS;
+            s1.behaviourOnCellSplit = SPLIT_EXTENDS;
             s1.put(Span.obtain(0, 5, 0));
-            s1.removeContent(1,2);
+            s1.removeCells(1,2);
             assertTrue(s1.size()==1);
             assertTrue(s1.get(0).size == 3);
             assertTrue(s1.get(0).column == 0);
@@ -728,12 +762,12 @@ public class LineTest {
             // +++|+-*-|----
             //
             Line s1 = new Line();
-            s1.behaviourOnCellSplit = SPAN_SPLIT_EXTENDS;
+            s1.behaviourOnCellSplit = SPLIT_EXTENDS;
             s1.put(Span.obtain(0, 4, 0));
             s1.put(Span.obtain(4, 1, 0));
             s1.put(Span.obtain(5, 1, 0));
             s1.put(Span.obtain(6, 5, 0));
-            s1.removeContent(3,4);
+            s1.removeCells(3,4);
             assertTrue(s1.size() == 2);
             assertTrue(s1.get(0).size == 3);
             assertTrue(s1.get(3).size == 4);
@@ -744,11 +778,11 @@ public class LineTest {
             // -*ttttt
             //
             Line s1 = new Line();
-            s1.behaviourOnCellSplit = SPAN_SPLIT_EXTENDS;
+            s1.behaviourOnCellSplit = SPLIT_EXTENDS;
             s1.put(Span.obtain(0, 2, 0));
             s1.put(Span.obtain(2, 2, 0));
             s1.put(Span.obtain(4, 5, 0));
-            s1.removeContent(1, 2);
+            s1.removeCells(1, 2);
             assertTrue("s1.size()=" + s1.size(), s1.size() == 3);
             assertTrue(s1.get(0).size == 1);
             assertTrue(s1.get(1).size == 1);
@@ -760,11 +794,11 @@ public class LineTest {
             // ----**+
             //
             Line s = new Line();
-            s.behaviourOnCellSplit = SPAN_SPLIT_EXTENDS;
+            s.behaviourOnCellSplit = SPLIT_EXTENDS;
             s.put(Span.obtain(0, 6, 0));
             s.put(Span.obtain(6, 2, 0));
             s.put(Span.obtain(8, 1, 0));
-            s.removeContent(2, 2);
+            s.removeCells(2, 2);
             assertTrue(s.size() == 3);
             assertTrue(s.get(0).size == 4);
             assertTrue(s.get(4).size == 2);
@@ -776,11 +810,11 @@ public class LineTest {
             // ------*
             //
             Line s = new Line();
-            s.behaviourOnCellSplit = SPAN_SPLIT_EXTENDS;
+            s.behaviourOnCellSplit = SPLIT_EXTENDS;
             s.put(Span.obtain(0, 6, 0));
             s.put(Span.obtain(6, 2, 0));
             s.put(Span.obtain(8, 1, 0));
-            s.removeContent(6, 2);
+            s.removeCells(6, 2);
             assertTrue(s.size() == 2);
             assertTrue(s.get(0).size == 6);
             assertTrue(s.get(6).size == 1);
@@ -788,10 +822,10 @@ public class LineTest {
         {
             // ----|**|
             Line s = new Line();
-            s.behaviourOnCellSplit = SPAN_SPLIT_EXTENDS;
+            s.behaviourOnCellSplit = SPLIT_EXTENDS;
             s.put(Span.obtain(0, 4, 0));
             s.put(Span.obtain(4, 2, 0));
-            s.removeContent(4, 2);
+            s.removeCells(4, 2);
             assertTrue(s.size() == 1);
             assertTrue(s.get(0).size == 4);
         }
@@ -801,11 +835,11 @@ public class LineTest {
             // ------**+
             //
             Line s = new Line();
-            s.behaviourOnCellSplit = SPAN_SPLIT_INVALIDATE;
+            s.behaviourOnCellSplit = SPLIT_INVALIDATE;
             s.put(Span.obtain(0, 6, 0));
             s.put(Span.obtain(6, 2, 0));
             s.put(Span.obtain(8, 1, 0));
-            s.removeContent(0, 0);
+            s.removeCells(0, 0);
             s.dump();
             assertTrue(s.size() == 3);
             assertTrue(s.get(0).size == 6);
@@ -815,11 +849,11 @@ public class LineTest {
         {
             // *|--|*
             Line s = new Line();
-            s.behaviourOnCellSplit = SPAN_SPLIT_INVALIDATE;
+            s.behaviourOnCellSplit = SPLIT_INVALIDATE;
             s.put(Span.obtain(0, 1, 0));
             s.put(Span.obtain(1, 2, 0));
             s.put(Span.obtain(3, 1, 0));
-            s.removeContent(1,2);
+            s.removeCells(1,2);
             assertTrue(s.size() == 2);
             assertTrue(s.get(0).size == 1);
             assertTrue(s.get(1).size == 1);
@@ -828,11 +862,11 @@ public class LineTest {
             // *|++|*
             Line s = new Line();
             s.put(Span.obtain(0, 1, 0));
-            s.behaviourOnCellSplit = SPAN_SPLIT_INVALIDATE;
+            s.behaviourOnCellSplit = SPLIT_INVALIDATE;
             s.put(Span.obtain(0, 1, 0));
             s.put(Span.obtain(1, 2, 0));
             s.put(Span.obtain(3, 1, 0));
-            s.removeContent(1,2);
+            s.removeCells(1,2);
             assertTrue(s.size() == 2);
             assertTrue(s.get(0).size == 1);
             assertTrue(s.get(1).size == 1);
@@ -843,11 +877,11 @@ public class LineTest {
             // xx--**+
             //
             Line s = new Line();
-            s.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            s.behaviourOnCellSplit = SPLIT_SPLITTING;
             s.put(Span.obtain(0, 6, 0));
             s.put(Span.obtain(6, 2, 0));
             s.put(Span.obtain(8, 1, 0));
-            s.removeContent(2, 2);
+            s.removeCells(2, 2);
             assertTrue(s.size() == 4);
             assertTrue(s.get(0).size == 2);
         }
@@ -857,7 +891,7 @@ public class LineTest {
             // -+
             //
             Line l = new Line();
-            l.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
             l.put(Span.obtain(0, 1, 0));
             l.put(Span.obtain(1, 2, 0));
             assertTrue(l.size() == 2);
@@ -866,7 +900,7 @@ public class LineTest {
             assertTrue(l.get(1).column==1);
             assertTrue(l.get(1).size==2);
             l.dump();
-            l.removeContent(1,1);
+            l.removeCells(1,1);
             l.dump();
             assertTrue(l.size() == 2);
             assertTrue(l.get(0).size==1);
@@ -879,9 +913,9 @@ public class LineTest {
             // ----|----
             //
             Line l = new Line();
-            l.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
             l.put(Span.obtain(0, 8, 0));
-            l.removeContent(4,0);
+            l.removeCells(4,0);
             assertTrue(l.size() == 2);
             assertTrue(l.get(0).size == 4);
             assertTrue(l.get(4).size == 4);
@@ -900,14 +934,14 @@ public class LineTest {
                     index += size;
                 }
                 assertTrue("l.size()="+l.size()+",t="+t,l.size() == t);
-                l.removeContent(0,index+49);
+                l.removeCells(0,index+49);
                 assertTrue(l.size()==0);
             }
         }
         {
             // ------**+
             Line s = new Line();
-            s.behaviourOnCellSplit = SPAN_SPLIT_INVALIDATE;
+            s.behaviourOnCellSplit = SPLIT_INVALIDATE;
             s.put(Span.obtain(0, 6, 0));
             s.put(Span.obtain(6, 2, 0));
             s.put(Span.obtain(8, 1, 0));
@@ -920,12 +954,12 @@ public class LineTest {
             // ------**+
             //     **+
             Line s = new Line();
-            s.behaviourOnCellSplit = SPAN_SPLIT_INVALIDATE;
+            s.behaviourOnCellSplit = SPLIT_INVALIDATE;
             s.put(Span.obtain(0, 6, 0));
             s.put(Span.obtain(6, 2, 0));
             s.put(Span.obtain(8, 1, 0));
             s.dump();
-            s.removeContent(2, 2);
+            s.removeCells(2, 2);
             s.dump();
             assertTrue(s.size() == 2);
             assertTrue("s.get(4).size=" + s.get(4).size, s.get(4).size == 2);
