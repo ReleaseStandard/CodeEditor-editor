@@ -76,7 +76,7 @@ public class ExtensionContainerTest {
                 countLock.lock();
                 if (sz == count) { break; }
                 countLock.unlock();
-                Thread.sleep(100);
+                Thread.sleep(1000);
             }
             if (countLock.isHeldByCurrentThread()) {
                 countLock.unlock();
@@ -117,7 +117,7 @@ public class ExtensionContainerTest {
                 count2Lock.lock();
                 if (sz*instances == count2) { break; }
                 count2Lock.unlock();
-                Thread.sleep(100);
+                Thread.sleep(1000);
             }
             if (count2Lock.isHeldByCurrentThread()) {
                 count2Lock.unlock();

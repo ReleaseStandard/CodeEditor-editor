@@ -41,6 +41,19 @@ public class LineTest {
             assertTrue(s.get(6).size == 2);
             assertTrue(s.get(8).size == 1);
         }
+        {
+            Line s = new Line();
+            s.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
+            s.put(new BaseCell(0,6));
+            s.put(new BaseCell(6,2));
+            s.put(new BaseCell(8,1));
+            Line s1 = new Line();
+            s1.put(s);
+            assertTrue(s1.size() == 3);
+            assertTrue(s1.get(0).size == 6);
+            assertTrue(s1.get(6).size == 2);
+            assertTrue(s1.get(8).size == 1);
+        }
     }
 
     @Test
