@@ -4,8 +4,8 @@ public class BaseCell extends Cell {
 
     public BaseCell() { }
 
-    public BaseCell(int column) {
-        super(column);
+    public BaseCell(int size) {
+        super(size);
     }
 
     public BaseCell(int column, int size) {

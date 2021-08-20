@@ -57,10 +57,10 @@ public class LineTest {
         {
             Line l = new Line();
             l.behaviourOnCellSplit = SPAN_SPLIT_SPLITTING;
-            l.put(new BaseCell(0,6));
-            l.put(new BaseCell(6,2));
-            l.put(new BaseCell(8,1));
-            l.append(new BaseCell(0,10));
+            l.append(new BaseCell(6));
+            l.append(new BaseCell(2));
+            l.append(new BaseCell(1));
+            l.append(new BaseCell(10));
             assertTrue(l.size()==4);
             assertTrue(l.get(9).size==10);
         }

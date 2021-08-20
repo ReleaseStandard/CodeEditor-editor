@@ -58,12 +58,12 @@ public class Span extends Cell {
     /**
      * Create a new span
      *
-     * @param column  Start column of span
+     * @param size size of the span
      * @param color Type of span
      * @see Span#obtain(int, int)
      */
-    private Span(int column, int color) {
-        super(column);
+    private Span(int size, int color) {
+        super(size);
         this.color = color;
     }
     private Span(int column, int size, int color) {

@@ -9,9 +9,9 @@ public abstract class Cell extends CEObject implements CellData {
     public int column = 0;
 
     public Cell() { }
-    public Cell(int column) {
-        this.column = column;
-        this.size = 1;
+    public Cell(int size) {
+        this.column = 0;
+        this.size = size;
     }
     public Cell(int column, int size) {
         this.column = column;
