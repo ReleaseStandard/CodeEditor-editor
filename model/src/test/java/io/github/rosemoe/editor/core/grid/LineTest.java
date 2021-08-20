@@ -179,32 +179,45 @@ public class LineTest {
 
     @Test
     public void testSimpleMethods() {
-        int sz = r.nextUint(20);
-        for(int a = 0; a < sz; a=a+1) {
-            Line sl = new Line();
-            int dex = 0;
-            int sz2 = 1+r.nextUint(50);
-            for(int b = 0; b < sz2; b = b + 1 ) {
-                final int choice = r.nextUint(2);
-                int sz3 = 1+r.nextUint(10);
-                int off = r.nextUint(3);
-                dex += off;
-                switch (choice) {
-                    case 0:
-                        sl.put(dex, Span.obtain(dex, sz3, 0));
-                        break;
-                    case 1:
-                        sl.put(Span.obtain(dex, sz3, 0));
-                        break;
+        {
+            int sz = r.nextUint(20);
+            for (int a = 0; a < sz; a = a + 1) {
+                Line sl = new Line();
+                int dex = 0;
+                int sz2 = 1 + r.nextUint(50);
+                for (int b = 0; b < sz2; b = b + 1) {
+                    final int choice = r.nextUint(2);
+                    int sz3 = 1 + r.nextUint(10);
+                    int off = r.nextUint(3);
+                    dex += off;
+                    switch (choice) {
+                        case 0:
+                            sl.put(dex, Span.obtain(dex, sz3, 0));
+                            break;
+                        case 1:
+                            sl.put(Span.obtain(dex, sz3, 0));
+                            break;
+                    }
+                    sl.get(dex);
+                    dex += sz3;
                 }
-                sl.get(dex);
-                dex += sz3;
+                assertTrue(sl.size() == sz2);
+                assertFalse(sl.size() != sz2);
+                assertFalse(sl.isEmpty());
+                sl.clear();
+                assertTrue(sl.isEmpty());
             }
-            assertTrue(sl.size() == sz2);
-            assertFalse(sl.size() != sz2);
-            assertFalse(sl.isEmpty());
-            sl.clear();
-            assertTrue(sl.isEmpty());
+        }
+        {
+            int i = r.nextUint(100);
+            int length = 0;
+            Line l = new Line();
+            for(int a = 0; a < i; a=a+1) {
+                int sz = r.nextUint(10);
+                l.append(new BaseCell(sz));
+                length += sz;
+            }
+            assertTrue(l.sizeContent()==length);
         }
     }
 

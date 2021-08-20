@@ -329,4 +329,14 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
             }
         }
     }
+
+    /**
+     * Return size of the content in this line.
+     * @return size of the content.
+     */
+    public int sizeContent() {
+        if ( lastEntry() == null ) { return 0; }
+        Cell c = lastEntry().value;
+        return c.column+c.size;
+    }
 }
