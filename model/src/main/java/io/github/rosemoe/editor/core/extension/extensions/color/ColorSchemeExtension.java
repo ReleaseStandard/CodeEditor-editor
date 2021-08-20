@@ -33,15 +33,19 @@ import io.github.rosemoe.editor.core.util.Logger;
  */
 public class ColorSchemeExtension extends Extension {
 
+    final ColorManager colorManager;
+
     /**
      * For sub classes
      */
     public ColorSchemeExtension(CodeEditorModel editor) {
         super(editor);
+        colorManager = editor.colorManager;
         initialize(false);
     }
     public ColorSchemeExtension(CodeEditorModel editor, boolean invert) {
         super(editor);
+        colorManager = editor.colorManager;
         initialize(invert);
     }
     private void initialize(boolean invert) {
@@ -49,7 +53,7 @@ public class ColorSchemeExtension extends Extension {
         description = "widget responsible from displaying color to the screen";
         subscribe(ColorSchemeEvent.class);
         if ( invert ) {
-            editor.colorManager.invertColorScheme();
+            colorManager.invertColorScheme();
         }
     }
 
@@ -63,12 +67,11 @@ public class ColorSchemeExtension extends Extension {
     @Override
     public void handleEventDispatch(Event e, String subtype) {
         ColorSchemeEvent cse = (ColorSchemeEvent) e;
-        ColorManager manager = editor.colorManager;
         switch(subtype) {
             case ColorSchemeEvent.UPDATE_COLOR: {
                 String color = (String) e.getArg(0);
                 Object colorValue = e.getArg(1);
-                manager.register(color,colorValue);
+                colorManager.register(color,colorValue);
                 reloadColorScheme();
                 break;
             }
@@ -76,9 +79,9 @@ public class ColorSchemeExtension extends Extension {
                 Logger.v("Theme update received");
                 //noinspection unchecked
                 HashMap<String, Object> colors = (HashMap<String, Object>) e.getArg(0);
-                manager.reset();
+                colorManager.reset();
                 for (String color : colors.keySet()) {
-                    manager.register(color, colors.get(color));
+                    colorManager.register(color, colors.get(color));
                 }
                 reloadColorScheme();
                 break;

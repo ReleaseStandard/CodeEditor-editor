@@ -19,6 +19,20 @@ public class Grid extends ConcurrentSkipListMap<Integer, Line> implements Iterab
         return super.values().iterator();
     }
 
+    /**
+     * List all cells in common order, from the top of editor to bottom.
+     */
+    public void forEachCell() {
+        for(Line l : this) {
+            for(Cell c : l) {
+                handleForEachCell(c);
+            }
+        }
+    }
+    public void handleForEachCell(Cell c) {
+
+    }
+
     @Override
     public Line get(Object key) {
         return super.get(key);

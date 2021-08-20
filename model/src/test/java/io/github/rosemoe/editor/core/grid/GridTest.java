@@ -315,4 +315,25 @@ public class GridTest {
         s.appendLines(sz);
         assertTrue(sz == s.size());
     }
+
+    static int count;
+    @Test
+    public void testForEachCell() {
+        count = 0;
+        Grid g = new Grid(){
+            @Override
+            public void handleForEachCell(Cell c) {
+                count+=1;
+            }
+        };
+        Line l = new Line();
+        l.put(new BaseCell(0,10));
+        l.put(new BaseCell(1,2));
+        g.put(0,l);
+        Line l1 = new Line();
+        l1.put(new BaseCell(4,4));
+        g.put(1,l1);
+        g.forEachCell();
+        assertTrue(count == 3);
+    }
 }

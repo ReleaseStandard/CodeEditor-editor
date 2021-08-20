@@ -28,13 +28,12 @@ public class LoopbackController extends Extension {
     }
     @Override
     public void handleEventEmit(Event e) {
-        for(Extension sec : editor.plugins) {
-            if( sec instanceof LoopbackController) {
+        for(Extension ext : editor.plugins) {
+            if( ext instanceof LoopbackController) {
                 continue;
             }
-            sec.dispatch(e);
+            ext.dispatch(e);
         }
-        editor.plugins.dispatch(e);
     }
 
     @Override

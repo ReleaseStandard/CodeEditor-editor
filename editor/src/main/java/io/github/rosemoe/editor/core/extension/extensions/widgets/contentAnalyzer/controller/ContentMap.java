@@ -24,6 +24,7 @@ import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyze
 import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.processors.indexer.NoCacheIndexer;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CharPosition;
+import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.util.annotations.Experimental;
@@ -34,7 +35,7 @@ import io.github.rosemoe.struct.BlockLinkedList;
  *
  * @author Rose
  */
-public class ContentMap implements CharSequence {
+public class ContentMap extends Grid implements CharSequence {
 
     /**
      * Use a BlockLinkedList instead of ArrayList.
