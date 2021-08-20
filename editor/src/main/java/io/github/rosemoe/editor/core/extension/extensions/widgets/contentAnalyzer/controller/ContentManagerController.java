@@ -17,8 +17,8 @@ package io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyz
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
-import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.view.ContentManagerView;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyzer.ContentManagerModel;
 
 /**
@@ -27,13 +27,11 @@ import io.github.rosemoe.editor.core.extension.extensions.widgets.contentAnalyze
  *
  * @author Rose
  */
-public final class ContentManagerController implements ContentListener {
+public final class ContentManagerController extends Stack<ContentManagerController.ContentAction> implements ContentListener {
 
     public ContentManagerModel model = new ContentManagerModel();
-    public ContentManagerView view   = new ContentManagerView();
 
     private final ContentMap mContent;
-    private final List<ContentAction> mActionStack;
     private InsertAction mInsertAction;
     private DeleteAction mDeleteAction;
 
@@ -46,7 +44,6 @@ public final class ContentManagerController implements ContentListener {
      */
     public ContentManagerController(ContentMap content) {
         mContent = content;
-        mActionStack = new ArrayList<>();
         mInsertAction = null;
         mDeleteAction = null;
         mStackPointer = 0;
@@ -60,7 +57,7 @@ public final class ContentManagerController implements ContentListener {
     public void undo(ContentMap content) {
         if (canUndo()) {
             model.ignoreModification = true;
-            mActionStack.get(mStackPointer - 1).undo(content);
+            get(mStackPointer - 1).undo(content);
             mStackPointer--;
             model.ignoreModification = false;
         }
@@ -74,7 +71,7 @@ public final class ContentManagerController implements ContentListener {
     public void redo(ContentMap content) {
         if (canRedo()) {
             model.ignoreModification = true;
-            mActionStack.get(mStackPointer).redo(content);
+            get(mStackPointer).redo(content);
             mStackPointer++;
             model.ignoreModification = false;
         }
@@ -95,7 +92,7 @@ public final class ContentManagerController implements ContentListener {
      * @return Whether can redo
      */
     public boolean canRedo() {
-        return model.isUndoEnabled() && (mStackPointer < mActionStack.size());
+        return model.isUndoEnabled() && (mStackPointer < size());
     }
 
     /**
@@ -130,11 +127,11 @@ public final class ContentManagerController implements ContentListener {
      */
     private void cleanStack() {
         if (!model.undo) {
-            mActionStack.clear();
+            clear();
             mStackPointer = 0;
         } else {
-            while (mStackPointer > 1 && mActionStack.size() > model.maxStackSize) {
-                mActionStack.remove(0);
+            while (mStackPointer > 1 && size() > model.maxStackSize) {
+                remove(0);
                 mStackPointer--;
             }
         }
@@ -145,8 +142,8 @@ public final class ContentManagerController implements ContentListener {
      * If we are not at the end(Undo action executed),remove those actions
      */
     private void cleanBeforePush() {
-        while (mStackPointer < mActionStack.size()) {
-            mActionStack.remove(mActionStack.size() - 1);
+        while (mStackPointer < size()) {
+            pop();
         }
     }
 
@@ -162,33 +159,33 @@ public final class ContentManagerController implements ContentListener {
         }
         cleanBeforePush();
         if (mContent.isInBatchEdit()) {
-            if (mActionStack.isEmpty()) {
+            if (isEmpty()) {
                 MultiAction a = new MultiAction();
                 a.addAction(action);
-                mActionStack.add(a);
+                push(a);
                 mStackPointer++;
             } else {
-                ContentAction a = mActionStack.get(mActionStack.size() - 1);
+                ContentAction a = get(size() - 1);
                 if (a instanceof MultiAction) {
                     MultiAction ac = (MultiAction) a;
                     ac.addAction(action);
                 } else {
                     MultiAction ac = new MultiAction();
                     ac.addAction(action);
-                    mActionStack.add(ac);
+                    push(ac);
                     mStackPointer++;
                 }
             }
         } else {
-            if (mActionStack.isEmpty()) {
-                mActionStack.add(action);
+            if (isEmpty()) {
+                push(action);
                 mStackPointer++;
             } else {
-                ContentAction last = mActionStack.get(mActionStack.size() - 1);
+                ContentAction last = get(size() - 1);
                 if (last.canMerge(action)) {
                     last.merge(action);
                 } else {
-                    mActionStack.add(action);
+                    push(action);
                     mStackPointer++;
                 }
             }
