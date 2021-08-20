@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import io.github.rosemoe.editor.core.content.ContentManagerModel;
-
 /**
  * Helper class for ContentMap to take down modification
  * As well as provide Undo/Redo actions
@@ -29,12 +27,13 @@ import io.github.rosemoe.editor.core.content.ContentManagerModel;
  */
 public final class ContentActionStack extends Stack<ContentActionStack.ContentAction> implements ContentListener {
 
-    public ContentManagerModel model = new ContentManagerModel();
-
+    public int maxStackSize = 100;
     private final ContentMap mContent;
     private InsertAction mInsertAction;
     private DeleteAction mDeleteAction;
-
+    public boolean undoEnabled;
+    public boolean replaceMark = false;
+    public boolean ignoreModification = false;
     private int mStackPointer;
 
     /**
@@ -56,10 +55,10 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
      */
     public void undo(ContentMap content) {
         if (canUndo()) {
-            model.ignoreModification = true;
+            ignoreModification = true;
             get(mStackPointer - 1).undo(content);
             mStackPointer--;
-            model.ignoreModification = false;
+            ignoreModification = false;
         }
     }
 
@@ -70,10 +69,10 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
      */
     public void redo(ContentMap content) {
         if (canRedo()) {
-            model.ignoreModification = true;
+            ignoreModification = true;
             get(mStackPointer).redo(content);
             mStackPointer++;
-            model.ignoreModification = false;
+            ignoreModification = false;
         }
     }
 
@@ -83,7 +82,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
      * @return Whether can undo
      */
     public boolean canUndo() {
-        return model.isUndoEnabled() && (mStackPointer > 0);
+        return undoEnabled && (mStackPointer > 0);
     }
 
     /**
@@ -92,7 +91,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
      * @return Whether can redo
      */
     public boolean canRedo() {
-        return model.isUndoEnabled() && (mStackPointer < size());
+        return undoEnabled && (mStackPointer < size());
     }
 
     /**
@@ -101,7 +100,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
      * @param enabled Enable or disable
      */
     public void setUndoEnabled(boolean enabled) {
-        model.undo = enabled;
+        undoEnabled = enabled;
         if (!enabled) {
             cleanStack();
         }
@@ -117,7 +116,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
             throw new IllegalArgumentException(
                     "max size can not be zero or smaller.Did you want to disable undo module by calling set_undoEnabled(false)?");
         }
-        model.maxStackSize = maxSize;
+        maxStackSize = maxSize;
         cleanStack();
     }
 
@@ -126,11 +125,11 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
      * This is to limit stack size
      */
     private void cleanStack() {
-        if (!model.undo) {
+        if (!undoEnabled) {
             clear();
             mStackPointer = 0;
         } else {
-            while (mStackPointer > 1 && size() > model.maxStackSize) {
+            while (mStackPointer > 1 && size() > maxStackSize) {
                 remove(0);
                 mStackPointer--;
             }
@@ -154,7 +153,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
      * @param action New {@link ContentAction}
      */
     private void pushAction(ContentAction action) {
-        if (!model.isUndoEnabled()) {
+        if (!undoEnabled) {
             return;
         }
         cleanBeforePush();
@@ -195,16 +194,16 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
 
     @Override
     public void beforeReplace(ContentMap content) {
-        if (model.ignoreModification) {
+        if (ignoreModification) {
             return;
         }
-        model.replaceMark = true;
+        replaceMark = true;
     }
 
     @Override
     public void afterInsert(ContentMap content, int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence insertedContent) {
-        if (model.ignoreModification) {
+        if (ignoreModification) {
             return;
         }
         mInsertAction = new InsertAction();
@@ -213,7 +212,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
         mInsertAction.endLine = endLine;
         mInsertAction.endColumn = endColumn;
         mInsertAction.text = insertedContent;
-        if (model.replaceMark) {
+        if (replaceMark) {
             ReplaceAction rep = new ReplaceAction();
             rep._delete = mDeleteAction;
             rep._insert = mInsertAction;
@@ -221,13 +220,13 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
         } else {
             pushAction(mInsertAction);
         }
-        model.replaceMark = false;
+        replaceMark = false;
     }
 
     @Override
     public void afterDelete(ContentMap content, int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence deletedContent) {
-        if (model.ignoreModification) {
+        if (ignoreModification) {
             return;
         }
         mDeleteAction = new DeleteAction();
@@ -236,7 +235,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
         mDeleteAction.endLine = endLine;
         mDeleteAction.startLine = startLine;
         mDeleteAction.text = deletedContent;
-        if (!model.replaceMark) {
+        if (!replaceMark) {
             pushAction(mDeleteAction);
         }
     }

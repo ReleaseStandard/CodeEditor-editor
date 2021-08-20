@@ -48,17 +48,10 @@ public class ContentMap extends Grid implements CharSequence {
      */
     @Experimental
     public static boolean useBlock = false;
-    public static int sInitialListCapacity;
-
-    public final static int DEFAULT_MAX_UNDO_STACK_SIZE = 100;
-    public final static int DEFAULT_LIST_CAPACITY = 1000;
+    public static int sInitialListCapacity = 1000;
 
     public int textLength;
     public int nestedBatchEdit;
-    
-    static {
-        setInitialLineCapacity(DEFAULT_LIST_CAPACITY);
-    }
 
     private List<ContentLineController> lines;
     private Indexer indexer;
@@ -96,7 +89,6 @@ public class ContentMap extends Grid implements CharSequence {
         lines.add(new ContentLineController());
         mListeners = new ArrayList<>();
         contentManager = new ContentActionStack(this);
-        setMaxUndoStackSize(ContentMap.DEFAULT_MAX_UNDO_STACK_SIZE);
         indexer = new NoCacheIndexer(this);
         if (src.length() == 0) {
             setUndoEnabled(true);
@@ -460,15 +452,6 @@ public class ContentMap extends Grid implements CharSequence {
     }
 
     /**
-     * Get whether ContentActionStack is enabled
-     *
-     * @return Whether ContentActionStack is enabled
-     */
-    public boolean isUndoEnabled() {
-        return contentManager.model.isUndoEnabled();
-    }
-
-    /**
      * Set whether enable the ContentActionStack.
      * If false,any modification will not be taken down and previous modification that
      * is already in ContentActionStack will be removed.Does not make changes to content.
@@ -477,24 +460,6 @@ public class ContentMap extends Grid implements CharSequence {
      */
     public void setUndoEnabled(boolean enabled) {
         contentManager.setUndoEnabled(enabled);
-    }
-
-    /**
-     * Get current max stack size of ContentActionStack
-     *
-     * @return current max stack size
-     */
-    public int getMaxUndoStackSize() {
-        return contentManager.model.getMaxUndoStackSize();
-    }
-
-    /**
-     * Set the max size of stack in ContentActionStack
-     *
-     * @param maxSize New max size
-     */
-    public void setMaxUndoStackSize(int maxSize) {
-        contentManager.setMaxUndoStackSize(maxSize);
     }
 
     /**
@@ -778,18 +743,6 @@ public class ContentMap extends Grid implements CharSequence {
      */
     public static int getInitialLineCapacity() {
         return ContentMap.sInitialListCapacity;
-    }
-
-    /**
-     * Set the default capacity of text line list
-     *
-     * @param capacity Default capacity
-     */
-    public static void setInitialLineCapacity(int capacity) {
-        if (capacity <= 0) {
-            throw new IllegalArgumentException("capacity can not be negative or zero");
-        }
-        ContentMap.sInitialListCapacity = capacity;
     }
 
 }
