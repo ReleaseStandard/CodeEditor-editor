@@ -6,6 +6,10 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import io.github.rosemoe.editor.core.util.Logger;
 
+/**
+ * Basic object used by reports (fill the object).
+ * and by CodeEditor (display the object).
+ */
 public class Grid extends ConcurrentSkipListMap<Integer, Line> implements Iterable<Line> {
 
     public int behaviourOnCellSplit = Line.SPAN_SPLIT_SPLITTING;
