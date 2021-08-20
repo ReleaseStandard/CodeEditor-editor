@@ -129,7 +129,7 @@ public class Grid extends ConcurrentSkipListMap<Integer, Line> implements Iterab
      * Append an empty line to the span 
      * @return
      */
-    public Line appendLine() {
+    public Line append() {
         int newIndex = size();
         Line l = new Line();
         l.behaviourOnCellSplit = behaviourOnCellSplit;
@@ -142,13 +142,26 @@ public class Grid extends ConcurrentSkipListMap<Integer, Line> implements Iterab
      *
      * @param finalSizeInLines 0..n
      */
-    public void appendLines(int finalSizeInLines) {
+    public void append(int finalSizeInLines) {
         while(size() < finalSizeInLines) {
-            appendLine();
+            append();
         }
     }
+    /**
+     * Append line to the grid
+     * @return
+     */
+    public int append(Line l) {
+        int idx = 0;
+        Entry e = lastEntry();
+        if ( e != null ) {
+            idx = (int) e.key;
+        }
+        put(idx+1,l);
+        return idx;
+    }
     public Line addNormalIfNull() {
-        appendLines(1);
+        append(1);
         return (Line) get(0);
     }
     /**
@@ -158,7 +171,7 @@ public class Grid extends ConcurrentSkipListMap<Integer, Line> implements Iterab
      * @return
      */
     public Line getAddIfNeeded(int lineno) {
-        appendLines(lineno+1);
+        append(lineno+1);
         return (Line) get(lineno);
     }
     /**

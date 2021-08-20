@@ -26,6 +26,7 @@ import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.control
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.grid.Line;
+import io.github.rosemoe.editor.core.grid.instances.content.ContentCell;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.util.annotations.Experimental;
@@ -86,7 +87,7 @@ public class ContentMap extends Grid implements CharSequence {
             lines = new ArrayList<>(getInitialLineCapacity());
         else
             lines = new BlockLinkedList<>(5000);
-        lines.add(new ContentLineController());
+        append();
         mListeners = new ArrayList<>();
         contentManager = new ContentActionStack(this);
         indexer = new NoCacheIndexer(this);
@@ -164,18 +165,8 @@ public class ContentMap extends Grid implements CharSequence {
         if (column == getColumnCount(line)) {
             return '\n';
         }
-        return lines.get(line).charAt(column);
-    }
-
-    /**
-     * Get raw data of line
-     * The result is not expected to be modified
-     *
-     * @param line Line
-     * @return Raw ContentLineController used by ContentMap
-     */
-    public ContentLineController getLine(int line) {
-        return lines.get(line);
+        ContentCell cc = (ContentCell) get(line).get(column);
+        return cc.c;
     }
 
     /**
@@ -184,7 +175,7 @@ public class ContentMap extends Grid implements CharSequence {
      * @return Line count
      */
     public int getLineCount() {
-        return lines.size();
+        return size();
     }
 
     /**
@@ -196,7 +187,7 @@ public class ContentMap extends Grid implements CharSequence {
      */
     public int getColumnCount(int line) {
         checkLine(line);
-        return lines.get(line).length();
+        return get(line).size();
     }
 
     /**
@@ -207,14 +198,14 @@ public class ContentMap extends Grid implements CharSequence {
      */
     public String getLineString(int line) {
         checkLine(line);
-        return lines.get(line).toString();
+        return get(line).toString();
     }
 
     /**
      * Get characters of line
      */
     public void getLineChars(int line, char[] dest) {
-        lines.get(line).getChars(0, getColumnCount(line), dest, 0);
+        get(line).getChars(0, getColumnCount(line), dest, 0);
     }
 
     /**
@@ -251,14 +242,14 @@ public class ContentMap extends Grid implements CharSequence {
         if (workIndex == -1) {
             workIndex = 0;
         }
-        ContentLineController currLine = lines.get(workLine);
+        ContentLineController currLine = (ContentLineController) get(workLine);
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (c == '\n') {
                 ContentLineController newLine = new ContentLineController();
                 newLine.append(currLine, workIndex, currLine.length());
                 currLine.removeCells(workIndex, currLine.length());
-                lines.add(workLine + 1, newLine);
+                put(workLine + 1, newLine);
                 currLine = newLine;
                 workIndex = 0;
                 workLine++;
@@ -307,7 +298,7 @@ public class ContentMap extends Grid implements CharSequence {
             if (beginIdx > columnOnEndLine) {
                 throw new IllegalArgumentException("start > end");
             }
-            ContentLineController curr = lines.get(startLine);
+            ContentLineController curr = (ContentLineController) get(startLine);
             int len = curr.length();
             if (beginIdx < 0 || beginIdx > len || columnOnEndLine > len) {
                 throw new StringIndexOutOfBoundsException("column start or column end is out of bounds");
@@ -327,9 +318,9 @@ public class ContentMap extends Grid implements CharSequence {
                 if (startLine == 0) {
                     textLength++;
                 } else {
-                    Line previous = lines.get(startLine - 1);
+                    Line previous = get(startLine - 1);
                     previous.append(curr);
-                    ContentLineController rm = lines.remove(startLine);
+                    ContentLineController rm = (ContentLineController) remove(startLine);
                     if (mLineListener != null) {
                         mLineListener.onRemove(this, rm);
                     }
@@ -347,7 +338,7 @@ public class ContentMap extends Grid implements CharSequence {
                 cursor.beforeDelete(startLine, columnOnStartLine, endLine, columnOnEndLine);
 
             for (int i = 0; i < endLine - startLine - 1; i++) {
-                ContentLineController line = lines.remove(startLine + 1);
+                ContentLineController line = (ContentLineController) remove(startLine + 1);
                 if (mLineListener != null) {
                     mLineListener.onRemove(this, line);
                 }
@@ -355,8 +346,8 @@ public class ContentMap extends Grid implements CharSequence {
                 changedContent.append('\n').append(line);
             }
             int currEnd = startLine + 1;
-            ContentLineController start = lines.get(startLine);
-            ContentLineController end = lines.get(currEnd);
+            ContentLineController start = (ContentLineController) get(startLine);
+            ContentLineController end = (ContentLineController) get(currEnd);
             textLength -= start.length() - columnOnStartLine;
             changedContent.insert(0, start, columnOnStartLine, start.length());
             start.removeCells(columnOnStartLine, start.length());
@@ -364,7 +355,7 @@ public class ContentMap extends Grid implements CharSequence {
             changedContent.append('\n').append(end, 0, columnOnEndLine);
             end.removeCells(0, columnOnEndLine);
             textLength--;
-            ContentLineController r = lines.remove(currEnd);
+            ContentLineController r = (ContentLineController) remove(currEnd);
             if (mLineListener != null) {
                 mLineListener.onRemove(this, r);
             }
@@ -552,15 +543,16 @@ public class ContentMap extends Grid implements CharSequence {
         ContentMap c = new ContentMap();
         c.setUndoEnabled(false);
         if (startLine == endLine) {
-            c.insert(0, 0, lines.get(startLine).subSequence(startColumn, endColumn));
+            c.insert(0, 0, get(startLine).subSequence(startColumn, endColumn));
         } else if (startLine < endLine) {
-            c.insert(0, 0, lines.get(startLine).subSequence(startColumn, lines.get(startLine).length()));
+            c.insert(0, 0, get(startLine).subSequence(startColumn, get(startLine).length()));
             for (int i = startLine + 1; i < endLine; i++) {
-                c.lines.add(new ContentLineController(lines.get(i)));
-                c.textLength += lines.get(i).length() + 1;
+                c.append(new ContentLineController(get(i)));
+                c.textLength += get(i).getWidth() + 1;
             }
-            ContentLineController end = lines.get(endLine);
-            c.lines.add(new ContentLineController().insert(0, end, 0, endColumn));
+            ContentLineController end = (ContentLineController) get(endLine);
+            Line newLine = new ContentLineController().insert(0, end, 0, endColumn);
+            c.append(newLine);
             c.textLength += endColumn + 1;
         } else {
             throw new IllegalArgumentException("start > end");
@@ -573,11 +565,11 @@ public class ContentMap extends Grid implements CharSequence {
     public boolean equals(Object anotherObject) {
         if (anotherObject instanceof ContentMap) {
             ContentMap content = (ContentMap) anotherObject;
-            if (content.getLineCount() != this.getLineCount()) {
+            if (content.size() != this.size()) {
                 return false;
             }
-            for (int i = 0; i < this.getLineCount(); i++) {
-                if (!equals(lines.get(i), content.lines.get(i))) {
+            for (int i = 0; i < this.size(); i++) {
+                if (!equals(get(i), content.get(i))) {
                     return false;
                 }
             }
@@ -613,9 +605,9 @@ public class ContentMap extends Grid implements CharSequence {
         StringBuilder sb = new StringBuilder();
         sb.ensureCapacity(textLength + 10);
         boolean first = true;
-        final int lines = getLineCount();
+        final int lines = size();
         for (int i = 0; i < lines; i++) {
-            ContentLineController line = this.lines.get(i);
+            ContentLineController line = (ContentLineController) this.get(i);
             if (!first) {
                 sb.append('\n');
             } else {
@@ -715,8 +707,8 @@ public class ContentMap extends Grid implements CharSequence {
      * @param line Line to check
      */
     protected void checkLine(int line) {
-        if (line >= getLineCount()) {
-            throw new StringIndexOutOfBoundsException("Line " + line + " out of bounds. line count:" + getLineCount());
+        if (line >= size()) {
+            throw new StringIndexOutOfBoundsException("Line " + line + " out of bounds. line count:" + size());
         }
     }
 
@@ -729,7 +721,7 @@ public class ContentMap extends Grid implements CharSequence {
      */
     public void checkLineAndColumn(int line, int column, boolean allowEqual) {
         checkLine(line);
-        int len = lines.get(line).length();
+        int len = get(line).getWidth();
         if (column > len || (!allowEqual && column == len)) {
             throw new StringIndexOutOfBoundsException(
                     "Column " + column + " out of bounds.line: " + line + " ,column count:" + len);

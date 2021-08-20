@@ -69,7 +69,7 @@ public class CachedIndexer implements Indexer, ContentListener {
             mHasException = true;
         }
         mEndPoint.index = content.length();
-        mEndPoint.line = content.getLineCount() - 1;
+        mEndPoint.line = content.size() - 1;
         mEndPoint.column = content.getColumnCount(mEndPoint.line);
     }
 

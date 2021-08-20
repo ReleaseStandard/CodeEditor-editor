@@ -82,7 +82,7 @@ public abstract class CodeAnalyzer {
      * eg : CodeAnalyzerResultColor, CodeAnalyzerResultSpellCheck, CodeAnalyzerResultContent.
      *      CodeAnalyzerResultUnderlineAbcWords, CodeAnalyzerResultSyntaxeChecking.
      *
-     * @param content Content to analyze
+     * @param content ContentCell to analyze
      * @param delegate
      */
     protected abstract void analyze(CharSequence content, CodeAnalyzerThread.Delegate delegate);

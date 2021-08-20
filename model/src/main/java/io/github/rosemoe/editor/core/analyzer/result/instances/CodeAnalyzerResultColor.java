@@ -18,7 +18,7 @@ package io.github.rosemoe.editor.core.analyzer.result.instances;
 import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.analyzer.result.TokenEmitterResult;
 import io.github.rosemoe.editor.core.grid.Grid;
-import io.github.rosemoe.editor.core.grid.instances.color.Span;
+import io.github.rosemoe.editor.core.grid.instances.color.SpanCell;
 import io.github.rosemoe.editor.core.extension.extensions.color.ColorSchemeExtension;
 import io.github.rosemoe.editor.core.util.Logger;
 
@@ -74,7 +74,7 @@ public class CodeAnalyzerResultColor extends TokenEmitterResult {
      */
     private void addIfNeeded(Object spanLine, Object column, Object color) {
         Logger.debug("Add a new span into the line : spanLine=",spanLine,",column=",column,",color=",color);
-        add((Integer)spanLine, Span.obtain((Integer)column, (Integer)color));
+        add((Integer)spanLine, SpanCell.obtain((Integer)column, (Integer)color));
     }
     private void addFromColorName(Object spanLine, Object column, String colorName) {
         Integer color = theme.editor.colorManager.getColor(colorName);
@@ -82,23 +82,23 @@ public class CodeAnalyzerResultColor extends TokenEmitterResult {
         addIfNeeded(spanLine,column,color);
     }
     /**
-     * Add a span directly
-     * Note: the line should always >= the line of span last committed
+     * Add a spanCell directly
+     * Note: the line should always >= the line of spanCell last committed
      * if two spans are on the same line, you must add them in order by their column
      *
-     * @param spanLine The line position of span
-     * @param span     The span
+     * @param spanLine The line position of spanCell
+     * @param spanCell     The spanCell
      */
-    private void add(int spanLine, Span span) {
+    private void add(int spanLine, SpanCell spanCell) {
         if ( theme == null ) {
             Logger.debug("WARNING : the color result has no theme attached so you will get no colors.");
             return;
         }
-        map.getAddIfNeeded(spanLine).put(span);
+        map.getAddIfNeeded(spanLine).put(spanCell);
     }
 
     public void determine(int line) {
-        map.appendLines(line);
+        map.append(line);
     }
 
 }

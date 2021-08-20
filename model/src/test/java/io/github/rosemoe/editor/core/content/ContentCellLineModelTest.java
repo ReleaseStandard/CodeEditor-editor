@@ -6,7 +6,7 @@ import io.github.rosemoe.editor.core.util.Random;
 
 import static org.junit.Assert.*;
 
-public class ContentLineModelTest {
+public class ContentCellLineModelTest {
 
     public void p(String msg) {
         System.out.println(msg);

@@ -63,7 +63,7 @@ import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.extension.extensions.appcompattweaker.AppCompatTweakerController;
 import io.github.rosemoe.editor.core.grid.Grid;
-import io.github.rosemoe.editor.core.grid.instances.color.Span;
+import io.github.rosemoe.editor.core.grid.instances.color.SpanCell;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionView;
 import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
@@ -1048,7 +1048,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         for (int row = getFirstVisibleRow(); row <= getLastVisibleRow() && rowIterator.hasNext(); row++) {
             RowController rowInf = rowIterator.next();
             int line = rowInf.model.lineIndex;
-            ContentLineController contentLine = mText.getLine(line);
+            ContentLineController contentLine = (ContentLineController) mText.get(line);
             int columnCount = contentLine.length();
             if (rowInf.model.isLeadingRow) {
                 for(Extension e : model.plugins) {
@@ -1123,35 +1123,35 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                 if (spans == null || spans.size() == 0) {
                     spans = new Line();
                 }
-                Map.Entry<Integer, Span> [] keys = spans.entrySet().toArray(new Map.Entry[spans.size()]);
+                Map.Entry<Integer, SpanCell> [] keys = spans.entrySet().toArray(new Map.Entry[spans.size()]);
                 for (int a = 0; a < keys.length; a=a+1) {
-                    Span span = keys[a].getValue();
+                    SpanCell spanCell = keys[a].getValue();
                     // Draw by spans
-                    Span nextSpan = null;
+                    SpanCell nextSpanCell = null;
                     if ( a+1 < spans.size() ) {
-                        nextSpan = keys[a+1].getValue();
+                        nextSpanCell = keys[a+1].getValue();
                     }
-                    int spanStart = span.column;
-                    int spanEnd = nextSpan == null ? columnCount : nextSpan.column;
+                    int spanStart = spanCell.column;
+                    int spanEnd = nextSpanCell == null ? columnCount : nextSpanCell.column;
                     int paintStart = Math.max(firstVisibleChar, spanStart);
                     int paintEnd = Math.min(lastVisibleChar, spanEnd);
                     if( spanStart > lastVisibleChar || spanEnd < firstVisibleChar ) { continue ; }
                     float width = measureText(mBuffer, paintStart, paintEnd - paintStart);
 
-                    //Logger.debug("line=",line,",firstVisibleChar=",firstVisibleChar,",lastVisibleChar=",lastVisibleChar,",color=",span.model.color,",paintStart=",paintStart,",paintEnd=",paintEnd,",paintingOffset=",paintingOffset);
+                    //Logger.debug("line=",line,",firstVisibleChar=",firstVisibleChar,",lastVisibleChar=",lastVisibleChar,",color=",spanCell.model.color,",paintStart=",paintStart,",paintEnd=",paintEnd,",paintingOffset=",paintingOffset);
 
                     // Draw text
-                    drawRegionText(canvas, paintingOffset, getRowBaseline(row) - getOffsetY(), line, paintStart, paintEnd, columnCount, span.color);
+                    drawRegionText(canvas, paintingOffset, getRowBaseline(row) - getOffsetY(), line, paintStart, paintEnd, columnCount, spanCell.color);
                     //drawRegionText(canvas,paintingOffset, getRowBaseline(row) - getOffsetY(),line,paintStart,paintEnd,columnCount,0xFF00FF00);
 
                     // Draw underline
-                    if (span.underlineColor != 0) {
+                    if (spanCell.underlineColor != 0) {
                         RectF mRect = new RectF();
                         mRect.bottom = getRowBottom(line) - getOffsetY() - mDpUnit * 1;
                         mRect.top = mRect.bottom - getRowHeight() * 0.08f;
                         mRect.left = paintingOffset;
                         mRect.right = paintingOffset + width;
-                        drawColor(canvas, span.underlineColor, mRect);
+                        drawColor(canvas, spanCell.underlineColor, mRect);
                     }
 
                     paintingOffset += width;
@@ -1307,7 +1307,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         if (pattern == null || pattern.length() == 0) {
             return;
         }
-        ContentLineController seq = mText.getLine(line);
+        ContentLineController seq = (ContentLineController) mText.get(line);
         int index = 0;
         while (index != -1) {
             index = seq.indexOf(pattern, index);
@@ -1490,9 +1490,9 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             BlockLineModel block = blocks.get(curr);
             if (hasVisibleRegion(block.startLine, block.endLine, first, last)) {
                 try {
-                    CharSequence lineContent = mText.getLine(block.endLine);
+                    CharSequence lineContent = mText.get(block.endLine);
                     float offset1 = measureText(lineContent, 0, block.endColumn);
-                    lineContent = mText.getLine(block.startLine);
+                    lineContent = mText.get(block.startLine);
                     float offset2 = measureText(lineContent, 0, block.startColumn);
                     float offset = Math.min(offset1, offset2);
                     float centerX = offset + offsetX;
@@ -2001,7 +2001,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             //bottom invisible
             targetY = yOffset - view.getHeight() + getRowHeight() * 0.1f;
         }
-        float charWidth = column == 0 ? 0 : measureText(mText.getLine(line), column - 1, 1);
+        float charWidth = column == 0 ? 0 : measureText(mText.get(line), column - 1, 1);
         if (xOffset < getOffsetX()) {
             targetX = xOffset - charWidth * 0.2f;
         }
@@ -2424,7 +2424,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * @return line count
      */
     public int getLineCount() {
-        return mText.getLineCount();
+        return mText.size();
     }
 
     /**
@@ -3159,7 +3159,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         // Update spans
         if (isSpanMapPrepared(true, endLine - startLine)) {
             if (startLine == endLine) {
-                sm.get(startLine).insertCell(Span.obtain(startColumn, endColumn - startColumn, 0));
+                sm.get(startLine).insertCell(SpanCell.obtain(startColumn, endColumn - startColumn, 0));
             } else {
                 sm.insertContent(startLine, startColumn, endLine, endColumn);
             }

@@ -389,7 +389,7 @@ public final class CursorController extends WidgetExtensionController {
             }
            return IntPair.pack(line, column + 1);
         } else {
-            if (line + 1 == mContent.getLineCount()) {
+            if (line + 1 == mContent.size()) {
                 return IntPair.pack(line, c_column);
             } else {
                 return IntPair.pack(line + 1, 0);
@@ -423,7 +423,7 @@ public final class CursorController extends WidgetExtensionController {
     public long getDownOf(long position) {
         int line = IntPair.getFirst(position);
         int column = IntPair.getSecond(position);
-        int c_line = mContent.getLineCount();
+        int c_line = mContent.size();
         if (line + 1 >= c_line) {
             return IntPair.pack(line, mContent.getColumnCount(line));
         } else {
@@ -643,7 +643,7 @@ public final class CursorController extends WidgetExtensionController {
      */
     public boolean isInside(int index, int start, int end, int line) {
         // Due not to draw duplicate cursors for a single one
-        if (index == end && editorController.mText.getLine(line).length() != end) {
+        if (index == end && editorController.mText.get(line).length() != end) {
             return false;
         }
         return index >= start && index <= end;

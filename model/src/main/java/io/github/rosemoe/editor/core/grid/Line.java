@@ -50,10 +50,18 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
     }
     public void dump(String offset) {
         CEObject.dump(this,offset);
+        String res = "// ";
+        String[] patterns = new String[] {"*","-","+",","};
+        int idx = 0;
         for(Cell c:this) {
-            c.dump(offset);
+            for(int a=0;a<c.size;a+=1) {
+                res += patterns[idx];
+            }
+            if ( c.size > 0 ) {
+                idx = (idx + 1)%patterns.length;
+            }
         }
-        System.out.println("<== end dump ==>");
+        Logger.debug(res);
     }
 
     public Cell put(Cell cell) {
@@ -180,7 +188,7 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
 
 
     /**
-     * Test if the span line is empty (contains no Span).
+     * Test if the span line is empty (contains no SpanCell).
      * @return
      */
     public boolean isEmpty() {
@@ -202,7 +210,7 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
         //   - or do not insert the span (we just use fields)
         //   - or do insert the span but do not respect the behaviourOnSpanSplit policy
         if ( getBehaviourOnCellSplit() == Cell.SPLIT_EXTENDS) {
-            throw new RuntimeException("Error : give insert a Span in SPAN_SPLIT_EXTENDS policy will produce undermined behaviour, aborting");
+            throw new RuntimeException("Error : give insert a SpanCell in SPAN_SPLIT_EXTENDS policy will produce undermined behaviour, aborting");
         }
         insertCell(cell.column, cell.size);
         if ( cell.size > 0 ) {
@@ -340,6 +348,64 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
                 }
             }
         }
+    }
+    public Line subCells(int col, int sz) {
+        Line cells = new Line();
+        Integer firstKey = floorKey(col);
+        Integer lastKey = floorKey(col+sz);
+        if ( firstKey == null && lastKey == null ) {
+            return null;
+        }
+        if ( firstKey == null ) {
+            firstKey = col;
+        }
+        int latent = -1;
+        int latentSz = 0;
+        for(int a = firstKey; a < col+sz; ) {
+            Cell c = get(a);
+            if ( c == null ) {
+                if ( latent == -1 ) { latent = Math.max(a,col); }
+                latentSz += c.size - Math.min(0, col - c.size) ;
+                a += 1;
+            } else {
+                if ( latent != -1 ) {
+                    subCellsDecision(cells, latent, latentSz);
+                    latent = -1;
+                    latentSz = 0;
+                }
+                cells.append(c);
+                a += c.size;
+            }
+        }
+        if ( latent != -1 ) {
+            subCellsDecision(cells, latent, latentSz);
+        }
+        cells.removeCells(0,col);
+        return cells;
+    }
+    private Line subCellsDecision(Line cells, int col, int size) {
+        switch (getBehaviourOnCellSplit()) {
+            case Cell.SPLIT_INVALIDATE: {
+                BaseCell bc = new BaseCell(col, size);
+                bc.enabled = false;
+                cells.append(bc);
+            } break;
+            case Cell.SPLIT_EXTENDS:
+            case Cell.SPLIT_SPLITTING: {
+                Cell c = null;
+                Integer firstKey = floorKey(col);
+                if (firstKey == null) {
+                    c = new BaseCell(col, size);
+                    c.enabled = false;
+                } else {
+                    c = get(firstKey).clone();
+                    c.size = size;
+                    c.column = col;
+                }
+                cells.append(c);
+            } break;
+        }
+        return cells;
     }
 
     /**
