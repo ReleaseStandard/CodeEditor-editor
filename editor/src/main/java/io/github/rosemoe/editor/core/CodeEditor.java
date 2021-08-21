@@ -3161,7 +3161,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             if (startLine == endLine) {
                 sm.get(startLine).insertCell(SpanCell.obtain(startColumn, endColumn - startColumn, 0));
             } else {
-                sm.insertContent(startLine, startColumn, endLine, endColumn);
+                sm.insertCells(startLine, startColumn, endLine, endColumn);
             }
         }
 
@@ -3219,7 +3219,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     public void afterDelete(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
 
         if (isSpanMapPrepared(false, endLine - startLine)) {
-            analyzer.getSpanMap().removeContent(startLine,startColumn,endLine,endColumn);
+            analyzer.getSpanMap().removeCells(startLine,startColumn,endLine,endColumn);
         }
 
         cursor.blink.onSelectionChanged();

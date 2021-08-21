@@ -3,8 +3,6 @@ package io.github.rosemoe.editor.core.grid;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import io.github.rosemoe.editor.core.grid.instances.ContentCell;
-import io.github.rosemoe.editor.core.grid.instances.SpanCell;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.Random;
 
@@ -26,7 +24,7 @@ public class GridTest {
             s1.append(new BaseCell( 2));
             s1.append(new BaseCell( 5));
             map.append(s1);
-            map.insertContent(0,5,6);
+            map.insertCells(0,5,6);
             System.out.println("<=== map.dump() ===>");
             map.dump();
             assertTrue("s1.size()=" + s1.size(), s1.size() == 5);
@@ -50,7 +48,7 @@ public class GridTest {
             l3.append(new BaseCell(2));
             g1.append(l3);
             g.append(l1,l2);
-            g.insertContent(0,4, g1);
+            g.insertCells(0,4, g1);
         }
         {
             //
@@ -63,7 +61,7 @@ public class GridTest {
             s1.put(new BaseCell(2, 2));
             s1.put(new BaseCell(4, 5));
             map.put(0,s1);
-            map.insertContent(0,0,2);
+            map.insertCells(0,0,2);
             assertTrue(map.size() == 1);
             assertTrue("s1.size()=" + s1.size(), s1.size() == 3);
             assertTrue(s1.get(2).column == 2);
@@ -82,7 +80,7 @@ public class GridTest {
             s1.put(new BaseCell(2, 2));
             s1.put(new BaseCell(4, 5));
             map.put(0,s1);
-            map.insertContent(0,0,0);
+            map.insertCells(0,0,0);
             assertTrue("s1.size()=" + s1.size(), s1.size() == 3);
         }
         {
@@ -104,7 +102,7 @@ public class GridTest {
             map.put(0,l);
             map.put(1,l1);
             map.dump();
-            map.insertContent(0, 3, 1, 2);
+            map.insertCells(0, 3, 1, 2);
             assertTrue(map.size() == 3);
             System.out.println("OK3");
             map.dump();
@@ -135,7 +133,7 @@ public class GridTest {
             assertTrue(map.get(0).get(0).column==0);
             assertTrue(map.get(0).get(1).column==1);
             assertTrue(map.get(0).get(1).size==2);
-            map.removeContent(0, 1,0,2);
+            map.removeCells(0, 1,0,2);
             map.dump();
             assertTrue(map.size() == 1);
             assertTrue(map.get(0).size() == 2);
@@ -156,7 +154,7 @@ public class GridTest {
             Line l1 = new Line();
             l1.put(new BaseCell(0, 5));
             map.put(1, l1);
-            map.removeContent(0, 2,1,3);
+            map.removeCells(0, 2,1,3);
             map.dump();
             assertTrue("map.size()=" + map.size(), map.size() == 1);
             assertTrue("map.get(0).size()=" + map.get(0).size(), map.get(0).size()==2);
@@ -178,7 +176,7 @@ public class GridTest {
             map.put(1, l1);
             System.out.println("<=== OK ===>");
             map.dump();
-            map.removeContent(0,2,1,3);
+            map.removeCells(0,2,1,3);
             map.dump();
             assertTrue(map.size() == 1);
             assertTrue(map.get(0).size() == 2);
@@ -205,7 +203,7 @@ public class GridTest {
             assertTrue(map.get(1).size() == 1);
             assertTrue(map.get(1).get(0).size == 2);
             assertTrue(map.get(1).get(0).column == 0);
-            map.removeContent(0,1,1,1);
+            map.removeCells(0,1,1,1);
             map.dump();
             assertTrue(map.size() == 1);
             assertTrue("map.get(0).size()=" + map.get(0).size(), map.get(0).size() == 2);
@@ -233,7 +231,7 @@ public class GridTest {
             l2.put(new BaseCell(4, 4));
             l2.put(new BaseCell(8, 4));
             map.put(2,l2);
-            map.removeContent(0,4,0,6);
+            map.removeCells(0,4,0,6);
             assertTrue(map.size() == 3);
             assertTrue(map.get(0).size() == 3);
         }
@@ -258,7 +256,7 @@ public class GridTest {
             l2.put(new BaseCell(4, 4));
             l2.put(new BaseCell(8, 4));
             map.put(2, l2);
-            map.removeContent(0, 3, 1, 8);
+            map.removeCells(0, 3, 1, 8);
             assertTrue(map.size() == 2);
             map.get(0).dump();
             assertTrue(map.get(0).size() == 3);
@@ -285,7 +283,7 @@ public class GridTest {
             l2.put(new BaseCell(0, 4));
             l2.put(new BaseCell(4, 2));
             map.put(2,l2);
-            map.removeContent(0,4,2,4);
+            map.removeCells(0,4,2,4);
             System.out.println("|================================|");
             map.dump();
             assertTrue("map.size()=" + map.size(), map.size() == 1);
@@ -319,7 +317,7 @@ public class GridTest {
             l2.put(new BaseCell(0, 4));
             l2.put(new BaseCell(4, 2));
             map.put(2,l2);
-            map.removeContent(0,4,2,4);
+            map.removeCells(0,4,2,4);
             System.out.println("|================================|");
             map.dump();
             assertTrue("map.size()=" + map.size(), map.size() == 1);
@@ -336,27 +334,6 @@ public class GridTest {
         int sz = r.nextUint(400);
         s.append(sz);
         assertTrue(sz == s.size());
-    }
-
-    static int count;
-    @Test
-    public void testForEachCell() {
-        count = 0;
-        Grid g = new Grid(){
-            @Override
-            public void handleForEachCell(Cell c) {
-                count+=1;
-            }
-        };
-        Line l = new Line();
-        l.put(new BaseCell(0,10));
-        l.put(new BaseCell(1,2));
-        g.put(0,l);
-        Line l1 = new Line();
-        l1.put(new BaseCell(4,4));
-        g.put(1,l1);
-        g.forEachCell();
-        assertTrue(count == 3);
     }
 
     @Test

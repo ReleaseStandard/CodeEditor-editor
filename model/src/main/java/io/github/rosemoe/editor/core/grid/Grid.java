@@ -13,24 +13,31 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
 
     public int behaviourOnCellSplit = Cell.SPLIT_SPLITTING;
 
-    @Override
-    public Iterator<Line<T>> iterator() {
+    @Override public Iterator<Line<T>> iterator() {
         return super.values().iterator();
+    }
+    @Override public boolean isEmpty() {
+        return size()==0;
+    }
+    @Override public Line<T> get(Object key) {
+        return super.get(key);
+    }
+    @Override public String toString() {
+        String res = "";
+        for(Line<T> l : this) {
+            res += l;
+        }
+        return res;
     }
 
     /**
-     * List all cells in common order, from the top of editor to bottom.
-     */
-    public void forEachCell() {
-        for(Line<T> l : this) {
-            for(T c : l) {
-                handleForEachCell(c);
-            }
-        }
-    }
-    /**
      * Get sub grid of initial grid.
      * The returned grid is copy not pointers.
+     * @param lineStart 0..n-1 line of sub grid start
+     * @param colStart 0..n-1 column of sub grid start
+     * @param lineStop 0..n-1 line of subgrid stop
+     * @param colStop 0..n-1 columne of sub grid stop
+     * @return a subgrid with {@link Cell} copied from the original grid.
      */
     public Grid<T> subGrid(int lineStart, int colStart, int lineStop, int colStop) {
         Grid<T> g = new Grid<T>();
@@ -49,29 +56,16 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
         }
         return g;
     }
-    public void handleForEachCell(T c) {
-
-    }
-
-    @Override
-    public Line<T> get(Object key) {
-        return super.get(key);
-    }
     /**
-     * Insert a Line at a specific position in the span
+     * Insert a {@link Line} into the grid at the specified line.
+     * @param index 0..n-1 where to insert the line (override the Line if it exists alrdy).
+     * @param line the {@link Line} to insert.
      */
     public void put(int index, Line<T> line) {
         line.behaviourOnCellSplit = behaviourOnCellSplit;
         super.put(index,line);
     }
-    /**
-     * Test if the spanis empty.
-     * @return
-     */
-    public boolean isEmpty() {
-        return size()==0;
-    }
-    public void removeContent(int lineStart, int colStart, int lineStop, int colStop) {
+    public void removeCells(int lineStart, int colStart, int lineStop, int colStop) {
         // ---+|+++      ---++++
         // ***        => ***
         // yy|yyy        ---+yyy
@@ -103,15 +97,19 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
         }
     }
     /**
-     * Insert some content in the span 
+     * Insert some empty cells in the grid.
+     * @param lineStart 0..n-1 line of insertStart
+     * @param colStart 0..n-1 column of insertStart
+     * @param lineStop 0..n-1 line of insertStop
+     * @param colStop 0..n-1 column of insertStop
      */
-    public void insertContent(int lineStart, int colStart, int lineStop, int colStop) {
+    public void insertCells(int lineStart, int colStart, int lineStop, int colStop) {
         // ---+|+++      ---+|+++
         // ***        =>
         //               ***
         // where x is insertion, | insertion point
         int lineShift = lineStop - lineStart;
-        if ( lineShift > 0 ) {
+        if (lineShift > 0) {
             for (int a = size() - 1; a >= lineStart + 1; a = a - 1) {
                 Line<T> sl = remove(a);
                 put(a + lineShift, sl);
@@ -120,20 +118,25 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
         // ---+|+++      ---+
         //            =>     +++
         // ***           ***
-        Logger.debug("lineStart="+lineStart+",colStart="+colStart+",lineStop="+lineStop+",colStop="+colStop);
-        if ( lineStart > lineStop ) {
+        Logger.debug("lineStart=" + lineStart + ",colStart=" + colStart + ",lineStop=" + lineStop + ",colStop=" + colStop);
+        if (lineStart > lineStop) {
             throw new RuntimeException("INVALID : lineStart=" + lineStart + ",lineStop=" + lineStop);
-        }
-        else if ( lineStart == lineStop ) {
+        } else if (lineStart == lineStop) {
             get(lineStart).insertCell(colStart, colStop - colStart);
         } else {
             Line<T>[] startParts = get(lineStart).split(colStart);
             put(lineStart, startParts[0]);
             startParts[1].insertCell(0, colStop);
-            put(lineStart+lineShift, startParts[1]);
+            put(lineStart + lineShift, startParts[1]);
         }
     }
-    public void insertContent(int lineStart, int colStart, Grid<T> g1) {
+    /**
+     * Insert cells from an other grid into this one, insertStop is deduced from {@link Grid} g1.
+     * @param lineStart 0..n-1 line of insertStart
+     * @param colStart 0..n-1 column of insertStop
+     * @param g1 Grid to pickup elements from.
+     */
+    public void insertCells(int lineStart, int colStart, Grid<T> g1) {
         int lineStop = 0;
         int colStop = 0;
         Entry e = g1.lastEntry();
@@ -146,15 +149,15 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
                 colStop = c.column + c.size;
             }
         }
-        insertContent(lineStart,colStart,lineStop,colStop);
+        insertCells(lineStart,colStart,lineStop,colStop);
         for(int a = lineStart; a < lineStop; a = a + 1 ) {
             Line insertLine = get(a);
             Line toInsertLine = g1.get(a-lineStart);
             insertLine.insertLine((a==lineStart)?colStart:0,toInsertLine);
         }
     }
-    public void insertContent(int line, int colStart, int colStop) {
-        insertContent(line, colStart, line, colStop);
+    public void insertCells(int line, int colStart, int colStop) {
+        insertCells(line, colStart, line, colStop);
     }
     /**
      * Remove the Line at the specified index.
@@ -166,11 +169,11 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
         return super.remove(index);
     }
     public void replace(int lineStart, int colStart, int lineStop, int colStop, Grid newContent) {
-        removeContent(lineStart,colStart,lineStop,colStop);
+        removeCells(lineStart,colStart,lineStop,colStop);
         //insertContent(lineStart, colStart, lineStop, colStop, newContent);
     }
     /**
-     * Append an empty line to the span 
+     * Append an empty {@link Line} to this {@link Grid}.
      * @return
      */
     public Line<T> append() {
@@ -183,8 +186,7 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
     /**
      * Complete the current spansuch as it while contains finalSizeInLines.
      * It will not remove extra lines
-     *
-     * @param finalSizeInLines 0..n
+     * @param finalSizeInLines 0..n the size to complete up to.
      */
     public void append(int finalSizeInLines) {
         while(size() < finalSizeInLines) {
@@ -237,14 +239,5 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
             Logger.debug(offset+"line idx="+i);
             l.dump(offset + Logger.OFFSET);
         }
-    }
-
-    @Override
-    public String toString() {
-        String res = "";
-        for(Line<T> l : this) {
-            res += l;
-        }
-        return res;
     }
 }

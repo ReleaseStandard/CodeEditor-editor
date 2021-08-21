@@ -28,7 +28,6 @@ import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.util.annotations.Experimental;
 
 import static io.github.rosemoe.editor.core.grid.Cell.*;
 
@@ -233,7 +232,7 @@ public class ContentMap extends Grid<ContentCell> {
      * @param columnOnEndLine   The end column position
      */
     public void delete(int startLine, int columnOnStartLine, int endLine, int columnOnEndLine) {
-        removeContent(startLine, columnOnStartLine, endLine, columnOnEndLine);
+        removeCells(startLine, columnOnStartLine, endLine, columnOnEndLine);
         // TODO break
         // this.dispatchAfterDelete(startLine, columnOnStartLine, endLine, columnOnEndLine, changedContent);
     }
