@@ -55,8 +55,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.NavigableSet;
 
 import io.github.rosemoe.editor.R;
 import io.github.rosemoe.editor.core.extension.Extension;
@@ -64,6 +62,7 @@ import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.extension.extensions.appcompattweaker.AppCompatTweakerController;
 import io.github.rosemoe.editor.core.grid.Grid;
+import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 import io.github.rosemoe.editor.core.grid.instances.SpanCell;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionView;
@@ -95,7 +94,6 @@ import io.github.rosemoe.editor.core.extension.extensions.widgets.contextaction.
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.CompletionAdapter;
 import io.github.rosemoe.editor.core.langs.empty.EmptyLanguage;
-import io.github.rosemoe.editor.core.content.controller.ContentLineController;
 import io.github.rosemoe.editor.core.content.controller.ContentListener;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.view.UserInputView;
 import io.github.rosemoe.editor.core.util.FontCache;
@@ -1049,8 +1047,8 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         for (int row = getFirstVisibleRow(); row <= getLastVisibleRow() && rowIterator.hasNext(); row++) {
             RowController rowInf = rowIterator.next();
             int line = rowInf.model.lineIndex;
-            ContentLineController contentLine = (ContentLineController) mText.get(line);
-            int columnCount = contentLine.length();
+            Line<ContentCell> contentLine = mText.get(line);
+            int columnCount = contentLine.getWidth();
             if (rowInf.model.isLeadingRow) {
                 for(Extension e : model.plugins) {
                     if ( e instanceof WidgetExtensionController) {
@@ -1308,7 +1306,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         if (pattern == null || pattern.length() == 0) {
             return;
         }
-        ContentLineController seq = (ContentLineController) mText.get(line);
+        Line<ContentCell> seq = mText.get(line);
         int index = 0;
         while (index != -1) {
             //TODO break
@@ -3269,7 +3267,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     }
 
     @Override
-    public void onRemove(ContentMap content, ContentLineController line) {
+    public void onRemove(ContentMap content, Line<ContentCell> line) {
         mLayout.onRemove(content, line);
     }
 

@@ -22,6 +22,8 @@ import java.util.NoSuchElementException;
 import io.github.rosemoe.editor.core.content.controller.ContentLineController;
 import io.github.rosemoe.editor.core.content.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.layout.model.WordwrapModel;
+import io.github.rosemoe.editor.core.grid.Line;
+import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
 
@@ -148,7 +150,7 @@ public class WordwrapLayout extends AbstractLayout {
     }
 
     @Override
-    public void onRemove(ContentMap content, ContentLineController line) {
+    public void onRemove(ContentMap content, Line<ContentCell> line) {
 
     }
 

@@ -118,8 +118,8 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
             }
         }
         // ---+|+++      ---+
-        // ***        => xx+++
-        //               ***
+        //            =>     +++
+        // ***           ***
         Logger.debug("lineStart="+lineStart+",colStart="+colStart+",lineStop="+lineStop+",colStop="+colStop);
         if ( lineStart > lineStop ) {
             throw new RuntimeException("INVALID : lineStart=" + lineStart + ",lineStop=" + lineStop);
@@ -133,6 +133,26 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
             put(lineStart+lineShift, startParts[1]);
         }
     }
+    public void insertContent(int lineStart, int colStart, Grid<T> g1) {
+        int lineStop = 0;
+        int colStop = 0;
+        Entry e = g1.lastEntry();
+        if ( e != null ) {
+            Line lstop = (Line) e.value;
+            lineStop = (int) e.key;
+            Entry e1 = lstop.lastEntry();
+            if ( e1 != null ) {
+                Cell c = (Cell) e1.value;
+                colStop = c.column + c.size;
+            }
+        }
+        insertContent(lineStart,colStart,lineStop,colStop);
+        for(int a = lineStart; a < lineStop; a = a + 1 ) {
+            Line insertLine = get(a);
+            Line toInsertLine = g1.get(a-lineStart);
+            insertLine.insertLine((a==lineStart)?colStart:0,toInsertLine);
+        }
+    }
     public void insertContent(int line, int colStart, int colStop) {
         insertContent(line, colStart, line, colStop);
     }
@@ -144,6 +164,10 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
         Line<T> sl = get(index);
         if ( sl == null ) { return null; }
         return super.remove(index);
+    }
+    public void replace(int lineStart, int colStart, int lineStop, int colStop, Grid newContent) {
+        removeContent(lineStart,colStart,lineStop,colStop);
+        //insertContent(lineStart, colStart, lineStop, colStop, newContent);
     }
     /**
      * Append an empty line to the span 
@@ -179,6 +203,11 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
         }
         put(idx,l);
         return idx;
+    }
+    public void append(Line<T> ...ls) {
+        for(Line<T> l : ls) {
+            append(l);
+        }
     }
     public Line<T> addNormalIfNull() {
         append(1);

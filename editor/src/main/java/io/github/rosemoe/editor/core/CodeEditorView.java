@@ -17,6 +17,8 @@ import android.view.inputmethod.InputConnection;
 
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.SymbolPairMatch;
 import io.github.rosemoe.editor.core.content.controller.ContentLineController;
+import io.github.rosemoe.editor.core.grid.Line;
+import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
 
@@ -225,10 +227,10 @@ public class CodeEditorView extends View {
                     if (handlers == null || editor.getCursor().isSelected()) {
                         editor.cursor.onCommitText("\n", true);
                     } else {
-                        ContentLineController line = (ContentLineController) editor.mText.get(editor.cursor.getLeftLine());
+                        Line<ContentCell> line = editor.mText.get(editor.cursor.getLeftLine());
                         int index = editor.cursor.getLeftColumn();
-                        String beforeText = line.subSequence(0, index).toString();
-                        String afterText = line.subSequence(index, line.length()).toString();
+                        String beforeText = line.subLine(0, index).toString();
+                        String afterText = line.subLine(index, line.getWidth()).toString();
                         boolean consumed = false;
                         for (NewlineHandler handler : handlers) {
                             if (handler != null) {

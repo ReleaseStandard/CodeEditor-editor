@@ -37,7 +37,7 @@ import static io.github.rosemoe.editor.core.grid.Cell.*;
  *
  * @author Rose
  */
-public class ContentMap extends Grid<ContentCell> implements CharSequence {
+public class ContentMap extends Grid<ContentCell> {
 
     public static int sInitialListCapacity = 1000;
 
@@ -85,47 +85,6 @@ public class ContentMap extends Grid<ContentCell> implements CharSequence {
         setUndoEnabled(false);
         insert(0, 0, src);
         setUndoEnabled(true);
-    }
-
-    /**
-     * Test whether the two ContentLineController have the same content
-     *
-     * @param a ContentLineController
-     * @param b another ContentLineController
-     * @return Whether equals in content
-     */
-    private static boolean equals(ContentLineController a, ContentLineController b) {
-        if (a.length() != b.length()) {
-            return false;
-        }
-        for (int i = 0; i < a.length(); i++) {
-            if (a.charAt(i) != b.charAt(i)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public char charAt(int index) {
-        checkIndex(index);
-        CharPosition p = getIndexer().getCharPosition(index);
-        return charAt(p.line, p.column);
-    }
-
-    @Override
-    public int length() {
-        return textLength;
-    }
-
-    @Override
-    public CharSequence subSequence(int start, int end) {
-        if (start > end) {
-            throw new StringIndexOutOfBoundsException("start > end");
-        }
-        CharPosition s = getIndexer().getCharPosition(start);
-        CharPosition e = getIndexer().getCharPosition(end);
-        return subGrid(s.getLine(), s.getColumn(), e.getLine(), e.getColumn()).toString();
     }
 
     /**
@@ -229,13 +188,13 @@ public class ContentMap extends Grid<ContentCell> implements CharSequence {
         if (workIndex == -1) {
             workIndex = 0;
         }
-        ContentLineController currLine = (ContentLineController) get(workLine);
+        Line<ContentCell> currLine = get(workLine);
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (c == '\n') {
-                ContentLineController newLine = new ContentLineController();
+                Line<ContentCell> newLine = new Line<ContentCell>();
                 newLine.append(currLine.subLine(workIndex));
-                currLine.removeCells(workIndex, currLine.length());
+                currLine.removeCells(workIndex, currLine.getWidth());
                 put(workLine + 1, newLine);
                 currLine = newLine;
                 workIndex = 0;
@@ -258,8 +217,6 @@ public class ContentMap extends Grid<ContentCell> implements CharSequence {
      * @param end   End position in content
      */
     public void delete(int start, int end) {
-        checkIndex(start);
-        checkIndex(end);
         CharPosition startPos = getIndexer().getCharPosition(start);
         CharPosition endPos = getIndexer().getCharPosition(end);
         if (start != end) {
@@ -276,83 +233,9 @@ public class ContentMap extends Grid<ContentCell> implements CharSequence {
      * @param columnOnEndLine   The end column position
      */
     public void delete(int startLine, int columnOnStartLine, int endLine, int columnOnEndLine) {
-        StringBuilder changedContent = new StringBuilder();
-        if (startLine == endLine) {
-            checkLineAndColumn(endLine, columnOnEndLine, true);
-            checkLineAndColumn(startLine, columnOnStartLine == -1 ? 0 : columnOnStartLine, true);
-            int beginIdx = columnOnStartLine;
-            if (columnOnStartLine == -1) {
-                beginIdx = 0;
-            }
-            if (beginIdx > columnOnEndLine) {
-                throw new IllegalArgumentException("start > end");
-            }
-            ContentLineController curr = (ContentLineController) get(startLine);
-            int len = curr.length();
-            if (beginIdx < 0 || beginIdx > len || columnOnEndLine > len) {
-                throw new StringIndexOutOfBoundsException("column start or column end is out of bounds");
-            }
-
-            //-----Notify------
-            if (cursor != null)
-                if (columnOnStartLine != -1)
-                    cursor.beforeDelete(startLine, columnOnStartLine, endLine, columnOnEndLine);
-                else
-                    cursor.beforeDelete(startLine == 0 ? 0 : startLine - 1, startLine == 0 ? 0 : getColumnCount(startLine - 1), endLine, columnOnEndLine);
-
-            changedContent.append(curr, beginIdx, columnOnEndLine);
-            curr.removeCells(beginIdx, columnOnEndLine-beginIdx);
-            textLength -= columnOnEndLine - columnOnStartLine;
-            if (columnOnStartLine == -1) {
-                if (startLine == 0) {
-                    textLength++;
-                } else {
-                    Line previous = get(startLine - 1);
-                    previous.append(curr);
-                    ContentLineController rm = (ContentLineController) remove(startLine);
-                    if (mLineListener != null) {
-                        mLineListener.onRemove(this, rm);
-                    }
-                    changedContent.insert(0, '\n');
-                    startLine--;
-                    columnOnStartLine = getColumnCount(startLine);
-                }
-            }
-        } else if (startLine < endLine) {
-            checkLineAndColumn(startLine, columnOnStartLine, true);
-            checkLineAndColumn(endLine, columnOnEndLine, true);
-
-            //-----Notify------
-            if (cursor != null)
-                cursor.beforeDelete(startLine, columnOnStartLine, endLine, columnOnEndLine);
-
-            for (int i = 0; i < endLine - startLine - 1; i++) {
-                ContentLineController line = (ContentLineController) remove(startLine + 1);
-                if (mLineListener != null) {
-                    mLineListener.onRemove(this, line);
-                }
-                textLength -= line.length() + 1;
-                changedContent.append('\n').append(line);
-            }
-            int currEnd = startLine + 1;
-            ContentLineController start = (ContentLineController) get(startLine);
-            ContentLineController end = (ContentLineController) get(currEnd);
-            textLength -= start.length() - columnOnStartLine;
-            changedContent.insert(0, start, columnOnStartLine, start.length());
-            start.removeCells(columnOnStartLine, start.length());
-            textLength -= columnOnEndLine;
-            changedContent.append('\n').append(end, 0, columnOnEndLine);
-            end.removeCells(0, columnOnEndLine);
-            textLength--;
-            ContentLineController r = (ContentLineController) remove(currEnd);
-            if (mLineListener != null) {
-                mLineListener.onRemove(this, r);
-            }
-            start.append(end);
-        } else {
-            throw new IllegalArgumentException("start line > end line");
-        }
-        this.dispatchAfterDelete(startLine, columnOnStartLine, endLine, columnOnEndLine, changedContent);
+        removeContent(startLine, columnOnStartLine, endLine, columnOnEndLine);
+        // TODO break
+        // this.dispatchAfterDelete(startLine, columnOnStartLine, endLine, columnOnEndLine, changedContent);
     }
 
     /**
@@ -549,7 +432,7 @@ public class ContentMap extends Grid<ContentCell> implements CharSequence {
         boolean first = true;
         final int lines = size();
         for (int i = 0; i < lines; i++) {
-            ContentLineController line = (ContentLineController) this.get(i);
+            Line<ContentCell> line = this.get(i);
             if (!first) {
                 sb.append('\n');
             } else {
@@ -630,17 +513,6 @@ public class ContentMap extends Grid<ContentCell> implements CharSequence {
         }
         for (ContentListener lis : mListeners) {
             lis.afterInsert(this, startLine, startCol, endLine, endCol, text);
-        }
-    }
-
-    /**
-     * Check whether the index is valid
-     *
-     * @param index Index to check
-     */
-    public void checkIndex(int index) {
-        if (index > length()) {
-            throw new StringIndexOutOfBoundsException("Index " + index + " out of bounds. length:" + length());
         }
     }
 

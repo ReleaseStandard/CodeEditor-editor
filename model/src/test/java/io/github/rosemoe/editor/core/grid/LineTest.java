@@ -1096,4 +1096,74 @@ public class LineTest {
             assertTrue(l.toString().equals("abc"));
         }
     }
+
+    @Test
+    public void testInsertLine() {
+        {
+            // **--|++++
+            // ++---
+            // **--++---++++
+            Line<BaseCell> l = new Line<>(), l2 = new Line<>();
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
+            l.append(new BaseCell(2));
+            l.append(new BaseCell(2));
+            l.append(new BaseCell(4));
+            l2.append(new BaseCell(2));
+            l2.append(new BaseCell(3));
+            l.insertLine(4,l2);
+            assertTrue(l.size() == 5);
+            assertTrue(l.get(0).size == 2);
+            assertTrue(l.get(2).size == 2);
+            assertTrue(l.get(4).size == 2);
+            assertTrue(l.get(6).size == 3);
+            assertTrue(l.get(9).size == 4);
+        }
+        {
+            // **--++|++
+            // **$$
+            // **--++**$$++
+            Line<BaseCell> l = new Line<>(), l2 = new Line<>();
+            l.behaviourOnCellSplit = SPLIT_SPLITTING;
+            l2.behaviourOnCellSplit = SPLIT_SPLITTING;
+            l.append(new BaseCell(2));
+            l.append(new BaseCell(2));
+            l.append(new BaseCell(4));
+            l2.append(new BaseCell(2));
+            l2.append(new BaseCell(2));
+            l.insertLine(6,l2);
+            assertTrue(l.size() == 6);
+            assertTrue(l.get(0).size == 2);
+            assertTrue(l.get(2).size == 2);
+            assertTrue(l.get(4).size == 2);
+            assertTrue(l.get(6).size == 2);
+            assertTrue(l.get(8).size == 2);
+            assertTrue(l.get(10).size == 2);
+        }
+    }
+    @Test
+    @Ignore("This is a bug")
+    public void testInsertLineBug() {
+        {
+            // **--++|++
+            // **$$
+            // **--++++++++
+            Line<BaseCell> l = new Line<>(), l2 = new Line<>();
+            l.behaviourOnCellSplit = SPLIT_EXTENDS;
+            l2.behaviourOnCellSplit = SPLIT_EXTENDS;
+            l.append(new BaseCell(2));
+            l.append(new BaseCell(2));
+            l.append(new BaseCell(4));
+            l2.append(new BaseCell(2));
+            l2.append(new BaseCell(2));
+            l.dump();
+            l2.dump();
+            l.insertLine(6,l2);
+            Logger.debug("END");
+            l.dump();
+            assertTrue(l.size() == 3);
+            assertTrue(l.get(0).size == 2);
+            assertTrue(l.get(2).size == 2);
+            assertTrue(l.get(4).size == 6);
+        }
+    }
 }

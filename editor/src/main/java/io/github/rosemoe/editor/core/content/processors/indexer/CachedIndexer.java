@@ -68,7 +68,7 @@ public class CachedIndexer implements Indexer, ContentListener {
         if (!isHandleEvent() && !mCachePositions.isEmpty()) {
             mHasException = true;
         }
-        mEndPoint.index = content.length();
+        mEndPoint.index = 0; // TODO break : content.length();
         mEndPoint.line = content.size() - 1;
         mEndPoint.column = content.getColumnCount(mEndPoint.line);
     }
@@ -362,7 +362,6 @@ public class CachedIndexer implements Indexer, ContentListener {
     @Override
     public CharPosition getCharPosition(int index) {
         throwIfHas();
-        content.checkIndex(index);
         CharPosition pos = findNearestByIndex(index);
         CharPosition res;
         if (pos.index == index) {

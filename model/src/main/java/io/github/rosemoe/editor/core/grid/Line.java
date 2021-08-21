@@ -205,7 +205,19 @@ public class Line<T extends Cell> extends ConcurrentSkipListMap<Integer, T> impl
     }
 
 
-
+    /**
+     * Insert a line into an other, warning this destruct the original line.
+     * @param offset
+     * @param l
+     */
+    public void insertLine(int offset, Line<T> l) {
+        insertCell(offset,l.getWidth());
+        remove(offset);
+        for(T c : l) {
+            c.column += offset;
+            put(c);
+        }
+    }
     /**
      * Insert a cell in the line.
      *  behaviours:
@@ -242,8 +254,6 @@ public class Line<T extends Cell> extends ConcurrentSkipListMap<Integer, T> impl
                         put(s.column, s);
                         break;
                     case SPLIT_INVALIDATE:
-                        remove(s.column);
-                        break;
                     case SPLIT_SPLITTING:
                         int oldSz = s.size;
                         int index = col + size;
@@ -251,6 +261,7 @@ public class Line<T extends Cell> extends ConcurrentSkipListMap<Integer, T> impl
                         T c = (T) s.clone();
                         c.column = index;
                         c.size = oldSz - s.size;
+                        c.enabled = !(behaviourOnCellSplit == SPLIT_INVALIDATE);
                         put(index, c);
                         break;
                 }

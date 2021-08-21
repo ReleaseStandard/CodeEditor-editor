@@ -16,7 +16,8 @@
 package io.github.rosemoe.editor.core.content.processors;
 
 import io.github.rosemoe.editor.core.content.controller.ContentMap;
-import io.github.rosemoe.editor.core.content.controller.ContentLineController;
+import io.github.rosemoe.editor.core.grid.Line;
+import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 
 /**
  * A listener to know when a ContentLineController object is removed from ContentMap object
@@ -27,10 +28,9 @@ public interface ContentLineRemoveListener {
 
     /**
      * When a ContentLineController is removed from ContentMap, this method is called
-     *
-     * @param content Caller ContentMap
+     *  @param content Caller ContentMap
      * @param line    ContentLineController object removed
      */
-    void onRemove(ContentMap content, ContentLineController line);
+    void onRemove(ContentMap content, Line<ContentCell> line);
 
 }
