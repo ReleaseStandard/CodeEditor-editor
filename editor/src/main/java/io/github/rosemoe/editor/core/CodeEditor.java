@@ -56,6 +56,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
 
 import io.github.rosemoe.editor.R;
 import io.github.rosemoe.editor.core.extension.Extension;
@@ -1030,7 +1031,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
 
             return;
         }
-        Grid spanMap = analyzer.getSpanMap();
+        Grid<SpanCell> spanMap = analyzer.getSpanMap();
         List<Integer> matchedPositions = new ArrayList<>();
         int currentLine = cursor.isSelected() ? -1 : cursor.getLeftLine();
         int currentLineBgColor = model.colorManager.getColor("currentLine");
@@ -1119,17 +1120,17 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             // the result of the color analyzer
             {
                 // Get spans
-                Line spans = spanMap.get(line);
+                Line<SpanCell> spans = spanMap.get(line);
                 if (spans == null || spans.size() == 0) {
                     spans = new Line();
                 }
-                Map.Entry<Integer, SpanCell> [] keys = spans.entrySet().toArray(new Map.Entry[spans.size()]);
+                Integer[] keys = (Integer[]) spans.keySet().toArray(new Integer[spans.size()]);
                 for (int a = 0; a < keys.length; a=a+1) {
-                    SpanCell spanCell = keys[a].getValue();
+                    SpanCell spanCell = spans.get(keys[a]);
                     // Draw by spans
                     SpanCell nextSpanCell = null;
                     if ( a+1 < spans.size() ) {
-                        nextSpanCell = keys[a+1].getValue();
+                        nextSpanCell = spans.get(keys[a+1]);
                     }
                     int spanStart = spanCell.column;
                     int spanEnd = nextSpanCell == null ? columnCount : nextSpanCell.column;
@@ -1310,7 +1311,8 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         ContentLineController seq = (ContentLineController) mText.get(line);
         int index = 0;
         while (index != -1) {
-            index = seq.indexOf(pattern, index);
+            //TODO break
+            //index = seq.indexOf(pattern, index);
             if (index != -1) {
                 positions.add(index);
                 index += pattern.length();

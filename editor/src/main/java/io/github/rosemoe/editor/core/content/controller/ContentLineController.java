@@ -15,24 +15,17 @@
  */
 package io.github.rosemoe.editor.core.content.controller;
 
-import android.text.GetChars;
-import android.text.TextUtils;
-
 import io.github.rosemoe.editor.core.content.ContentLineModel;
 import io.github.rosemoe.editor.core.grid.Cell;
 import io.github.rosemoe.editor.core.grid.Line;
+import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 
 /**
  * One line of content in the ContentMap.
  */
-public class ContentLineController extends Line implements CharSequence, GetChars {
+public class ContentLineController extends Line<ContentCell> implements CharSequence {
 
     public ContentLineModel model = new ContentLineModel();
-
-    @Override
-    public int getBehaviourOnCellSplit() {
-        return Cell.SPLIT_SPLITTING;
-    }
 
     public ContentLineController() {
         this(true);
@@ -101,10 +94,6 @@ public class ContentLineController extends Line implements CharSequence, GetChar
         return this;
     }
 
-    public int indexOf(CharSequence text, int index) {
-        return TextUtils.indexOf(this, text, index);
-    }
-
     public int lastIndexOf(String str, int fromIndex) {
         return ContentLineModel.lastIndexOf(model.value, model.length,
                 str.toCharArray(), str.length(), fromIndex);
@@ -112,46 +101,16 @@ public class ContentLineController extends Line implements CharSequence, GetChar
 
     @Override
     public int length() {
-        return model.length;
+        return getWidth();
     }
 
     @Override
     public char charAt(int index) {
-        model.checkIndex(index);
-        return model.value[index];
+        return get(index).toString().toCharArray()[0];
     }
 
     @Override
     public ContentLineController subSequence(int start, int end) {
-        model.checkIndex(start);
-        model.checkIndex(end);
-        if (end < start) {
-            throw new StringIndexOutOfBoundsException("start is bigger than end");
-        }
-        char[] newValue = new char[end - start + 16];
-        System.arraycopy(model.value, start, newValue, 0, end - start);
-        ContentLineController res = new ContentLineController(false);
-        res.model.value = newValue;
-        res.model.length = end - start;
-        return res;
+        return (ContentLineController) subLine(start,end-start);
     }
-
-    /**
-     * A quick method to append itself to a StringBuilder
-     */
-    public void appendTo(StringBuilder sb) {
-        sb.append(model.value, 0, model.length);
-    }
-
-    @Override
-    public void getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin) {
-        if (srcBegin < 0)
-            throw new StringIndexOutOfBoundsException(srcBegin);
-        if ((srcEnd < 0) || (srcEnd > model.length))
-            throw new StringIndexOutOfBoundsException(srcEnd);
-        if (srcBegin > srcEnd)
-            throw new StringIndexOutOfBoundsException("srcBegin > srcEnd");
-        System.arraycopy(model.value, srcBegin, dst, dstBegin, srcEnd - srcBegin);
-    }
-
 }

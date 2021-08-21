@@ -31,6 +31,8 @@ import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.util.annotations.Experimental;
 import io.github.rosemoe.struct.BlockLinkedList;
 
+import static io.github.rosemoe.editor.core.grid.Cell.SPLIT_SPLITTING;
+
 /**
  * This class saves the text content for editor and maintains line widths
  *
@@ -67,6 +69,7 @@ public class ContentMap extends Grid implements CharSequence {
      */
     public ContentMap() {
         this(null,null);
+        behaviourOnCellSplit = SPLIT_SPLITTING;
     }
 
     /**
@@ -76,6 +79,7 @@ public class ContentMap extends Grid implements CharSequence {
      * @param src The source of ContentMap
      */
     public ContentMap(CharSequence src, CodeEditor editor) {
+        behaviourOnCellSplit = SPLIT_SPLITTING;
         this.editor = editor;
         if (src == null) {
             src = "";
@@ -565,7 +569,8 @@ public class ContentMap extends Grid implements CharSequence {
             } else {
                 first = false;
             }
-            line.appendTo(sb);
+            // TODO break
+            //line.appendTo(sb);
         }
         return sb;
     }

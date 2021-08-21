@@ -15,6 +15,8 @@
  */
 package io.github.rosemoe.editor.core.analyzer.result.instances;
 
+import javax.swing.SpinnerNumberModel;
+
 import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.analyzer.result.TokenEmitterResult;
 import io.github.rosemoe.editor.core.grid.Grid;
@@ -31,7 +33,7 @@ public class CodeAnalyzerResultColor extends TokenEmitterResult {
      * A color result must have a theme attached to it.
      */
     public ColorSchemeExtension theme = null;
-    public Grid map = new Grid();
+    public Grid<SpanCell> map = new Grid<SpanCell>();
 
     public CodeAnalyzerResultColor() {
         map.addNormalIfNull();
