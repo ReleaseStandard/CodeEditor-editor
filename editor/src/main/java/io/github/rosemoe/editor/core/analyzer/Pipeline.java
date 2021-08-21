@@ -43,7 +43,7 @@ public class Pipeline extends ConcurrentSkipListMap<Integer, Analyzer> {
     public void run() {
         run(classicUserInput);
     }
-    public void runHack(ContentGrid content) {
+    public void runHack() {
         //ContentAnalyzer content = get(ANALYZER_CONTENT);
         // content.run();
         CodeAnalyzer lang = (CodeAnalyzer) get(ANALYZER_LANG);

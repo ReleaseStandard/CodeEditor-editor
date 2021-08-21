@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionController;
-import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.CodeEditor;
@@ -242,7 +241,6 @@ public class CompletionWindowController extends WidgetExtensionController {
         private final long mTime;
         private final String mPrefix;
         private final boolean mInner;
-        private final CodeAnalyzerResultColor colorResult;
         private final int mLine;
         private final AutoCompleteController mLocalProvider = mProvider;
 
@@ -250,7 +248,6 @@ public class CompletionWindowController extends WidgetExtensionController {
             mTime = requestTime;
             mPrefix = prefix;
             // get production ready result from here
-            colorResult = editorController.getTextAnalyzeResult();
             mLine = editorController.getCursor().getLeftLine();
             mInner = (!editorController.isHighlightCurrentBlock()) || (editorController.getBlockIndex() != -1);
         }
@@ -258,7 +255,8 @@ public class CompletionWindowController extends WidgetExtensionController {
         @Override
         public void run() {
             try {
-                displayResults(mLocalProvider.getAutoCompleteItems(mPrefix, mInner, colorResult, mLine), mTime);
+                // TODO break;
+                displayResults(mLocalProvider.getAutoCompleteItems(mPrefix, mInner, null, mLine), mTime);
             } catch (Exception e) {
                 e.printStackTrace();
                 displayResults(new ArrayList<>(), mTime);

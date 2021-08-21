@@ -16,7 +16,6 @@
 package io.github.rosemoe.editor.core.extension.extensions.widgets.completion;
 
 import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
-import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.analysis.CodeAnalyzerResultCompletion;
 
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ public class IdentifierAutoCompleteController implements AutoCompleteController 
      * @return
      */
     @Override
-    public List<CompletionItemController> getAutoCompleteItems(String prefix, boolean isInCodeBlock, CodeAnalyzerResultColor colors, int line) {
+    public List<CompletionItemController> getAutoCompleteItems(String prefix, boolean isInCodeBlock, Object colors, int line) {
         List<CompletionItemController> keywords = new ArrayList<>();
         final String[] keywordArray = model.mKeywords;
         final boolean lowCase = model.mKeywordsAreLowCase;

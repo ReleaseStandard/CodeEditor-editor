@@ -17,8 +17,9 @@ package io.github.rosemoe.editor.core.analyzer.analyzer;
 
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
+import io.github.rosemoe.editor.core.grid.Cell;
+import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.util.Logger;
-import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
 
 /**
  * AnalyzeThread to control
@@ -61,9 +62,9 @@ public class CodeAnalyzerThread extends Thread {
 
                 codeAnalyzer.resultStore.updateView();
 
-                CodeAnalyzerResultColor colorsResult = (CodeAnalyzerResultColor) codeAnalyzer.resultStore.getResultInBuild("color");
+                Grid<? extends Cell> colorsResult = codeAnalyzer.resultStore.getSpanMap();
                 if ( colorsResult != null ) {
-                    colorsResult.map.addNormalIfNull();
+                    colorsResult.addNormalIfNull();
                 }
 
                 try {

@@ -1,15 +1,22 @@
 package io.github.rosemoe.editor.core.analyzer;
 
+import androidx.annotation.NonNull;
+
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListMap;
 
-import io.github.rosemoe.editor.core.BlockLineModel;
+import io.github.rosemoe.editor.core.analyzer.result.AnalyzerResult;
 import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
-import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
+import io.github.rosemoe.editor.core.grid.Cell;
 import io.github.rosemoe.editor.core.grid.Grid;
+import io.github.rosemoe.editor.core.grid.instances.SpanCell;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**
@@ -17,12 +24,19 @@ import io.github.rosemoe.editor.core.util.Logger;
  * Theses results are then passed to the analyzer.
  * The ResultStore must must thread safe, many analyzer on different thread could request it.
  */
-public class ResultStore {
+public class ResultStore extends ConcurrentSkipListMap<String, ConcurrentLinkedQueue<AnalyzerResult>> implements Iterable<ConcurrentLinkedQueue<AnalyzerResult>>{
 
     // Content result object
     public ContentGrid mText;
-    
-    // Below color result object
+
+    public ResultStore() {
+        put("color", new ConcurrentLinkedQueue<>());
+        get("color").offer(new CodeAnalyzerResultColor());
+        get("color").offer(new CodeAnalyzerResultColor());
+        put("content", new ConcurrentLinkedQueue<>());
+    }
+
+
     /**
      * This is the view, all results in this hashmap are already processed results, they will not change
      * until background thread is calling updateView method.
@@ -41,8 +55,10 @@ public class ResultStore {
      * @param name
      * @return
      */
-    public CodeAnalyzerResult getResultInBuild(String name) {
-        return inProcessResults.get(name);
+    public AnalyzerResult getResultInBuild(String name) {
+        ConcurrentLinkedQueue<AnalyzerResult> result = get(name);
+        if ( true ) { throw new RuntimeException("Not yet implemented"); }
+        return null;
     }
 
     /**
@@ -50,8 +66,9 @@ public class ResultStore {
      * @param name
      * @return
      */
-    public CodeAnalyzerResult getResult(String name) {
-        return results.get(name);
+    public AnalyzerResult getResult(String name) {
+        ConcurrentLinkedQueue<AnalyzerResult> result = get(name);
+        return result.peek();
     }
 
     /**
@@ -59,28 +76,20 @@ public class ResultStore {
      * empty inProcessResults.
      */
     public void updateView() {
-        Logger.debug("Update the view");
-        for(Map.Entry<String, CodeAnalyzerResult> e : results.entrySet()) {
-            CodeAnalyzerResult result = e.getValue();
-            String key = e.getKey();
-            CodeAnalyzerResult newResult = inProcessResults.get(key);
-            results.put(key, newResult);
-            if ( result != null ) {
-                result.recycler.putToDigest(result);
-                result.clear();
+        for(ConcurrentLinkedQueue<AnalyzerResult> clq : this) {
+            if ( clq.size() > 1 ) {
+                AnalyzerResult trashCan = clq.poll();
+                trashCan.clear();
+                clq.offer(trashCan);
+            } else {
+                Logger.debug("WARNING: clq.size() = " + clq.size() + " so not able to refresh the view.");
             }
-            inProcessResults.put(key, result);
         }
     }
-    /// HACKISH easiers, they mut be removed
-    public Grid getSpanMap() {
-        CodeAnalyzerResultColor color = (CodeAnalyzerResultColor)getResult("color");
-        return color == null ? null : color.map;
-    }
 
-    public List<BlockLineModel> getContent() {
-        CodeAnalyzerResultContent content = (CodeAnalyzerResultContent)getResult("content");
-        return content == null ? null : content.mBlocks;
+    /// HACKISH easiers, they mut be removed
+    public CodeAnalyzerResultColor getSpanMap() {
+        return (CodeAnalyzerResultColor) getResult("color");
     }
 
     /**
@@ -97,10 +106,11 @@ public class ResultStore {
      * Clear what is being done in the analyzer.
      */
     public void clearInBuild() {
-        for(CodeAnalyzerResult inProcessResult : inProcessResults.values()) {
-            if ( inProcessResult != null ) {
-                inProcessResult.clear();
-            }
-        }
+        throw new RuntimeException("Not yet implemented");
+    }
+
+    @Override
+    public Iterator<ConcurrentLinkedQueue<AnalyzerResult>> iterator() {
+        return values().iterator();
     }
 }

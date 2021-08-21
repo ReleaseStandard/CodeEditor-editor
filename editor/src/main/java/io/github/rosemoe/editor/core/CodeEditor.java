@@ -59,6 +59,7 @@ import java.util.List;
 import io.github.rosemoe.editor.R;
 import io.github.rosemoe.editor.core.analyzer.Pipeline;
 import io.github.rosemoe.editor.core.analyzer.ResultStore;
+import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
@@ -69,7 +70,6 @@ import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 import io.github.rosemoe.editor.core.grid.instances.SpanCell;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionView;
-import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.IdentifierAutoCompleteController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.IdentifierAutoCompleteModel;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.CursorModel;
@@ -768,10 +768,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         // Update spanner
         pipeline.stopAllFlow();
         pipeline.setLanguageAnalyzer((CodeAnalyzer) lang.analyzer);
-        CodeAnalyzerResultColor result = ((CodeAnalyzerResultColor)resultStore.getResult("color"));
-        if ( result != null ) {
-            result.theme = getColorScheme();
-        }
+
         pipeline.getLanguageAnalyzer().setCallback(this);
         if (resultStore.mText != null) {
             pipeline.getLanguageAnalyzer().analyze(resultStore.mText);
@@ -943,7 +940,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     protected void drawView(Canvas canvas) {
         //record();
         //counter = 0;
-        pipeline.getLanguageAnalyzer().recycle();
+        //pipeline.getLanguageAnalyzer().recycle();
 
         // TODO : missing part
         if (mFormatThread != null) {
@@ -1022,14 +1019,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     private void drawRows(Canvas canvas, float offset) {
 
         RowIterator rowIterator = mLayout.obtainRowIterator(getFirstVisibleRow());
-        CodeAnalyzerResultColor colRes = (CodeAnalyzerResultColor) resultStore.getResult("color");
-        if ( colRes == null ) {
-            Logger.debug("spanmap is not ready");
-            pipeline.getLanguageAnalyzer().dump();
-
-            return;
-        }
-        Grid<SpanCell> spanMap = resultStore.getSpanMap();
+        CodeAnalyzerResultColor spanMap = resultStore.getSpanMap();
         List<Integer> matchedPositions = new ArrayList<>();
         int currentLine = cursor.isSelected() ? -1 : cursor.getLeftLine();
         int currentLineBgColor = model.colorManager.getColor("currentLine");
@@ -1472,7 +1462,9 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * @param offsetX The start x offset for text
      */
     private void drawBlockLines(Canvas canvas, float offsetX) {
-        List<BlockLineModel> blocks = pipeline.getLanguageAnalyzer() == null ? null : resultStore.getContent();
+        //List<BlockLineModel> blocks = pipeline.getLanguageAnalyzer() == null ? null : resultStore.getContent();
+        if ( true ) { throw new RuntimeException("BlockLine may be encapsulated into a Grid model"); }
+        List<BlockLineModel> blocks = null;
         if (blocks == null || blocks.isEmpty()) {
             return;
         }
@@ -2950,10 +2942,10 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
 
         CodeAnalyzer analyzer = (CodeAnalyzer) mLanguage.analyzer;
         pipeline.setLanguageAnalyzer(analyzer);
-        CodeAnalyzerResultColor result = ((CodeAnalyzerResultColor)resultStore.getResult("color"));
-        if ( result != null ) {
+        CodeAnalyzerResultColor spanMap = resultStore.getSpanMap();
+        /*if ( result != null ) {
             result.theme = getColorScheme();
-        }
+        }*/
         pipeline.getLanguageAnalyzer().setCallback(this);
         analyzer.clear();
         analyzer.analyze(getText());
@@ -3018,15 +3010,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      */
     public void jumpToLine(int line) {
         setSelection(line, 0);
-    }
-
-    /**
-     * Get analyze result.
-     * <strong>Do not make changes to it or read concurrently</strong>
-     */
-    @NonNull
-    public CodeAnalyzerResultColor getTextAnalyzeResult() {
-        return (CodeAnalyzerResultColor) resultStore.getResult("color");
     }
 
     /**

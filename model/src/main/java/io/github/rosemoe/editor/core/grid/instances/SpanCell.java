@@ -66,7 +66,7 @@ public class SpanCell extends Cell {
         super(size);
         this.color = color;
     }
-    private SpanCell(int column, int size, int color) {
+    public SpanCell(int column, int size, int color) {
         super(column, size);
         this.color = color;
     }

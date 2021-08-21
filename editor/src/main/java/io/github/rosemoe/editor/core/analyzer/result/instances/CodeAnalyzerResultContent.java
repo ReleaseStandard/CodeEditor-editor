@@ -18,38 +18,21 @@ package io.github.rosemoe.editor.core.analyzer.result.instances;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.rosemoe.editor.core.analyzer.result.AnalyzerResult;
 import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.analyzer.result.TokenEmitterResult;
 import io.github.rosemoe.editor.core.BlockLineModel;
+import io.github.rosemoe.editor.core.content.controller.ContentGrid;
+import io.github.rosemoe.editor.core.grid.Grid;
+import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 
 /**
  * Manage how the analyzer show display the content to the screen.
  */
-public class CodeAnalyzerResultContent extends TokenEmitterResult {
-
-    public final List<BlockLineModel> mBlocks;
-
-    public CodeAnalyzerResultContent() {
-        mBlocks = new ArrayList<>(1024);
-    }
-
-    /**
-     * Add a new code block info
-     *
-     * @param block Info of code block
-     */
-    public void addBlockLine(BlockLineModel block) {
-        mBlocks.add(block);
-    }
+public class CodeAnalyzerResultContent extends ContentGrid implements AnalyzerResult {
 
     @Override
     public void clear() {
-        super.clear();
-        mBlocks.clear();
-    }
 
-    @Override
-    public CodeAnalyzerResult clone() {
-        return new CodeAnalyzerResultContent();
     }
 }

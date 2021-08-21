@@ -22,16 +22,11 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import io.github.rosemoe.editor.core.analyzer.Analyzer;
 import io.github.rosemoe.editor.core.analyzer.ResultStore;
-import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
-import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.util.CallStack;
-
-import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.util.Logger;
-import io.github.rosemoe.editor.core.BlockLineModel;
 
 /**
  * This could be :
@@ -78,68 +73,12 @@ public abstract class CodeAnalyzer extends Analyzer {
     protected abstract void analyze(CharSequence content, CodeAnalyzerThread.Delegate delegate);
 
     /**
-     * Dispatch (partial) results of an analysis on result objects, to show the result of processing, use updateView()
-     * (No matter what type is expected by results)
-     */
-    public void dispatchResultPart(Object ...args) {
-        for(CodeAnalyzerResult result : resultStore.inProcessResults.values()) {
-            if ( result != null ) {
-                result.dispatchResult(args);
-            } else {
-                Logger.debug("Cannot given results to the object since it is null");
-            }
-        }
-    }
-
-    /**
-     * This add a result listener on the code analyzer.
-     * @param listener
-     */
-    public void addResultListener(String name, CodeAnalyzerResult listener) {
-        Logger.v("name=",name,",listener=",listener);
-        resultStore.results.put(name,listener);
-        resultStore.inProcessResults.put(name, listener.clone());
-    }
-    /**
-     * Remove any CodeAnalyzerResult from the analysis process.
-     */
-    public void rmResultsListener() {
-        for(String key : resultStore.results.keySet()) {
-            resultStore.results.remove(key);
-            resultStore.inProcessResults.remove(key);
-        }
-    }
-    /**
-     * Remove a given CodeAnalyzerResult from the analysis process.
-     * @param name name of the result to remove.
-     */
-    public void rmResultListener(String name) {
-        resultStore.results.remove(name);
-        resultStore.inProcessResults.remove(name);
-    }
-
-    /**
      * Launch a clear for all result listener inside this analyzer.
      */
     public void clear() {
         mSuppressSwitch = Integer.MAX_VALUE;
     }
 
-
-
-    /**
-     * Recycle the content of all analysis result.
-     */
-
-    // TODO : initially was named notify recycle
-    public void recycle() {
-        Logger.debug("recycle results");
-        for(CodeAnalyzerResult result : resultStore.results.values()) {
-            if ( result != null ) {
-                result.recycle();
-            }
-        }
-    }
     private void unlock(ReentrantLock lock) {
         if ( lock != null &&
                 lock.isHeldByCurrentThread() &&

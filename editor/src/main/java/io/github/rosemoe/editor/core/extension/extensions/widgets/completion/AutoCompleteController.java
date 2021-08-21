@@ -17,8 +17,6 @@ package io.github.rosemoe.editor.core.extension.extensions.widgets.completion;
 
 import java.util.List;
 
-import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
-
 /**
  * Interface for auto completion when writing code.
  * ex: auto complete by identifiers (static autocomplete) -> finite number of completion
@@ -59,7 +57,7 @@ public interface AutoCompleteController {
      * @param line          The line of cursor
      * @return Analyzed items
      */
-    List<CompletionItemController> getAutoCompleteItems(String prefix, boolean isInCodeBlock, CodeAnalyzerResultColor colors, int line);
+    List<CompletionItemController> getAutoCompleteItems(String prefix, boolean isInCodeBlock, Object colors, int line);
 
 }
 
