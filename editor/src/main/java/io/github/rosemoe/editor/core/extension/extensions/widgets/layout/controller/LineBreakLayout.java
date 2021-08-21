@@ -17,12 +17,10 @@ package io.github.rosemoe.editor.core.extension.extensions.widgets.layout.contro
 
 import java.util.NoSuchElementException;
 
-import io.github.rosemoe.editor.core.content.controller.ContentLineController;
-import io.github.rosemoe.editor.core.content.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 import io.github.rosemoe.editor.core.util.BinaryHeap;
-import io.github.rosemoe.editor.core.IntPair;
 import io.github.rosemoe.editor.core.CodeEditor;
 
 /**
@@ -35,7 +33,7 @@ public class LineBreakLayout extends AbstractLayout {
 
     private BinaryHeap widthMaintainer;
 
-    public LineBreakLayout(CodeEditor editor, ContentMap text) {
+    public LineBreakLayout(CodeEditor editor, ContentGrid text) {
         super(editor, text);
         measureAllLines();
     }
@@ -47,9 +45,10 @@ public class LineBreakLayout extends AbstractLayout {
         widthMaintainer = new BinaryHeap();
         widthMaintainer.ensureCapacity(text.size());
         for (int i = 0; i < text.size(); i++) {
-            ContentLineController line = (ContentLineController) text.get(i);
+            throw new RuntimeException("TODO");
+            /*ContentLineController line = (ContentLineController) text.get(i);
             int width = (int) measureText(line, 0, line.length());
-            line.setId(widthMaintainer.push(width));
+            line.setId(widthMaintainer.push(width));*/
         }
     }
 
@@ -58,7 +57,8 @@ public class LineBreakLayout extends AbstractLayout {
             return;
         }
         while (startLine <= endLine && startLine < text.size()) {
-            ContentLineController line = (ContentLineController) text.get(startLine);
+            throw new RuntimeException("TODO integration of Display size in the grid model");
+            /*ContentLineController line = (ContentLineController) text.get(startLine);
             int width = (int) measureText(line, 0, line.length());
             if (line.getId() != -1) {
                 if (line.getWidth() == width) {
@@ -70,7 +70,7 @@ public class LineBreakLayout extends AbstractLayout {
                 continue;
             }
             line.setId(widthMaintainer.push(width));
-            startLine++;
+            startLine++;*/
         }
     }
 
@@ -80,23 +80,24 @@ public class LineBreakLayout extends AbstractLayout {
     }
 
     @Override
-    public void beforeReplace(ContentMap content) {
+    public void beforeReplace(ContentGrid content) {
         // Intentionally empty
     }
 
     @Override
-    public void afterInsert(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
+    public void afterInsert(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
         measureLines(startLine, endLine);
     }
 
     @Override
-    public void afterDelete(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
+    public void afterDelete(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
         measureLines(startLine, startLine);
     }
 
     @Override
-    public void onRemove(ContentMap content, Line<ContentCell> line) {
-        widthMaintainer.remove(line.getId());
+    public void onRemove(ContentGrid content, Line<ContentCell> line) {
+        //widthMaintainer.remove(line.getId());
+        throw new RuntimeException("TODO");
     }
 
     @Override
@@ -124,9 +125,10 @@ public class LineBreakLayout extends AbstractLayout {
     public long getCharPositionForLayoutOffset(float xOffset, float yOffset) {
         int lineCount = text.size();
         int line = Math.min(lineCount - 1, Math.max((int) (yOffset / editor.getRowHeight()), 0));
-        ContentLineController str = (ContentLineController) text.get(line);
-        float[] res = orderedFindCharIndex(xOffset, str);
-        return IntPair.pack(line, (int) res[0]);
+        throw new RuntimeException("TODO");
+        //ContentLineController str = (ContentLineController) text.get(line);
+        //float[] res = orderedFindCharIndex(xOffset, str);
+        //return IntPair.pack(line, (int) res[0]);
     }
 
     @Override

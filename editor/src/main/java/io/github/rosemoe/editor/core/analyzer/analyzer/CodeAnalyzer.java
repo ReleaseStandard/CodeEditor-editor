@@ -21,12 +21,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.util.CallStack;
-
-import io.github.rosemoe.editor.core.content.controller.ContentMap;
 
 import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.util.Logger;
@@ -226,7 +225,7 @@ public abstract class CodeAnalyzer {
      * Start an analysis thread of a given text/code.
      */
     public CodeAnalyzerThread mThread = null;
-    public synchronized void analyze(ContentMap origin) {
+    public synchronized void analyze(ContentGrid origin) {
         CodeAnalyzerThread thread = this.mThread;
         if (thread == null || !thread.isAlive()) {
             thread = this.mThread = CodeAnalyzerThread.newInstance(origin, this);

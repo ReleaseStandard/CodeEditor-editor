@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * Helper class for ContentMap to take down modification
+ * Helper class for ContentGrid to take down modification
  * As well as provide Undo/Redo actions
  *
  * @author Rose
@@ -28,7 +28,7 @@ import java.util.Stack;
 public final class ContentActionStack extends Stack<ContentActionStack.ContentAction> implements ContentListener {
 
     public int maxStackSize = 100;
-    private final ContentMap mContent;
+    private final ContentGrid mContent;
     private InsertAction mInsertAction;
     private DeleteAction mDeleteAction;
     public boolean undoEnabled;
@@ -39,9 +39,9 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     /**
      * Create ContentActionStack with the target content
      *
-     * @param content The ContentMap going to attach
+     * @param content The ContentGrid going to attach
      */
-    public ContentActionStack(ContentMap content) {
+    public ContentActionStack(ContentGrid content) {
         mContent = content;
         mInsertAction = null;
         mDeleteAction = null;
@@ -49,11 +49,11 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     }
 
     /**
-     * Undo on the given ContentMap
+     * Undo on the given ContentGrid
      *
      * @param content Undo Target
      */
-    public void undo(ContentMap content) {
+    public void undo(ContentGrid content) {
         if (canUndo()) {
             ignoreModification = true;
             get(mStackPointer - 1).undo(content);
@@ -63,11 +63,11 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     }
 
     /**
-     * Redo on the given ContentMap
+     * Redo on the given ContentGrid
      *
      * @param content Redo Target
      */
-    public void redo(ContentMap content) {
+    public void redo(ContentGrid content) {
         if (canRedo()) {
             ignoreModification = true;
             get(mStackPointer).redo(content);
@@ -193,7 +193,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     }
 
     @Override
-    public void beforeReplace(ContentMap content) {
+    public void beforeReplace(ContentGrid content) {
         if (ignoreModification) {
             return;
         }
@@ -201,7 +201,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     }
 
     @Override
-    public void afterInsert(ContentMap content, int startLine, int startColumn, int endLine, int endColumn,
+    public void afterInsert(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence insertedContent) {
         if (ignoreModification) {
             return;
@@ -224,7 +224,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     }
 
     @Override
-    public void afterDelete(ContentMap content, int startLine, int startColumn, int endLine, int endColumn,
+    public void afterDelete(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence deletedContent) {
         if (ignoreModification) {
             return;
@@ -252,14 +252,14 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
          *
          * @param content On the given object
          */
-        void undo(ContentMap content);
+        void undo(ContentGrid content);
 
         /**
          * Redo this action
          *
          * @param content On the given object
          */
-        void redo(ContentMap content);
+        void redo(ContentGrid content);
 
         /**
          * Get whether the target action can be merged with this action
@@ -290,12 +290,12 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
         public CharSequence text;
 
         @Override
-        public void undo(ContentMap content) {
+        public void undo(ContentGrid content) {
             content.delete(startLine, startColumn, endLine, endColumn);
         }
 
         @Override
-        public void redo(ContentMap content) {
+        public void redo(ContentGrid content) {
             content.insert(startLine, startColumn, text);
         }
 
@@ -351,14 +351,14 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
         }
 
         @Override
-        public void undo(ContentMap content) {
+        public void undo(ContentGrid content) {
             for (int i = _actions.size() - 1; i >= 0; i--) {
                 _actions.get(i).undo(content);
             }
         }
 
         @Override
-        public void redo(ContentMap content) {
+        public void redo(ContentGrid content) {
             for (int i = 0; i < _actions.size(); i++) {
                 _actions.get(i).redo(content);
             }
@@ -388,12 +388,12 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
         public CharSequence text;
 
         @Override
-        public void undo(ContentMap content) {
+        public void undo(ContentGrid content) {
             content.insert(startLine, startColumn, text);
         }
 
         @Override
-        public void redo(ContentMap content) {
+        public void redo(ContentGrid content) {
             content.delete(startLine, startColumn, endLine, endColumn);
         }
 
@@ -437,13 +437,13 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
         public DeleteAction _delete;
 
         @Override
-        public void undo(ContentMap content) {
+        public void undo(ContentGrid content) {
             _insert.undo(content);
             _delete.undo(content);
         }
 
         @Override
-        public void redo(ContentMap content) {
+        public void redo(ContentGrid content) {
             _delete.redo(content);
             _insert.redo(content);
         }

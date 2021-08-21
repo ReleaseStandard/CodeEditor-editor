@@ -19,15 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import io.github.rosemoe.editor.core.content.controller.ContentLineController;
-import io.github.rosemoe.editor.core.content.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.layout.model.WordwrapModel;
 import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
-
-import static io.github.rosemoe.editor.core.extension.extensions.langs.helpers.TextUtils.isEmoji;
 
 /**
  * Wordwrap layout for editor
@@ -44,7 +41,7 @@ public class WordwrapLayout extends AbstractLayout {
 
     public final WordwrapModel model;
 
-    public WordwrapLayout(CodeEditor editor, ContentMap text) {
+    public WordwrapLayout(CodeEditor editor, ContentGrid text) {
         super(editor, text);
         model = new WordwrapModel() {
             @Override
@@ -59,10 +56,10 @@ public class WordwrapLayout extends AbstractLayout {
             }
             @Override
             public void breakLine(int line, List<Integer> breakpoints) {
-                ContentLineController sequence = (ContentLineController) text.get(line);
+                Line<ContentCell> sequence = text.get(line);
                 float currentWidth = 0;
                 int delta = 1;
-                for (int i = 0; i < sequence.length(); i+= delta) {
+                /*for (int i = 0; i < sequence.size(); i+= delta) {
                     char ch = sequence.charAt(i);
                     delta = 1;
                     float single;
@@ -90,7 +87,8 @@ public class WordwrapLayout extends AbstractLayout {
                 }
                 if (breakpoints.size() != 0 && breakpoints.get(breakpoints.size() - 1) == sequence.length()) {
                     breakpoints.remove(breakpoints.size() - 1);
-                }
+                }*/
+                throw new RuntimeException("TODO");
             }
         };
         model.rowTable = new ArrayList<>();
@@ -112,12 +110,12 @@ public class WordwrapLayout extends AbstractLayout {
     }
 
     @Override
-    public void beforeReplace(ContentMap content) {
+    public void beforeReplace(ContentGrid content) {
         // Intentionally empty
     }
 
     @Override
-    public void afterInsert(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
+    public void afterInsert(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
         // Update line numbers
         int delta = endLine - startLine;
         if (delta != 0) {
@@ -130,7 +128,7 @@ public class WordwrapLayout extends AbstractLayout {
     }
 
     @Override
-    public void afterDelete(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
+    public void afterDelete(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
         int delta = endLine - startLine;
         if (delta != 0) {
             int startRow = model.findRow(startLine);
@@ -150,7 +148,7 @@ public class WordwrapLayout extends AbstractLayout {
     }
 
     @Override
-    public void onRemove(ContentMap content, Line<ContentCell> line) {
+    public void onRemove(ContentGrid content, Line<ContentCell> line) {
 
     }
 

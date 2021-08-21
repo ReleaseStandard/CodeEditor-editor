@@ -19,19 +19,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.rosemoe.editor.core.content.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.content.controller.ContentListener;
 import io.github.rosemoe.editor.core.CharPosition;
 
 /**
- * Indexer Impl for ContentMap
+ * Indexer Impl for ContentGrid
  * With cache
  *
  * @author Rose
  */
 public class CachedIndexer implements Indexer, ContentListener {
 
-    private final ContentMap content;
+    private final ContentGrid content;
     private final CharPosition mZeroPoint = new CharPosition().zero();
     private final CharPosition mEndPoint = new CharPosition();
     private final List<CharPosition> mCachePositions = new ArrayList<>();
@@ -44,9 +44,9 @@ public class CachedIndexer implements Indexer, ContentListener {
     /**
      * Create a new CachedIndexer for the given content
      *
-     * @param content ContentMap to manage
+     * @param content ContentGrid to manage
      */
-    public CachedIndexer(ContentMap content) {
+    public CachedIndexer(ContentGrid content) {
         this.content = content;
         detectException();
     }
@@ -400,12 +400,12 @@ public class CachedIndexer implements Indexer, ContentListener {
     }
 
     @Override
-    public void beforeReplace(ContentMap content) {
+    public void beforeReplace(ContentGrid content) {
         //Do nothing
     }
 
     @Override
-    public void afterInsert(ContentMap content, int startLine, int startColumn, int endLine, int endColumn,
+    public void afterInsert(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence insertedContent) {
         if (isHandleEvent()) {
             for (CharPosition pos : mCachePositions) {
@@ -425,7 +425,7 @@ public class CachedIndexer implements Indexer, ContentListener {
     }
 
     @Override
-    public void afterDelete(ContentMap content, int startLine, int startColumn, int endLine, int endColumn,
+    public void afterDelete(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence deletedContent) {
         if (isHandleEvent()) {
             List<CharPosition> garbage = new ArrayList<>();

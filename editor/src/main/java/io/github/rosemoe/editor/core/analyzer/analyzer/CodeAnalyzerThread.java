@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core.analyzer.analyzer;
 
-import io.github.rosemoe.editor.core.content.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
@@ -27,15 +27,15 @@ public class CodeAnalyzerThread extends Thread {
 
     public final Object lock;
     private volatile boolean waiting = false;
-    private ContentMap content;
+    private ContentGrid content;
     public long mOpStartTime;
     CodeAnalyzer codeAnalyzer;
     public AnalysisDoneCallback mAnalysisDoneCallback;
     /**
      * Create a new thread
-     * @param content The ContentMap to analyze
+     * @param content The ContentGrid to analyze
      */
-    public CodeAnalyzerThread(ContentMap content, CodeAnalyzer codeAnalyzer) {
+    public CodeAnalyzerThread(ContentGrid content, CodeAnalyzer codeAnalyzer) {
         this.lock = new Object();
         this.content = content;
         this.codeAnalyzer = codeAnalyzer;
@@ -101,7 +101,7 @@ public class CodeAnalyzerThread extends Thread {
      *
      * @param content New source
      */
-    public synchronized void restartWith(ContentMap content) {
+    public synchronized void restartWith(ContentGrid content) {
         Logger.v("Restarting analysis thread with some content");
         waiting = true;
         this.content = content;
@@ -129,7 +129,7 @@ public class CodeAnalyzerThread extends Thread {
         sThreadId++;
         return sThreadId;
     }
-    public static CodeAnalyzerThread newInstance(ContentMap origin, CodeAnalyzer codeAnalyzer) {
+    public static CodeAnalyzerThread newInstance(ContentGrid origin, CodeAnalyzer codeAnalyzer) {
         CodeAnalyzerThread thread;
         thread = new CodeAnalyzerThread(origin, codeAnalyzer);
         thread.setName("TextAnalyzeDaemon-" + nextThreadId());

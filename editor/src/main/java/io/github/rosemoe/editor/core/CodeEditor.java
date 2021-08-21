@@ -57,6 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.rosemoe.editor.R;
+import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
@@ -69,7 +70,6 @@ import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensio
 import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.IdentifierAutoCompleteController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.IdentifierAutoCompleteModel;
-import io.github.rosemoe.editor.core.content.controller.ContentMap;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.CursorModel;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.layout.controller.AbstractLayout;
 import io.github.rosemoe.editor.core.extension.extensions.loopback.LoopbackController;
@@ -191,7 +191,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     private boolean mAllowFullscreen;
     private ClipboardManager mClipboardManager;
     private InputMethodManager mInputMethodManager;
-    public ContentMap mText;
+    public ContentGrid mText;
     public CodeAnalyzer analyzer;
 
     public CodeEditorView view;
@@ -2162,8 +2162,9 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         if (mFormatThread != null || (mListener != null && mListener.onRequestFormat(this, true))) {
             return false;
         }
-        mFormatThread = new TextFormatter(mText, mLanguage, this);
-        mFormatThread.start();
+        new RuntimeException("TODO");
+        //mFormatThread = new TextFormatter(mText, mLanguage, this);
+        //mFormatThread.start();
         return true;
     }
 
@@ -2910,7 +2911,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * @see CodeEditor#setText(CharSequence)
      */
     @NonNull
-    public ContentMap getText() {
+    public ContentGrid getText() {
         return mText;
     }
 
@@ -2929,7 +2930,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             mText.removeContentListener(this);
             mText.setLineListener(null);
         }
-        mText = new ContentMap(text,this);
+        mText = new ContentGrid(text,this);
         boolean isAutoIndented = CursorModel.DEFAULT_ISAUTO_IDENT;
         if ( cursor != null ) {
             isAutoIndented = cursor.isAutoIndent();
@@ -3143,16 +3144,16 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
 
 
     @Override
-    public void beforeReplace(ContentMap content) {
+    public void beforeReplace(ContentGrid content) {
         mWait = true;
         mLayout.beforeReplace(content);
         if (mListener != null) {
-            mListener.beforeReplace(this, content);
+            throw new RuntimeException("TODO");//mListener.beforeReplace(this, content);
         }
     }
 
     @Override
-    public void afterInsert(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
+    public void afterInsert(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
 
         Grid sm = analyzer.getSpanMap();
 
@@ -3210,13 +3211,13 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         userInput.hideInsertHandle();
         // Notify listener
         if (mListener != null) {
-            mListener.afterInsert(this, mText, startLine, startColumn, endLine, endColumn, insertedContent);
+            throw new RuntimeException("TODO");//mListener.afterInsert(this, mText, startLine, startColumn, endLine, endColumn, insertedContent);
         }
 
     }
 
     @Override
-    public void afterDelete(ContentMap content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
+    public void afterDelete(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
 
         if (isSpanMapPrepared(false, endLine - startLine)) {
             analyzer.getSpanMap().removeCells(startLine,startColumn,endLine,endColumn);
@@ -3253,7 +3254,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             userInput.hideInsertHandle();
         }
         if (mListener != null) {
-            mListener.afterDelete(this, mText, startLine, startColumn, endLine, endColumn, deletedContent);
+            throw new RuntimeException("TODO");//mListener.afterDelete(this, mText, startLine, startColumn, endLine, endColumn, deletedContent);
         }
 
     }
@@ -3267,7 +3268,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     }
 
     @Override
-    public void onRemove(ContentMap content, Line<ContentCell> line) {
+    public void onRemove(ContentGrid content, Line<ContentCell> line) {
         mLayout.onRemove(content, line);
     }
 

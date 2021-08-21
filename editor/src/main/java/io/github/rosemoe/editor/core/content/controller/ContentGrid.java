@@ -24,6 +24,7 @@ import io.github.rosemoe.editor.core.content.processors.indexer.Indexer;
 import io.github.rosemoe.editor.core.content.processors.indexer.NoCacheIndexer;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CharPosition;
+import io.github.rosemoe.editor.core.grid.Cell;
 import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;
@@ -36,7 +37,7 @@ import static io.github.rosemoe.editor.core.grid.Cell.*;
  *
  * @author Rose
  */
-public class ContentMap extends Grid<ContentCell> {
+public class ContentGrid extends Grid<ContentCell> {
 
     public static int sInitialListCapacity = 1000;
 
@@ -52,20 +53,20 @@ public class ContentMap extends Grid<ContentCell> {
     private final CodeEditor editor;
 
     /**
-     * This constructor will create a ContentMap object with no text
+     * This constructor will create a ContentGrid object with no text
      */
-    public ContentMap() {
+    public ContentGrid() {
         this(null,null);
         behaviourOnCellSplit = SPLIT_SPLITTING;
     }
 
     /**
-     * This constructor will create a ContentMap object with the given source
-     * If you give us null,it will just create a empty ContentMap object
+     * This constructor will create a ContentGrid object with the given source
+     * If you give us null,it will just create a empty ContentGrid object
      *
-     * @param src The source of ContentMap
+     * @param src The source of ContentGrid
      */
-    public ContentMap(CharSequence src, CodeEditor editor) {
+    public ContentGrid(CharSequence src, CodeEditor editor) {
         behaviourOnCellSplit = SPLIT_SPLITTING;
         this.editor = editor;
         if (src == null) {
@@ -239,7 +240,7 @@ public class ContentMap extends Grid<ContentCell> {
 
     /**
      * Replace the text in the given region
-     * This action will completed by calling {@link ContentMap#delete(int, int, int, int)} and {@link ContentMap#insert(int, int, CharSequence)}
+     * This action will completed by calling {@link ContentGrid#delete(int, int, int, int)} and {@link ContentGrid#insert(int, int, CharSequence)}
      *
      * @param startLine         The start line position
      * @param columnOnStartLine The start column position
@@ -258,7 +259,7 @@ public class ContentMap extends Grid<ContentCell> {
 
     /**
      * When you are going to use {@link CharSequence#charAt(int)} frequently,you are required to call
-     * this method.Because the way ContentMap save text,it is usually slow to transform index to
+     * this method.Because the way ContentGrid save text,it is usually slow to transform index to
      * (line,column) from the start of text when the text is big.
      * By calling this method,you will be able to get faster because calling this will
      * cause the ITextContent object use a Indexer with cache.
@@ -360,7 +361,7 @@ public class ContentMap extends Grid<ContentCell> {
     }
 
     /**
-     * Add a new {@link ContentListener} to the ContentMap
+     * Add a new {@link ContentListener} to the ContentGrid
      *
      * @param listener The listener to add
      */
@@ -377,7 +378,7 @@ public class ContentMap extends Grid<ContentCell> {
     }
 
     /**
-     * Remove the given listener of this ContentMap
+     * Remove the given listener of this ContentGrid
      *
      * @param listener The listener to remove
      */
@@ -402,8 +403,8 @@ public class ContentMap extends Grid<ContentCell> {
 
     @Override
     public boolean equals(Object anotherObject) {
-        if (anotherObject instanceof ContentMap) {
-            ContentMap content = (ContentMap) anotherObject;
+        if (anotherObject instanceof ContentGrid) {
+            ContentGrid content = (ContentGrid) anotherObject;
             if (content.size() != this.size()) {
                 return false;
             }
@@ -423,7 +424,7 @@ public class ContentMap extends Grid<ContentCell> {
      * Used by TextColorProvider
      * This can improve the speed in char getting for tokenizing
      *
-     * @return StringBuilder form of ContentMap
+     * @return StringBuilder form of ContentGrid
      */
     public StringBuilder toStringBuilder() {
         StringBuilder sb = new StringBuilder();
@@ -548,7 +549,41 @@ public class ContentMap extends Grid<ContentCell> {
      * @return Default capacity
      */
     public static int getInitialLineCapacity() {
-        return ContentMap.sInitialListCapacity;
+        return ContentGrid.sInitialListCapacity;
     }
 
+    @Override
+    public int length() {
+        int length = 0;
+        for(Line l : this) {
+            length += l.getWidth();
+        }
+        return length;
+    }
+
+    @Override
+    public char charAt(int index) {
+        int idx = 0;
+        // TODO : or use the indexer system or find another system.
+        for(Line<ContentCell> l : this) {
+            if ( ( idx + l.getWidth() ) < index ) {
+                idx += l.getWidth();
+                continue;
+            }
+            int col = idx - index;
+            Integer key = floorKey(col);
+            return l.get(key).c;
+        }
+        return 0;
+    }
+
+    @Override
+    public CharSequence subSequence(int start, int end) {
+        return null;
+    }
+
+    @Override
+    public Object call(Class<?> iface, String name, String actualName, Class<?> returnType, Class<?>[] paramTypes, Object[] args) {
+        return super.call(iface, name, actualName, returnType, paramTypes, args);
+    }
 }

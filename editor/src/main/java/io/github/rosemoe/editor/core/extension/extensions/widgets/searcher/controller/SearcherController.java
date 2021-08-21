@@ -16,7 +16,7 @@
 package io.github.rosemoe.editor.core.extension.extensions.widgets.searcher.controller;
 
 import io.github.rosemoe.editor.core.extension.Extension;
-import io.github.rosemoe.editor.core.content.controller.ContentMap;
+import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.searcher.SearcherModel;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.searcher.view.SearcherView;
@@ -50,7 +50,7 @@ public class SearcherController extends Extension {
     @SuppressWarnings("UnusedReturnValue")
     public boolean replaceThis(String newText) {
         if ( ! model.isInitialized() ) { return false; }
-        ContentMap text = view.editor.getText();
+        ContentGrid text = view.editor.getText();
         CursorController cursor = text.getCursor();
         if (cursor.isSelected()) {
             String selectedText = text.subGrid(cursor.getLeftLine(), cursor.getLeftColumn(), cursor.getRightLine(), cursor.getRightColumn()).toString();
