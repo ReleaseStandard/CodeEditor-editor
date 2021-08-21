@@ -13,7 +13,7 @@ import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
 public class Pipeline extends ConcurrentSkipListMap<Integer, Analyzer> implements Iterable<Analyzer> {
 
     public final ResultStore resultStore;
-    
+
     public final static int ANALYZER_CONTENT = 1;
     public final static int ANALYZER_LANG = 2;
 
@@ -23,19 +23,30 @@ public class Pipeline extends ConcurrentSkipListMap<Integer, Analyzer> implement
      */
     class Flow extends ArrayList<Integer> { }
     final Flow classicUserInput = new Flow();
-    public Flow getDefaultFlow() { return classicUserInput; }
 
     public Pipeline(ResultStore resultStore) {
         this.resultStore = resultStore;
         classicUserInput.add(ANALYZER_CONTENT);
         classicUserInput.add(ANALYZER_LANG);
     }
-
-    public void run() {
-        for(Integer i : getDefaultFlow()) {
+    /**
+     * Run flow on the Pipeline.
+     * @param f flow schedule to run.
+     */
+    public void run(Flow f) {
+        for(Integer i : f) {
             Analyzer a = get(i);
             //a.runAnalysis
         }
+    }
+    public void run() {
+        run(classicUserInput);
+    }
+    public void runHack() {
+        //ContentAnalyzer content = get(ANALYZER_CONTENT);
+        // content.run();
+        CodeAnalyzer lang = (CodeAnalyzer) get(ANALYZER_LANG);
+        lang.analyze(resultStore.mText);
     }
 
     @Override public Iterator<Analyzer> iterator() { return super.values().iterator(); }
