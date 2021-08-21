@@ -29,33 +29,21 @@ import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.util.annotations.Experimental;
-import io.github.rosemoe.struct.BlockLinkedList;
 
-import static io.github.rosemoe.editor.core.grid.Cell.SPLIT_SPLITTING;
+import static io.github.rosemoe.editor.core.grid.Cell.*;
 
 /**
  * This class saves the text content for editor and maintains line widths
  *
  * @author Rose
  */
-public class ContentMap extends Grid implements CharSequence {
+public class ContentMap extends Grid<ContentCell> implements CharSequence {
 
-    /**
-     * Use a BlockLinkedList instead of ArrayList.
-     * <p>
-     * This can be faster while inserting in large text.
-     * But in other conditions, it is quite slow.
-     * <p>
-     * Disabled by default.
-     */
-    @Experimental
-    public static boolean useBlock = false;
     public static int sInitialListCapacity = 1000;
 
     public int textLength;
     public int nestedBatchEdit;
 
-    private List<ContentLineController> lines;
     private Indexer indexer;
     private ContentActionStack contentManager;
     private CursorController cursor;
@@ -86,10 +74,6 @@ public class ContentMap extends Grid implements CharSequence {
         }
         textLength = 0;
         nestedBatchEdit = 0;
-        if (!useBlock)
-            lines = new ArrayList<>(getInitialLineCapacity());
-        else
-            lines = new BlockLinkedList<>(5000);
         append();
         mListeners = new ArrayList<>();
         contentManager = new ContentActionStack(this);
@@ -250,14 +234,16 @@ public class ContentMap extends Grid implements CharSequence {
             char c = text.charAt(i);
             if (c == '\n') {
                 ContentLineController newLine = new ContentLineController();
-                newLine.append(currLine, workIndex, currLine.length());
+                newLine.append(currLine.subLine(workIndex));
                 currLine.removeCells(workIndex, currLine.length());
                 put(workLine + 1, newLine);
                 currLine = newLine;
                 workIndex = 0;
                 workLine++;
             } else {
-                currLine.insert(workIndex, c);
+                ContentCell cc = new ContentCell(c);
+                cc.column = workIndex;
+                currLine.insertCell(cc);
                 workIndex++;
             }
         }

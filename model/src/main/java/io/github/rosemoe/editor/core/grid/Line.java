@@ -359,13 +359,16 @@ public class Line<T extends Cell> extends ConcurrentSkipListMap<Integer, T> impl
         }
     }
 
+    public Line<T> subLine(int col) {
+        return subLine(col,-1);
+    }
     /**
      * Get a subpart of the Line
      * @param col
      * @param sz
      * @return the subpart (WARNING indx could begin greater than 0)
      */
-    public Line subLine(int col, int sz) {
+    public Line<T> subLine(int col, int sz) {
         if ( sz == -1 ) {
             Entry e = lastEntry();
             if ( e != null ) {
@@ -406,7 +409,7 @@ public class Line<T extends Cell> extends ConcurrentSkipListMap<Integer, T> impl
             }
             lastCell.enabled = (behaviourOnCellSplit != SPLIT_INVALIDATE);
         }
-        return new Line(submap);
+        return new Line<T>(submap);
     }
 
     /**
