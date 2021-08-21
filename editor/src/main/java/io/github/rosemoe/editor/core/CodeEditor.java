@@ -766,12 +766,9 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         this.mLanguage = lang;
 
         // Update spanner
-        if (pipeline.getLanguageAnalyzer() != null) {
-            pipeline.getLanguageAnalyzer().shutdown();
-            pipeline.getLanguageAnalyzer().setCallback(null);
-        }
+        pipeline.stopAllFlow();
         pipeline.setLanguageAnalyzer((CodeAnalyzer) lang.analyzer);
-        CodeAnalyzerResultColor result = ((CodeAnalyzerResultColor)analyzer.getResult("color"));
+        CodeAnalyzerResultColor result = ((CodeAnalyzerResultColor)resultStore.getResult("color"));
         if ( result != null ) {
             result.theme = getColorScheme();
         }
@@ -781,7 +778,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         }
         if (completionWindow != null) {
             completionWindow.view.hide();
-            IdentifierAutoCompleteController autoComplete = new IdentifierAutoCompleteController(analyzer);
+            IdentifierAutoCompleteController autoComplete = new IdentifierAutoCompleteController(pipeline.getLanguageAnalyzer());
             autoComplete.model = (IdentifierAutoCompleteModel) lang.getAutoCompleteProvider();
             completionWindow.setProvider(autoComplete);
         }
@@ -946,7 +943,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     protected void drawView(Canvas canvas) {
         //record();
         //counter = 0;
-        analyzer.recycle();
+        pipeline.getLanguageAnalyzer().recycle();
 
         // TODO : missing part
         if (mFormatThread != null) {
@@ -1025,14 +1022,14 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     private void drawRows(Canvas canvas, float offset) {
 
         RowIterator rowIterator = mLayout.obtainRowIterator(getFirstVisibleRow());
-        CodeAnalyzerResultColor colRes = (CodeAnalyzerResultColor) analyzer.getResult("color");
+        CodeAnalyzerResultColor colRes = (CodeAnalyzerResultColor) resultStore.getResult("color");
         if ( colRes == null ) {
             Logger.debug("spanmap is not ready");
             pipeline.getLanguageAnalyzer().dump();
 
             return;
         }
-        Grid<SpanCell> spanMap = analyzer.getSpanMap();
+        Grid<SpanCell> spanMap = resultStore.getSpanMap();
         List<Integer> matchedPositions = new ArrayList<>();
         int currentLine = cursor.isSelected() ? -1 : cursor.getLeftLine();
         int currentLineBgColor = model.colorManager.getColor("currentLine");
@@ -1475,7 +1472,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * @param offsetX The start x offset for text
      */
     private void drawBlockLines(Canvas canvas, float offsetX) {
-        List<BlockLineModel> blocks = analyzer == null ? null : analyzer.getContent();
+        List<BlockLineModel> blocks = pipeline.getLanguageAnalyzer() == null ? null : resultStore.getContent();
         if (blocks == null || blocks.isEmpty()) {
             return;
         }
@@ -1484,8 +1481,8 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         boolean mark = false;
         int invalidCount = 0;
         int maxCount = Integer.MAX_VALUE;
-        if (analyzer != null) {
-            maxCount = analyzer.mSuppressSwitch;
+        if (pipeline.getLanguageAnalyzer() != null) {
+            maxCount = pipeline.getLanguageAnalyzer().mSuppressSwitch;
         }
         int mm = binarySearchEndBlock(first, blocks);
         int cursorIdx = cursorPosition;
@@ -1563,7 +1560,11 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * If cursor is not in any code block,just -1.
      */
     private int findCursorBlock() {
-        List<BlockLineModel> blocks = pipeline.getLanguageAnalyzer() == null ? null : pipeline.getLanguageAnalyzer().getContent();
+        List<BlockLineModel> blocks = new ArrayList<>();
+        if ( true ) {
+            throw new RuntimeException("Warning not implemented");
+        }
+        //pipeline.getLanguageAnalyzer() == null ? null : pipeline.getLanguageAnalyzer().getContent();
         if (blocks == null || blocks.isEmpty()) {
             return -1;
         }
@@ -1585,8 +1586,8 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         int found = -1;
         int invalidCount = 0;
         int maxCount = Integer.MAX_VALUE;
-        if (analyzer != null) {
-            maxCount = analyzer.mSuppressSwitch;
+        if (pipeline.getLanguageAnalyzer() != null) {
+            maxCount = pipeline.getLanguageAnalyzer().mSuppressSwitch;
         }
         for (int i = min; i <= max; i++) {
             BlockLineModel block = blocks.get(i);
@@ -1805,7 +1806,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      */
     private boolean isSpanMapPrepared(boolean insert, int delta) {
 
-        Grid map = analyzer.getSpanMap();
+        Grid map = resultStore.getSpanMap();
         boolean rv = false;
         if (map != null) {
             if (insert) {
@@ -2945,17 +2946,15 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         resultStore.mText.addContentListener(this);
         resultStore.mText.setUndoEnabled(mUndoEnabled);
         resultStore.mText.setLineListener(this);
+        pipeline.stopAllFlow();
 
-        if (analyzer != null) {
-            analyzer.setCallback(null);
-            analyzer.shutdown();
-        }
-        analyzer = (CodeAnalyzer) mLanguage.analyzer;
-        CodeAnalyzerResultColor result = ((CodeAnalyzerResultColor)analyzer.getResult("color"));
+        CodeAnalyzer analyzer = (CodeAnalyzer) mLanguage.analyzer;
+        pipeline.setLanguageAnalyzer(analyzer);
+        CodeAnalyzerResultColor result = ((CodeAnalyzerResultColor)resultStore.getResult("color"));
         if ( result != null ) {
             result.theme = getColorScheme();
         }
-        analyzer.setCallback(this);
+        pipeline.getLanguageAnalyzer().setCallback(this);
         analyzer.clear();
         analyzer.analyze(getText());
 
@@ -3027,7 +3026,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      */
     @NonNull
     public CodeAnalyzerResultColor getTextAnalyzeResult() {
-        return (CodeAnalyzerResultColor) analyzer.getResult("color");
+        return (CodeAnalyzerResultColor) resultStore.getResult("color");
     }
 
     /**
@@ -3155,10 +3154,11 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         }
     }
 
+    // INPUT SIGNAL
     @Override
     public void afterInsert(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
 
-        Grid sm = analyzer.getSpanMap();
+        Grid sm = resultStore.getSpanMap();
 
         // Update spans
         if (isSpanMapPrepared(true, endLine - startLine)) {
@@ -3210,7 +3210,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         updateCursorAnchor();
         ensureSelectionVisible();
         // Notify to update highlight
-        analyzer.analyze(resultStore.mText);
+        pipeline.getLanguageAnalyzer().analyze(resultStore.mText);
         userInput.hideInsertHandle();
         // Notify listener
         if (mListener != null) {
@@ -3219,11 +3219,12 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
 
     }
 
+    // INPUT SIGNAL
     @Override
     public void afterDelete(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
 
         if (isSpanMapPrepared(false, endLine - startLine)) {
-            analyzer.getSpanMap().removeCells(startLine,startColumn,endLine,endColumn);
+            resultStore.getSpanMap().removeCells(startLine,startColumn,endLine,endColumn);
         }
 
         cursor.blink.onSelectionChanged();
@@ -3253,7 +3254,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         if (!mWait) {
             updateCursorAnchor();
             ensureSelectionVisible();
-            analyzer.analyze(resultStore.mText);
+            pipeline.getLanguageAnalyzer().analyze(resultStore.mText);
             userInput.hideInsertHandle();
         }
         if (mListener != null) {

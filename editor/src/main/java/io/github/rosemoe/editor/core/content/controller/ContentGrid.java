@@ -582,8 +582,4 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
         return null;
     }
 
-    @Override
-    public Object call(Class<?> iface, String name, String actualName, Class<?> returnType, Class<?>[] paramTypes, Object[] args) {
-        return super.call(iface, name, actualName, returnType, paramTypes, args);
-    }
 }

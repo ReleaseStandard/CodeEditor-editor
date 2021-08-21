@@ -21,4 +21,6 @@ public class CodeEditorModel {
     public Rect background = new Rect();
 
     public ExtensionContainer plugins = new ExtensionContainer();           // Plugins
+
+    // resultStore
 }

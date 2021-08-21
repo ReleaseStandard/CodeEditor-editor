@@ -87,7 +87,7 @@ public class IdentifierAutoCompleteController implements AutoCompleteController 
         Collections.sort(keywords, CompletionItemController.COMPARATOR_BY_NAME);
 
         // completion analyzer
-        CodeAnalyzerResultCompletion result = (CodeAnalyzerResultCompletion) codeAnalyzer.getResult("completion");
+        CodeAnalyzerResultCompletion result = (CodeAnalyzerResultCompletion) codeAnalyzer.resultStore.getResult("completion");
         if (result != null) {
             List<CompletionItemController> words = new ArrayList<>();
             for (String word : result.identifiers.getIdentifiers()) {

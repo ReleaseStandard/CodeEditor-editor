@@ -5,12 +5,13 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
+import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 
 /**
  * A pipeline is a collection of analyzer,
  * and dependencies between them.
  */
-public class Pipeline extends ConcurrentSkipListMap<Integer, Analyzer> implements Iterable<Analyzer> {
+public class Pipeline extends ConcurrentSkipListMap<Integer, Analyzer> {
 
     public final ResultStore resultStore;
 
@@ -42,15 +43,21 @@ public class Pipeline extends ConcurrentSkipListMap<Integer, Analyzer> implement
     public void run() {
         run(classicUserInput);
     }
-    public void runHack() {
+    public void runHack(ContentGrid content) {
         //ContentAnalyzer content = get(ANALYZER_CONTENT);
         // content.run();
         CodeAnalyzer lang = (CodeAnalyzer) get(ANALYZER_LANG);
         lang.analyze(resultStore.mText);
     }
-
-    @Override public Iterator<Analyzer> iterator() { return super.values().iterator(); }
-    @Override public Object call(Class<?> iface, String name, String actualName, Class<?> returnType, Class<?>[] paramTypes, Object[] args) { return super.call(iface, name, actualName, returnType, paramTypes, args); }
+    public void stopAllFlow() {
+        /**
+         *         if (analyzer != null) {
+         *             analyzer.setCallback(null);
+         *             analyzer.shutdown();
+         *         }
+         */
+        new RuntimeException("Not implemented");
+    }
 
     // DSL
     public CodeAnalyzer getLanguageAnalyzer() { return (CodeAnalyzer) get(ANALYZER_LANG); }

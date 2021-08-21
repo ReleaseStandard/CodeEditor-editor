@@ -15,6 +15,7 @@
  */
 package io.github.rosemoe.editor.core.analyzer.analyzer.tokenemitter;
 
+import io.github.rosemoe.editor.core.analyzer.ResultStore;
 import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
 
 /**
@@ -23,4 +24,7 @@ import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
  */
 public abstract class TokenEmitter extends CodeAnalyzer {
 
+    public TokenEmitter(ResultStore resultStore) {
+        super(resultStore);
+    }
 }

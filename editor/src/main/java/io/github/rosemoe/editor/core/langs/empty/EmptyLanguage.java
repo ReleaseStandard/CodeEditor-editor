@@ -16,6 +16,7 @@
 package io.github.rosemoe.editor.core.langs.empty;
 
 import io.github.rosemoe.editor.core.CodeEditorModel;
+import io.github.rosemoe.editor.core.analyzer.ResultStore;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.IdentifierAutoCompleteModel;
 import io.github.rosemoe.editor.core.extension.extensions.langs.LanguagePlugin;
 import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
@@ -33,7 +34,7 @@ public class EmptyLanguage extends LanguagePlugin {
         super(editor);
         name = "Empty language";
         description = "Empty language";
-        analyzer = new EmptyCodeAnalyzer();
+        analyzer = new EmptyCodeAnalyzer(null);
     }
     @Override
     public IdentifierAutoCompleteModel getAutoCompleteProvider() {
@@ -51,10 +52,15 @@ public class EmptyLanguage extends LanguagePlugin {
 
     private static class EmptyCodeAnalyzer extends CodeAnalyzer {
 
+        public EmptyCodeAnalyzer(ResultStore resultStore) {
+            super(resultStore);
+        }
+
         @Override
         protected void analyze(CharSequence content, CodeAnalyzerThread.Delegate delegate) {
 
         }
+
     }
 }
 

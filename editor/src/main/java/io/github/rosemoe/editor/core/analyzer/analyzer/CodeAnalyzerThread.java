@@ -55,13 +55,13 @@ public class CodeAnalyzerThread extends Thread {
                     StringBuilder c = content.toStringBuilder();
                     codeAnalyzer.analyze(c, d);
                     if (waiting) {
-                        codeAnalyzer.clearInBuild();
+                        codeAnalyzer.resultStore.clearInBuild();
                     }
                 } while (waiting);
 
-                codeAnalyzer.updateView();
+                codeAnalyzer.resultStore.updateView();
 
-                CodeAnalyzerResultColor colorsResult = (CodeAnalyzerResultColor) codeAnalyzer.getResultInBuild("color");
+                CodeAnalyzerResultColor colorsResult = (CodeAnalyzerResultColor) codeAnalyzer.resultStore.getResultInBuild("color");
                 if ( colorsResult != null ) {
                     colorsResult.map.addNormalIfNull();
                 }
@@ -92,7 +92,7 @@ public class CodeAnalyzerThread extends Thread {
     }
 
     public void handleError() {
-        codeAnalyzer.clearInBuild();
+        codeAnalyzer.resultStore.clearInBuild();
     }
 
     /**
