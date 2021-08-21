@@ -95,9 +95,9 @@ public abstract class AbstractLayout implements Layout {
         }
         if (editor.mWordwrap) {
             //editor.mCachedLineNumberWidth = (int) editor.lineNumber.measureLineNumber(editor.getLineCount()); // TODO
-            editor.mLayout = new WordwrapLayout(editor, editor.mText);
+            editor.mLayout = new WordwrapLayout(editor, editor.resultStore.mText);
         } else {
-            editor.mLayout = new LineBreakLayout(editor, editor.mText);
+            editor.mLayout = new LineBreakLayout(editor, editor.resultStore.mText);
         }
         if (editor.userInput != null) {
             editor.userInput.view.scrollBy(0, 0);

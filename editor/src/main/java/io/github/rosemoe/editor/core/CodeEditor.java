@@ -57,6 +57,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.rosemoe.editor.R;
+import io.github.rosemoe.editor.core.analyzer.Pipeline;
+import io.github.rosemoe.editor.core.analyzer.ResultStore;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
@@ -191,9 +193,10 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     private boolean mAllowFullscreen;
     private ClipboardManager mClipboardManager;
     private InputMethodManager mInputMethodManager;
-    public ContentGrid mText;
-    public CodeAnalyzer analyzer;
-
+    
+    public ResultStore resultStore = new ResultStore();
+    public Pipeline pipeline = new Pipeline(resultStore);
+    
     public CodeEditorView view;
     public CodeEditorModel model = new CodeEditorModel();
 
@@ -504,8 +507,8 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         int candidatesStart = -1, candidatesEnd = -1;
         if (mConnection.model.composingLine != -1) {
             try {
-                candidatesStart = mText.getCharIndex(mConnection.model.composingLine, mConnection.model.composingStart);
-                candidatesEnd = mText.getCharIndex(mConnection.model.composingLine, mConnection.model.composingEnd);
+                candidatesStart = resultStore.mText.getCharIndex(mConnection.model.composingLine, mConnection.model.composingStart);
+                candidatesEnd = resultStore.mText.getCharIndex(mConnection.model.composingLine, mConnection.model.composingEnd);
             } catch (IndexOutOfBoundsException e) {
                 //Ignored
             }
@@ -763,18 +766,18 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         this.mLanguage = lang;
 
         // Update spanner
-        if (analyzer != null) {
-            analyzer.shutdown();
-            analyzer.setCallback(null);
+        if (pipeline.getLanguageAnalyzer() != null) {
+            pipeline.getLanguageAnalyzer().shutdown();
+            pipeline.getLanguageAnalyzer().setCallback(null);
         }
-        analyzer = (CodeAnalyzer) lang.analyzer;
+        pipeline.setLanguageAnalyzer((CodeAnalyzer) lang.analyzer);
         CodeAnalyzerResultColor result = ((CodeAnalyzerResultColor)analyzer.getResult("color"));
         if ( result != null ) {
             result.theme = getColorScheme();
         }
-        this.analyzer.setCallback(this);
-        if (mText != null) {
-            analyzer.analyze(mText);
+        pipeline.getLanguageAnalyzer().setCallback(this);
+        if (resultStore.mText != null) {
+            pipeline.getLanguageAnalyzer().analyze(resultStore.mText);
         }
         if (completionWindow != null) {
             completionWindow.view.hide();
@@ -1025,7 +1028,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         CodeAnalyzerResultColor colRes = (CodeAnalyzerResultColor) analyzer.getResult("color");
         if ( colRes == null ) {
             Logger.debug("spanmap is not ready");
-            analyzer.dump();
+            pipeline.getLanguageAnalyzer().dump();
 
             return;
         }
@@ -1047,7 +1050,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         for (int row = getFirstVisibleRow(); row <= getLastVisibleRow() && rowIterator.hasNext(); row++) {
             RowController rowInf = rowIterator.next();
             int line = rowInf.model.lineIndex;
-            Line<ContentCell> contentLine = mText.get(line);
+            Line<ContentCell> contentLine = resultStore.mText.get(line);
             int columnCount = contentLine.getWidth();
             if (rowInf.model.isLeadingRow) {
                 for(Extension e : model.plugins) {
@@ -1272,7 +1275,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * @param line The line to search
      */
     private long findLeadingAndTrailingWhitespacePos(int line) {
-        int column = mText.getColumnCount(line);
+        int column = resultStore.mText.getColumnCount(line);
         int leading = 0;
         int trailing = column;
         while (leading < column && isWhitespace(mBuffer[leading])) {
@@ -1306,7 +1309,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         if (pattern == null || pattern.length() == 0) {
             return;
         }
-        Line<ContentCell> seq = mText.get(line);
+        Line<ContentCell> seq = resultStore.mText.get(line);
         int index = 0;
         while (index != -1) {
             //TODO break
@@ -1490,9 +1493,9 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             BlockLineModel block = blocks.get(curr);
             if (hasVisibleRegion(block.startLine, block.endLine, first, last)) {
                 try {
-                    CharSequence lineContent = mText.get(block.endLine).toString();
+                    CharSequence lineContent = resultStore.mText.get(block.endLine).toString();
                     float offset1 = measureText(lineContent, 0, block.endColumn);
-                    lineContent = mText.get(block.startLine).toString();
+                    lineContent = resultStore.mText.get(block.startLine).toString();
                     float offset2 = measureText(lineContent, 0, block.startColumn);
                     float offset = Math.min(offset1, offset2);
                     float centerX = offset + offsetX;
@@ -1560,7 +1563,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * If cursor is not in any code block,just -1.
      */
     private int findCursorBlock() {
-        List<BlockLineModel> blocks = analyzer == null ? null : analyzer.getContent();
+        List<BlockLineModel> blocks = pipeline.getLanguageAnalyzer() == null ? null : pipeline.getLanguageAnalyzer().getContent();
         if (blocks == null || blocks.isEmpty()) {
             return -1;
         }
@@ -1737,11 +1740,11 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * @param line Line going to draw or measure
      */
     private void prepareLine(int line) {
-        int length = mText.getColumnCount(line);
+        int length = resultStore.mText.getColumnCount(line);
         if (length >= mBuffer.length) {
             mBuffer = new char[length + 100];
         }
-        mText.getLineChars(line, mBuffer);
+        resultStore.mText.getLineChars(line, mBuffer);
     }
 
     /**
@@ -2001,7 +2004,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             //bottom invisible
             targetY = yOffset - view.getHeight() + getRowHeight() * 0.1f;
         }
-        float charWidth = column == 0 ? 0 : measureText(mText.get(line).toString(), column - 1, 1);
+        float charWidth = column == 0 ? 0 : measureText(resultStore.mText.get(line).toString(), column - 1, 1);
         if (xOffset < getOffsetX()) {
             targetX = xOffset - charWidth * 0.2f;
         }
@@ -2143,13 +2146,13 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      */
     public void setSelectionAround(int line, int column) {
         if (line < getLineCount()) {
-            int columnCount = mText.getColumnCount(line);
+            int columnCount = resultStore.mText.getColumnCount(line);
             if (column > columnCount) {
                 column = columnCount;
             }
             setSelection(line, column);
         } else {
-            setSelection(getLineCount() - 1, mText.getColumnCount(getLineCount() - 1));
+            setSelection(getLineCount() - 1, resultStore.mText.getColumnCount(getLineCount() - 1));
         }
     }
 
@@ -2218,14 +2221,14 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * Undo last action
      */
     public void undo() {
-        mText.undo();
+        resultStore.mText.undo();
     }
 
     /**
      * Redo last action
      */
     public void redo() {
-        mText.redo();
+        resultStore.mText.redo();
     }
 
     /**
@@ -2234,7 +2237,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * @return whether can undo
      */
     public boolean canUndo() {
-        return mText.canUndo();
+        return resultStore.mText.canUndo();
     }
 
     /**
@@ -2243,7 +2246,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * @return whether can redo
      */
     public boolean canRedo() {
-        return mText.canRedo();
+        return resultStore.mText.canRedo();
     }
 
     /**
@@ -2261,8 +2264,8 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      */
     public void setUndoEnabled(boolean enabled) {
         mUndoEnabled = enabled;
-        if (mText != null) {
-            mText.setUndoEnabled(enabled);
+        if (resultStore.mText != null) {
+            resultStore.mText.setUndoEnabled(enabled);
         }
     }
 
@@ -2425,7 +2428,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * @return line count
      */
     public int getLineCount() {
-        return mText.size();
+        return resultStore.mText.size();
     }
 
     /**
@@ -2680,7 +2683,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             int columnAfter = IntPair.getSecond(pos);
             setSelection(lineAfter, columnAfter);
             if (line == lineAfter) {
-                char ch = (columnAfter - 1 < c_column && columnAfter - 1 >= 0) ? mText.charAt(lineAfter, columnAfter - 1) : '\0';
+                char ch = (columnAfter - 1 < c_column && columnAfter - 1 >= 0) ? resultStore.mText.charAt(lineAfter, columnAfter - 1) : '\0';
                 if (!isEmoji(ch) && completionWindow.view.isShowing()) {
                     if (!mLanguage.isAutoCompleteChar(ch)) {
                         completionWindow.view.hide();
@@ -2742,9 +2745,9 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * @param makeItVisible Make the character visible
      */
     public void setSelection(int line, int column, boolean makeItVisible) {
-        if (column > 0 && isEmoji(mText.charAt(line, column - 1))) {
+        if (column > 0 && isEmoji(resultStore.mText.charAt(line, column - 1))) {
             column++;
-            if (column > mText.getColumnCount(line)) {
+            if (column > resultStore.mText.getColumnCount(line)) {
                 column--;
             }
         }
@@ -2807,20 +2810,20 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         boolean lastState = cursor.isSelected();
         if (columnLeft > 0) {
             int column = columnLeft - 1;
-            char ch = mText.charAt(lineLeft, column);
+            char ch = resultStore.mText.charAt(lineLeft, column);
             if (isEmoji(ch)) {
                 columnLeft++;
-                if (columnLeft > mText.getColumnCount(lineLeft)) {
+                if (columnLeft > resultStore.mText.getColumnCount(lineLeft)) {
                     columnLeft--;
                 }
             }
         }
         if (columnRight > 0) {
             int column = columnRight;
-            char ch = mText.charAt(lineRight, column);
+            char ch = resultStore.mText.charAt(lineRight, column);
             if (isEmoji(ch)) {
                 columnRight++;
-                if (columnRight > mText.getColumnCount(lineRight)) {
+                if (columnRight > resultStore.mText.getColumnCount(lineRight)) {
                     columnRight--;
                 }
             }
@@ -2912,7 +2915,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      */
     @NonNull
     public ContentGrid getText() {
-        return mText;
+        return resultStore.mText;
     }
 
     /**
@@ -2926,22 +2929,22 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             text = "";
         }
 
-        if (mText != null) {
-            mText.removeContentListener(this);
-            mText.setLineListener(null);
+        if (resultStore.mText != null) {
+            resultStore.mText.removeContentListener(this);
+            resultStore.mText.setLineListener(null);
         }
-        mText = new ContentGrid(text,this);
+        resultStore.mText = new ContentGrid(text,this);
         boolean isAutoIndented = CursorModel.DEFAULT_ISAUTO_IDENT;
         if ( cursor != null ) {
             isAutoIndented = cursor.isAutoIndent();
         }
-        cursor = mText.getCursor();
+        cursor = resultStore.mText.getCursor();
         cursor.setAutoIndent(isAutoIndented);
         cursor.setLanguage(mLanguage);
         userInput.view.reset();
-        mText.addContentListener(this);
-        mText.setUndoEnabled(mUndoEnabled);
-        mText.setLineListener(this);
+        resultStore.mText.addContentListener(this);
+        resultStore.mText.setUndoEnabled(mUndoEnabled);
+        resultStore.mText.setLineListener(this);
 
         if (analyzer != null) {
             analyzer.setCallback(null);
@@ -3117,7 +3120,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     public void updateCursor() {
         updateCursorAnchor();
         updateExtractedText();
-        if (!mText.isInBatchEdit()) {
+        if (!resultStore.mText.isInBatchEdit()) {
             updateSelection();
         }
     }
@@ -3207,11 +3210,11 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         updateCursorAnchor();
         ensureSelectionVisible();
         // Notify to update highlight
-        analyzer.analyze(mText);
+        analyzer.analyze(resultStore.mText);
         userInput.hideInsertHandle();
         // Notify listener
         if (mListener != null) {
-            throw new RuntimeException("TODO");//mListener.afterInsert(this, mText, startLine, startColumn, endLine, endColumn, insertedContent);
+            throw new RuntimeException("TODO");//mListener.afterInsert(this, resultStore.mText, startLine, startColumn, endLine, endColumn, insertedContent);
         }
 
     }
@@ -3250,11 +3253,11 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         if (!mWait) {
             updateCursorAnchor();
             ensureSelectionVisible();
-            analyzer.analyze(mText);
+            analyzer.analyze(resultStore.mText);
             userInput.hideInsertHandle();
         }
         if (mListener != null) {
-            throw new RuntimeException("TODO");//mListener.afterDelete(this, mText, startLine, startColumn, endLine, endColumn, deletedContent);
+            throw new RuntimeException("TODO");//mListener.afterDelete(this, resultStore.mText, startLine, startColumn, endLine, endColumn, deletedContent);
         }
 
     }
@@ -3278,11 +3281,11 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             mListener.onFormatSucceed(this);
         }
         mFormatThread = null;
-        if (originalText == mText) {
+        if (originalText == resultStore.mText) {
             view.post(() -> {
                 int line = cursor.getLeftLine();
                 int column = cursor.getLeftColumn();
-                mText.replace(0, 0, getLineCount() - 1, mText.getColumnCount(getLineCount() - 1), newText);
+                resultStore.mText.replace(0, 0, getLineCount() - 1, resultStore.mText.getColumnCount(getLineCount() - 1), newText);
                 getScroller().forceFinished(true);
                 completionWindow.view.hide();
                 setSelectionAround(line, column);

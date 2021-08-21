@@ -227,7 +227,7 @@ public class CodeEditorView extends View {
                     if (handlers == null || editor.getCursor().isSelected()) {
                         editor.cursor.onCommitText("\n", true);
                     } else {
-                        Line<ContentCell> line = editor.mText.get(editor.cursor.getLeftLine());
+                        Line<ContentCell> line = editor.resultStore.mText.get(editor.cursor.getLeftLine());
                         int index = editor.cursor.getLeftColumn();
                         String beforeText = line.subLine(0, index).toString();
                         String afterText = line.subLine(index, line.getWidth()).toString();

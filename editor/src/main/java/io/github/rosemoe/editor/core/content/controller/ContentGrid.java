@@ -37,7 +37,7 @@ import static io.github.rosemoe.editor.core.grid.Cell.*;
  *
  * @author Rose
  */
-public class ContentGrid extends Grid<ContentCell> {
+public class ContentGrid extends Grid<ContentCell> implements CharSequence {
 
     public static int sInitialListCapacity = 1000;
 

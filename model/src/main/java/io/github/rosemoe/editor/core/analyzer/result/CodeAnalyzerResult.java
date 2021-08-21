@@ -18,7 +18,7 @@ package io.github.rosemoe.editor.core.analyzer.result;
 import io.github.rosemoe.editor.core.analyzer.CodeAnalyzerResultRecycler;
 import io.github.rosemoe.editor.core.util.Logger;
 
-public abstract class CodeAnalyzerResult {
+public abstract class CodeAnalyzerResult extends AnalyzerResult {
 
     /**
      * This method choose how to process arguments when the analyzer send some.

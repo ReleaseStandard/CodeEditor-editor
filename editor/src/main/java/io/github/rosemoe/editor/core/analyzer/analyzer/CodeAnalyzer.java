@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
+import io.github.rosemoe.editor.core.analyzer.Analyzer;
 import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.grid.Grid;
@@ -39,7 +40,7 @@ import io.github.rosemoe.editor.core.BlockLineModel;
  *
  * @author Release Standard
  */
-public abstract class CodeAnalyzer {
+public abstract class CodeAnalyzer extends Analyzer {
 
     /**
      * This switch is setup by the analyzer to prevent the view from painting non displayed regions.
