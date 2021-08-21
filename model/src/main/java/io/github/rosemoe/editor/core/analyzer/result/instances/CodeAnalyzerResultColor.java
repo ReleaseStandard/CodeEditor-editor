@@ -18,7 +18,7 @@ package io.github.rosemoe.editor.core.analyzer.result.instances;
 import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.analyzer.result.TokenEmitterResult;
 import io.github.rosemoe.editor.core.grid.Grid;
-import io.github.rosemoe.editor.core.grid.instances.color.SpanCell;
+import io.github.rosemoe.editor.core.grid.instances.SpanCell;
 import io.github.rosemoe.editor.core.extension.extensions.color.ColorSchemeExtension;
 import io.github.rosemoe.editor.core.util.Logger;
 

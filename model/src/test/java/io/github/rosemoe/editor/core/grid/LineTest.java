@@ -3,7 +3,8 @@ package io.github.rosemoe.editor.core.grid;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import io.github.rosemoe.editor.core.grid.instances.color.SpanCell;
+import io.github.rosemoe.editor.core.grid.instances.SpanCell;
+import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.Random;
 import manifold.ext.rt.api.Jailbreak;
@@ -990,7 +991,7 @@ public class LineTest {
             l.behaviourOnCellSplit = SPLIT_INVALIDATE;
             l.append(new BaseCell(2));
             l.append(new BaseCell(2));
-            Line sub = l.subCells(1,2);
+            Line sub = l.subLine(1,2);
             l.dump();
             sub.dump();
             assertTrue(sub.size() == 2);
@@ -1003,7 +1004,7 @@ public class LineTest {
             l.behaviourOnCellSplit = SPLIT_INVALIDATE;
             l.append(new BaseCell(1));
             l.dump();
-            Line sub = l.subCells(0,1);
+            Line sub = l.subLine(0,1);
             sub.dump();
             assertTrue(sub.size()==1);
         }
@@ -1016,7 +1017,7 @@ public class LineTest {
             l.append(new BaseCell(2));
             l.append(new BaseCell(2));
             l.dump();
-            Line sub = l.subCells(3,2);
+            Line sub = l.subLine(3,2);
             sub.dump();
             for(Cell c : sub) {
                 Logger.debug("c="+c.column);
@@ -1030,7 +1031,7 @@ public class LineTest {
             Line l = new Line();
             l.append(new BaseCell(1));
             l.dump();
-            Line sub = l.subCells(0,0);
+            Line sub = l.subLine(0,0);
             sub.dump();
             assertTrue(sub.size()==0);
         }
@@ -1039,7 +1040,7 @@ public class LineTest {
             //  *
             Line l = new Line();
             l.append(new BaseCell(1));
-            Line sub = l.subCells(0,1);
+            Line sub = l.subLine(0,1);
             sub.dump();
             assertTrue(sub.size()==1);
             assertTrue(sub.get(0).size == 1);
@@ -1049,7 +1050,7 @@ public class LineTest {
             //  *
             Line l = new Line();
             l.append(new BaseCell(2));
-            Line sub = l.subCells(0,1);
+            Line sub = l.subLine(0,1);
             assertTrue(sub.size()==1);
             assertTrue("sub.get(0).enabled="+sub.get(0).enabled+",l.behaviourOnCellSplit="+l.behaviourOnCellSplit,sub.get(0).enabled == ( l.behaviourOnCellSplit != SPLIT_INVALIDATE ));
         }
@@ -1063,7 +1064,7 @@ public class LineTest {
             l.append(new BaseCell(2));
             l.append(new BaseCell(3));
             l.dump();
-            Line sub = l.subCells(3,8);
+            Line sub = l.subLine(3,8);
             sub.dump();
             assertTrue(sub.size()==4);
             sub.dump();
@@ -1071,6 +1072,17 @@ public class LineTest {
             assertTrue(sub.get(4).size == 3);
             assertTrue(sub.get(7).size == 2);
             assertTrue(sub.get(9).size == 2);
+        }
+    }
+
+    @Test
+    public void testToString() {
+        {
+            Line l = new Line();
+            l.append(new ContentCell('a'));
+            l.append(new ContentCell('b'));
+            l.append(new ContentCell('c'));
+            assertTrue(l.toString().equals("abc"));
         }
     }
 }

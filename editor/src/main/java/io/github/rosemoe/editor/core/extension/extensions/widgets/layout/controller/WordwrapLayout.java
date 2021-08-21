@@ -47,17 +47,17 @@ public class WordwrapLayout extends AbstractLayout {
         model = new WordwrapModel() {
             @Override
             public int measureText(int line, int startColumn, int column) {
-                return (int) WordwrapLayout.this.measureText(text.get(line), startColumn, column);
+                return (int) WordwrapLayout.this.measureText(text.get(line).toString(), startColumn, column);
             }
 
             @Override
             public int orderedFindCharIndex(float xOffset, int line, int startColumn, int endColumn) {
-                return (int) WordwrapLayout.this.orderedFindCharIndex(xOffset, text.get(line), startColumn, endColumn)[0];
+                return (int) WordwrapLayout.this.orderedFindCharIndex(xOffset, text.get(line).toString(), startColumn, endColumn)[0];
 
             }
             @Override
             public void breakLine(int line, List<Integer> breakpoints) {
-                ContentLineController sequence = text.get(line);
+                ContentLineController sequence = (ContentLineController) text.get(line);
                 float currentWidth = 0;
                 int delta = 1;
                 for (int i = 0; i < sequence.length(); i+= delta) {

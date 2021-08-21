@@ -643,9 +643,10 @@ public final class CursorController extends WidgetExtensionController {
      */
     public boolean isInside(int index, int start, int end, int line) {
         // Due not to draw duplicate cursors for a single one
-        if (index == end && editorController.mText.get(line).length() != end) {
-            return false;
-        }
+        //TODO break
+//        if (index == end && editorController.mText.get(line).length() != end) {
+  //          return false;
+    //    }
         return index >= start && index <= end;
     }
 }

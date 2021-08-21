@@ -144,11 +144,6 @@ public class ContentLineController extends Line implements CharSequence, GetChar
     }
 
     @Override
-    public String toString() {
-        return new String(model.value, 0, model.length);
-    }
-
-    @Override
     public void getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin) {
         if (srcBegin < 0)
             throw new StringIndexOutOfBoundsException(srcBegin);

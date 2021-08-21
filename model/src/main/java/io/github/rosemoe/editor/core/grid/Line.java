@@ -2,6 +2,7 @@ package io.github.rosemoe.editor.core.grid;
 
 import java.util.Iterator;
 import java.util.NavigableSet;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -365,7 +366,16 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
      * @param sz
      * @return the subpart (WARNING indx could begin greater than 0)
      */
-    public Line subCells(int col, int sz) {
+    public Line subLine(int col, int sz) {
+        if ( sz == -1 ) {
+            Entry e = lastEntry();
+            if ( e != null ) {
+                Cell c = (Cell) e.value;
+                sz = (c.column + c.size) - col;
+            } else {
+                sz = 0;
+            }
+        }
         Integer firstKey = floorKey(col);
         Integer lastKey = floorKey(col+sz);
         if ( firstKey == null && lastKey == null ) {
@@ -399,30 +409,6 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
         }
         return new Line(submap);
     }
-    private Line subCellsDecision(Line cells, int col, int size) {
-        switch (getBehaviourOnCellSplit()) {
-            case Cell.SPLIT_INVALIDATE: {
-                BaseCell bc = new BaseCell(col, size);
-                bc.enabled = false;
-                cells.append(bc);
-            } break;
-            case Cell.SPLIT_EXTENDS:
-            case Cell.SPLIT_SPLITTING: {
-                Cell c = null;
-                Integer firstKey = floorKey(col);
-                if (firstKey == null) {
-                    c = new BaseCell(col, size);
-                    c.enabled = false;
-                } else {
-                    c = get(firstKey).clone();
-                    c.size = size;
-                    c.column = col;
-                }
-                cells.append(c);
-            } break;
-        }
-        return cells;
-    }
 
     /**
      * Return size of the content in this line.
@@ -432,5 +418,30 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
         if ( lastEntry() == null ) { return 0; }
         Cell c = lastEntry().value;
         return c.column+c.size;
+    }
+
+    @Override
+    public String toString() {
+        String res = "";
+        for(Cell c : this) {
+            res += c;
+        }
+        return res;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Line cells = (Line) o;
+        return behaviourOnCellSplit == cells.behaviourOnCellSplit &&
+                width == cells.width &&
+                isEmpty == cells.isEmpty;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), behaviourOnCellSplit, width, isEmpty);
     }
 }

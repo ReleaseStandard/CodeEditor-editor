@@ -45,7 +45,7 @@ public class LineBreakLayout extends AbstractLayout {
         widthMaintainer = new BinaryHeap();
         widthMaintainer.ensureCapacity(text.size());
         for (int i = 0; i < text.size(); i++) {
-            ContentLineController line = text.get(i);
+            ContentLineController line = (ContentLineController) text.get(i);
             int width = (int) measureText(line, 0, line.length());
             line.setId(widthMaintainer.push(width));
         }
@@ -56,7 +56,7 @@ public class LineBreakLayout extends AbstractLayout {
             return;
         }
         while (startLine <= endLine && startLine < text.size()) {
-            ContentLineController line = text.get(startLine);
+            ContentLineController line = (ContentLineController) text.get(startLine);
             int width = (int) measureText(line, 0, line.length());
             if (line.getId() != -1) {
                 if (line.getWidth() == width) {
@@ -122,7 +122,7 @@ public class LineBreakLayout extends AbstractLayout {
     public long getCharPositionForLayoutOffset(float xOffset, float yOffset) {
         int lineCount = text.size();
         int line = Math.min(lineCount - 1, Math.max((int) (yOffset / editor.getRowHeight()), 0));
-        ContentLineController str = text.get(line);
+        ContentLineController str = (ContentLineController) text.get(line);
         float[] res = orderedFindCharIndex(xOffset, str);
         return IntPair.pack(line, (int) res[0]);
     }
@@ -132,7 +132,7 @@ public class LineBreakLayout extends AbstractLayout {
         if (dest == null || dest.length < 2) {
             dest = new float[2];
         }
-        CharSequence sequence = text.get(line);
+        CharSequence sequence = (CharSequence) text.get(line);
         dest[0] = editor.getRowHeight() * (line + 1);
         dest[1] = measureText(sequence, 0, column);
         return dest;

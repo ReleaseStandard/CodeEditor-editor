@@ -29,6 +29,27 @@ public class Grid extends ConcurrentSkipListMap<Integer, Line> implements Iterab
             }
         }
     }
+    /**
+     * Get sub grid of initial grid.
+     * The returned grid is copy not pointers.
+     */
+    public Grid subGrid(int lineStart, int colStart, int lineStop, int colStop) {
+        Grid g = new Grid();
+        if ( lineStart == lineStop ) {
+            g.put(lineStart,(get(lineStart).subLine(colStart,colStop-colStart)));
+        } else {
+            for (int a = lineStart; a <= lineStop; a++) {
+                if ( a == lineStart ) {
+                    g.put(a,(get(a).subLine(colStart,-1)));
+                } else if ( a == lineStop ) {
+                    g.put(a,(get(a).subLine(0,colStop)));
+                } else {
+                    g.put(a,get(a).clone());
+                }
+            }
+        }
+        return g;
+    }
     public void handleForEachCell(Cell c) {
 
     }
@@ -155,9 +176,9 @@ public class Grid extends ConcurrentSkipListMap<Integer, Line> implements Iterab
         int idx = 0;
         Entry e = lastEntry();
         if ( e != null ) {
-            idx = (int) e.key;
+            idx = (int) e.key + 1;
         }
-        put(idx+1,l);
+        put(idx,l);
         return idx;
     }
     public Line addNormalIfNull() {
@@ -183,10 +204,19 @@ public class Grid extends ConcurrentSkipListMap<Integer, Line> implements Iterab
     public void dump(String offset) {
         if ( !Logger.DEBUG ) { return; }
         Logger.debug(offset+"number of lines in : "+ size());
-        //noinspection unchecked
-        for(Map.Entry<Integer, Line> sl : entrySet().toArray(new Map.Entry[keySet().size()])) {
-            Logger.debug(offset+"dump for line index " + sl.getKey());
-            sl.getValue().dump(Logger.OFFSET);
+        for(Integer i : keySet()) {
+            Line l = get(i);
+            Logger.debug(offset+"line idx="+i);
+            l.dump(offset + Logger.OFFSET);
         }
+    }
+
+    @Override
+    public String toString() {
+        String res = "";
+        for(Line l : this) {
+            res += l;
+        }
+        return res;
     }
 }

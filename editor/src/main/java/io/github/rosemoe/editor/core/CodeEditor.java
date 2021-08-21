@@ -63,7 +63,7 @@ import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.extension.extensions.appcompattweaker.AppCompatTweakerController;
 import io.github.rosemoe.editor.core.grid.Grid;
-import io.github.rosemoe.editor.core.grid.instances.color.SpanCell;
+import io.github.rosemoe.editor.core.grid.instances.SpanCell;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionView;
 import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
@@ -1490,9 +1490,9 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             BlockLineModel block = blocks.get(curr);
             if (hasVisibleRegion(block.startLine, block.endLine, first, last)) {
                 try {
-                    CharSequence lineContent = mText.get(block.endLine);
+                    CharSequence lineContent = mText.get(block.endLine).toString();
                     float offset1 = measureText(lineContent, 0, block.endColumn);
-                    lineContent = mText.get(block.startLine);
+                    lineContent = mText.get(block.startLine).toString();
                     float offset2 = measureText(lineContent, 0, block.startColumn);
                     float offset = Math.min(offset1, offset2);
                     float centerX = offset + offsetX;
@@ -2001,7 +2001,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             //bottom invisible
             targetY = yOffset - view.getHeight() + getRowHeight() * 0.1f;
         }
-        float charWidth = column == 0 ? 0 : measureText(mText.get(line), column - 1, 1);
+        float charWidth = column == 0 ? 0 : measureText(mText.get(line).toString(), column - 1, 1);
         if (xOffset < getOffsetX()) {
             targetX = xOffset - charWidth * 0.2f;
         }
@@ -2882,7 +2882,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     public void copyText() {
         try {
             if (cursor.isSelected()) {
-                String clip = getText().subContent(cursor.getLeftLine(),
+                String clip = getText().subGrid(cursor.getLeftLine(),
                         cursor.getLeftColumn(),
                         cursor.getRightLine(),
                         cursor.getRightColumn()).toString();

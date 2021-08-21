@@ -26,8 +26,7 @@ import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.control
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.grid.Line;
-import io.github.rosemoe.editor.core.grid.instances.content.ContentCell;
-import io.github.rosemoe.editor.core.util.Logger;
+import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.util.annotations.Experimental;
 import io.github.rosemoe.struct.BlockLinkedList;
@@ -138,7 +137,7 @@ public class ContentMap extends Grid implements CharSequence {
         }
         CharPosition s = getIndexer().getCharPosition(start);
         CharPosition e = getIndexer().getCharPosition(end);
-        return subContent(s.getLine(), s.getColumn(), e.getLine(), e.getColumn());
+        return subGrid(s.getLine(), s.getColumn(), e.getLine(), e.getColumn()).toString();
     }
 
     /**
@@ -205,7 +204,7 @@ public class ContentMap extends Grid implements CharSequence {
      * Get characters of line
      */
     public void getLineChars(int line, char[] dest) {
-        get(line).getChars(0, getColumnCount(line), dest, 0);
+        dest = get(line).toString().toCharArray();
     }
 
     /**
@@ -529,38 +528,6 @@ public class ContentMap extends Grid implements CharSequence {
         return indexer;
     }
 
-    /**
-     * Quick method to get sub string of this object
-     *
-     * @param startLine   The start line position
-     * @param startColumn The start column position
-     * @param endLine     The end line position
-     * @param endColumn   The end column position
-     * @return sub sequence of this ContentMap
-     */
-    public ContentMap subContent(int startLine, int startColumn, int endLine, int endColumn) {
-        Logger.debug("w : startLine=",startLine,",startColumn=",startColumn,",endLine=",endLine,",endColumn=",endColumn);
-        ContentMap c = new ContentMap();
-        c.setUndoEnabled(false);
-        if (startLine == endLine) {
-            c.insert(0, 0, get(startLine).subSequence(startColumn, endColumn));
-        } else if (startLine < endLine) {
-            c.insert(0, 0, get(startLine).subSequence(startColumn, get(startLine).length()));
-            for (int i = startLine + 1; i < endLine; i++) {
-                c.append(new ContentLineController(get(i)));
-                c.textLength += get(i).getWidth() + 1;
-            }
-            ContentLineController end = (ContentLineController) get(endLine);
-            Line newLine = new ContentLineController().insert(0, end, 0, endColumn);
-            c.append(newLine);
-            c.textLength += endColumn + 1;
-        } else {
-            throw new IllegalArgumentException("start > end");
-        }
-        c.setUndoEnabled(true);
-        return c;
-    }
-
     @Override
     public boolean equals(Object anotherObject) {
         if (anotherObject instanceof ContentMap) {
@@ -569,7 +536,7 @@ public class ContentMap extends Grid implements CharSequence {
                 return false;
             }
             for (int i = 0; i < this.size(); i++) {
-                if (!equals(get(i), content.get(i))) {
+                if (!get(i).equals(content.get(i))) {
                     return false;
                 }
             }
@@ -577,21 +544,6 @@ public class ContentMap extends Grid implements CharSequence {
         } else {
             return false;
         }
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (ContentLineController line : lines) {
-            if (!first) {
-                sb.append('\n');
-            } else {
-                first = false;
-            }
-            sb.append(line);
-        }
-        return sb.toString();
     }
 
     /**

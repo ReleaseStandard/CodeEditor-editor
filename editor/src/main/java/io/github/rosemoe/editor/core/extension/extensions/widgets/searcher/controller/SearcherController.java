@@ -53,7 +53,7 @@ public class SearcherController extends Extension {
         ContentMap text = view.editor.getText();
         CursorController cursor = text.getCursor();
         if (cursor.isSelected()) {
-            String selectedText = text.subContent(cursor.getLeftLine(), cursor.getLeftColumn(), cursor.getRightLine(), cursor.getRightColumn()).toString();
+            String selectedText = text.subGrid(cursor.getLeftLine(), cursor.getLeftColumn(), cursor.getRightLine(), cursor.getRightColumn()).toString();
             if (selectedText.equals(model.searchText)) {
                 cursor.onCommitText(newText);
                 view.editor.hideAutoCompleteWindow();

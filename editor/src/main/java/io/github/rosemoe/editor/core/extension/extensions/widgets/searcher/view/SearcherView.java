@@ -61,7 +61,9 @@ public class SearcherView {
         int line = cursor.getRightLine();
         int column = cursor.getRightColumn();
         for (int i = line; i < text.size(); i++) {
-            int idx = column >= text.getColumnCount(i) ? -1 : text.get(i).indexOf(searchText, column);
+            // TODO break
+            int idx = 0;
+            //int idx = column >= text.getColumnCount(i) ? -1 : text.get(i).indexOf(searchText, column);
             if (idx != -1) {
                 editor.setSelectionRegion(i, idx, i, idx + searchText.length());
                 return;
@@ -79,7 +81,9 @@ public class SearcherView {
         int line = cursor.getLeftLine();
         int column = cursor.getLeftColumn();
         for (int i = line; i >= 0; i--) {
-            int idx = column - 1 < 0 ? -1 : text.get(i).lastIndexOf(searchText, column - 1);
+            int idx = 0;
+            // TODO break
+//            int idx = column - 1 < 0 ? -1 : text.get(i).lastIndexOf(searchText, column - 1);
             if (idx != -1) {
                 editor.setSelectionRegion(i, idx, i, idx + searchText.length());
                 return;
