@@ -18,6 +18,18 @@ public class LineTest {
     Random r = new Random();
 
     @Test
+    public void testAppend() {
+        Line l = new Line();
+        for(int a = 0; a < 10; a ++) {
+            int sz = r.nextUint(100);
+            int col = r.nextUint(100);
+            assertTrue("col="+col+",sz="+sz,l.append(new BaseCell(col, sz))!=null);
+        }
+        assertTrue(l.size()==10);
+        assertTrue(l.getWidth() <= 10 * 200);
+    }
+
+    @Test
     public void testPut() {
         {
             // *--
@@ -75,8 +87,10 @@ public class LineTest {
             l1.append(new BaseCell(0,2));
             l1.append(new BaseCell(0,2));
             l.append(l1);
+            l.dump();
+            l1.dump();
             assertTrue(l.size() == 5);
-            assertTrue(l.get(13).size == 2);
+            assertTrue(l.get(11).size == 2);
         }
         {
             Line l = new Line();
@@ -970,29 +984,78 @@ public class LineTest {
     @Test
     public void subCells() {
         {
-            // +++|--|**
+            // *|*-|-
+            //   *-
             Line l = new Line();
+            l.behaviourOnCellSplit = SPLIT_INVALIDATE;
+            l.append(new BaseCell(2));
+            l.append(new BaseCell(2));
+            Line sub = l.subCells(1,2);
+            l.dump();
+            sub.dump();
+            assertTrue(sub.size() == 2);
+            assertTrue("sub.get(1).enabled="+sub.get(1).enabled+",l.behaviourOnCellSplit="+l.behaviourOnCellSplit,sub.get(1).enabled == ( l.behaviourOnCellSplit != SPLIT_INVALIDATE ));
+        }
+        {
+            // |*|
+            //  *
+            Line l = new Line();
+            l.behaviourOnCellSplit = SPLIT_INVALIDATE;
+            l.append(new BaseCell(1));
+            l.dump();
+            Line sub = l.subCells(0,1);
+            sub.dump();
+            assertTrue(sub.size()==1);
+        }
+        {
+            // +++|--|**
+            //     --
+            Line l = new Line();
+            l.behaviourOnCellSplit = new int[]{SPLIT_EXTENDS,SPLIT_INVALIDATE,SPLIT_SPLITTING}[r.nextUint(3)];
             l.append(new BaseCell(3));
             l.append(new BaseCell(2));
             l.append(new BaseCell(2));
-            Line sub = l.subCells(3,2);
             l.dump();
+            Line sub = l.subCells(3,2);
             sub.dump();
-            assertTrue(sub.size() == 1);
-            assertTrue(sub.get(0).size == 2);
+            for(Cell c : sub) {
+                Logger.debug("c="+c.column);
+                c.dump();
+            }
+            assertTrue(""+sub.size(),sub.size() == 1);
         }
         {
-            // *|*|
+            // |*
+            //
+            Line l = new Line();
+            l.append(new BaseCell(1));
+            l.dump();
+            Line sub = l.subCells(0,0);
+            sub.dump();
+            assertTrue(sub.size()==0);
+        }
+        {
+            // |*|
+            //  *
+            Line l = new Line();
+            l.append(new BaseCell(1));
+            Line sub = l.subCells(0,1);
+            sub.dump();
+            assertTrue(sub.size()==1);
+            assertTrue(sub.get(0).size == 1);
+        }
+        {
+            // |*|*
+            //  *
             Line l = new Line();
             l.append(new BaseCell(2));
-            Line sub = l.subCells(1,1);
-            l.dump();
-            sub.dump();
-            assertTrue(sub.size() == 1);
-            assertTrue(sub.get(0).size==1);
+            Line sub = l.subCells(0,1);
+            assertTrue(sub.size()==1);
+            assertTrue("sub.get(0).enabled="+sub.get(0).enabled+",l.behaviourOnCellSplit="+l.behaviourOnCellSplit,sub.get(0).enabled == ( l.behaviourOnCellSplit != SPLIT_INVALIDATE ));
         }
         {
             // +++|+---**,,|...
+            //     +---**,,
             Line l = new Line();
             l.append(new BaseCell(4));
             l.append(new BaseCell(3));
@@ -1004,10 +1067,10 @@ public class LineTest {
             sub.dump();
             assertTrue(sub.size()==4);
             sub.dump();
-            assertTrue(sub.get(0).size == 1);
-            assertTrue(sub.get(1).size == 3);
-            assertTrue(sub.get(4).size == 2);
-            assertTrue(sub.get(6).size == 2);
+            assertTrue(sub.get(3).size == 1);
+            assertTrue(sub.get(4).size == 3);
+            assertTrue(sub.get(7).size == 2);
+            assertTrue(sub.get(9).size == 2);
         }
     }
 }

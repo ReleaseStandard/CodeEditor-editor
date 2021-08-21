@@ -1,6 +1,8 @@
 package io.github.rosemoe.editor.core.grid;
 
 import java.util.Iterator;
+import java.util.NavigableSet;
+import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import io.github.rosemoe.editor.core.CEObject;
@@ -10,6 +12,12 @@ import io.github.rosemoe.editor.core.util.Logger;
 public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterable<Cell> {
     public int behaviourOnCellSplit = Cell.SPLIT_INVALIDATE;
 
+    public Line() {
+
+    }
+    public Line(ConcurrentNavigableMap<Integer, Cell> init) {
+        super(init);
+    }
     public int getBehaviourOnCellSplit() {
         return behaviourOnCellSplit;
     }
@@ -65,7 +73,8 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
     }
 
     public Cell put(Cell cell) {
-        return super.put(cell.column, cell);
+        super.put(cell.column, cell);
+        return super.get(cell.column);
     }
 
     public void put(Line line) {
@@ -81,7 +90,7 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
     public Cell append(Cell cell) {
         if ( lastEntry() != null ) {
             Cell c = lastEntry().value;
-            cell.column += c.column+c.size;
+            cell.column = c.column+c.size;
         }
         return put(cell);
     }
@@ -349,8 +358,14 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
             }
         }
     }
+
+    /**
+     * Get a subpart of the Line
+     * @param col
+     * @param sz
+     * @return the subpart (WARNING indx could begin greater than 0)
+     */
     public Line subCells(int col, int sz) {
-        Line cells = new Line();
         Integer firstKey = floorKey(col);
         Integer lastKey = floorKey(col+sz);
         if ( firstKey == null && lastKey == null ) {
@@ -359,29 +374,30 @@ public class Line extends ConcurrentSkipListMap<Integer, Cell> implements Iterab
         if ( firstKey == null ) {
             firstKey = col;
         }
-        int latent = -1;
-        int latentSz = 0;
-        for(int a = firstKey; a < col+sz; ) {
-            Cell c = get(a);
-            if ( c == null ) {
-                if ( latent == -1 ) { latent = Math.max(a,col); }
-                latentSz += c.size - Math.min(0, col - c.size) ;
-                a += 1;
-            } else {
-                if ( latent != -1 ) {
-                    subCellsDecision(cells, latent, latentSz);
-                    latent = -1;
-                    latentSz = 0;
-                }
-                cells.append(c);
-                a += c.size;
+        if ( lastKey == firstKey || lastKey == null ) {
+            lastKey = col+sz;
+        }
+        Logger.debug("firstKey="+firstKey+",lastKey="+lastKey);
+        ConcurrentNavigableMap<Integer, Cell> submap = this.clone().subMap(firstKey, true, lastKey, (lastKey <= col+sz));
+        NavigableSet<Integer> ks = submap.keySet();
+        Integer f = ks.first();
+        if ( f < col ) {
+            Cell c = submap.remove(f);
+            c.size -= (col-f);
+            c.column = col;
+            c.enabled = (behaviourOnCellSplit != Cell.SPLIT_INVALIDATE);
+            submap.put(c.column, c);
+        }
+        Integer l = ks.last();
+        Cell lastCell = submap.get(l);
+        if ( (l+lastCell.size) > col+sz ) {
+            lastCell.size -= ((l+lastCell.size)-(col+sz));
+            if ( lastCell.size == 0 ) {
+                submap.remove(l);
             }
+            lastCell.enabled = (behaviourOnCellSplit != Cell.SPLIT_INVALIDATE);
         }
-        if ( latent != -1 ) {
-            subCellsDecision(cells, latent, latentSz);
-        }
-        cells.removeCells(0,col);
-        return cells;
+        return new Line(submap);
     }
     private Line subCellsDecision(Line cells, int col, int size) {
         switch (getBehaviourOnCellSplit()) {
