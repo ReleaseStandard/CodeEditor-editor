@@ -7,8 +7,7 @@ import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.analyzer.analyzer.content.ContentAnalyzer;
 
 /**
- * A pipeline is a collection of analyzer,
- * and dependencies between them.
+ * A pipeline is a collection of analyzer.
  */
 public class Pipeline extends ConcurrentSkipListMap<Integer, Analyzer> {
 

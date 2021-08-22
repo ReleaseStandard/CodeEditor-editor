@@ -24,6 +24,7 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 
+import io.github.rosemoe.editor.core.analyzer.Routes;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.SymbolPairMatch;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
@@ -263,28 +264,18 @@ public class UserInputConnexionView extends BaseInputConnection {
     @Override
     public boolean performContextMenuAction(int id) {
         switch (id) {
-            case android.R.id.selectAll:
-                editor.selectAll();
-                return true;
             case android.R.id.cut:
-                editor.copyText();
+                editor.route(Routes.ACTION_CONTENT_COPY);
                 if (getCursor().isSelected()) {
                     getCursor().onDeleteKeyPressed();
                 }
                 return true;
+            case android.R.id.selectAll: editor.route(Routes.ACTION_CONTENT_SELECT_ALL); return true;
             case android.R.id.paste:
-            case android.R.id.pasteAsPlainText:
-                editor.pasteText();
-                return true;
-            case android.R.id.copy:
-                editor.copyText();
-                return true;
-            case android.R.id.undo:
-                editor.undo();
-                return true;
-            case android.R.id.redo:
-                editor.redo();
-                return true;
+            case android.R.id.pasteAsPlainText: editor.route(Routes.ACTION_CONTENT_PASTE); return true;
+            case android.R.id.copy: editor.route(Routes.ACTION_CONTENT_COPY);return true;
+            case android.R.id.undo: editor.route(Routes.ACTION_UNDO); return true;
+            case android.R.id.redo: editor.route(Routes.ACTION_REDO); return true;
         }
         return false;
     }

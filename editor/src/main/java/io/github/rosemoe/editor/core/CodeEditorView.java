@@ -184,8 +184,8 @@ public class CodeEditorView extends View {
         return (res3 || res2 || res);
     }
 
-    public void handleRouting(Routes action, Object ...args) {
-        editor.route(action, args);
+    public boolean handleRouting(Routes action, Object ...args) {
+        return editor.route(action, args);
     }
 
     @Override
@@ -207,158 +207,37 @@ public class CodeEditorView extends View {
                 editor.mKeyMetaStates.adjust();
         }
         switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:{
-                return editor.mTextActionPresenter != null && editor.mTextActionPresenter.onExit();
-            }
-            case KeyEvent.KEYCODE_DEL:
-                if (editor.isEditable()) {
-                    editor.cursor.onDeleteKeyPressed();
-                    editor.notifyExternalCursorChange();
-                }
-                return true;
-            case KeyEvent.KEYCODE_FORWARD_DEL: {
-                if (editor.isEditable()) {
-                    editor.mConnection.view.deleteSurroundingText(0, 1);
-                    editor.notifyExternalCursorChange();
-                }
-                return true;
-            }
-            case KeyEvent.KEYCODE_ENTER: {
-                if (editor.isEditable()) {
-                    if (editor.completionWindow.view.isShowing()) {
-                        editor.completionWindow.select();
-                        return true;
-                    }
-                    NewlineHandler[] handlers = editor.mLanguage.getNewlineHandlers();
-                    if (handlers == null || editor.getCursor().isSelected()) {
-                        editor.cursor.onCommitText("\n", true);
-                    } else {
-                        Line<ContentCell> line = editor.resultStore.mText.get(editor.cursor.getLeftLine());
-                        int index = editor.cursor.getLeftColumn();
-                        String beforeText = line.subLine(0, index).toString();
-                        String afterText = line.subLine(index, line.getWidth()).toString();
-                        boolean consumed = false;
-                        for (NewlineHandler handler : handlers) {
-                            if (handler != null) {
-                                if (handler.matchesRequirement(beforeText, afterText)) {
-                                    try {
-                                        NewlineHandler.HandleResult result = handler.handleNewline(beforeText, afterText, editor.getTabWidth());
-                                        if (result != null) {
-                                            editor.cursor.onCommitText(result.text, false);
-                                            int delta = result.shiftLeft;
-                                            if (delta != 0) {
-                                                int newSel = Math.max(editor.getCursor().getLeft() - delta, 0);
-                                                CharPosition charPosition = editor.getCursor().getIndexer().getCharPosition(newSel);
-                                                editor.setSelection(charPosition.line, charPosition.column);
-                                            }
-                                            consumed = true;
-                                        } else {
-                                            continue;
-                                        }
-                                    } catch (Exception e) {
-                                        Log.w(Logger.LOG_TAG, "Error occurred while calling Language's NewlineHandler", e);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                        if (!consumed) {
-                            editor.cursor.onCommitText("\n", true);
-                        }
-                    }
-                    editor.notifyExternalCursorChange();
-                }
-                return true;
-            }
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                editor.moveSelectionDown();
-                return true;
-            case KeyEvent.KEYCODE_DPAD_UP:
-                editor.moveSelectionUp();
-                return true;
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                editor.moveSelectionLeft();
-                return true;
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                editor.moveSelectionRight();
-                return true;
-            case KeyEvent.KEYCODE_MOVE_END:
-                editor.moveSelectionEnd();
-                return true;
-            case KeyEvent.KEYCODE_MOVE_HOME:
-                editor.moveSelectionHome();
-                return true;
-            case KeyEvent.KEYCODE_PAGE_DOWN:
-                editor.movePageDown();
-                return true;
-            case KeyEvent.KEYCODE_PAGE_UP:
-                editor.movePageUp();
-                return true;
-            case KeyEvent.KEYCODE_TAB:
-                if (editor.isEditable()) {
-                    editor.commitTab();
-                }
-                return true;
-            case KeyEvent.KEYCODE_PASTE:
-                if (editor.isEditable()) {
-                    editor.pasteText();
-                }
-                return true;
-            case KeyEvent.KEYCODE_COPY:
-                editor.copyText();
-                return true;
-            case KeyEvent.KEYCODE_SPACE:
-                if (editor.isEditable()) {
-                    editor.getCursor().onCommitText(" ");
-                    editor.notifyExternalCursorChange();
-                }
-                return true;
+            case KeyEvent.KEYCODE_BACK:return handleRouting(Routes.ACTION_BACK);
+            case KeyEvent.KEYCODE_DEL: handleRouting(Routes.ACTION_CONTENT_TEXT_DEL); return true;
+            case KeyEvent.KEYCODE_FORWARD_DEL: handleRouting(Routes.ACTION_CONTENT_TEXT_DEL_FORWARD); return true;
+            case KeyEvent.KEYCODE_ENTER: handleRouting(Routes.ACTION_CONTENT_TEXT_ENTER); return true;
+            case KeyEvent.KEYCODE_DPAD_DOWN: handleRouting(Routes.ACTION_CURSOR,Routes.DOWN);return true;
+            case KeyEvent.KEYCODE_DPAD_UP: handleRouting(Routes.ACTION_CURSOR,Routes.UP);return true;
+            case KeyEvent.KEYCODE_DPAD_RIGHT: handleRouting(Routes.ACTION_CURSOR,Routes.RIGHT);return true;
+            case KeyEvent.KEYCODE_DPAD_LEFT: handleRouting(Routes.ACTION_CURSOR,Routes.LEFT);return true;
+            case KeyEvent.KEYCODE_MOVE_END: handleRouting(Routes.ACTION_CURSOR,Routes.END);return true;
+            case KeyEvent.KEYCODE_MOVE_HOME: handleRouting(Routes.ACTION_CURSOR,Routes.HOME);return true;
+            case KeyEvent.KEYCODE_PAGE_DOWN: handleRouting(Routes.ACTION_CURSOR,Routes.PAGE_DOWN);return true;
+            case KeyEvent.KEYCODE_PAGE_UP: handleRouting(Routes.ACTION_CURSOR,Routes.PAGE_UP);return true;
+            case KeyEvent.KEYCODE_PASTE: handleRouting(Routes.ACTION_CONTENT_PASTE);return true;
+            case KeyEvent.KEYCODE_COPY: handleRouting(Routes.ACTION_CONTENT_COPY);return true;
+            case KeyEvent.KEYCODE_CUT: handleRouting(Routes.ACTION_CONTENT_CUT);return true;
+            case KeyEvent.KEYCODE_TAB: handleRouting(Routes.ACTION_CONTENT_TEXT_TAB);return true;
+            case KeyEvent.KEYCODE_SPACE: handleRouting(Routes.ACTION_CONTENT_TEXT_SPACE);return true;
             default:
                 if (event.isCtrlPressed() && !event.isAltPressed()) {
                     switch (keyCode) {
-                        case KeyEvent.KEYCODE_V:
-                            handleRouting(Routes.ACTION_CONTENT_PASTE);
-                            return true;
-                        case KeyEvent.KEYCODE_C:
-                            handleRouting(Routes.ACTION_CONTENT_COPY);
-                            return true;
-                        case KeyEvent.KEYCODE_X:
-                            handleRouting(Routes.ACTION_CONTENT_CUT);
-                            return true;
-                        case KeyEvent.KEYCODE_A:
-                            handleRouting(Routes.ACTION_CONTENT_SELECT_ALL);
-                            return true;
-                        case KeyEvent.KEYCODE_Z:
-                            handleRouting(Routes.ACTION_CONTENT_ACTION_STACK, Routes.ACTION_UNDO);
-                            return true;
-                        case KeyEvent.KEYCODE_Y:
-                            handleRouting(Routes.ACTION_CONTENT_ACTION_STACK, Routes.ACTION_REDO);
-                            return true;
+                        case KeyEvent.KEYCODE_V: handleRouting(Routes.ACTION_CONTENT_PASTE);return true;
+                        case KeyEvent.KEYCODE_C: handleRouting(Routes.ACTION_CONTENT_COPY);return true;
+                        case KeyEvent.KEYCODE_X: handleRouting(Routes.ACTION_CONTENT_CUT);return true;
+                        case KeyEvent.KEYCODE_A: handleRouting(Routes.ACTION_CONTENT_SELECT_ALL);return true;
+                        case KeyEvent.KEYCODE_Z: handleRouting(Routes.ACTION_CONTENT_ACTION_STACK, Routes.ACTION_UNDO);return true;
+                        case KeyEvent.KEYCODE_Y: handleRouting(Routes.ACTION_CONTENT_ACTION_STACK, Routes.ACTION_REDO);return true;
                     }
                 } else if (!event.isCtrlPressed() && !event.isAltPressed()) {
-                    if (event.isPrintingKey() && editor.isEditable()) {
-                        String text = new String(Character.toChars(event.getUnicodeChar(event.getMetaState())));
-                        SymbolPairMatch.Replacement replacement = null;
-                        if (text.length() == 1 && editor.isSymbolCompletionEnabled()) {
-                            replacement = editor.mLanguageSymbolPairs.getCompletion(text.charAt(0));
-                        }
-                        if (replacement == null || replacement == SymbolPairMatch.Replacement.NO_REPLACEMENT) {
-                            editor.getCursor().onCommitText(text);
-                            editor.notifyExternalCursorChange();
-                        } else {
-                            editor.getCursor().onCommitText(replacement.text);
-                            int delta = (replacement.text.length() - replacement.selection);
-                            if (delta != 0) {
-                                int newSel = Math.max(editor.getCursor().getLeft() - delta, 0);
-                                CharPosition charPosition = editor.getCursor().getIndexer().getCharPosition(newSel);
-                                editor.setSelection(charPosition.line, charPosition.column);
-                                editor.notifyExternalCursorChange();
-                            }
-                        }
-                    } else {
-                        return super.onKeyDown(keyCode, event);
-                    }
-                    return true;
+                    if ( event.isPrintingKey() &&
+                            handleRouting(Routes.ACTION_CONTENT_TEXT,new String(Character.toChars(event.getUnicodeChar(event.getMetaState()))))
+                    ) return true;
                 }
         }
         return super.onKeyDown(keyCode, event);

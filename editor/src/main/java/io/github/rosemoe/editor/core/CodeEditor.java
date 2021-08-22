@@ -3304,32 +3304,108 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     @Override
     public boolean route(Routes action, Object... args) {
         ContentAnalyzer carc = (ContentAnalyzer) pipeline.get(ANALYZER_CONTENT);
-        switch (action) {
-            case ACTION_CONTENT_ACTION_STACK:
-                if ( isEditable() ) {
-                    return carc.route(action, args);
+        if ( isEditable() ) {
+            switch (action) {
+                case ACTION_CONTENT_ACTION_STACK: return carc.route(action, args);
+                case ACTION_CONTENT_CUT: cutText(); return true;
+                case ACTION_CONTENT_PASTE: pasteText(); return true;
+                case ACTION_CONTENT_TEXT_DEL: cursor.onDeleteKeyPressed(); break;
+                case ACTION_CONTENT_TEXT_DEL_FORWARD: mConnection.view.deleteSurroundingText(0, 1); break;
+                case ACTION_CONTENT_TEXT_TAB: commitTab(); return true;
+                case ACTION_CONTENT_TEXT_SPACE: getCursor().onCommitText(" "); break;
+                case ACTION_CONTENT_TEXT_ENTER:
+                    if (completionWindow.view.isShowing()) {
+                        completionWindow.select();
+                        return true;
+                    }
+                    NewlineHandler[] handlers = mLanguage.getNewlineHandlers();
+                    if (handlers == null || getCursor().isSelected()) {
+                        cursor.onCommitText("\n", true);
+                    } else {
+                        Line<ContentCell> line = resultStore.mText.get(cursor.getLeftLine());
+                        int index = cursor.getLeftColumn();
+                        String beforeText = line.subLine(0, index).toString();
+                        String afterText = line.subLine(index, line.getWidth()).toString();
+                        boolean consumed = false;
+                        for (NewlineHandler handler : handlers) {
+                            if (handler != null) {
+                                if (handler.matchesRequirement(beforeText, afterText)) {
+                                    try {
+                                        NewlineHandler.HandleResult result = handler.handleNewline(beforeText, afterText, getTabWidth());
+                                        if (result != null) {
+                                            cursor.onCommitText(result.text, false);
+                                            int delta = result.shiftLeft;
+                                            if (delta != 0) {
+                                                int newSel = Math.max(getCursor().getLeft() - delta, 0);
+                                                CharPosition charPosition = getCursor().getIndexer().getCharPosition(newSel);
+                                                setSelection(charPosition.line, charPosition.column);
+                                            }
+                                            consumed = true;
+                                        } else {
+                                            continue;
+                                        }
+                                    } catch (Exception e) {
+                                        Log.w(Logger.LOG_TAG, "Error occurred while calling Language's NewlineHandler", e);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        if (!consumed) {
+                            cursor.onCommitText("\n", true);
+                        }
+                    }
+                    break;
+                case ACTION_CONTENT_TEXT: {
+                    String text = (String) args[0];
+                    SymbolPairMatch.Replacement replacement = null;
+                    if (text.length() == 1 && isSymbolCompletionEnabled()) {
+                        replacement = mLanguageSymbolPairs.getCompletion(text.charAt(0));
+                    }
+                    if (replacement == null || replacement == SymbolPairMatch.Replacement.NO_REPLACEMENT) {
+                        getCursor().onCommitText(text);
+                        break;
+                    } else {
+                        getCursor().onCommitText(replacement.text);
+                        int delta = (replacement.text.length() - replacement.selection);
+                        if (delta != 0) {
+                            int newSel = Math.max(getCursor().getLeft() - delta, 0);
+                            CharPosition charPosition = getCursor().getIndexer().getCharPosition(newSel);
+                            setSelection(charPosition.line, charPosition.column);
+                            break;
+                        } else {
+                            return true;
+                        }
+                    }
                 }
-            break;
-            case ACTION_CONTENT_SELECT_ALL:
-                selectAll();
-            return true;
-            case ACTION_CONTENT_COPY:
-                copyText();
-            return true;
-            case ACTION_CONTENT_CUT:
-                if (isEditable()) {
-                    cutText();
-                } else {
-                    copyText();
-                }
-            return true;
-            case ACTION_CONTENT_PASTE:
-                if (isEditable()) {
-                    pasteText();
-                }
-            return true;
+            }
         }
-        // TODO : in some case we need to trigger the pipeline here.
+        switch (action) {
+            case ACTION_CONTENT_TEXT_TAB:
+            case ACTION_CONTENT_TEXT:
+            case ACTION_CONTENT_TEXT_DEL:
+            case ACTION_CONTENT_TEXT_SPACE:
+            case ACTION_CONTENT_TEXT_DEL_FORWARD: notifyExternalCursorChange(); return true;
+            case ACTION_CONTENT_SELECT_ALL: selectAll();return true;
+            case ACTION_CONTENT_CUT:
+            case ACTION_CONTENT_COPY: copyText(); return true;
+            case ACTION_CURSOR: {
+                Routes next = (Routes) args[0];
+                switch(next) {
+                    case DOWN: moveSelectionDown(); return true;
+                    case UP: moveSelectionUp(); return true;
+                    case LEFT: moveSelectionLeft(); return true;
+                    case RIGHT: moveSelectionRight(); return true;
+                    case HOME: moveSelectionHome(); return true;
+                    case PAGE_UP: movePageUp(); return true;
+                    case PAGE_DOWN: movePageDown(); return true;
+                    case END: moveSelectionEnd(); return true;
+                }
+            }
+            case ACTION_BACK:
+                return mTextActionPresenter != null && mTextActionPresenter.onExit();
+
+        }
         return false;
     }
 
