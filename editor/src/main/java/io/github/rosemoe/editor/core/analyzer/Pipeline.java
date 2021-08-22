@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
+import io.github.rosemoe.editor.core.analyzer.analyzer.content.ContentAnalyzer;
 
 /**
  * A pipeline is a collection of analyzer,
@@ -41,11 +42,11 @@ public class Pipeline extends ConcurrentSkipListMap<Integer, Analyzer> {
     public void run() {
         run(classicUserInput);
     }
-    public void runHack() {
-        //ContentAnalyzer content = get(ANALYZER_CONTENT);
-        // content.run();
+    public void runHack(String newContent, int line, int col) {
+        ContentAnalyzer content = (ContentAnalyzer) get(ANALYZER_CONTENT);
+       // content.analyze(newContent, line, col);
         CodeAnalyzer lang = (CodeAnalyzer) get(ANALYZER_LANG);
-        lang.analyze(resultStore.mText);
+        lang.analyze();
     }
     public void stopAllFlow() {
         /**

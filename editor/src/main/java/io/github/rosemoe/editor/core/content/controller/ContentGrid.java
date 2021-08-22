@@ -18,11 +18,13 @@ package io.github.rosemoe.editor.core.content.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.rosemoe.editor.core.analyzer.analyzer.content.ContentActionStack;
 import io.github.rosemoe.editor.core.content.processors.ContentLineRemoveListener;
 import io.github.rosemoe.editor.core.content.processors.indexer.CachedIndexer;
 import io.github.rosemoe.editor.core.content.processors.indexer.Indexer;
 import io.github.rosemoe.editor.core.content.processors.indexer.NoCacheIndexer;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
+
 import io.github.rosemoe.editor.core.CharPosition;
 import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.grid.Line;
@@ -44,12 +46,12 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
     public int nestedBatchEdit;
 
     private Indexer indexer;
-    private ContentActionStack contentManager;
     private CursorController cursor;
     private List<ContentListener> mListeners;
     private ContentLineRemoveListener mLineListener;
-
     private final CodeEditor editor;
+
+    private ContentActionStack contentManager;
 
     /**
      * This constructor will create a ContentGrid object with no text
@@ -75,7 +77,7 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
         nestedBatchEdit = 0;
         append();
         mListeners = new ArrayList<>();
-        contentManager = new ContentActionStack(this);
+        contentManager = new ContentActionStack();
         indexer = new NoCacheIndexer(this);
         if (src.length() == 0) {
             setUndoEnabled(true);

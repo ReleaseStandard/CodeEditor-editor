@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import io.github.rosemoe.editor.core.analyzer.result.AnalyzerResult;
 import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultCompletion;
+import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.util.Logger;
 
@@ -34,6 +35,7 @@ public class ResultStore extends ConcurrentSkipListMap<String, ConcurrentLinkedQ
         for(int a = 0; a < initialQueueSize; a=a+1) {
             get(RES_COLOR).offer(new CodeAnalyzerResultColor());
             get(RES_COMPLETION).offer(new CodeAnalyzerResultCompletion());
+            get(RES_CONTENT).offer(new CodeAnalyzerResultContent());
         }
 
     }

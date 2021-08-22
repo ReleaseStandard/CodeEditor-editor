@@ -15,6 +15,9 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
+import io.github.rosemoe.editor.core.analyzer.Routes;
+import io.github.rosemoe.editor.core.analyzer.analyzer.content.ContentActionStack;
+import io.github.rosemoe.editor.core.analyzer.analyzer.content.ContentAnalyzer;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.SymbolPairMatch;
 import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;
@@ -181,6 +184,10 @@ public class CodeEditorView extends View {
         return (res3 || res2 || res);
     }
 
+    public void handleRouting(Routes action, Object ...args) {
+        editor.route(action, args);
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         editor.mKeyMetaStates.onKeyDown(event);
@@ -310,32 +317,22 @@ public class CodeEditorView extends View {
                 if (event.isCtrlPressed() && !event.isAltPressed()) {
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_V:
-                            if (editor.isEditable()) {
-                                editor.pasteText();
-                            }
+                            handleRouting(Routes.ACTION_CONTENT_PASTE);
                             return true;
                         case KeyEvent.KEYCODE_C:
-                            editor.copyText();
+                            handleRouting(Routes.ACTION_CONTENT_COPY);
                             return true;
                         case KeyEvent.KEYCODE_X:
-                            if (editor.isEditable()) {
-                                editor.cutText();
-                            } else {
-                                editor.copyText();
-                            }
+                            handleRouting(Routes.ACTION_CONTENT_CUT);
                             return true;
                         case KeyEvent.KEYCODE_A:
-                            editor.selectAll();
+                            handleRouting(Routes.ACTION_CONTENT_SELECT_ALL);
                             return true;
                         case KeyEvent.KEYCODE_Z:
-                            if (editor.isEditable()) {
-                                editor.undo();
-                            }
+                            handleRouting(Routes.ACTION_CONTENT_ACTION_STACK, Routes.ACTION_UNDO);
                             return true;
                         case KeyEvent.KEYCODE_Y:
-                            if (editor.isEditable()) {
-                                editor.redo();
-                            }
+                            handleRouting(Routes.ACTION_CONTENT_ACTION_STACK, Routes.ACTION_REDO);
                             return true;
                     }
                 } else if (!event.isCtrlPressed() && !event.isAltPressed()) {

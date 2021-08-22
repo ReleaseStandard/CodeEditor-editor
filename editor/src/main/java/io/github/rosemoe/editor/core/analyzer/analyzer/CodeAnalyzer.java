@@ -68,6 +68,11 @@ public abstract class CodeAnalyzer extends Analyzer {
      */
     protected abstract void analyze(CharSequence content, CodeAnalyzerThread.Delegate delegate);
 
+    @Override
+    public void analyze() {
+        analyze(resultStore.mText);
+    }
+
     /**
      * Launch a clear for all result listener inside this analyzer.
      */

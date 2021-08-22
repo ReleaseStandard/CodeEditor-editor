@@ -54,12 +54,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.github.rosemoe.editor.R;
 import io.github.rosemoe.editor.core.analyzer.Pipeline;
 import io.github.rosemoe.editor.core.analyzer.ResultStore;
+import io.github.rosemoe.editor.core.analyzer.Router;
+import io.github.rosemoe.editor.core.analyzer.Routes;
+import io.github.rosemoe.editor.core.analyzer.analyzer.content.ContentAnalyzer;
 import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
@@ -101,6 +106,7 @@ import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.view
 import io.github.rosemoe.editor.core.util.FontCache;
 import io.github.rosemoe.editor.core.content.processors.ContentLineRemoveListener;
 
+import static io.github.rosemoe.editor.core.analyzer.Pipeline.ANALYZER_CONTENT;
 import static io.github.rosemoe.editor.core.extension.extensions.langs.helpers.TextUtils.isEmoji;
 
 /**
@@ -114,7 +120,7 @@ import static io.github.rosemoe.editor.core.extension.extensions.langs.helpers.T
  *
  * @author Rosemoe
  */
-public class CodeEditor implements ContentListener, TextFormatter.FormatResultReceiver, ContentLineRemoveListener, AnalysisDoneCallback {
+public class CodeEditor implements ContentListener, TextFormatter.FormatResultReceiver, ContentLineRemoveListener, AnalysisDoneCallback, Router {
 
     /**
      * Draw whitespace characters before line content start
@@ -301,11 +307,12 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         }
     }
     public CodeEditor() {
-
+        pipeline.put(ANALYZER_CONTENT,new ContentAnalyzer(resultStore));
     }
     public CodeEditor(CodeEditorView view) {
         this.view = view;
         initialize();
+        pipeline.put(ANALYZER_CONTENT,new ContentAnalyzer(resultStore));
         //TypedArray ta = view.getContext().obtainStyledAttributes(attrs,R.styleable.CodeEditor);
         //getColorScheme().initFromAttributeSets(attrs,ta);
         //initFromAttributeSet(context, attrs, defStyleAttr, defStyleRes);
@@ -3292,6 +3299,38 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
                 cursorPosition = findCursorBlock();
         }
         view.postInvalidate();
+    }
+
+    @Override
+    public boolean route(Routes action, Object... args) {
+        ContentAnalyzer carc = (ContentAnalyzer) pipeline.get(ANALYZER_CONTENT);
+        switch (action) {
+            case ACTION_CONTENT_ACTION_STACK:
+                if ( isEditable() ) {
+                    return carc.route(action, args);
+                }
+            break;
+            case ACTION_CONTENT_SELECT_ALL:
+                selectAll();
+            return true;
+            case ACTION_CONTENT_COPY:
+                copyText();
+            return true;
+            case ACTION_CONTENT_CUT:
+                if (isEditable()) {
+                    cutText();
+                } else {
+                    copyText();
+                }
+            return true;
+            case ACTION_CONTENT_PASTE:
+                if (isEditable()) {
+                    pasteText();
+                }
+            return true;
+        }
+        // TODO : in some case we need to trigger the pipeline here.
+        return false;
     }
 
     //-------------------------------------------------------------------------------

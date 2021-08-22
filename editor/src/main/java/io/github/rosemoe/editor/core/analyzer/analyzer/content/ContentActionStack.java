@@ -13,11 +13,16 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.content.controller;
+package io.github.rosemoe.editor.core.analyzer.analyzer.content;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
+import io.github.rosemoe.editor.core.analyzer.Router;
+import io.github.rosemoe.editor.core.analyzer.Routes;
+import io.github.rosemoe.editor.core.content.controller.ContentGrid;
+import io.github.rosemoe.editor.core.content.controller.ContentListener;
 
 /**
  * Helper class for ContentGrid to take down modification
@@ -25,10 +30,9 @@ import java.util.Stack;
  *
  * @author Rose
  */
-public final class ContentActionStack extends Stack<ContentActionStack.ContentAction> implements ContentListener {
+public final class ContentActionStack extends Stack<ContentActionStack.ContentAction> implements ContentListener, Router {
 
     public int maxStackSize = 100;
-    private final ContentGrid mContent;
     private InsertAction mInsertAction;
     private DeleteAction mDeleteAction;
     public boolean undoEnabled;
@@ -38,11 +42,8 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
 
     /**
      * Create ContentActionStack with the target content
-     *
-     * @param content The ContentGrid going to attach
      */
-    public ContentActionStack(ContentGrid content) {
-        mContent = content;
+    public ContentActionStack() {
         mInsertAction = null;
         mDeleteAction = null;
         mStackPointer = 0;
@@ -152,12 +153,12 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
      *
      * @param action New {@link ContentAction}
      */
-    private void pushAction(ContentAction action) {
+    private void pushAction(ContentGrid content, ContentAction action) {
         if (!undoEnabled) {
             return;
         }
         cleanBeforePush();
-        if (mContent.isInBatchEdit()) {
+        if (content.isInBatchEdit()) {
             if (isEmpty()) {
                 MultiAction a = new MultiAction();
                 a.addAction(action);
@@ -216,9 +217,9 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
             ReplaceAction rep = new ReplaceAction();
             rep._delete = mDeleteAction;
             rep._insert = mInsertAction;
-            pushAction(rep);
+            pushAction(content, rep);
         } else {
-            pushAction(mInsertAction);
+            pushAction(content, mInsertAction);
         }
         replaceMark = false;
     }
@@ -236,8 +237,24 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
         mDeleteAction.startLine = startLine;
         mDeleteAction.text = deletedContent;
         if (!replaceMark) {
-            pushAction(mDeleteAction);
+            pushAction(content, mDeleteAction);
         }
+    }
+
+    public static final int ACTION_UNDO = 0;
+    public static final int ACTION_REDO = 1;
+
+    @Override
+    public boolean route(Routes action, Object... args) {
+        switch (action) {
+            case ACTION_UNDO:
+                undo((ContentGrid) args[0]);
+            return true;
+            case ACTION_REDO:
+                redo((ContentGrid) args[0]);
+            return true;
+        }
+        return false;
     }
 
     /**

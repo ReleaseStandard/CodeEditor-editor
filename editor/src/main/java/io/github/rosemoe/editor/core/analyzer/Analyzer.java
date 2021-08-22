@@ -1,11 +1,13 @@
 package io.github.rosemoe.editor.core.analyzer;
 
+import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultContent;
+
 /**
  * Any analyzer has a goal : analyse an input signal and produce a result.
  * e.g. signal : text, stream of token.
  * e.g. result : ContentGrid, SpanMap.
  */
-public abstract class Analyzer/*<T>*/ {
+public abstract class Analyzer extends CodeAnalyzerResultContent/*<T>*/ {
 
     final public ResultStore resultStore;
 
@@ -18,4 +20,6 @@ public abstract class Analyzer/*<T>*/ {
      * @param es
      */
     //protected abstract void processSignal(T es);
+
+    public abstract void analyze();
 }
