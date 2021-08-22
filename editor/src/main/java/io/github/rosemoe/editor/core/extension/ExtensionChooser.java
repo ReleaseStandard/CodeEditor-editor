@@ -19,13 +19,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import io.github.rosemoe.editor.core.CodeEditor;
-import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.plugins.Plugin;
-import io.github.rosemoe.editor.plugins.color.ColorChooser;
-import io.github.rosemoe.editor.plugins.color.ColorPlugin;
 
 
 /**

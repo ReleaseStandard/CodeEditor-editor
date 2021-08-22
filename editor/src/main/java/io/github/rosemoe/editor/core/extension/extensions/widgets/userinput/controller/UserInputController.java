@@ -36,9 +36,6 @@ import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
 import io.github.rosemoe.editor.core.TextActionPopupWindow;
 
-import static io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.UserInputModel.BOTH;
-import static io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.UserInputModel.LEFT;
-import static io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.UserInputModel.RIGHT;
 import static io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.extension.UserInputEvent.*;
 import static io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.UserInputModel.*;
 

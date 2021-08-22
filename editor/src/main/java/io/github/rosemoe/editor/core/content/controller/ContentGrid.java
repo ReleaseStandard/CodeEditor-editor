@@ -24,7 +24,6 @@ import io.github.rosemoe.editor.core.content.processors.indexer.Indexer;
 import io.github.rosemoe.editor.core.content.processors.indexer.NoCacheIndexer;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CharPosition;
-import io.github.rosemoe.editor.core.grid.Cell;
 import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;

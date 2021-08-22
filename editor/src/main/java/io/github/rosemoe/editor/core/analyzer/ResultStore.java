@@ -1,22 +1,13 @@
 package io.github.rosemoe.editor.core.analyzer;
 
-import androidx.annotation.NonNull;
-
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import io.github.rosemoe.editor.core.analyzer.result.AnalyzerResult;
-import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultCompletion;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
-import io.github.rosemoe.editor.core.grid.Cell;
-import io.github.rosemoe.editor.core.grid.Grid;
-import io.github.rosemoe.editor.core.grid.instances.SpanCell;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**
@@ -29,25 +20,23 @@ public class ResultStore extends ConcurrentSkipListMap<String, ConcurrentLinkedQ
     // Content result object
     public ContentGrid mText;
 
+    public final static String RES_COLOR = "color";
+    public final static String RES_COMPLETION = "completion";
+    public final static String RES_CONTENT = "content";
+    public final static Integer initialQueueSize = 2;
+
     public ResultStore() {
-        put("color", new ConcurrentLinkedQueue<>());
-        get("color").offer(new CodeAnalyzerResultColor());
-        get("color").offer(new CodeAnalyzerResultColor());
-        put("content", new ConcurrentLinkedQueue<>());
+
+        put(RES_COLOR, new ConcurrentLinkedQueue<>());
+        put(RES_COMPLETION, new ConcurrentLinkedQueue<>());
+        put(RES_CONTENT, new ConcurrentLinkedQueue<>());
+
+        for(int a = 0; a < initialQueueSize; a=a+1) {
+            get(RES_COLOR).offer(new CodeAnalyzerResultColor());
+            get(RES_COMPLETION).offer(new CodeAnalyzerResultCompletion());
+        }
+
     }
-
-
-    /**
-     * This is the view, all results in this hashmap are already processed results, they will not change
-     * until background thread is calling updateView method.
-     * results could be : CodeAnalyzerResultColor (display color on the screen), CodeAnalyzerResultContent (display content on the screen).
-     *                    CodeAnalyzerResultSpellCheck, CodeAnalyzerResultSyntaxeErrors ...
-     */
-    public ConcurrentHashMap<String, CodeAnalyzerResult> results = new ConcurrentHashMap<>();
-    /**
-     * This is in processing results in the analyzer.
-     */
-    public ConcurrentHashMap<String, CodeAnalyzerResult> inProcessResults = new ConcurrentHashMap<>();
 
     /**
      * Get the result listener, in mean in build results
@@ -92,21 +81,17 @@ public class ResultStore extends ConcurrentSkipListMap<String, ConcurrentLinkedQ
         return (CodeAnalyzerResultColor) getResult("color");
     }
 
-    /**
-     * Clear what have been done in the analyzer (view).
-     */
     public void clearBuilded() {
-        for(CodeAnalyzerResult result : results.values()) {
-            if ( result != null ) {
-                result.clear();
-            }
+        for(ConcurrentLinkedQueue<AnalyzerResult> ar : this) {
+            ar.poll();
         }
     }
+
     /**
      * Clear what is being done in the analyzer.
      */
     public void clearInBuild() {
-        throw new RuntimeException("Not yet implemented");
+        throw new RuntimeException("clearInBuild");
     }
 
     @Override

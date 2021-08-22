@@ -15,16 +15,8 @@
  */
 package io.github.rosemoe.editor.core.analyzer.result.instances;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.github.rosemoe.editor.core.analyzer.result.AnalyzerResult;
-import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
-import io.github.rosemoe.editor.core.analyzer.result.TokenEmitterResult;
-import io.github.rosemoe.editor.core.BlockLineModel;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
-import io.github.rosemoe.editor.core.grid.Grid;
-import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 
 /**
  * Manage how the analyzer show display the content to the screen.

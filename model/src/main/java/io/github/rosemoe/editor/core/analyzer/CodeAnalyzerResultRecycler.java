@@ -15,7 +15,6 @@
  */
 package io.github.rosemoe.editor.core.analyzer;
 
-import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**
@@ -32,11 +31,4 @@ public class CodeAnalyzerResultRecycler {
                 Logger.debug();
         }
 
-        /**
-         * Put an analysis result to digestion by the recycler.
-         * @param result
-         */
-        public void putToDigest(CodeAnalyzerResult result) {
-
-        }
 }

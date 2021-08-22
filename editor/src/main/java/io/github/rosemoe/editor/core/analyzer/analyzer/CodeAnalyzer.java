@@ -15,16 +15,12 @@
  */
 package io.github.rosemoe.editor.core.analyzer.analyzer;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import io.github.rosemoe.editor.core.analyzer.Analyzer;
 import io.github.rosemoe.editor.core.analyzer.ResultStore;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
-import io.github.rosemoe.editor.core.analyzer.result.CodeAnalyzerResult;
 import io.github.rosemoe.editor.core.util.CallStack;
 import io.github.rosemoe.editor.core.util.Logger;
 
@@ -135,25 +131,6 @@ public abstract class CodeAnalyzer extends Analyzer {
         dump("");
     }
     public void dump(String offset) {
-        Logger.debug(offset,"CodeAnalyzer:");
-        Logger.debug(offset,"  results = " + resultStore.results.size());
-        for(Map.Entry<String, CodeAnalyzerResult> entry : resultStore.results.entrySet()) {
-            Logger.debug(offset, entry.getKey());
-            if ( entry.getValue() != null ) {
-                entry.getValue().dump(offset);
-            } else {
-                Logger.debug("entry getValue is null");
-            }
-        }
-        Logger.debug(offset,"  inProcessResults = " + resultStore.inProcessResults.size());
-        for(Map.Entry<String, CodeAnalyzerResult> entry : resultStore.results.entrySet()) {
-            Logger.debug(offset, entry.getKey());
-            if ( entry.getValue() != null ) {
-                entry.getValue().dump(offset);
-            } else {
-                Logger.debug("entry getValue is null");
-            }
-        }
     }
 
     /**

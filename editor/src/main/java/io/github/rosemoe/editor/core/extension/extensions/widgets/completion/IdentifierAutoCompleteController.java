@@ -15,8 +15,9 @@
  */
 package io.github.rosemoe.editor.core.extension.extensions.widgets.completion;
 
+import io.github.rosemoe.editor.core.analyzer.ResultStore;
 import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.analysis.CodeAnalyzerResultCompletion;
+import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultCompletion;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,7 +87,7 @@ public class IdentifierAutoCompleteController implements AutoCompleteController 
         Collections.sort(keywords, CompletionItemController.COMPARATOR_BY_NAME);
 
         // completion analyzer
-        CodeAnalyzerResultCompletion result = (CodeAnalyzerResultCompletion) codeAnalyzer.resultStore.getResult("completion");
+        CodeAnalyzerResultCompletion result = (CodeAnalyzerResultCompletion) codeAnalyzer.resultStore.getResult(ResultStore.RES_COMPLETION);
         if (result != null) {
             List<CompletionItemController> words = new ArrayList<>();
             for (String word : result.identifiers.getIdentifiers()) {
