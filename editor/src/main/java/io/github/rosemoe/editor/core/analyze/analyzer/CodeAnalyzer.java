@@ -20,6 +20,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import io.github.rosemoe.editor.core.analyze.ResultStore;
 import io.github.rosemoe.editor.core.analyze.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.signal.Routes;
 import io.github.rosemoe.editor.core.util.CallStack;
 import io.github.rosemoe.editor.core.util.Logger;
 
@@ -32,6 +33,11 @@ import io.github.rosemoe.editor.core.util.Logger;
  * @author Release Standard
  */
 public abstract class CodeAnalyzer extends Analyzer {
+
+    @Override
+    public boolean route(Routes action, Object... args) {
+        throw new RuntimeException("You do not have overrided this method so nothing will happen at runtime !");
+    }
 
     /**
      * This switch is setup by the analyzer to prevent the view from painting non displayed regions.

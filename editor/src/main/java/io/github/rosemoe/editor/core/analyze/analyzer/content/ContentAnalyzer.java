@@ -8,8 +8,6 @@ import io.github.rosemoe.editor.core.signal.Routes;
 
 public class ContentAnalyzer extends Analyzer implements Router {
 
-    public ContentActionStackAnalyzer contentManager = new ContentActionStackAnalyzer();
-
     public ContentAnalyzer(ResultStore resultStore) {
         super(resultStore);
     }
@@ -29,11 +27,7 @@ public class ContentAnalyzer extends Analyzer implements Router {
     @Override
     public boolean route(Routes action, Object ...args) {
         switch (action) {
-            case ACTION_CONTENT_ACTION_STACK: {
-                Routes nextAction = (Routes) args[0];
-                contentManager.route(nextAction, resultStore.getResult(ResultStore.RES_CONTENT));
-                return true;
-            }
+
         }
         return false;
     }

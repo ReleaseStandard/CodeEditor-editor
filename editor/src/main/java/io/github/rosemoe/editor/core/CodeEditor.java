@@ -304,12 +304,10 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         }
     }
     public CodeEditor() {
-        pipeline.put(ANALYZER_CONTENT,new ContentAnalyzer(resultStore));
     }
     public CodeEditor(CodeEditorView view) {
         this.view = view;
         initialize();
-        pipeline.put(ANALYZER_CONTENT,new ContentAnalyzer(resultStore));
         //TypedArray ta = view.getContext().obtainStyledAttributes(attrs,R.styleable.CodeEditor);
         //getColorScheme().initFromAttributeSets(attrs,ta);
         //initFromAttributeSet(context, attrs, defStyleAttr, defStyleRes);
@@ -3246,10 +3244,9 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
 
     @Override
     public boolean route(Routes action, Object... args) {
-        ContentAnalyzer carc = (ContentAnalyzer) pipeline.get(ANALYZER_CONTENT);
         if ( isEditable() ) {
             switch (action) {
-                case ACTION_CONTENT_ACTION_STACK: return carc.route(action, args); // TODO WARNING : this is an analysis that will modify the content => should transform to pipeline processing //
+                case ACTION_CONTENT_ACTION_STACK: return pipeline.route(action, args); // TODO WARNING : this is an analysis that will modify the content => should transform to pipeline processing //
                 case ACTION_CONTENT_CUT: cutText(); return true;
                 case ACTION_CONTENT_PASTE: pasteText(); return true;
                 case ACTION_CONTENT_TEXT_DEL: cursor.onDeleteKeyPressed(); break;

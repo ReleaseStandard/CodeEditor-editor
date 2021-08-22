@@ -163,12 +163,12 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
 
     /**
      * Insert content to this object
-     *
-     * @param line   The insertion's line position
+     *  @param line   The insertion's line position
      * @param column The insertion's column position
      * @param text   The text you want to insert at the position
+     * @return
      */
-    public void insert(int line, int column, CharSequence text) {
+    public CharSequence insert(int line, int column, CharSequence text) {
         checkLineAndColumn(line, column, true);
         if (text == null) {
             throw new IllegalArgumentException("text can not be null");
@@ -202,35 +202,37 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
             }
         }
         textLength += text.length();
-        this.dispatchAfterInsert(line, column, workLine, workIndex, text);
+        return text;
     }
 
     /**
      * Delete character in [start,end)
-     *
-     * @param start Start position in content
+     *  @param start Start position in content
      * @param end   End position in content
+     * @return
      */
-    public void delete(int start, int end) {
+    public String delete(int start, int end) {
         CharPosition startPos = getIndexer().getCharPosition(start);
         CharPosition endPos = getIndexer().getCharPosition(end);
         if (start != end) {
-            delete(startPos.line, startPos.column, endPos.line, endPos.column);
+            return delete(startPos.line, startPos.column, endPos.line, endPos.column);
         }
+        return null;
     }
 
     /**
      * Delete text in the given region
-     *
-     * @param startLine         The start line position
+     *  @param startLine         The start line position
      * @param columnOnStartLine The start column position
      * @param endLine           The end line position
      * @param columnOnEndLine   The end column position
+     * @return
      */
-    public void delete(int startLine, int columnOnStartLine, int endLine, int columnOnEndLine) {
+    public String delete(int startLine, int columnOnStartLine, int endLine, int columnOnEndLine) {
         removeCells(startLine, columnOnStartLine, endLine, columnOnEndLine);
         // TODO break
         // this.dispatchAfterDelete(startLine, columnOnStartLine, endLine, columnOnEndLine, changedContent);
+        return "";
     }
 
     /**
@@ -435,7 +437,7 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      * @param text Text deleted
      */
     private void dispatchAfterDelete(int startLine, int startCol, int endLine, int endCol, CharSequence text) {
-        contentManager.afterDelete(this, startLine, startCol, endLine, endCol, text);
+        contentManager.afterDelete( startLine, startCol, endLine, endCol, text);
         if (cursor != null)
             cursor.afterDelete(startLine, startCol, endLine, endCol, text);
         if (indexer instanceof ContentListener) {

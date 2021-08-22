@@ -19,10 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import io.github.rosemoe.editor.core.analyze.ResultStore;
+import io.github.rosemoe.editor.core.analyze.analyzer.Analyzer;
+import io.github.rosemoe.editor.core.analyze.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.signal.Router;
 import io.github.rosemoe.editor.core.signal.Routes;
 import io.github.rosemoe.editor.core.content.controller.ContentListener;
+
+import static io.github.rosemoe.editor.core.analyze.ResultStore.RES_CONTENT;
 
 /**
  * Helper class for CodeAnalyzerResultContent to take down modification
@@ -30,7 +35,7 @@ import io.github.rosemoe.editor.core.content.controller.ContentListener;
  *
  * @author Rose
  */
-public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAnalyzer.ContentAction> implements ContentListener, Router {
+public final class ContentActionStackAnalyzer extends Analyzer implements Router {
 
     public int maxStackSize = 100;
     private InsertAction mInsertAction;
@@ -39,11 +44,13 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
     public boolean replaceMark = false;
     public boolean ignoreModification = false;
     private int mStackPointer;
+    private Stack<ContentAction> stack = new Stack<>();
 
     /**
      * Create ContentActionStackAnalyzer with the target content
      */
-    public ContentActionStackAnalyzer() {
+    public ContentActionStackAnalyzer(ResultStore resultStore) {
+        super(resultStore);
         mInsertAction = null;
         mDeleteAction = null;
         mStackPointer = 0;
@@ -52,13 +59,12 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
     /**
      * Undo on the given CodeAnalyzerResultContent
      *
-     * @param content Undo Target
      */
-    public void undo(CodeAnalyzerResultContent content) {
+    public void undo() {
         if (canUndo()) {
             ignoreModification = true;
-            ContentAction action = get(mStackPointer - 1);
-            action.undo(content);
+            ContentAction action = stack.get(mStackPointer - 1);
+            action.undo();
             mStackPointer--;
             ignoreModification = false;
         }
@@ -67,13 +73,12 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
     /**
      * Redo on the given CodeAnalyzerResultContent
      *
-     * @param content Redo Target
      */
-    public void redo(CodeAnalyzerResultContent content) {
+    public void redo() {
         if (canRedo()) {
             ignoreModification = true;
-            ContentAction action = get(mStackPointer);
-            action.redo(content);
+            ContentAction action = stack.get(mStackPointer);
+            action.redo();
             mStackPointer++;
             ignoreModification = false;
         }
@@ -95,7 +100,7 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
      * @return Whether can redo
      */
     public boolean canRedo() {
-        return undoEnabled && (mStackPointer < size());
+        return undoEnabled && (mStackPointer < stack.size());
     }
 
     /**
@@ -130,11 +135,11 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
      */
     private void cleanStack() {
         if (!undoEnabled) {
-            clear();
+            stack.clear();
             mStackPointer = 0;
         } else {
-            while (mStackPointer > 1 && size() > maxStackSize) {
-                remove(0);
+            while (mStackPointer > 1 && stack.size() > maxStackSize) {
+                stack.remove(0);
                 mStackPointer--;
             }
         }
@@ -145,8 +150,8 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
      * If we are not at the end(Undo action executed),remove those actions
      */
     private void cleanBeforePush() {
-        while (mStackPointer < size()) {
-            pop();
+        while (mStackPointer < stack.size()) {
+            stack.pop();
         }
     }
 
@@ -162,33 +167,33 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
         }
         cleanBeforePush();
         if (content.isInBatchEdit()) {
-            if (isEmpty()) {
+            if (stack.isEmpty()) {
                 MultiAction a = new MultiAction();
                 a.addAction(action);
-                push(a);
+                stack.push(a);
                 mStackPointer++;
             } else {
-                ContentAction a = get(size() - 1);
+                ContentAction a = stack.get(stack.size() - 1);
                 if (a instanceof MultiAction) {
                     MultiAction ac = (MultiAction) a;
                     ac.addAction(action);
                 } else {
                     MultiAction ac = new MultiAction();
                     ac.addAction(action);
-                    push(ac);
+                    stack.push(ac);
                     mStackPointer++;
                 }
             }
         } else {
-            if (isEmpty()) {
-                push(action);
+            if (stack.isEmpty()) {
+                stack.push(action);
                 mStackPointer++;
             } else {
-                ContentAction last = get(size() - 1);
+                ContentAction last = stack.get(stack.size() - 1);
                 if (last.canMerge(action)) {
                     last.merge(action);
                 } else {
-                    push(action);
+                    stack.push(action);
                     mStackPointer++;
                 }
             }
@@ -196,7 +201,6 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
         cleanStack();
     }
 
-    @Override
     public void beforeReplace(CodeAnalyzerResultContent content) {
         if (ignoreModification) {
             return;
@@ -204,9 +208,9 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
         replaceMark = true;
     }
 
-    @Override
-    public void afterInsert(CodeAnalyzerResultContent content, int startLine, int startColumn, int endLine, int endColumn,
+    public void afterInsert(int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence insertedContent) {
+        CodeAnalyzerResultContent content = (CodeAnalyzerResultContent) resultStore.getResult(RES_CONTENT);
         if (ignoreModification) {
             return;
         }
@@ -227,9 +231,9 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
         replaceMark = false;
     }
 
-    @Override
-    public void afterDelete(CodeAnalyzerResultContent content, int startLine, int startColumn, int endLine, int endColumn,
+    public void afterDelete(int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence deletedContent) {
+        CodeAnalyzerResultContent content = (CodeAnalyzerResultContent) resultStore.getResult(RES_CONTENT);
         if (ignoreModification) {
             return;
         }
@@ -248,50 +252,17 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
     public boolean route(Routes action, Object... args) {
         switch (action) {
             case ACTION_UNDO:
-                undo((CodeAnalyzerResultContent) args[0]);
+                undo();
             return true;
             case ACTION_REDO:
-                redo((CodeAnalyzerResultContent) args[0]);
+                redo();
             return true;
         }
         return false;
     }
 
-    /**
-     * For saving modification better
-     *
-     * @author Rose
-     */
-    public interface ContentAction {
-
-        /**
-         * Undo this action
-         *
-         * @param content On the given object
-         */
-        void undo(CodeAnalyzerResultContent content);
-
-        /**
-         * Redo this action
-         *
-         * @param content On the given object
-         */
-        void redo(CodeAnalyzerResultContent content);
-
-        /**
-         * Get whether the target action can be merged with this action
-         *
-         * @param action Target action to merge
-         * @return Whether can merge
-         */
-        boolean canMerge(ContentAction action);
-
-        /**
-         * Merge with target action
-         *
-         * @param action Target action to merge
-         */
-        void merge(ContentAction action);
+    @Override
+    public void analyze() {
 
     }
 
@@ -300,20 +271,24 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
      *
      * @author Rose
      */
-    public static final class InsertAction implements ContentAction {
+    private class InsertAction implements ContentAction {
 
         public int startLine, endLine, startColumn, endColumn;
 
         public CharSequence text;
 
         @Override
-        public void undo(CodeAnalyzerResultContent content) {
-            content.delete(startLine, startColumn, endLine, endColumn);
+        public void undo() {
+            CodeAnalyzerResultContent content = (CodeAnalyzerResultContent) ContentActionStackAnalyzer.this.resultStore.getResultInBuild(RES_CONTENT);
+            String deleted = content.delete(startLine, startColumn, endLine, endColumn);
+            ContentActionStackAnalyzer.this.afterDelete(startLine, startColumn, endLine, endColumn, deleted);
         }
 
         @Override
-        public void redo(CodeAnalyzerResultContent content) {
-            content.insert(startLine, startColumn, text);
+        public void redo() {
+            CodeAnalyzerResultContent content = (CodeAnalyzerResultContent) ContentActionStackAnalyzer.this.resultStore.getResultInBuild(RES_CONTENT);
+            String inserted = String.valueOf(content.insert(startLine, startColumn, text));
+            ContentActionStackAnalyzer.this.afterInsert(startLine, startColumn, endLine, endColumn, inserted);
         }
 
         @Override
@@ -350,7 +325,7 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
      *
      * @author Rose
      */
-    public static final class MultiAction implements ContentAction {
+    private class MultiAction implements ContentAction {
 
         private final List<ContentAction> _actions = new ArrayList<>();
 
@@ -368,16 +343,16 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
         }
 
         @Override
-        public void undo(CodeAnalyzerResultContent content) {
+        public void undo() {
             for (int i = _actions.size() - 1; i >= 0; i--) {
-                _actions.get(i).undo(content);
+                _actions.get(i).undo();
             }
         }
 
         @Override
-        public void redo(CodeAnalyzerResultContent content) {
+        public void redo() {
             for (int i = 0; i < _actions.size(); i++) {
-                _actions.get(i).redo(content);
+                _actions.get(i).redo();
             }
         }
 
@@ -398,20 +373,24 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
      *
      * @author Rose
      */
-    public static final class DeleteAction implements ContentAction {
+    private class DeleteAction implements ContentAction {
 
         public int startLine, endLine, startColumn, endColumn;
 
         public CharSequence text;
 
         @Override
-        public void undo(CodeAnalyzerResultContent content) {
-            content.insert(startLine, startColumn, text);
+        public void undo() {
+            CodeAnalyzerResultContent content = (CodeAnalyzerResultContent) ContentActionStackAnalyzer.this.resultStore.getResultInBuild(RES_CONTENT);
+            String inserted = (String) content.insert(startLine, startColumn, text);
+            ContentActionStackAnalyzer.this.afterInsert(startLine, startColumn, endLine, endColumn, inserted);
         }
 
         @Override
-        public void redo(CodeAnalyzerResultContent content) {
-            content.delete(startLine, startColumn, endLine, endColumn);
+        public void redo() {
+            CodeAnalyzerResultContent content = (CodeAnalyzerResultContent) ContentActionStackAnalyzer.this.resultStore.getResultInBuild(RES_CONTENT);
+            String deleted = content.delete(startLine, startColumn, endLine, endColumn);
+            ContentActionStackAnalyzer.this.afterDelete(startLine, startColumn, endLine, endColumn, deleted);
         }
 
         @Override
@@ -448,21 +427,21 @@ public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAn
      *
      * @author Rose
      */
-    public static final class ReplaceAction implements ContentAction {
+    private class ReplaceAction implements ContentAction {
 
         public InsertAction _insert;
         public DeleteAction _delete;
 
         @Override
-        public void undo(CodeAnalyzerResultContent content) {
-            _insert.undo(content);
-            _delete.undo(content);
+        public void undo() {
+            _insert.undo();
+            _delete.undo();
         }
 
         @Override
-        public void redo(CodeAnalyzerResultContent content) {
-            _delete.redo(content);
-            _insert.redo(content);
+        public void redo() {
+            _delete.redo();
+            _insert.redo();
         }
 
         @Override
