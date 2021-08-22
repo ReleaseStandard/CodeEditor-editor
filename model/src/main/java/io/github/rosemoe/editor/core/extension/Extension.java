@@ -21,7 +21,9 @@ package io.github.rosemoe.editor.core.extension;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.HashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
+import io.github.rosemoe.editor.core.CEObject;
 import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.extension.events.EventDestination;
@@ -39,7 +41,7 @@ import io.github.rosemoe.editor.core.util.Logger;
  * And the plugin as an higher level plugin.
  *
  */
-public class Extension extends PrioritySystem implements EventSource, EventDestination, Comparable/*, Parcelable*/ {
+public class Extension extends PrioritySystem implements EventSource, EventDestination/*, Parcelable*/ {
 
     private HashMap<Class, Boolean> subscribedEventTypes = new HashMap<>();
 
@@ -142,7 +144,7 @@ public class Extension extends PrioritySystem implements EventSource, EventDesti
     @Override
     public void dispatch(Event e) {
         if ( isDisabled() ) {
-            Logger.debug("Cannot emit as this extension is disabled !");
+            Logger.debug("Cannot dispatch on this extension since it is disabled !");
             return;
         }
         if( issubscribed(e.getClass()) ) {
@@ -245,4 +247,11 @@ public class Extension extends PrioritySystem implements EventSource, EventDesti
      * @param extension
      */
     protected void initFromJson(JsonNode extension) { }
+
+    public void dump() {
+        dump("");
+    }
+    public void dump(String offset) {
+        CEObject.dump(this,offset);
+    }
 }

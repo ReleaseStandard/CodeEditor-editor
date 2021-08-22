@@ -15,8 +15,9 @@
  */
 package io.github.rosemoe.editor.core.extension;
 
+import java.util.Arrays;
 import java.util.Iterator;
-import java.util.PriorityQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 import io.github.rosemoe.editor.core.extension.events.Event;
 import io.github.rosemoe.editor.core.util.Logger;
@@ -29,7 +30,7 @@ import io.github.rosemoe.editor.core.util.Logger;
  */
 public class ExtensionContainer extends Extension implements Iterable<Extension> {
 
-    public PriorityQueue<Extension> extensions = new PriorityQueue<Extension>();
+    public PriorityBlockingQueue<Extension> extensions = new PriorityBlockingQueue<Extension>();
 
     public ExtensionContainer() {
         super(null);
@@ -49,25 +50,63 @@ public class ExtensionContainer extends Extension implements Iterable<Extension>
      */
     @Override
     protected void handleEventDispatch(Event e, String subtype) {
-        Logger.debug("Event dispatched : subtype=",subtype);
+        handleEventDispatchSyncronousMultiThread(e, subtype);
+    }
+    protected void handleEventDispatchSyncronousMonoThread(Event e, String subtype) {
         Extension olde = null;
-        for(Extension extension : this) {
-            Logger.debug("plugin : enabled=",extension.enabled);
-            extension.dispatch(e);
+        for(Extension extension : ExtensionContainer.this) {
             if( e.stopHorizontalPropagation ) {
                 Logger.debug("Vertical propagation of event stopped");
                 break;
             }
             if ( e.stopVerticalPropagation ) {
-                if ( extension.compareTo(olde) < 0 ) {
+                Logger.debug("TEST ==> " + extension.compareTo(olde));
+                if ( extension.compareTo(olde) > 0 ) {
                     Logger.debug("Vertical propagation stopped");
                     break;
                 }
             }
+            e.engage();
+            extension.dispatch(e);
+            e.waitReady();
             olde = extension;
         }
-        Logger.debug();
     }
+    protected void handleEventDispatchAsyncronousMonoThread(Event e, String subtype) {
+        Extension olde = null;
+        for(Extension extension : ExtensionContainer.this) {
+            if( e.stopHorizontalPropagation ) {
+                Logger.debug("Vertical propagation of event stopped");
+                break;
+            }
+            if ( e.stopVerticalPropagation ) {
+                Logger.debug("TEST ==> " + extension.compareTo(olde));
+                if ( extension.compareTo(olde) > 0 ) {
+                    Logger.debug("Vertical propagation stopped");
+                    break;
+                }
+            }
+            extension.dispatch(e);
+            olde = extension;
+        }
+    }
+    protected void handleEventDispatchSyncronousMultiThread(Event e, String subtype) {
+        new Thread() {
+            @Override
+            public void run() {
+                handleEventDispatchSyncronousMonoThread(e,subtype);
+            }
+        }.start();
+    }
+    protected void handleEventDispatchAsyncronousMultiThread(Event e, String subtype) {
+        new Thread() {
+            @Override
+            public void run() {
+                handleEventDispatchAsyncronousMonoThread(e,subtype);
+            }
+        }.start();
+    }
+
     @Override
     protected void handleEventEmit(Event e) {
         // Depends on the type of the event, the plugin
@@ -101,9 +140,12 @@ public class ExtensionContainer extends Extension implements Iterable<Extension>
         return null;
     }
 
+    @SuppressWarnings("NewApi")
     @Override
     public Iterator<Extension> iterator() {
-        return extensions.iterator();
+        Extension[] exts = toArray(new Extension[extensions.size()]);
+        Arrays.sort(exts);
+        return Arrays.stream(exts).iterator();
     }
     public Object[] toArray() {
         return extensions.toArray();

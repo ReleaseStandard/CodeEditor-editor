@@ -17,13 +17,13 @@ public abstract class PrioritySystem implements Comparable {
         if ( o instanceof PrioritySystem) {
             PrioritySystem p = (PrioritySystem) o;
             if ( priorityRing < p.priorityRing ) {
-                return -1;
-            } else if(priorityRing > p.priorityRing ) {
                 return 1;
+            } else if(priorityRing > p.priorityRing ) {
+                return -1;
             }
             return 0;
         }
         // ex: compareTo null will result in null to be processed with less priority.
-        return 1;
+        throw new RuntimeException("Cannot compare " + getClass() + " and " + o.getClass() + " in the priority system.");
     }
 }

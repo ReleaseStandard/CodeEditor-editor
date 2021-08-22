@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.extension.events.Event;
+import io.github.rosemoe.editor.core.util.Logger;
 import manifold.ext.rt.api.Jailbreak;
 
 import static org.junit.Assert.*;
@@ -58,10 +59,10 @@ public class ExtensionTest {
         @Jailbreak Extension e2 = new Extension();
         e1.priorityRing = PrioritySystem.PRIORITY_HIGH;
         e2.priorityRing = PrioritySystem.PRIORITY_LOW;
-        assertTrue(e1.compareTo(e2) > 0);
+        assertTrue(e1.compareTo(e2) < 0);
         e1.priorityRing = PrioritySystem.PRIORITY_STD;
         e2.priorityRing = PrioritySystem.PRIORITY_LOW;
-        assertTrue(e1.compareTo(e2) > 0);
+        assertTrue(e1.compareTo(e2) < 0);
         e1.priorityRing = PrioritySystem.PRIORITY_STD;
         e2.priorityRing = PrioritySystem.PRIORITY_STD;
         assertTrue(e1.compareTo(e2) == 0);

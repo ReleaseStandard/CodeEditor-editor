@@ -16,8 +16,11 @@
 package io.github.rosemoe.editor.core.extension.events;
 
 import java.util.PriorityQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
-public class EventQueue extends PriorityQueue<Event> {
+import io.github.rosemoe.editor.core.util.Logger;
+
+public class EventQueue extends PriorityBlockingQueue<Event> {
 
     public final static int POLLING_MS = 100;
     public EventQueue() {
@@ -33,6 +36,7 @@ public class EventQueue extends PriorityQueue<Event> {
                         Event e = EventQueue.this.poll();
                         while ( e != null ) {
                             handlePolling(e);
+                            e.disengage();
                             e = EventQueue.this.poll();
                         }
                         Thread.sleep(POLLING_MS);

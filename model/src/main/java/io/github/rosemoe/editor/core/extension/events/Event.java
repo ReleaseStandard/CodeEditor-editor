@@ -16,7 +16,10 @@
 package io.github.rosemoe.editor.core.extension.events;
 
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.ReentrantLock;
 
+import io.github.rosemoe.editor.core.CEObject;
 import io.github.rosemoe.editor.core.extension.PrioritySystem;
 import io.github.rosemoe.editor.core.util.Logger;
 
@@ -27,6 +30,7 @@ import io.github.rosemoe.editor.core.util.Logger;
  */
 public class Event extends PrioritySystem {
 
+    private CountDownLatch inUse = new CountDownLatch(1);
     public boolean stopHorizontalPropagation = false;
     public boolean stopVerticalPropagation   = false;
     /**
@@ -91,6 +95,28 @@ public class Event extends PrioritySystem {
         dump("");
     }
     public void dump(String offset) {
-        Logger.debug(offset + ",subtype=",subtype);
+        CEObject.dump(this, offset);
+    }
+    /**
+     * Lock event consumption.
+     */
+    public void engage() {
+        inUse = new CountDownLatch(1);
+    }
+    /**
+     * Unlock event consumption
+     */
+    public void disengage() {
+        inUse.countDown();
+    }
+    /**
+     * Wait until event can be consummed again.
+     */
+    public void waitReady() {
+        try {
+            inUse.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
