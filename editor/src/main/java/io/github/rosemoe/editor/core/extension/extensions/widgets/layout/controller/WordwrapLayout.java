@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import io.github.rosemoe.editor.core.content.controller.ContentGrid;
+import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.layout.model.WordwrapModel;
 import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;
@@ -41,7 +41,7 @@ public class WordwrapLayout extends AbstractLayout {
 
     public final WordwrapModel model;
 
-    public WordwrapLayout(CodeEditor editor, ContentGrid text) {
+    public WordwrapLayout(CodeEditor editor, CodeAnalyzerResultContent text) {
         super(editor, text);
         model = new WordwrapModel() {
             @Override
@@ -110,12 +110,12 @@ public class WordwrapLayout extends AbstractLayout {
     }
 
     @Override
-    public void beforeReplace(ContentGrid content) {
+    public void beforeReplace(CodeAnalyzerResultContent content) {
         // Intentionally empty
     }
 
     @Override
-    public void afterInsert(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
+    public void afterInsert(CodeAnalyzerResultContent content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
         // Update line numbers
         int delta = endLine - startLine;
         if (delta != 0) {
@@ -128,7 +128,7 @@ public class WordwrapLayout extends AbstractLayout {
     }
 
     @Override
-    public void afterDelete(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
+    public void afterDelete(CodeAnalyzerResultContent content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
         int delta = endLine - startLine;
         if (delta != 0) {
             int startRow = model.findRow(startLine);
@@ -148,7 +148,7 @@ public class WordwrapLayout extends AbstractLayout {
     }
 
     @Override
-    public void onRemove(ContentGrid content, Line<ContentCell> line) {
+    public void onRemove(CodeAnalyzerResultContent content, Line<ContentCell> line) {
 
     }
 

@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
 
-import io.github.rosemoe.editor.core.content.controller.ContentGrid;
+import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionController;
 import io.github.rosemoe.editor.core.content.processors.indexer.CachedIndexer;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.view.CursorView;
@@ -47,7 +47,7 @@ import static io.github.rosemoe.editor.core.extension.extensions.langs.helpers.T
  */
 public final class CursorController extends WidgetExtensionController {
 
-    private final ContentGrid mContent;
+    private final CodeAnalyzerResultContent mContent;
     private final CachedIndexer mIndexer;
     private LanguagePlugin mLanguage;
     public float mInsertSelWidth;
@@ -59,11 +59,11 @@ public final class CursorController extends WidgetExtensionController {
     public ArrayList<CursorPartController> parts = new ArrayList<>();
 
     /**
-     * Create a new CursorController for ContentGrid
+     * Create a new CursorController for CodeAnalyzerResultContent
      *
      * @param content Target content
      */
-    public CursorController(ContentGrid content, CodeEditor editor) {
+    public CursorController(CodeAnalyzerResultContent content, CodeEditor editor) {
         super(editor);
         mContent = content;
         mIndexer = new CachedIndexer(content);

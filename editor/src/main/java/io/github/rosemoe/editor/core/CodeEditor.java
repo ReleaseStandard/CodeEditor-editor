@@ -59,11 +59,11 @@ import java.util.List;
 import io.github.rosemoe.editor.R;
 import io.github.rosemoe.editor.core.analyze.Pipeline;
 import io.github.rosemoe.editor.core.analyze.ResultStore;
+import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.signal.Router;
 import io.github.rosemoe.editor.core.signal.Routes;
 import io.github.rosemoe.editor.core.analyze.analyzer.content.ContentAnalyzer;
 import io.github.rosemoe.editor.core.analyze.result.instances.CodeAnalyzerResultColor;
-import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.analyze.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.analyze.results.AnalysisDoneCallback;
@@ -2858,7 +2858,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
      * @see CodeEditor#setText(CharSequence)
      */
     @NonNull
-    public ContentGrid getText() {
+    public CodeAnalyzerResultContent getText() {
         return resultStore.mText;
     }
 
@@ -2877,7 +2877,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
             resultStore.mText.removeContentListener(this);
             resultStore.mText.setLineListener(null);
         }
-        resultStore.mText = new ContentGrid(text,this);
+        resultStore.mText = new CodeAnalyzerResultContent(text,this);
         boolean isAutoIndented = CursorModel.DEFAULT_ISAUTO_IDENT;
         if ( cursor != null ) {
             isAutoIndented = cursor.isAutoIndent();
@@ -3079,7 +3079,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
 
 
     @Override
-    public void beforeReplace(ContentGrid content) {
+    public void beforeReplace(CodeAnalyzerResultContent content) {
         mWait = true;
         mLayout.beforeReplace(content);
         if (mListener != null) {
@@ -3089,7 +3089,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
 
     // INPUT SIGNAL
     @Override
-    public void afterInsert(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
+    public void afterInsert(CodeAnalyzerResultContent content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
 
         Grid sm = resultStore.getSpanMap();
 
@@ -3154,7 +3154,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
 
     // INPUT SIGNAL
     @Override
-    public void afterDelete(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
+    public void afterDelete(CodeAnalyzerResultContent content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
 
         if (isSpanMapPrepared(false, endLine - startLine)) {
             resultStore.getSpanMap().removeCells(startLine,startColumn,endLine,endColumn);
@@ -3205,7 +3205,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     }
 
     @Override
-    public void onRemove(ContentGrid content, Line<ContentCell> line) {
+    public void onRemove(CodeAnalyzerResultContent content, Line<ContentCell> line) {
         mLayout.onRemove(content, line);
     }
 

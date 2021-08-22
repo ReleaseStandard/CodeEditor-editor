@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core.content.processors.indexer;
 
-import io.github.rosemoe.editor.core.content.controller.ContentGrid;
+import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 
 /**
  * Indexer without cache
@@ -29,7 +29,7 @@ public final class NoCacheIndexer extends CachedIndexer implements Indexer {
      *
      * @param content Target content
      */
-    public NoCacheIndexer(ContentGrid content) {
+    public NoCacheIndexer(CodeAnalyzerResultContent content) {
         super(content);
         //Disable dynamic indexing
         if (super.getMaxCacheSize() != 0) {

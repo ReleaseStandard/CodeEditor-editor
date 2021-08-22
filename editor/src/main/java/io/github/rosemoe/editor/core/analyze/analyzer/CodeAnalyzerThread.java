@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core.analyze.analyzer;
 
-import io.github.rosemoe.editor.core.content.controller.ContentGrid;
+import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.analyze.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.grid.Cell;
 import io.github.rosemoe.editor.core.grid.Grid;
@@ -28,15 +28,15 @@ public class CodeAnalyzerThread extends Thread {
 
     public final Object lock;
     private volatile boolean waiting = false;
-    private ContentGrid content;
+    private CodeAnalyzerResultContent content;
     public long mOpStartTime;
     CodeAnalyzer codeAnalyzer;
     public AnalysisDoneCallback mAnalysisDoneCallback;
     /**
      * Create a new thread
-     * @param content The ContentGrid to analyze
+     * @param content The CodeAnalyzerResultContent to analyze
      */
-    public CodeAnalyzerThread(ContentGrid content, CodeAnalyzer codeAnalyzer) {
+    public CodeAnalyzerThread(CodeAnalyzerResultContent content, CodeAnalyzer codeAnalyzer) {
         this.lock = new Object();
         this.content = content;
         this.codeAnalyzer = codeAnalyzer;
@@ -102,7 +102,7 @@ public class CodeAnalyzerThread extends Thread {
      *
      * @param content New source
      */
-    public synchronized void restartWith(ContentGrid content) {
+    public synchronized void restartWith(CodeAnalyzerResultContent content) {
         Logger.v("Restarting analysis thread with some content");
         waiting = true;
         this.content = content;
@@ -130,7 +130,7 @@ public class CodeAnalyzerThread extends Thread {
         sThreadId++;
         return sThreadId;
     }
-    public static CodeAnalyzerThread newInstance(ContentGrid origin, CodeAnalyzer codeAnalyzer) {
+    public static CodeAnalyzerThread newInstance(CodeAnalyzerResultContent origin, CodeAnalyzer codeAnalyzer) {
         CodeAnalyzerThread thread;
         thread = new CodeAnalyzerThread(origin, codeAnalyzer);
         thread.setName("TextAnalyzeDaemon-" + nextThreadId());

@@ -18,7 +18,8 @@ package io.github.rosemoe.editor.core.content.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.rosemoe.editor.core.analyze.analyzer.content.ContentActionStack;
+import io.github.rosemoe.editor.core.analyze.analyzer.content.ContentActionStackAnalyzer;
+import io.github.rosemoe.editor.core.analyze.result.AnalyzerResult;
 import io.github.rosemoe.editor.core.content.processors.ContentLineRemoveListener;
 import io.github.rosemoe.editor.core.content.processors.indexer.CachedIndexer;
 import io.github.rosemoe.editor.core.content.processors.indexer.Indexer;
@@ -38,7 +39,7 @@ import static io.github.rosemoe.editor.core.grid.Cell.*;
  *
  * @author Rose
  */
-public class ContentGrid extends Grid<ContentCell> implements CharSequence {
+public class CodeAnalyzerResultContent extends Grid<ContentCell> implements CharSequence, AnalyzerResult {
 
     public static int sInitialListCapacity = 1000;
 
@@ -51,23 +52,23 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
     private ContentLineRemoveListener mLineListener;
     private final CodeEditor editor;
 
-    private ContentActionStack contentManager;
+    private ContentActionStackAnalyzer contentManager;
 
     /**
-     * This constructor will create a ContentGrid object with no text
+     * This constructor will create a CodeAnalyzerResultContent object with no text
      */
-    public ContentGrid() {
+    public CodeAnalyzerResultContent() {
         this(null,null);
         behaviourOnCellSplit = SPLIT_SPLITTING;
     }
 
     /**
-     * This constructor will create a ContentGrid object with the given source
-     * If you give us null,it will just create a empty ContentGrid object
+     * This constructor will create a CodeAnalyzerResultContent object with the given source
+     * If you give us null,it will just create a empty CodeAnalyzerResultContent object
      *
-     * @param src The source of ContentGrid
+     * @param src The source of CodeAnalyzerResultContent
      */
-    public ContentGrid(CharSequence src, CodeEditor editor) {
+    public CodeAnalyzerResultContent(CharSequence src, CodeEditor editor) {
         behaviourOnCellSplit = SPLIT_SPLITTING;
         this.editor = editor;
         if (src == null) {
@@ -234,7 +235,7 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
 
     /**
      * Replace the text in the given region
-     * This action will completed by calling {@link ContentGrid#delete(int, int, int, int)} and {@link ContentGrid#insert(int, int, CharSequence)}
+     * This action will completed by calling {@link CodeAnalyzerResultContent#delete(int, int, int, int)} and {@link CodeAnalyzerResultContent#insert(int, int, CharSequence)}
      *
      * @param startLine         The start line position
      * @param columnOnStartLine The start column position
@@ -253,7 +254,7 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
 
     /**
      * When you are going to use {@link CharSequence#charAt(int)} frequently,you are required to call
-     * this method.Because the way ContentGrid save text,it is usually slow to transform index to
+     * this method.Because the way CodeAnalyzerResultContent save text,it is usually slow to transform index to
      * (line,column) from the start of text when the text is big.
      * By calling this method,you will be able to get faster because calling this will
      * cause the ITextContent object use a Indexer with cache.
@@ -277,7 +278,7 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
 
     /**
      * A delegate method.
-     * Notify the ContentActionStack to begin batch edit(enter a new layer).
+     * Notify the ContentActionStackAnalyzer to begin batch edit(enter a new layer).
      * NOTE: batch edit in Android can be nested.
      *
      * @return Whether in batch edit
@@ -289,7 +290,7 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
 
     /**
      * A delegate method.
-     * Notify the ContentActionStack to end batch edit(exit current layer).
+     * Notify the ContentActionStackAnalyzer to end batch edit(exit current layer).
      *
      * @return Whether in batch edit
      */
@@ -311,7 +312,7 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
     }
 
     /**
-     * Add a new {@link ContentListener} to the ContentGrid
+     * Add a new {@link ContentListener} to the CodeAnalyzerResultContent
      *
      * @param listener The listener to add
      */
@@ -328,7 +329,7 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
     }
 
     /**
-     * Remove the given listener of this ContentGrid
+     * Remove the given listener of this CodeAnalyzerResultContent
      *
      * @param listener The listener to remove
      */
@@ -353,8 +354,8 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
 
     @Override
     public boolean equals(Object anotherObject) {
-        if (anotherObject instanceof ContentGrid) {
-            ContentGrid content = (ContentGrid) anotherObject;
+        if (anotherObject instanceof CodeAnalyzerResultContent) {
+            CodeAnalyzerResultContent content = (CodeAnalyzerResultContent) anotherObject;
             if (content.size() != this.size()) {
                 return false;
             }
@@ -374,7 +375,7 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
      * Used by TextColorProvider
      * This can improve the speed in char getting for tokenizing
      *
-     * @return StringBuilder form of ContentGrid
+     * @return StringBuilder form of CodeAnalyzerResultContent
      */
     public StringBuilder toStringBuilder() {
         StringBuilder sb = new StringBuilder();
@@ -499,7 +500,7 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
      * @return Default capacity
      */
     public static int getInitialLineCapacity() {
-        return ContentGrid.sInitialListCapacity;
+        return CodeAnalyzerResultContent.sInitialListCapacity;
     }
 
     @Override

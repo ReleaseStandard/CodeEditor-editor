@@ -24,8 +24,8 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 
+import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.signal.Routes;
-import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.SymbolPairMatch;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CharPosition;
@@ -47,7 +47,7 @@ public class UserInputConnexionView extends BaseInputConnection {
     public synchronized void closeConnection() {
         //Logs.log("close connection");
         super.closeConnection();
-        ContentGrid content = editor.getText();
+        CodeAnalyzerResultContent content = editor.getText();
         while (content.isInBatchEdit()) {
             content.endBatchEdit();
         }
@@ -57,7 +57,7 @@ public class UserInputConnexionView extends BaseInputConnection {
 
     /**
      * Private use.
-     * Get the CursorController of ContentGrid displaying by Editor
+     * Get the CursorController of CodeAnalyzerResultContent displaying by Editor
      *
      * @return CursorController
      */
@@ -202,7 +202,7 @@ public class UserInputConnexionView extends BaseInputConnection {
             end = tmp;
         }
         editor.getAutoCompleteWindow().view.hide();
-        ContentGrid content = editor.getText();
+        CodeAnalyzerResultContent content = editor.getText();
         CharPosition startPos = content.getIndexer().getCharPosition(start);
         CharPosition endPos = content.getIndexer().getCharPosition(end);
         editor.setSelectionRegion(startPos.line, startPos.column, endPos.line, endPos.column, false);
@@ -236,7 +236,7 @@ public class UserInputConnexionView extends BaseInputConnection {
             if (start < 0) {
                 start = 0;
             }
-            ContentGrid content = editor.getText();
+            CodeAnalyzerResultContent content = editor.getText();
             if (end > content.length()) {
                 end = content.length();
             }

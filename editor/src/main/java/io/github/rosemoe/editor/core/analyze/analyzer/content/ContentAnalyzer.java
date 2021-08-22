@@ -1,16 +1,14 @@
 package io.github.rosemoe.editor.core.analyze.analyzer.content;
 
-import java.util.Arrays;
-
+import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.signal.Router;
 import io.github.rosemoe.editor.core.analyze.analyzer.Analyzer;
 import io.github.rosemoe.editor.core.analyze.ResultStore;
 import io.github.rosemoe.editor.core.signal.Routes;
-import io.github.rosemoe.editor.core.analyze.result.instances.CodeAnalyzerResultContent;
 
 public class ContentAnalyzer extends Analyzer implements Router {
 
-    public ContentActionStack contentManager = new ContentActionStack();
+    public ContentActionStackAnalyzer contentManager = new ContentActionStackAnalyzer();
 
     public ContentAnalyzer(ResultStore resultStore) {
         super(resultStore);

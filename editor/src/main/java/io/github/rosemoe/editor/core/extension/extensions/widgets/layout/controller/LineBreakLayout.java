@@ -17,7 +17,7 @@ package io.github.rosemoe.editor.core.extension.extensions.widgets.layout.contro
 
 import java.util.NoSuchElementException;
 
-import io.github.rosemoe.editor.core.content.controller.ContentGrid;
+import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 import io.github.rosemoe.editor.core.util.BinaryHeap;
@@ -33,7 +33,7 @@ public class LineBreakLayout extends AbstractLayout {
 
     private BinaryHeap widthMaintainer;
 
-    public LineBreakLayout(CodeEditor editor, ContentGrid text) {
+    public LineBreakLayout(CodeEditor editor, CodeAnalyzerResultContent text) {
         super(editor, text);
         measureAllLines();
     }
@@ -80,22 +80,22 @@ public class LineBreakLayout extends AbstractLayout {
     }
 
     @Override
-    public void beforeReplace(ContentGrid content) {
+    public void beforeReplace(CodeAnalyzerResultContent content) {
         // Intentionally empty
     }
 
     @Override
-    public void afterInsert(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
+    public void afterInsert(CodeAnalyzerResultContent content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent) {
         measureLines(startLine, endLine);
     }
 
     @Override
-    public void afterDelete(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
+    public void afterDelete(CodeAnalyzerResultContent content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent) {
         measureLines(startLine, startLine);
     }
 
     @Override
-    public void onRemove(ContentGrid content, Line<ContentCell> line) {
+    public void onRemove(CodeAnalyzerResultContent content, Line<ContentCell> line) {
         //widthMaintainer.remove(line.getId());
         throw new RuntimeException("TODO");
     }

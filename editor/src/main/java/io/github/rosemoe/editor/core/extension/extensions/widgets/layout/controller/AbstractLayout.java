@@ -17,7 +17,7 @@ package io.github.rosemoe.editor.core.extension.extensions.widgets.layout.contro
 
 import android.graphics.Paint;
 
-import io.github.rosemoe.editor.core.content.controller.ContentGrid;
+import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.util.FontCache;
 import io.github.rosemoe.editor.core.CodeEditor;
 
@@ -30,11 +30,11 @@ import io.github.rosemoe.editor.core.CodeEditor;
 public abstract class AbstractLayout implements Layout {
 
     protected CodeEditor editor;
-    protected ContentGrid text;
+    protected CodeAnalyzerResultContent text;
     protected Paint shadowPaint;
     protected FontCache fontCache;
 
-    public AbstractLayout(CodeEditor editor, ContentGrid text) {
+    public AbstractLayout(CodeEditor editor, CodeAnalyzerResultContent text) {
         this.editor = editor;
         this.text = text;
         shadowPaint = new Paint(editor.getTextPaint());

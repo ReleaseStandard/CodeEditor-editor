@@ -18,8 +18,8 @@ package io.github.rosemoe.editor.core.analyze.analyzer;
 import java.util.concurrent.locks.ReentrantLock;
 
 import io.github.rosemoe.editor.core.analyze.ResultStore;
-import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.analyze.results.AnalysisDoneCallback;
+import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.util.CallStack;
 import io.github.rosemoe.editor.core.util.Logger;
 
@@ -97,7 +97,7 @@ public abstract class CodeAnalyzer extends Analyzer {
      * Start an analysis thread of a given text/code.
      */
     public CodeAnalyzerThread mThread = null;
-    public synchronized void analyze(ContentGrid origin) {
+    public synchronized void analyze(CodeAnalyzerResultContent origin) {
         CodeAnalyzerThread thread = this.mThread;
         if (thread == null || !thread.isAlive()) {
             thread = this.mThread = CodeAnalyzerThread.newInstance(origin, this);

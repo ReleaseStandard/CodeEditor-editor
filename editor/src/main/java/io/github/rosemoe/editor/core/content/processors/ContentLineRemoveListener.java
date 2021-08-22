@@ -15,22 +15,22 @@
  */
 package io.github.rosemoe.editor.core.content.processors;
 
-import io.github.rosemoe.editor.core.content.controller.ContentGrid;
+import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 
 /**
- * A listener to know when a ContentLineController object is removed from ContentGrid object
+ * A listener to know when a ContentLineController object is removed from CodeAnalyzerResultContent object
  *
  * @author Rose
  */
 public interface ContentLineRemoveListener {
 
     /**
-     * When a ContentLineController is removed from ContentGrid, this method is called
-     *  @param content Caller ContentGrid
+     * When a ContentLineController is removed from CodeAnalyzerResultContent, this method is called
+     *  @param content Caller CodeAnalyzerResultContent
      * @param line    ContentLineController object removed
      */
-    void onRemove(ContentGrid content, Line<ContentCell> line);
+    void onRemove(CodeAnalyzerResultContent content, Line<ContentCell> line);
 
 }

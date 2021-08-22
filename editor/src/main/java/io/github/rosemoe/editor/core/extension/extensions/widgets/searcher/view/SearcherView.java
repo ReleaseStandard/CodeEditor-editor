@@ -18,7 +18,7 @@ package io.github.rosemoe.editor.core.extension.extensions.widgets.searcher.view
 import android.app.ProgressDialog;
 import android.widget.Toast;
 
-import io.github.rosemoe.editor.core.content.controller.ContentGrid;
+import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CodeEditor;
 
@@ -56,7 +56,7 @@ public class SearcherView {
         }.start();
     }
     public void gotoNext(final String searchText,boolean tip) {
-        ContentGrid text = editor.getText();
+        CodeAnalyzerResultContent text = editor.getText();
         CursorController cursor = text.getCursor();
         int line = cursor.getRightLine();
         int column = cursor.getRightColumn();
@@ -76,7 +76,7 @@ public class SearcherView {
         }
     }
     public void gotoLast(String searchText) {
-        ContentGrid text = editor.getText();
+        CodeAnalyzerResultContent text = editor.getText();
         CursorController cursor = text.getCursor();
         int line = cursor.getLeftLine();
         int column = cursor.getLeftColumn();

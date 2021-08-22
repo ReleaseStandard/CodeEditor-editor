@@ -20,7 +20,7 @@ import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 
 /**
- * One line of content in the ContentGrid.
+ * One line of content in the CodeAnalyzerResultContent.
  */
 public class ContentLineController extends Line<ContentCell> implements CharSequence {
 

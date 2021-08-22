@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core;
 
-import io.github.rosemoe.editor.core.content.controller.ContentGrid;
+import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.content.controller.ContentListener;
 
 /**
@@ -50,19 +50,19 @@ public interface EditorEventListener {
     void onNewTextSet(CodeEditor editor);
 
     /**
-     * @see ContentListener#afterDelete(ContentGrid, int, int, int, int, CharSequence)
+     * @see ContentListener#afterDelete(CodeAnalyzerResultContent, int, int, int, int, CharSequence)
      * Note:do not change content at this time
      */
     void afterDelete(CodeEditor editor, CharSequence content, int startLine, int startColumn, int endLine, int endColumn, CharSequence deletedContent);
 
     /**
-     * @see ContentListener#afterInsert(ContentGrid, int, int, int, int, CharSequence)
+     * @see ContentListener#afterInsert(CodeAnalyzerResultContent, int, int, int, int, CharSequence)
      * Note:do not change content at this time
      */
     void afterInsert(CodeEditor editor, CharSequence content, int startLine, int startColumn, int endLine, int endColumn, CharSequence insertedContent);
 
     /**
-     * @see ContentListener#beforeReplace(ContentGrid)
+     * @see ContentListener#beforeReplace(CodeAnalyzerResultContent)
      * Note:do not change content at this time
      */
     void beforeReplace(CodeEditor editor, CharSequence content);

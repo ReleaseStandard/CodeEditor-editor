@@ -19,18 +19,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.signal.Router;
 import io.github.rosemoe.editor.core.signal.Routes;
-import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.content.controller.ContentListener;
 
 /**
- * Helper class for ContentGrid to take down modification
+ * Helper class for CodeAnalyzerResultContent to take down modification
  * As well as provide Undo/Redo actions
  *
  * @author Rose
  */
-public final class ContentActionStack extends Stack<ContentActionStack.ContentAction> implements ContentListener, Router {
+public final class ContentActionStackAnalyzer extends Stack<ContentActionStackAnalyzer.ContentAction> implements ContentListener, Router {
 
     public int maxStackSize = 100;
     private InsertAction mInsertAction;
@@ -41,20 +41,20 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     private int mStackPointer;
 
     /**
-     * Create ContentActionStack with the target content
+     * Create ContentActionStackAnalyzer with the target content
      */
-    public ContentActionStack() {
+    public ContentActionStackAnalyzer() {
         mInsertAction = null;
         mDeleteAction = null;
         mStackPointer = 0;
     }
 
     /**
-     * Undo on the given ContentGrid
+     * Undo on the given CodeAnalyzerResultContent
      *
      * @param content Undo Target
      */
-    public void undo(ContentGrid content) {
+    public void undo(CodeAnalyzerResultContent content) {
         if (canUndo()) {
             ignoreModification = true;
             ContentAction action = get(mStackPointer - 1);
@@ -65,11 +65,11 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     }
 
     /**
-     * Redo on the given ContentGrid
+     * Redo on the given CodeAnalyzerResultContent
      *
      * @param content Redo Target
      */
-    public void redo(ContentGrid content) {
+    public void redo(CodeAnalyzerResultContent content) {
         if (canRedo()) {
             ignoreModification = true;
             ContentAction action = get(mStackPointer);
@@ -111,7 +111,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     }
 
     /**
-     * Set a max stack size for this ContentActionStack
+     * Set a max stack size for this ContentActionStackAnalyzer
      *
      * @param maxSize max stack size
      */
@@ -156,7 +156,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
      *
      * @param action New {@link ContentAction}
      */
-    private void pushAction(ContentGrid content, ContentAction action) {
+    private void pushAction(CodeAnalyzerResultContent content, ContentAction action) {
         if (!undoEnabled) {
             return;
         }
@@ -197,7 +197,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     }
 
     @Override
-    public void beforeReplace(ContentGrid content) {
+    public void beforeReplace(CodeAnalyzerResultContent content) {
         if (ignoreModification) {
             return;
         }
@@ -205,7 +205,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     }
 
     @Override
-    public void afterInsert(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn,
+    public void afterInsert(CodeAnalyzerResultContent content, int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence insertedContent) {
         if (ignoreModification) {
             return;
@@ -228,7 +228,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     }
 
     @Override
-    public void afterDelete(ContentGrid content, int startLine, int startColumn, int endLine, int endColumn,
+    public void afterDelete(CodeAnalyzerResultContent content, int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence deletedContent) {
         if (ignoreModification) {
             return;
@@ -248,10 +248,10 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     public boolean route(Routes action, Object... args) {
         switch (action) {
             case ACTION_UNDO:
-                undo((ContentGrid) args[0]);
+                undo((CodeAnalyzerResultContent) args[0]);
             return true;
             case ACTION_REDO:
-                redo((ContentGrid) args[0]);
+                redo((CodeAnalyzerResultContent) args[0]);
             return true;
         }
         return false;
@@ -269,14 +269,14 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
          *
          * @param content On the given object
          */
-        void undo(ContentGrid content);
+        void undo(CodeAnalyzerResultContent content);
 
         /**
          * Redo this action
          *
          * @param content On the given object
          */
-        void redo(ContentGrid content);
+        void redo(CodeAnalyzerResultContent content);
 
         /**
          * Get whether the target action can be merged with this action
@@ -296,7 +296,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     }
 
     /**
-     * Insert action model for ContentActionStack
+     * Insert action model for ContentActionStackAnalyzer
      *
      * @author Rose
      */
@@ -307,12 +307,12 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
         public CharSequence text;
 
         @Override
-        public void undo(ContentGrid content) {
+        public void undo(CodeAnalyzerResultContent content) {
             content.delete(startLine, startColumn, endLine, endColumn);
         }
 
         @Override
-        public void redo(ContentGrid content) {
+        public void redo(CodeAnalyzerResultContent content) {
             content.insert(startLine, startColumn, text);
         }
 
@@ -346,7 +346,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     }
 
     /**
-     * MultiAction saves several actions for ContentActionStack
+     * MultiAction saves several actions for ContentActionStackAnalyzer
      *
      * @author Rose
      */
@@ -368,14 +368,14 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
         }
 
         @Override
-        public void undo(ContentGrid content) {
+        public void undo(CodeAnalyzerResultContent content) {
             for (int i = _actions.size() - 1; i >= 0; i--) {
                 _actions.get(i).undo(content);
             }
         }
 
         @Override
-        public void redo(ContentGrid content) {
+        public void redo(CodeAnalyzerResultContent content) {
             for (int i = 0; i < _actions.size(); i++) {
                 _actions.get(i).redo(content);
             }
@@ -394,7 +394,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     }
 
     /**
-     * Delete action model for ContentActionStack
+     * Delete action model for ContentActionStackAnalyzer
      *
      * @author Rose
      */
@@ -405,12 +405,12 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
         public CharSequence text;
 
         @Override
-        public void undo(ContentGrid content) {
+        public void undo(CodeAnalyzerResultContent content) {
             content.insert(startLine, startColumn, text);
         }
 
         @Override
-        public void redo(ContentGrid content) {
+        public void redo(CodeAnalyzerResultContent content) {
             content.delete(startLine, startColumn, endLine, endColumn);
         }
 
@@ -444,7 +444,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     }
 
     /**
-     * Replace action model for ContentActionStack
+     * Replace action model for ContentActionStackAnalyzer
      *
      * @author Rose
      */
@@ -454,13 +454,13 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
         public DeleteAction _delete;
 
         @Override
-        public void undo(ContentGrid content) {
+        public void undo(CodeAnalyzerResultContent content) {
             _insert.undo(content);
             _delete.undo(content);
         }
 
         @Override
-        public void redo(ContentGrid content) {
+        public void redo(CodeAnalyzerResultContent content) {
             _delete.redo(content);
             _insert.redo(content);
         }

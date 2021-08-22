@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core;
 
-import io.github.rosemoe.editor.core.content.controller.ContentGrid;
+import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.extension.extensions.langs.LanguagePlugin;
 
 /**
@@ -39,7 +39,7 @@ public class TextFormatter extends Thread {
     public void run() {
         CharSequence result = null;
         try {
-            CharSequence chars = ((mText instanceof ContentGrid) ? (((ContentGrid) mText).toStringBuilder()) : new StringBuilder(mText));
+            CharSequence chars = ((mText instanceof CodeAnalyzerResultContent) ? (((CodeAnalyzerResultContent) mText).toStringBuilder()) : new StringBuilder(mText));
             result = mLanguage.format(chars);
         } catch (Throwable e) {
             if (mReceiver != null) {
