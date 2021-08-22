@@ -13,18 +13,22 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.analyzer.analyzer.tokenemitter;
+package io.github.rosemoe.editor.core.analyze;
 
-import io.github.rosemoe.editor.core.analyzer.ResultStore;
-import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
+import io.github.rosemoe.editor.core.util.Logger;
 
 /**
- * Token emitter is a type of code analysis,
- * where each time a token is encountered, we process an action.
+ * Container for objects that are going to be recycled
+ *
+ * @author Rose
  */
-public abstract class TokenEmitter extends CodeAnalyzer {
+public class CodeAnalyzerResultRecycler {
 
-    public TokenEmitter(ResultStore resultStore) {
-        super(resultStore);
-    }
+        /**
+         * Process objects currently in the recycler.
+         */
+        public void recycle() {
+                Logger.debug();
+        }
+
 }

@@ -13,14 +13,13 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.analyzer.analyzer;
+package io.github.rosemoe.editor.core.analyze.analyzer;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-import io.github.rosemoe.editor.core.analyzer.Analyzer;
-import io.github.rosemoe.editor.core.analyzer.ResultStore;
+import io.github.rosemoe.editor.core.analyze.ResultStore;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
-import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
+import io.github.rosemoe.editor.core.analyze.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.util.CallStack;
 import io.github.rosemoe.editor.core.util.Logger;
 

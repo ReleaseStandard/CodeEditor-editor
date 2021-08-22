@@ -1,4 +1,4 @@
-package io.github.rosemoe.editor.core.analyzer;
+package io.github.rosemoe.editor.core.signal;
 
 public enum Routes {
     ACTION_CONTENT_ACTION_STACK,

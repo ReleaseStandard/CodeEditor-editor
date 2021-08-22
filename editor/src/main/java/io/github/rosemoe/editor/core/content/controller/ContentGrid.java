@@ -18,7 +18,7 @@ package io.github.rosemoe.editor.core.content.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.rosemoe.editor.core.analyzer.analyzer.content.ContentActionStack;
+import io.github.rosemoe.editor.core.analyze.analyzer.content.ContentActionStack;
 import io.github.rosemoe.editor.core.content.processors.ContentLineRemoveListener;
 import io.github.rosemoe.editor.core.content.processors.indexer.CachedIndexer;
 import io.github.rosemoe.editor.core.content.processors.indexer.Indexer;
@@ -77,15 +77,8 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
         nestedBatchEdit = 0;
         append();
         mListeners = new ArrayList<>();
-        contentManager = new ContentActionStack();
         indexer = new NoCacheIndexer(this);
-        if (src.length() == 0) {
-            setUndoEnabled(true);
-            return;
-        }
-        setUndoEnabled(false);
         insert(0, 0, src);
-        setUndoEnabled(true);
     }
 
     /**
@@ -283,50 +276,6 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
     }
 
     /**
-     * Undo the last modification
-     * NOTE:When there are too much modification,old modification will be deleted from ContentActionStack
-     */
-    public void undo() {
-        contentManager.undo(this);
-    }
-
-    /**
-     * Redo the last modification
-     */
-    public void redo() {
-        contentManager.redo(this);
-    }
-
-    /**
-     * Whether we can undo
-     *
-     * @return Whether we can undo
-     */
-    public boolean canUndo() {
-        return contentManager.canUndo();
-    }
-
-    /**
-     * Whether we can redo
-     *
-     * @return Whether we can redo
-     */
-    public boolean canRedo() {
-        return contentManager.canRedo();
-    }
-
-    /**
-     * Set whether enable the ContentActionStack.
-     * If false,any modification will not be taken down and previous modification that
-     * is already in ContentActionStack will be removed.Does not make changes to content.
-     *
-     * @param enabled New state for ContentActionStack
-     */
-    public void setUndoEnabled(boolean enabled) {
-        contentManager.setUndoEnabled(enabled);
-    }
-
-    /**
      * A delegate method.
      * Notify the ContentActionStack to begin batch edit(enter a new layer).
      * NOTE: batch edit in Android can be nested.
@@ -506,7 +455,7 @@ public class ContentGrid extends Grid<ContentCell> implements CharSequence {
      * @param text Text deleted
      */
     private void dispatchAfterInsert(int startLine, int startCol, int endLine, int endCol, CharSequence text) {
-        contentManager.afterInsert(this, startLine, startCol, endLine, endCol, text);
+        //contentManager.afterInsert(this, startLine, startCol, endLine, endCol, text); TODO : break
         if (cursor != null)
             cursor.afterInsert(startLine, startCol, endLine, endCol, text);
         if (indexer instanceof ContentListener) {

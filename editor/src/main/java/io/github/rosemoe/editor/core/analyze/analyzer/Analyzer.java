@@ -1,6 +1,7 @@
-package io.github.rosemoe.editor.core.analyzer;
+package io.github.rosemoe.editor.core.analyze.analyzer;
 
-import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.analyze.ResultStore;
+import io.github.rosemoe.editor.core.analyze.result.instances.CodeAnalyzerResultContent;
 
 /**
  * Any analyzer has a goal : analyse an input signal and produce a result.

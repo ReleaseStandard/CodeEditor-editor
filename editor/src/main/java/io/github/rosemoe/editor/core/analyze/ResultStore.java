@@ -1,13 +1,13 @@
-package io.github.rosemoe.editor.core.analyzer;
+package io.github.rosemoe.editor.core.analyze;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import io.github.rosemoe.editor.core.analyzer.result.AnalyzerResult;
-import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
-import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultCompletion;
-import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.analyze.result.AnalyzerResult;
+import io.github.rosemoe.editor.core.analyze.result.instances.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.analyze.result.instances.CodeAnalyzerResultCompletion;
+import io.github.rosemoe.editor.core.analyze.result.instances.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.util.Logger;
 

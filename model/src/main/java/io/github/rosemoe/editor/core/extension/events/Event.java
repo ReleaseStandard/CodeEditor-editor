@@ -17,6 +17,7 @@ package io.github.rosemoe.editor.core.extension.events;
 
 import java.util.ArrayList;
 
+import io.github.rosemoe.editor.core.extension.PrioritySystem;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**
@@ -24,30 +25,8 @@ import io.github.rosemoe.editor.core.util.Logger;
  *
  * @author Release Standard
  */
-public class Event implements Comparable {
+public class Event extends PrioritySystem {
 
-    @Override
-    public int compareTo(Object o) {
-        if ( o instanceof Event) {
-            Event p = (Event) o;
-            if ( priorityRing < p.priorityRing ) {
-                return -1;
-            } else if(priorityRing > p.priorityRing ) {
-                return 1;
-            }
-            return 0;
-        }
-        // ex: compareTo null will result in null to be processed with less priority.
-        return 1;
-    }
-
-    /**
-     * Event priority declaration : WARNING they should be putted from low to high priority.
-     */
-    public static final int PRIORITY_LOW = -1000;
-    public static final int PRIORITY_STD = 0;
-    public static final int PRIORITY_HIGH = 1000;
-    public int priorityRing = PRIORITY_STD;
     public boolean stopHorizontalPropagation = false;
     public boolean stopVerticalPropagation   = false;
     /**

@@ -1,4 +1,4 @@
-package io.github.rosemoe.editor.core.analyzer;
+package io.github.rosemoe.editor.core.signal;
 
 /**
  * An object that implements Router process an entry signal.
@@ -6,7 +6,8 @@ package io.github.rosemoe.editor.core.analyzer;
  */
 public interface Router {
     /**
-     * Route the signal throught this note
+     * Route the signal through this node.
+     * signal could be accepted, rejected, forwarded
      * @param action requested action
      * @param args arguments of the action
      * @return true if a route has been found else false

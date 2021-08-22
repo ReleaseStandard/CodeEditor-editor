@@ -24,7 +24,7 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 
-import io.github.rosemoe.editor.core.analyzer.Routes;
+import io.github.rosemoe.editor.core.signal.Routes;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.SymbolPairMatch;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;

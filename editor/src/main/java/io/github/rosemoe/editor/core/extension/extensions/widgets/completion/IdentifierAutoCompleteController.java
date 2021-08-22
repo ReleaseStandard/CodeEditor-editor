@@ -15,9 +15,9 @@
  */
 package io.github.rosemoe.editor.core.extension.extensions.widgets.completion;
 
-import io.github.rosemoe.editor.core.analyzer.ResultStore;
-import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
-import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultCompletion;
+import io.github.rosemoe.editor.core.analyze.ResultStore;
+import io.github.rosemoe.editor.core.analyze.analyzer.CodeAnalyzer;
+import io.github.rosemoe.editor.core.analyze.result.instances.CodeAnalyzerResultCompletion;
 
 import java.util.ArrayList;
 import java.util.Collections;

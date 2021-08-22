@@ -1,11 +1,5 @@
 package io.github.rosemoe.editor.core.extension;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import junit.framework.TestCase;
-
 import org.junit.Test;
 
 import io.github.rosemoe.editor.core.CodeEditorModel;
@@ -62,14 +56,14 @@ public class ExtensionTest {
     public void testPrioritySystem() {
         @Jailbreak Extension e1 = new Extension();
         @Jailbreak Extension e2 = new Extension();
-        e1.priorityRing = Extension.PRIORITY_HIGH;
-        e2.priorityRing = Extension.PRIORITY_LOW;
+        e1.priorityRing = PrioritySystem.PRIORITY_HIGH;
+        e2.priorityRing = PrioritySystem.PRIORITY_LOW;
         assertTrue(e1.compareTo(e2) > 0);
-        e1.priorityRing = Extension.PRIORITY_STD;
-        e2.priorityRing = Extension.PRIORITY_LOW;
+        e1.priorityRing = PrioritySystem.PRIORITY_STD;
+        e2.priorityRing = PrioritySystem.PRIORITY_LOW;
         assertTrue(e1.compareTo(e2) > 0);
-        e1.priorityRing = Extension.PRIORITY_STD;
-        e2.priorityRing = Extension.PRIORITY_STD;
+        e1.priorityRing = PrioritySystem.PRIORITY_STD;
+        e2.priorityRing = PrioritySystem.PRIORITY_STD;
         assertTrue(e1.compareTo(e2) == 0);
     }
 

@@ -54,21 +54,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import io.github.rosemoe.editor.R;
-import io.github.rosemoe.editor.core.analyzer.Pipeline;
-import io.github.rosemoe.editor.core.analyzer.ResultStore;
-import io.github.rosemoe.editor.core.analyzer.Router;
-import io.github.rosemoe.editor.core.analyzer.Routes;
-import io.github.rosemoe.editor.core.analyzer.analyzer.content.ContentAnalyzer;
-import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultColor;
-import io.github.rosemoe.editor.core.analyzer.result.instances.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.analyze.Pipeline;
+import io.github.rosemoe.editor.core.analyze.ResultStore;
+import io.github.rosemoe.editor.core.signal.Router;
+import io.github.rosemoe.editor.core.signal.Routes;
+import io.github.rosemoe.editor.core.analyze.analyzer.content.ContentAnalyzer;
+import io.github.rosemoe.editor.core.analyze.result.instances.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.extension.Extension;
-import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
-import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
+import io.github.rosemoe.editor.core.analyze.analyzer.CodeAnalyzer;
+import io.github.rosemoe.editor.core.analyze.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.extension.extensions.appcompattweaker.AppCompatTweakerController;
 import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;
@@ -106,7 +104,7 @@ import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.view
 import io.github.rosemoe.editor.core.util.FontCache;
 import io.github.rosemoe.editor.core.content.processors.ContentLineRemoveListener;
 
-import static io.github.rosemoe.editor.core.analyzer.Pipeline.ANALYZER_CONTENT;
+import static io.github.rosemoe.editor.core.analyze.Pipeline.ANALYZER_CONTENT;
 import static io.github.rosemoe.editor.core.extension.extensions.langs.helpers.TextUtils.isEmoji;
 
 /**
@@ -188,7 +186,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     private boolean mEditable;
     private boolean mCharPaint;
     public boolean mWordwrap;
-    private boolean mUndoEnabled;
     private boolean mBlockLineEnabled;
     private boolean mAutoCompletionEnabled;
     private boolean mCompletionOnComposing;
@@ -614,7 +611,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         mVerticalEdgeGlow = new MaterialEdgeEffect();
         mHorizontalGlow   = new MaterialEdgeEffect();
         mOverrideSymbolPairs = new SymbolPairMatch();
-        setUndoEnabled(true);
         setScalable(true);
         view.setFocusable(true);
         view.setFocusableInTouchMode(true);
@@ -2218,58 +2214,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     }
 
     /**
-     * Undo last action
-     */
-    public void undo() {
-        resultStore.mText.undo();
-    }
-
-    /**
-     * Redo last action
-     */
-    public void redo() {
-        resultStore.mText.redo();
-    }
-
-    /**
-     * Whether can undo
-     *
-     * @return whether can undo
-     */
-    public boolean canUndo() {
-        return resultStore.mText.canUndo();
-    }
-
-    /**
-     * Whether can redo
-     *
-     * @return whether can redo
-     */
-    public boolean canRedo() {
-        return resultStore.mText.canRedo();
-    }
-
-    /**
-     * @return Enabled/Disabled
-     * @see CodeEditor#setUndoEnabled(boolean)
-     */
-    public boolean isUndoEnabled() {
-        return mUndoEnabled;
-    }
-
-    /**
-     * Enable / disabled undo manager
-     *
-     * @param enabled Enable/Disable
-     */
-    public void setUndoEnabled(boolean enabled) {
-        mUndoEnabled = enabled;
-        if (resultStore.mText != null) {
-            resultStore.mText.setUndoEnabled(enabled);
-        }
-    }
-
-    /**
      * @return Whether drag
      * @see CodeEditor#setDrag(boolean)
      */
@@ -2943,7 +2887,6 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         cursor.setLanguage(mLanguage);
         userInput.view.reset();
         resultStore.mText.addContentListener(this);
-        resultStore.mText.setUndoEnabled(mUndoEnabled);
         resultStore.mText.setLineListener(this);
         pipeline.stopAllFlow();
 
@@ -3306,7 +3249,7 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         ContentAnalyzer carc = (ContentAnalyzer) pipeline.get(ANALYZER_CONTENT);
         if ( isEditable() ) {
             switch (action) {
-                case ACTION_CONTENT_ACTION_STACK: return carc.route(action, args);
+                case ACTION_CONTENT_ACTION_STACK: return carc.route(action, args); // TODO WARNING : this is an analysis that will modify the content => should transform to pipeline processing //
                 case ACTION_CONTENT_CUT: cutText(); return true;
                 case ACTION_CONTENT_PASTE: pasteText(); return true;
                 case ACTION_CONTENT_TEXT_DEL: cursor.onDeleteKeyPressed(); break;

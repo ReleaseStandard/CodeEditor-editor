@@ -13,14 +13,14 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.analyzer.analyzer.content;
+package io.github.rosemoe.editor.core.analyze.analyzer.content;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import io.github.rosemoe.editor.core.analyzer.Router;
-import io.github.rosemoe.editor.core.analyzer.Routes;
+import io.github.rosemoe.editor.core.signal.Router;
+import io.github.rosemoe.editor.core.signal.Routes;
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 import io.github.rosemoe.editor.core.content.controller.ContentListener;
 
@@ -35,7 +35,7 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     public int maxStackSize = 100;
     private InsertAction mInsertAction;
     private DeleteAction mDeleteAction;
-    public boolean undoEnabled;
+    public boolean undoEnabled = true;
     public boolean replaceMark = false;
     public boolean ignoreModification = false;
     private int mStackPointer;
@@ -57,7 +57,8 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     public void undo(ContentGrid content) {
         if (canUndo()) {
             ignoreModification = true;
-            get(mStackPointer - 1).undo(content);
+            ContentAction action = get(mStackPointer - 1);
+            action.undo(content);
             mStackPointer--;
             ignoreModification = false;
         }
@@ -71,11 +72,13 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
     public void redo(ContentGrid content) {
         if (canRedo()) {
             ignoreModification = true;
-            get(mStackPointer).redo(content);
+            ContentAction action = get(mStackPointer);
+            action.redo(content);
             mStackPointer++;
             ignoreModification = false;
         }
     }
+
 
     /**
      * Whether can undo
@@ -240,9 +243,6 @@ public final class ContentActionStack extends Stack<ContentActionStack.ContentAc
             pushAction(content, mDeleteAction);
         }
     }
-
-    public static final int ACTION_UNDO = 0;
-    public static final int ACTION_REDO = 1;
 
     @Override
     public boolean route(Routes action, Object... args) {

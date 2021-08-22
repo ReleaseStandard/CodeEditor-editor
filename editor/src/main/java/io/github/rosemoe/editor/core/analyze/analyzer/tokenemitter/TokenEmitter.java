@@ -13,18 +13,18 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.analyzer.result.instances;
+package io.github.rosemoe.editor.core.analyze.analyzer.tokenemitter;
 
-import io.github.rosemoe.editor.core.analyzer.result.AnalyzerResult;
-import io.github.rosemoe.editor.core.content.controller.ContentGrid;
+import io.github.rosemoe.editor.core.analyze.ResultStore;
+import io.github.rosemoe.editor.core.analyze.analyzer.CodeAnalyzer;
 
 /**
- * Manage how the analyzer show display the content to the screen.
+ * Token emitter is a type of code analysis,
+ * where each time a token is encountered, we process an action.
  */
-public class CodeAnalyzerResultContent extends ContentGrid implements AnalyzerResult {
+public abstract class TokenEmitter extends CodeAnalyzer {
 
-    @Override
-    public void clear() {
-
+    public TokenEmitter(ResultStore resultStore) {
+        super(resultStore);
     }
 }

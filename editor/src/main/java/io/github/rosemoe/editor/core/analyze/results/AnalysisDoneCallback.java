@@ -13,22 +13,23 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.analyzer;
+package io.github.rosemoe.editor.core.analyze.results;
 
-import io.github.rosemoe.editor.core.util.Logger;
+import io.github.rosemoe.editor.core.analyze.analyzer.CodeAnalyzer;
 
 /**
- * Container for objects that are going to be recycled
+ * AnalysisDoneCallback for text analyzing
  *
  * @author Rose
  */
-public class CodeAnalyzerResultRecycler {
+public interface AnalysisDoneCallback {
 
-        /**
-         * Process objects currently in the recycler.
-         */
-        public void recycle() {
-                Logger.debug();
-        }
+    /**
+     * Called when analyze result is available
+     * Count of calling this method is not always equal to the count you call
+     *
+     * @param analyzer Host TextAnalyzerView
+     */
+    void onAnalyzeDone(CodeAnalyzer analyzer);
 
 }

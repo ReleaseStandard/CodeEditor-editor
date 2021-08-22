@@ -13,23 +13,18 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.analyzer.results;
+package io.github.rosemoe.editor.core.analyze.result.instances;
 
-import io.github.rosemoe.editor.core.analyzer.analyzer.CodeAnalyzer;
+import io.github.rosemoe.editor.core.analyze.result.AnalyzerResult;
+import io.github.rosemoe.editor.core.content.controller.ContentGrid;
 
 /**
- * AnalysisDoneCallback for text analyzing
- *
- * @author Rose
+ * Manage how the analyzer show display the content to the screen.
  */
-public interface AnalysisDoneCallback {
+public class CodeAnalyzerResultContent extends ContentGrid implements AnalyzerResult {
 
-    /**
-     * Called when analyze result is available
-     * Count of calling this method is not always equal to the count you call
-     *
-     * @param analyzer Host TextAnalyzerView
-     */
-    void onAnalyzeDone(CodeAnalyzer analyzer);
+    @Override
+    public void clear() {
 
+    }
 }

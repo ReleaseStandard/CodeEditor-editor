@@ -13,10 +13,10 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.analyzer.analyzer;
+package io.github.rosemoe.editor.core.analyze.analyzer;
 
 import io.github.rosemoe.editor.core.content.controller.ContentGrid;
-import io.github.rosemoe.editor.core.analyzer.results.AnalysisDoneCallback;
+import io.github.rosemoe.editor.core.analyze.results.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.grid.Cell;
 import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.util.Logger;

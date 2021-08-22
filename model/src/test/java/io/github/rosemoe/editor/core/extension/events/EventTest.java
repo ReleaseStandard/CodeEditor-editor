@@ -2,6 +2,7 @@ package io.github.rosemoe.editor.core.extension.events;
 
 import org.junit.Test;
 
+import io.github.rosemoe.editor.core.extension.PrioritySystem;
 import io.github.rosemoe.editor.core.util.Random;
 import manifold.ext.rt.api.Jailbreak;
 
@@ -17,10 +18,10 @@ public class EventTest {
             Event e1 = new io.github.rosemoe.editor.core.extension.events.Event();
             Event e2 = new io.github.rosemoe.editor.core.extension.events.Event();
             assertTrue(e1.compareTo(e2) == 0);
-            e1.priorityRing = Event.PRIORITY_HIGH;
+            e1.priorityRing = PrioritySystem.PRIORITY_HIGH;
             assertTrue(e1 > e2);
             assertFalse(e1 <= e2);
-            e1.priorityRing = Event.PRIORITY_LOW;
+            e1.priorityRing = PrioritySystem.PRIORITY_LOW;
             assertTrue(e1 < e2);
             assertFalse(e1 >= e2);
         }

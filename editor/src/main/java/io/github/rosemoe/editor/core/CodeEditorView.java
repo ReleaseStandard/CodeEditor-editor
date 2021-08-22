@@ -15,12 +15,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
-import io.github.rosemoe.editor.core.analyzer.Routes;
-import io.github.rosemoe.editor.core.analyzer.analyzer.content.ContentActionStack;
-import io.github.rosemoe.editor.core.analyzer.analyzer.content.ContentAnalyzer;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.SymbolPairMatch;
-import io.github.rosemoe.editor.core.grid.Line;
-import io.github.rosemoe.editor.core.grid.instances.ContentCell;
+import io.github.rosemoe.editor.core.signal.Routes;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
 
