@@ -1,5 +1,6 @@
 package io.github.rosemoe.editor.core;
 
+import io.github.rosemoe.editor.core.analyze.ResultStore;
 import io.github.rosemoe.editor.core.color.ColorManager;
 import io.github.rosemoe.editor.core.extension.ExtensionContainer;
 
@@ -22,5 +23,5 @@ public class CodeEditorModel {
 
     public ExtensionContainer plugins = new ExtensionContainer();           // Plugins
 
-    // resultStore
+    public ResultStore resultStore = new ResultStore();
 }

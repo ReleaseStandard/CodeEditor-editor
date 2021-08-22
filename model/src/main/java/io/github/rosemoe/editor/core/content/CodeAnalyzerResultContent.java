@@ -13,24 +13,20 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.content.controller;
+package io.github.rosemoe.editor.core.content;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.rosemoe.editor.core.analyze.analyzer.content.ContentActionStackAnalyzer;
-import io.github.rosemoe.editor.core.analyze.result.AnalyzerResult;
 import io.github.rosemoe.editor.core.content.processors.ContentLineRemoveListener;
 import io.github.rosemoe.editor.core.content.processors.indexer.CachedIndexer;
 import io.github.rosemoe.editor.core.content.processors.indexer.Indexer;
 import io.github.rosemoe.editor.core.content.processors.indexer.NoCacheIndexer;
-import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 
-import io.github.rosemoe.editor.core.CharPosition;
+import io.github.rosemoe.editor.core.analyze.result.AnalyzerResult;
 import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;
-import io.github.rosemoe.editor.core.CodeEditor;
 
 import static io.github.rosemoe.editor.core.grid.Cell.*;
 
@@ -47,18 +43,15 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
     public int nestedBatchEdit;
 
     private Indexer indexer;
-    private CursorController cursor;
     private List<ContentListener> mListeners;
     private ContentLineRemoveListener mLineListener;
-    private final CodeEditor editor;
 
-    private ContentActionStackAnalyzer contentManager;
 
     /**
      * This constructor will create a CodeAnalyzerResultContent object with no text
      */
     public CodeAnalyzerResultContent() {
-        this(null,null);
+        this(null);
         behaviourOnCellSplit = SPLIT_SPLITTING;
     }
 
@@ -68,9 +61,8 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      *
      * @param src The source of CodeAnalyzerResultContent
      */
-    public CodeAnalyzerResultContent(CharSequence src, CodeEditor editor) {
+    public CodeAnalyzerResultContent(CharSequence src) {
         behaviourOnCellSplit = SPLIT_SPLITTING;
-        this.editor = editor;
         if (src == null) {
             src = "";
         }
@@ -158,7 +150,8 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      * @return Transformed index for the given arguments
      */
     public int getCharIndex(int line, int column) {
-        return getIndexer().getCharIndex(line, column);
+        //return getIndexer().getCharIndex(line, column);
+        return -1;
     }
 
     /**
@@ -175,8 +168,9 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
         }
 
         //-----Notify------
-        if (cursor != null)
-            cursor.beforeInsert(line, column);
+        //if (cursor != null)
+        //    cursor.beforeInsert(line, column);
+        // TODO : break
 
         int workLine = line;
         int workIndex = column;
@@ -212,11 +206,12 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      * @return
      */
     public String delete(int start, int end) {
+        /*
         CharPosition startPos = getIndexer().getCharPosition(start);
         CharPosition endPos = getIndexer().getCharPosition(end);
         if (start != end) {
             return delete(startPos.line, startPos.column, endPos.line, endPos.column);
-        }
+        }*/
         return null;
     }
 
@@ -249,7 +244,6 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
         if (text == null) {
             throw new IllegalArgumentException("text can not be null");
         }
-        this.dispatchBeforeReplace();
         delete(startLine, columnOnStartLine, endLine, columnOnEndLine);
         insert(startLine, columnOnStartLine, text);
     }
@@ -347,13 +341,14 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      *
      * @return Indexer for this object
      */
+    /*
     public Indexer getIndexer() {
         if (indexer.getClass() != CachedIndexer.class && cursor != null) {
             return cursor.getIndexer();
         }
         return indexer;
     }
-
+*/
     @Override
     public boolean equals(Object anotherObject) {
         if (anotherObject instanceof CodeAnalyzerResultContent) {
@@ -395,78 +390,6 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
             //line.appendTo(sb);
         }
         return sb;
-    }
-
-    public void instanciateCursor() {
-
-    }
-    /**
-     * Get CursorController for editor (Create if there is not)
-     *
-     * @return CursorController
-     */
-    public CursorController getCursor() {
-        if (cursor == null) {
-            cursor = new CursorController(this,editor);
-        }
-        return cursor;
-    }
-
-    /**
-     * Dispatch events to listener before replacement
-     */
-    private void dispatchBeforeReplace() {
-        contentManager.beforeReplace(this);
-        if (cursor != null)
-            cursor.beforeReplace();
-        if (indexer instanceof ContentListener) {
-            ((ContentListener) indexer).beforeReplace(this);
-        }
-        for (ContentListener lis : mListeners) {
-            lis.beforeReplace(this);
-        }
-    }
-
-    /**
-     * Dispatch events to listener after deletion
-     *
-     * @param startLine Start line
-     * @param startCol Start Column
-     * @param endLine End line
-     * @param endCol End column
-     * @param text Text deleted
-     */
-    private void dispatchAfterDelete(int startLine, int startCol, int endLine, int endCol, CharSequence text) {
-        contentManager.afterDelete( startLine, startCol, endLine, endCol, text);
-        if (cursor != null)
-            cursor.afterDelete(startLine, startCol, endLine, endCol, text);
-        if (indexer instanceof ContentListener) {
-            ((ContentListener) indexer).afterDelete(this, startLine, startCol, endLine, endCol, text);
-        }
-        for (ContentListener lis : mListeners) {
-            lis.afterDelete(this, startLine, startCol, endLine, endCol, text);
-        }
-    }
-
-    /**
-     * Dispatch events to listener after insertion
-     *
-     * @param startLine Start line
-     * @param startCol Start Column
-     * @param endLine End line
-     * @param endCol End column
-     * @param text Text deleted
-     */
-    private void dispatchAfterInsert(int startLine, int startCol, int endLine, int endCol, CharSequence text) {
-        //contentManager.afterInsert(this, startLine, startCol, endLine, endCol, text); TODO : break
-        if (cursor != null)
-            cursor.afterInsert(startLine, startCol, endLine, endCol, text);
-        if (indexer instanceof ContentListener) {
-            ((ContentListener) indexer).afterInsert(this, startLine, startCol, endLine, endCol, text);
-        }
-        for (ContentListener lis : mListeners) {
-            lis.afterInsert(this, startLine, startCol, endLine, endCol, text);
-        }
     }
 
     /**

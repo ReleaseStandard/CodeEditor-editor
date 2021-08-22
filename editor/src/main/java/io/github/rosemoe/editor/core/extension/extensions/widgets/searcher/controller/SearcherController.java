@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core.extension.extensions.widgets.searcher.controller;
 
-import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.searcher.SearcherModel;
@@ -33,10 +33,12 @@ public class SearcherController extends Extension {
     public SearcherModel model = new SearcherModel();
     public SearcherView view   = new SearcherView();
 
+    final CodeEditor editorController;
     public SearcherController(CodeEditor editor) {
         super(editor.model);
         // TODO : define an event
         view.editor = editor;
+        this.editorController = editor;
     }
 
     public void search(String text) {
@@ -51,7 +53,7 @@ public class SearcherController extends Extension {
     public boolean replaceThis(String newText) {
         if ( ! model.isInitialized() ) { return false; }
         CodeAnalyzerResultContent text = view.editor.getText();
-        CursorController cursor = text.getCursor();
+        CursorController cursor = editorController.getCursor();
         if (cursor.isSelected()) {
             String selectedText = text.subGrid(cursor.getLeftLine(), cursor.getLeftColumn(), cursor.getRightLine(), cursor.getRightColumn()).toString();
             if (selectedText.equals(model.searchText)) {

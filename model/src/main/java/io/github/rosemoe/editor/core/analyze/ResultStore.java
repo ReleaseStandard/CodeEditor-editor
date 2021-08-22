@@ -5,9 +5,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import io.github.rosemoe.editor.core.analyze.result.AnalyzerResult;
-import io.github.rosemoe.editor.core.analyze.result.instances.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.color.CodeAnalyzerResultColor;
 import io.github.rosemoe.editor.core.analyze.result.instances.CodeAnalyzerResultCompletion;
-import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**

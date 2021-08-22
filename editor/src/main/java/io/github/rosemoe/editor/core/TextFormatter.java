@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core;
 
-import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.extension.extensions.langs.LanguagePlugin;
 
 /**

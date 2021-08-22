@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
-import io.github.rosemoe.editor.core.content.controller.ContentListener;
+import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.content.ContentListener;
 import io.github.rosemoe.editor.core.CharPosition;
 
 /**

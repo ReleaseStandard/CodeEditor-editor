@@ -15,8 +15,8 @@
  */
 package io.github.rosemoe.editor.core.analyze.analyzer;
 
-import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
-import io.github.rosemoe.editor.core.analyze.results.AnalysisDoneCallback;
+import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.analyze.result.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.grid.Cell;
 import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.util.Logger;

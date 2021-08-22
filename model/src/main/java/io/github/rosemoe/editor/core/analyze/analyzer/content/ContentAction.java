@@ -1,7 +1,5 @@
 package io.github.rosemoe.editor.core.analyze.analyzer.content;
 
-import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
-
 /**
  * For saving modification better
  *

@@ -1,4 +1,4 @@
-package io.github.rosemoe.editor.core.analyze.result.instances;
+package io.github.rosemoe.editor.core.color;
 
 import io.github.rosemoe.editor.core.analyze.result.AnalyzerResult;
 import io.github.rosemoe.editor.core.grid.Grid;

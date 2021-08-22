@@ -16,11 +16,10 @@
 package io.github.rosemoe.editor.core.analyze.analyzer;
 
 import java.util.concurrent.locks.ReentrantLock;
-
 import io.github.rosemoe.editor.core.analyze.ResultStore;
-import io.github.rosemoe.editor.core.analyze.results.AnalysisDoneCallback;
-import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
-import io.github.rosemoe.editor.core.signal.Routes;
+import io.github.rosemoe.editor.core.analyze.result.AnalysisDoneCallback;
+import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.analyze.signal.Routes;
 import io.github.rosemoe.editor.core.util.CallStack;
 import io.github.rosemoe.editor.core.util.Logger;
 

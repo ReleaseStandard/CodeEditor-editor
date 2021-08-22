@@ -17,7 +17,7 @@ package io.github.rosemoe.editor.core.extension.extensions.widgets.layout.contro
 
 import android.graphics.Paint;
 
-import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.util.FontCache;
 import io.github.rosemoe.editor.core.CodeEditor;
 
@@ -95,9 +95,9 @@ public abstract class AbstractLayout implements Layout {
         }
         if (editor.mWordwrap) {
             //editor.mCachedLineNumberWidth = (int) editor.lineNumber.measureLineNumber(editor.getLineCount()); // TODO
-            editor.mLayout = new WordwrapLayout(editor, editor.resultStore.mText);
+            editor.mLayout = new WordwrapLayout(editor, editor.model.resultStore.mText);
         } else {
-            editor.mLayout = new LineBreakLayout(editor, editor.resultStore.mText);
+            editor.mLayout = new LineBreakLayout(editor, editor.model.resultStore.mText);
         }
         if (editor.userInput != null) {
             editor.userInput.view.scrollBy(0, 0);

@@ -1,10 +1,10 @@
 package io.github.rosemoe.editor.core.analyze.analyzer.content;
 
-import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
-import io.github.rosemoe.editor.core.signal.Router;
+import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.analyze.signal.Router;
 import io.github.rosemoe.editor.core.analyze.analyzer.Analyzer;
 import io.github.rosemoe.editor.core.analyze.ResultStore;
-import io.github.rosemoe.editor.core.signal.Routes;
+import io.github.rosemoe.editor.core.analyze.signal.Routes;
 
 public class ContentAnalyzer extends Analyzer implements Router {
 

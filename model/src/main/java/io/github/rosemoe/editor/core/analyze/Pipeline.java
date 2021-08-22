@@ -1,14 +1,13 @@
 package io.github.rosemoe.editor.core.analyze;
 
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import io.github.rosemoe.editor.core.analyze.analyzer.Analyzer;
 import io.github.rosemoe.editor.core.analyze.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.analyze.analyzer.content.ContentActionStackAnalyzer;
 import io.github.rosemoe.editor.core.analyze.analyzer.content.ContentAnalyzer;
-import io.github.rosemoe.editor.core.signal.Router;
-import io.github.rosemoe.editor.core.signal.Routes;
+import io.github.rosemoe.editor.core.analyze.signal.Router;
+import io.github.rosemoe.editor.core.analyze.signal.Routes;
 
 /**
  * A pipeline is a collection of analyzer.

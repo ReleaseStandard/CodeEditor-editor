@@ -1,4 +1,4 @@
-package io.github.rosemoe.editor.core.signal;
+package io.github.rosemoe.editor.core.analyze.signal;
 
 /**
  * An object that implements Router process an entry signal.

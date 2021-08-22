@@ -17,7 +17,7 @@ package io.github.rosemoe.editor.core.extension.extensions.widgets.layout.contro
 
 
 import io.github.rosemoe.editor.core.IntPair;
-import io.github.rosemoe.editor.core.content.controller.ContentListener;
+import io.github.rosemoe.editor.core.content.ContentListener;
 import io.github.rosemoe.editor.core.content.processors.ContentLineRemoveListener;
 
 /**

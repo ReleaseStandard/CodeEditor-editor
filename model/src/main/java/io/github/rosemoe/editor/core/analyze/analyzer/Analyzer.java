@@ -1,7 +1,7 @@
 package io.github.rosemoe.editor.core.analyze.analyzer;
 
 import io.github.rosemoe.editor.core.analyze.ResultStore;
-import io.github.rosemoe.editor.core.signal.Router;
+import io.github.rosemoe.editor.core.analyze.signal.Router;
 
 /**
  * Any analyzer has a goal : analyse an input signal and produce a result.

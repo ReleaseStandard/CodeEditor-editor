@@ -17,7 +17,7 @@ package io.github.rosemoe.editor.core.extension.extensions.widgets.layout.contro
 
 import java.util.NoSuchElementException;
 
-import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 import io.github.rosemoe.editor.core.util.BinaryHeap;

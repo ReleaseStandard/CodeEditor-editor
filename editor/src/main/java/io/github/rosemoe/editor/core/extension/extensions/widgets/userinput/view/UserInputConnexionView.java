@@ -24,8 +24,8 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 
-import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
-import io.github.rosemoe.editor.core.signal.Routes;
+import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.analyze.signal.Routes;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.SymbolPairMatch;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
 import io.github.rosemoe.editor.core.CharPosition;
@@ -203,9 +203,11 @@ public class UserInputConnexionView extends BaseInputConnection {
         }
         editor.getAutoCompleteWindow().view.hide();
         CodeAnalyzerResultContent content = editor.getText();
+        /*
         CharPosition startPos = content.getIndexer().getCharPosition(start);
         CharPosition endPos = content.getIndexer().getCharPosition(end);
         editor.setSelectionRegion(startPos.line, startPos.column, endPos.line, endPos.column, false);
+         */
         return true;
     }
 
@@ -240,6 +242,7 @@ public class UserInputConnexionView extends BaseInputConnection {
             if (end > content.length()) {
                 end = content.length();
             }
+            /*
             CharPosition startPos = content.getIndexer().getCharPosition(start);
             CharPosition endPos = content.getIndexer().getCharPosition(end);
             if (startPos.line != endPos.line) {
@@ -247,7 +250,7 @@ public class UserInputConnexionView extends BaseInputConnection {
                 return false;
             }
             handleComposingRegionUpdate(startPos.line,startPos.column,endPos.column);
-
+            */
             editor.view.invalidate();
         } catch (IndexOutOfBoundsException e) {
             Logger.debug("set composing region for IME failed", e);

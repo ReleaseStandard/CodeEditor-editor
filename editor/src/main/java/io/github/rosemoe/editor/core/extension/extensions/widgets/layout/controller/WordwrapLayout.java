@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.layout.model.WordwrapModel;
 import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;

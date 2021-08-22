@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core.content.processors.indexer;
 
-import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 
 /**
  * Indexer without cache

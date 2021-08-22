@@ -18,7 +18,7 @@ package io.github.rosemoe.editor.core.extension.extensions.widgets.layout.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.rosemoe.editor.core.content.controller.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.IntPair;
 
 public class WordwrapModel {

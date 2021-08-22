@@ -15,7 +15,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
-import io.github.rosemoe.editor.core.signal.Routes;
+import io.github.rosemoe.editor.core.analyze.signal.Routes;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.util.shortcuts.A;
 

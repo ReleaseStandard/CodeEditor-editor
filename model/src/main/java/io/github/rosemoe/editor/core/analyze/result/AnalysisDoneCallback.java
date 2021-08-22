@@ -13,18 +13,23 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package io.github.rosemoe.editor.core.analyze.analyzer.tokenemitter;
+package io.github.rosemoe.editor.core.analyze.result;
 
-import io.github.rosemoe.editor.core.analyze.ResultStore;
 import io.github.rosemoe.editor.core.analyze.analyzer.CodeAnalyzer;
 
 /**
- * Token emitter is a type of code analysis,
- * where each time a token is encountered, we process an action.
+ * AnalysisDoneCallback for text analyzing
+ *
+ * @author Rose
  */
-public abstract class TokenEmitter extends CodeAnalyzer {
+public interface AnalysisDoneCallback {
 
-    public TokenEmitter(ResultStore resultStore) {
-        super(resultStore);
-    }
+    /**
+     * Called when analyze result is available
+     * Count of calling this method is not always equal to the count you call
+     *
+     * @param analyzer Host TextAnalyzerView
+     */
+    void onAnalyzeDone(CodeAnalyzer analyzer);
+
 }
