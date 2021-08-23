@@ -66,9 +66,11 @@ public class ExtensionContainer extends Extension implements Iterable<Extension>
                     break;
                 }
             }
-            e.engage();
-            extension.dispatch(e);
-            e.waitReady();
+            if ( extension.issubscribed(e) ) {
+	            e.engage();
+	            extension.dispatch(e);
+	            e.waitReady();
+	    }
             olde = extension;
         }
     }
@@ -86,7 +88,9 @@ public class ExtensionContainer extends Extension implements Iterable<Extension>
                     break;
                 }
             }
-            extension.dispatch(e);
+            if ( extension.issubscribed(e) ) {
+	            extension.dispatch(e);
+	    }
             olde = extension;
         }
     }

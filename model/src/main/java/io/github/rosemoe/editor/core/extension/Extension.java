@@ -185,10 +185,16 @@ public class Extension extends PrioritySystem implements EventSource, EventDesti
     public void unsubscribe(Class type) {
         subscribedEventTypes.put(type,false);
     }
+    public void unsubscribe(Event e) {
+	unsubscribe(e.getClass());
+    }
 
     @Override
     public boolean issubscribed(Class type) {
         return subscribedEventTypes.containsKey(type);
+    }
+    public boolean issubscribed(Event e) {
+	return issubscribed(e.getClass());
     }
 
     /**
