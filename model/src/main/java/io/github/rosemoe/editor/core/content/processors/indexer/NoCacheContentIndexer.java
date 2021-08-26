@@ -18,18 +18,18 @@ package io.github.rosemoe.editor.core.content.processors.indexer;
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 
 /**
- * Indexer without cache
+ * ContentIndexer without cache
  *
  * @author Rose
  */
-public final class NoCacheIndexer extends CachedIndexer implements Indexer {
+public final class NoCacheContentIndexer extends CachedContentIndexer {
 
     /**
      * Create a indexer without cache
      *
      * @param content Target content
      */
-    public NoCacheIndexer(CodeAnalyzerResultContent content) {
+    public NoCacheContentIndexer(CodeAnalyzerResultContent content) {
         super(content);
         //Disable dynamic indexing
         if (super.getMaxCacheSize() != 0) {

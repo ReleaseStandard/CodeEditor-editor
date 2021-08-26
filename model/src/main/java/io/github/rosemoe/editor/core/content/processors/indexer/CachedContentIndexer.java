@@ -16,23 +16,21 @@
 package io.github.rosemoe.editor.core.content.processors.indexer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import io.github.rosemoe.editor.core.util.CEObject;
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.content.ContentListener;
-import io.github.rosemoe.editor.core.util.Logger;
 
 /**
- * Indexer Impl for CodeAnalyzerResultContent
+ * ContentIndexer Impl for CodeAnalyzerResultContent
  * With cache
  *
  * @author Rose
  */
-public class CachedIndexer implements Indexer, ContentListener {
+public class CachedContentIndexer extends ContentIndexer implements ContentListener {
 
-    private final CodeAnalyzerResultContent content;
     private final CharPosition mZeroPoint = new CharPosition().zero();
     private final CharPosition mEndPoint = new CharPosition();
     private final int mSwitchLine = 50;
@@ -40,19 +38,23 @@ public class CachedIndexer implements Indexer, ContentListener {
     private boolean mHandleEvent = true;
     private boolean mHasException = false;
 
-    private class Cache extends ArrayList<CharPosition> {
-        public int maxSize = 50;
-    }
-    private Cache cache = new Cache();
+    class Cache extends ConcurrentSkipListSet<CharPosition> {
+        public int maxSize = 1000;
+        @Override
+        public boolean add(CharPosition charPosition) {
+            if ( size() >= maxSize ) { return false; }
+            return super.add(charPosition);
+        }
+    };
+    Cache cache = new Cache();
 
     /**
-     * Create a new CachedIndexer for the given content
+     * Create a new CachedContentIndexer for the given content
      *
      * @param content CodeAnalyzerResultContent to manage
      */
-    public CachedIndexer(CodeAnalyzerResultContent content) {
-        this.content = content;
-        detectException();
+    public CachedContentIndexer(CodeAnalyzerResultContent content) {
+        super(content);
     }
 
     /**
@@ -66,49 +68,20 @@ public class CachedIndexer implements Indexer, ContentListener {
     }
 
     /**
-     * Find out whether things unexpected happened
-     */
-    private void detectException() {
-        if (!isHandleEvent() && !cache.isEmpty()) {
-            mHasException = true;
-        }
-        mEndPoint.index = 0; // TODO break : content.length();
-        //mEndPoint.line = content.size() - 1;
-        //mEndPoint.column = content.getColumnCount(mEndPoint.line);
-    }
-
-    /**
      * Get nearest cache for the given index
      *
      * @param index Querying index
      * @return Nearest cache or null if there is no nearest.
      */
     private CharPosition findNearestByIndex(int index) {
-        Logger.debug("index="+index);
-        int min = index, dis = index;
-        CharPosition nearestCharPosition = null;
-        int targetIndex = 0;
-        for (int i = 0; i < cache.size(); i++) {
-            CharPosition pos = cache.get(i);
-            dis = Math.abs(pos.index - index);
-            if (dis < min) {
-                min = dis;
-                nearestCharPosition = pos;
-                targetIndex = i;
-            }
-            if (dis <= mSwitchIndex) {
-                break;
-            }
-        }
-        if (Math.abs(mEndPoint.index - index) < dis) {
-            nearestCharPosition = mEndPoint;
-        }
-        if (nearestCharPosition != null && nearestCharPosition != mEndPoint) {
-            Collections.swap(cache, targetIndex, 0);
-        }
-        return nearestCharPosition;
+        return findNearest(new CharPosition(index));
     }
 
+    private CharPosition findNearest(CharPosition pos) {
+        CharPosition cp1 = cache.floor(pos);
+        CharPosition cp2 = cache.ceiling(pos);
+        return CharPosition.nearest(cp1,pos,cp2);
+    }
     /**
      * Get nearest cache for the given line
      *
@@ -116,28 +89,7 @@ public class CachedIndexer implements Indexer, ContentListener {
      * @return Nearest cache or null if there is no nearest
      */
     private CharPosition findNearestByLine(int line) {
-        int min = line, dis = line;
-        CharPosition nearestCharPosition = null;
-        int targetIndex = 0;
-        for (int i = 0; i < cache.size(); i++) {
-            CharPosition pos = cache.get(i);
-            dis = Math.abs(pos.line - line);
-            if (dis < min) {
-                min = dis;
-                nearestCharPosition = pos;
-                targetIndex = i;
-            }
-            if (min <= mSwitchLine) {
-                break;
-            }
-        }
-        if (Math.abs(mEndPoint.line - line) < dis) {
-            nearestCharPosition = mEndPoint;
-        }
-        if (nearestCharPosition != null && nearestCharPosition != mEndPoint) {
-            Collections.swap(cache, 0, targetIndex);
-        }
-        return nearestCharPosition;
+        return findNearest(new CharPosition(line,0));
     }
 
     /**
@@ -290,21 +242,6 @@ public class CachedIndexer implements Indexer, ContentListener {
     }
 
     /**
-     * Add new cache
-     *
-     * @param pos New cache
-     */
-    private void push(CharPosition pos) {
-        if (cache.maxSize <= 0) {
-            return;
-        }
-        cache.add(pos);
-        while (cache.size() > cache.maxSize) {
-            cache.remove(0);
-        }
-    }
-
-    /**
      * Get max cache size
      *
      * @return max cache size
@@ -323,7 +260,7 @@ public class CachedIndexer implements Indexer, ContentListener {
     }
 
     /**
-     * For NoCacheIndexer
+     * For NoCacheContentIndexer
      *
      * @return whether handle changes
      */
@@ -332,7 +269,7 @@ public class CachedIndexer implements Indexer, ContentListener {
     }
 
     /**
-     * For NoCacheIndexer
+     * For NoCacheContentIndexer
      *
      * @param handle Whether handle changes to refresh cache
      */
@@ -342,17 +279,20 @@ public class CachedIndexer implements Indexer, ContentListener {
 
     @Override
     public int getCharIndex(int line, int column) {
-        return getCharPosition(line, column).index;
+        CharPosition cp = getCharPosition(line, column);
+        return (cp == null) ? -1 : cp.index;
     }
 
     @Override
     public int getCharLine(int index) {
-        return getCharPosition(index).line;
+        CharPosition cp = getCharPosition(index);
+        return (cp == null) ? -1 : cp.line;
     }
 
     @Override
     public int getCharColumn(int index) {
-        return getCharPosition(index).column;
+        CharPosition cp = getCharPosition(index);
+        return (cp == null) ? -1 : cp.column;
     }
 
     @Override
@@ -368,15 +308,19 @@ public class CachedIndexer implements Indexer, ContentListener {
             res = findIndexBackward(pos, index);
         }
         if (Math.abs(index - pos.index) >= mSwitchIndex) {
-            push(res);
+            cache.add(res);
         }
         return res;
     }
 
     @Override
     public CharPosition getCharPosition(int line, int column) {
-        content.checkLineAndColumn(line, column, true);
         CharPosition pos = findNearestByLine(line);
+        if ( pos == null ) {
+            CharPosition cp = new CharPosition(line, column);
+            cache.add(cp);
+            return cp;
+        }
         CharPosition res;
         if (pos.line == line) {
             if (pos.column == column) {
@@ -389,7 +333,7 @@ public class CachedIndexer implements Indexer, ContentListener {
             res = findLiCoBackward(pos, line, column);
         }
         if (Math.abs(pos.line - line) > mSwitchLine) {
-            push(res);
+            cache.add(res);
         }
         return res;
     }
@@ -416,7 +360,6 @@ public class CachedIndexer implements Indexer, ContentListener {
                 }
             }
         }
-        detectException();
     }
 
     @Override
@@ -441,7 +384,6 @@ public class CachedIndexer implements Indexer, ContentListener {
             }
             cache.removeAll(garbage);
         }
-        detectException();
     }
 
     public void dump() {

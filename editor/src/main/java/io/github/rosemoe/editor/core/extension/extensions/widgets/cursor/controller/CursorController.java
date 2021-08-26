@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.WidgetExtensionController;
-import io.github.rosemoe.editor.core.content.processors.indexer.CachedIndexer;
+import io.github.rosemoe.editor.core.content.processors.indexer.CachedContentIndexer;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.view.CursorView;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.UserInputModel;
 import io.github.rosemoe.editor.core.extension.extensions.langs.LanguagePlugin;
@@ -48,7 +48,7 @@ import static io.github.rosemoe.editor.core.extension.extensions.langs.helpers.T
 public final class CursorController extends WidgetExtensionController {
 
     private final CodeAnalyzerResultContent mContent;
-    private final CachedIndexer mIndexer;
+    private final CachedContentIndexer mIndexer;
     private LanguagePlugin mLanguage;
     public float mInsertSelWidth;
 
@@ -66,7 +66,7 @@ public final class CursorController extends WidgetExtensionController {
     public CursorController(CodeAnalyzerResultContent content, CodeEditor editor) {
         super(editor);
         mContent = content;
-        mIndexer = new CachedIndexer(content);
+        mIndexer = new CachedContentIndexer(content);
         view     = new CursorView(editor);
         blink = new CursorBlinkController(editor, CursorBlinkController.DEFAULT_CURSOR_BLINK_PERIOD);
         mInsertSelWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, Resources.getSystem().getDisplayMetrics()) / 2;
@@ -189,7 +189,7 @@ public final class CursorController extends WidgetExtensionController {
     }
 
     /**
-     * Notify the Indexer to update its cache for current display position
+     * Notify the ContentIndexer to update its cache for current display position
      * <p>
      * This will make querying actions quicker
      * <p>
@@ -202,11 +202,11 @@ public final class CursorController extends WidgetExtensionController {
     }
 
     /**
-     * Get the using Indexer object
+     * Get the using ContentIndexer object
      *
-     * @return Using Indexer
+     * @return Using ContentIndexer
      */
-    public CachedIndexer getIndexer() {
+    public CachedContentIndexer getIndexer() {
         return mIndexer;
     }
 

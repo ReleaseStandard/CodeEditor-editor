@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.rosemoe.editor.core.content.processors.ContentLineRemoveListener;
-import io.github.rosemoe.editor.core.content.processors.indexer.CachedIndexer;
-import io.github.rosemoe.editor.core.content.processors.indexer.Indexer;
-import io.github.rosemoe.editor.core.content.processors.indexer.NoCacheIndexer;
+import io.github.rosemoe.editor.core.content.processors.indexer.CachedContentIndexer;
+import io.github.rosemoe.editor.core.content.processors.indexer.ContentIndexer;
+import io.github.rosemoe.editor.core.content.processors.indexer.NoCacheContentIndexer;
 
 import io.github.rosemoe.editor.core.analyze.result.AnalyzerResult;
 import io.github.rosemoe.editor.core.grid.Grid;
@@ -40,7 +40,7 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
     public int textLength;
     public int nestedBatchEdit;
 
-    private Indexer indexer;
+    private ContentIndexer contentIndexer;
     private List<ContentListener> mListeners;
     private ContentLineRemoveListener mLineListener;
 
@@ -53,7 +53,7 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
         textLength = 0;
         nestedBatchEdit = 0;
         mListeners = new ArrayList<>();
-        indexer = new NoCacheIndexer(this);
+        contentIndexer = new NoCacheContentIndexer(this);
     }
 
     /**
@@ -136,7 +136,7 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
 
     /**
      * Transform the (line,column) position to index
-     * This task will usually completed by {@link Indexer}
+     * This task will usually completed by {@link ContentIndexer}
      *
      * @param line   Line of index
      * @param column Column on line of index
@@ -246,23 +246,23 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      * this method.Because the way CodeAnalyzerResultContent save text,it is usually slow to transform index to
      * (line,column) from the start of text when the text is big.
      * By calling this method,you will be able to get faster because calling this will
-     * cause the ITextContent object use a Indexer with cache.
+     * cause the ITextContent object use a ContentIndexer with cache.
      * The performance is highly improved while linearly getting characters.
      *
-     * @param initialIndex The Indexer with cache will take it into this index to its cache
+     * @param initialIndex The ContentIndexer with cache will take it into this index to its cache
      */
     public void beginStreamCharGetting(int initialIndex) {
-        indexer = new CachedIndexer(this);
-        indexer.getCharPosition(initialIndex);
+        contentIndexer = new CachedContentIndexer(this);
+        contentIndexer.getCharPosition(initialIndex);
     }
 
     /**
      * When you finished calling {@link CharSequence#charAt(int)} frequently,you can call this method
-     * to free the Indexer with cache.
+     * to free the ContentIndexer with cache.
      * This is not forced.
      */
     public void endStreamCharGetting() {
-        indexer = new NoCacheIndexer(this);
+        contentIndexer = new NoCacheContentIndexer(this);
     }
 
     /**
@@ -309,7 +309,7 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
         if (listener == null) {
             throw new IllegalArgumentException("listener can not be null");
         }
-        if (listener instanceof Indexer) {
+        if (listener instanceof ContentIndexer) {
             throw new IllegalArgumentException("Permission denied");
         }
         if (!mListeners.contains(listener)) {
@@ -323,23 +323,23 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      * @param listener The listener to remove
      */
     public void removeContentListener(ContentListener listener) {
-        if (listener instanceof Indexer) {
+        if (listener instanceof ContentIndexer) {
             throw new IllegalArgumentException("Permission denied");
         }
         mListeners.remove(listener);
     }
 
     /**
-     * Get the using {@link Indexer} object
+     * Get the using {@link ContentIndexer} object
      *
-     * @return Indexer for this object
+     * @return ContentIndexer for this object
      */
     /*
-    public Indexer getIndexer() {
-        if (indexer.getClass() != CachedIndexer.class && cursor != null) {
+    public ContentIndexer getIndexer() {
+        if (contentIndexer.getClass() != CachedContentIndexer.class && cursor != null) {
             return cursor.getIndexer();
         }
-        return indexer;
+        return contentIndexer;
     }
 */
     @Override
@@ -428,7 +428,7 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
 
     public char charAtNaive(final int index) {
         int idx = 0;
-        // TODO : or use the indexer system or find another system.
+        // TODO : or use the contentIndexer system or find another system.
         for(Line<ContentCell> l : this) {
             if ( ( idx + l.getWidth() ) < index ) {
                 idx += l.getWidth();

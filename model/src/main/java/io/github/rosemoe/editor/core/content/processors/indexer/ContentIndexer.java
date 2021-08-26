@@ -15,37 +15,45 @@
  */
 package io.github.rosemoe.editor.core.content.processors.indexer;
 
+import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
+
 /**
  * A helper class for ITextContent to transform (line,column) and index
  *
  * @author Rose
  */
-public interface Indexer {
+public abstract class ContentIndexer {
+
+    protected final CodeAnalyzerResultContent content;
+
+    public ContentIndexer(CodeAnalyzerResultContent content) {
+        this.content = content;
+    }
 
     /**
      * Get the index of (line,column)
      *
      * @param line   The line position of index
      * @param column The column position of index
-     * @return Calculated index
+     * @return Calculated index, -1 if error
      */
-    int getCharIndex(int line, int column);
+    public abstract int getCharIndex(int line, int column);
 
     /**
      * Get the line position of index
      *
      * @param index The index you want to know its line
-     * @return Line position of index
+     * @return Line position of index, -1 if error
      */
-    int getCharLine(int index);
+    public abstract int getCharLine(int index);
 
     /**
      * Get the column position of index
      *
      * @param index The index you want to know its column
-     * @return Column position of index
+     * @return Column position of index, -1 if error
      */
-    int getCharColumn(int index);
+    public abstract int getCharColumn(int index);
 
     /**
      * Get the CharPosition for the given index
@@ -54,7 +62,7 @@ public interface Indexer {
      * @param index The index you want to get
      * @return The CharPosition object or null if not in.
      */
-    CharPosition getCharPosition(int index);
+    public abstract CharPosition getCharPosition(int index);
 
     /**
      * Get the CharPosition for the given (line,column)
@@ -64,6 +72,6 @@ public interface Indexer {
      * @param column The column position you want to get
      * @return The CharPosition object or null if not found.
      */
-    CharPosition getCharPosition(int line, int column);
+    public abstract CharPosition getCharPosition(int line, int column);
 
 }
