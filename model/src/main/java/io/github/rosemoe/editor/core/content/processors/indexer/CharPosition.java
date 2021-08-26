@@ -20,7 +20,8 @@ import io.github.rosemoe.editor.core.IntPair;
 import io.github.rosemoe.editor.core.util.CEObject;
 
 /**
- * This a data class of a character position in ContentMapController
+ * This a data class of a character position in the Content Grid
+ * RuntimeExceptions could be avoided by the caller.
  *
  * @author Rose
  */
@@ -28,9 +29,9 @@ public final class CharPosition extends CEObject implements Comparable<Object> {
 
     // index, line, column are use [-1;INTEGER_MAX] values
     public final static int INVALID = -1;
-    public int index = INVALID;
-    public int line = INVALID;
-    public int column = INVALID;
+    public int index;
+    public int line;
+    public int column;
 
     /**
      * Get the index
@@ -86,8 +87,9 @@ public final class CharPosition extends CEObject implements Comparable<Object> {
     }
 
     public CharPosition() {
-
+        this(INVALID,INVALID,INVALID);
     }
+
     @Override
     public boolean equals(Object another) {
         if (another instanceof CharPosition) {
