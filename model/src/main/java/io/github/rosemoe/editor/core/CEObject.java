@@ -18,7 +18,7 @@ public class CEObject {
         dump(obj,"");
     }
     public static void dump(Object obj, String offset){
-        String res = "";
+        String res = "hashCode="+obj.hashCode();
         Class c = obj.getClass();
         for(Field f : c.getFields()) {
             f.setAccessible(true);

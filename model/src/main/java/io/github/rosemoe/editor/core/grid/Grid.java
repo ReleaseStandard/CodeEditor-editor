@@ -3,6 +3,7 @@ package io.github.rosemoe.editor.core.grid;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import io.github.rosemoe.editor.core.CEObject;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**
@@ -234,6 +235,7 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
     public void dump(String offset) {
         if ( !Logger.DEBUG ) { return; }
         Logger.debug(offset+"number of lines in : "+ size());
+        CEObject.dump(this,offset);
         for(Integer i : keySet()) {
             Line<T> l = get(i);
             Logger.debug(offset+"line idx="+i);

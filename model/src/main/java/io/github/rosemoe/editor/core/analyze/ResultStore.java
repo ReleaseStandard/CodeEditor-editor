@@ -13,7 +13,7 @@ import io.github.rosemoe.editor.core.util.Logger;
 /**
  * A Result store is used to manage stack of results.
  * Theses results are then passed to the analyzer.
- * The ResultStore must must thread safe, many analyzer on different thread could request it.
+ * The ResultStore must thread safe, many analyzer on different thread could request it.
  */
 public class ResultStore extends ConcurrentSkipListMap<String, ConcurrentLinkedQueue<AnalyzerResult>> implements Iterable<ConcurrentLinkedQueue<AnalyzerResult>>{
 
@@ -26,29 +26,38 @@ public class ResultStore extends ConcurrentSkipListMap<String, ConcurrentLinkedQ
     public final static Integer initialQueueSize = 2;
 
     public ResultStore() {
+        init(initialQueueSize);
+    }
 
+    public void init(int queueSz) {
+        clear();
         put(RES_COLOR, new ConcurrentLinkedQueue<>());
         put(RES_COMPLETION, new ConcurrentLinkedQueue<>());
         put(RES_CONTENT, new ConcurrentLinkedQueue<>());
 
-        for(int a = 0; a < initialQueueSize; a=a+1) {
+        for(int a = 0; a < queueSz; a=a+1) {
             get(RES_COLOR).offer(new CodeAnalyzerResultColor());
             get(RES_COMPLETION).offer(new CodeAnalyzerResultCompletion());
             get(RES_CONTENT).offer(new CodeAnalyzerResultContent());
         }
-
     }
-
     /**
      * Get the result listener, in mean in build results
      *
      * @param name
-     * @return
+     * @return AnalyzerResult or null if there is no work copy.
      */
     public AnalyzerResult getResultInBuild(String name) {
-        ConcurrentLinkedQueue<AnalyzerResult> result = get(name);
-        if ( true ) { throw new RuntimeException("Not yet implemented"); }
-        return null;
+        ConcurrentLinkedQueue<AnalyzerResult> q = get(name);
+        Iterator it = q.iterator();
+        if ( ! it.hasNext() ) {
+            return null;
+        }
+        it.next();
+        if ( ! it.hasNext() ) {
+            return null;
+        }
+        return (AnalyzerResult) it.next();
     }
 
     /**
@@ -92,7 +101,15 @@ public class ResultStore extends ConcurrentSkipListMap<String, ConcurrentLinkedQ
      * Clear what is being done in the analyzer.
      */
     public void clearInBuild() {
-        throw new RuntimeException("clearInBuild");
+        for(ConcurrentLinkedQueue<AnalyzerResult> ar : this) {
+            Iterator<AnalyzerResult> elements = ar.iterator();
+            if ( ! elements.hasNext() ) { continue; }
+            elements.next();
+            while ( elements.hasNext() ) {
+                elements.remove();
+                elements.next();
+            }
+        }
     }
 
     @Override
