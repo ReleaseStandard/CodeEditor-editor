@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import io.github.rosemoe.editor.core.grid.Line;
+import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 import io.github.rosemoe.editor.core.util.CEObject;
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.content.ContentListener;
@@ -38,16 +40,89 @@ public class CachedContentIndexer extends ContentIndexer implements ContentListe
     private boolean mHandleEvent = true;
     private boolean mHasException = false;
 
+    /**
+     * To be sure that we don't get RuntimeException from the CharPosition object,
+     * we have to ensure that inserted object into cache have no INVALID field.
+     */
     class Cache extends ConcurrentSkipListSet<CharPosition> {
         public int maxSize = 1000;
         @Override
         public boolean add(CharPosition charPosition) {
             if ( size() >= maxSize ) { return false; }
+            if ( charPosition.index == CharPosition.INVALID ) {
+                if ( charPosition.line == CharPosition.INVALID || charPosition.column == CharPosition.INVALID ) {
+                    return false;
+                }
+                else {
+                    // index is missing in this case but can be deduced from CodeAnalyzerResultContent object
+                    charPosition.index = processIndex(charPosition.line, charPosition.column);
+                }
+            } else {
+                if ( charPosition.line == CharPosition.INVALID || charPosition.column == CharPosition.INVALID ) {
+                    // line or column is missing but we can deduce it from the index
+                    charPosition = processCharPosition(charPosition.index);
+                }
+            }
             return super.add(charPosition);
+        }
+        public void dump() {
+            dump("");
+        }
+        public void dump(String offset) {
+            CEObject.dumpAll(this, offset);
         }
     };
     Cache cache = new Cache();
 
+    /**
+     * Try to index all the content in the map (process both {line, column} and {idx}
+     */
+    public void processContent() {
+        int idx = 0;
+        for(Integer k : content.keySet()) {
+            Line<ContentCell> line = content.get(k);
+            for(Integer k1 : line.keySet()) {
+                ContentCell cc = line.get(k1);
+                CharPosition cp = new CharPosition(k,k1,idx);
+                cache.add(cp);
+                idx += cc.size;
+            }
+        }
+    }
+    /**
+     * Get index in the content grid.
+     * Assuming line column not INVALID
+     * @param line 0..n-1
+     * @param column 0..n-1
+     * @return -1 or index
+     */
+    public int processIndex(int line, int column) {
+        int index = column;
+        for( Integer k : content.keySet()) {
+            if ( k >= line ) { return index; }
+            Line<ContentCell> l = content.get(k);
+            if ( l == null ) { continue; }
+            index += l.getWidth();
+        }
+        return -1;
+    }
+    /**
+     * Get line, column for that index in the given column.
+     * @param index
+     * @return
+     */
+    public CharPosition processCharPosition(int index) {
+        int idx = 0;
+        for( Integer k : content.keySet()) {
+            Line<ContentCell> l = content.get(k);
+            if ( index >= idx && index < ( idx + l.getWidth() ) ) {
+                return new CharPosition(k,index-idx,index);
+            } else {
+            }
+            idx += l.getWidth();
+        }
+        return null;
+    }
     /**
      * Create a new CachedContentIndexer for the given content
      *
@@ -298,19 +373,13 @@ public class CachedContentIndexer extends ContentIndexer implements ContentListe
     @Override
     public CharPosition getCharPosition(int index) {
         CharPosition pos = findNearestByIndex(index);
-        if ( pos == null ) { return null; }
-        CharPosition res;
-        if (pos.index == index) {
-            return pos;
-        } else if (pos.index < index) {
-            res = findIndexForward(pos, index);
+        if ( pos == null ) {
+            CharPosition cp = new CharPosition(index);
+            cache.add(cp);
+            return cp;
         } else {
-            res = findIndexBackward(pos, index);
+            return pos;
         }
-        if (Math.abs(index - pos.index) >= mSwitchIndex) {
-            cache.add(res);
-        }
-        return res;
     }
 
     @Override
