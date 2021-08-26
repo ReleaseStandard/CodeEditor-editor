@@ -28,7 +28,7 @@ import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.analyze.signal.Routes;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.completion.SymbolPairMatch;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.controller.CursorController;
-import io.github.rosemoe.editor.core.CharPosition;
+import io.github.rosemoe.editor.core.content.processors.indexer.CharPosition;
 import io.github.rosemoe.editor.core.util.Logger;
 import io.github.rosemoe.editor.core.CodeEditor;
 
@@ -238,10 +238,11 @@ public class UserInputConnexionView extends BaseInputConnection {
             if (start < 0) {
                 start = 0;
             }
+            /*
             CodeAnalyzerResultContent content = editor.getText();
             if (end > content.length()) {
                 end = content.length();
-            }
+            }*/
             /*
             CharPosition startPos = content.getIndexer().getCharPosition(start);
             CharPosition endPos = content.getIndexer().getCharPosition(end);

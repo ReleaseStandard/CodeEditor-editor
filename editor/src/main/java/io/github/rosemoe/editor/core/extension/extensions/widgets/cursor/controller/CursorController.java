@@ -31,7 +31,7 @@ import io.github.rosemoe.editor.core.content.processors.indexer.CachedIndexer;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.view.CursorView;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.UserInputModel;
 import io.github.rosemoe.editor.core.extension.extensions.langs.LanguagePlugin;
-import io.github.rosemoe.editor.core.CharPosition;
+import io.github.rosemoe.editor.core.content.processors.indexer.CharPosition;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.cursor.CursorModel;
 import io.github.rosemoe.editor.core.IntPair;
 import io.github.rosemoe.editor.core.CodeEditor;

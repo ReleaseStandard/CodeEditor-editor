@@ -32,7 +32,7 @@ import static io.github.rosemoe.editor.core.grid.Cell.*;
 
 /**
  * This class saves the text content for editor and maintains line widths
- *
+ * We must provide a CharSequence interface for this result.
  * @author Rose
  */
 public class CodeAnalyzerResultContent extends Grid<ContentCell> implements CharSequence, AnalyzerResult {
@@ -49,7 +49,11 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      * This constructor will create a CodeAnalyzerResultContent object with no text
      */
     public CodeAnalyzerResultContent() {
-        this(null);
+        behaviourOnCellSplit = SPLIT_SPLITTING;
+        textLength = 0;
+        nestedBatchEdit = 0;
+        mListeners = new ArrayList<>();
+        indexer = new NoCacheIndexer(this);
     }
 
     /**
@@ -59,16 +63,8 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      * @param src The source of CodeAnalyzerResultContent
      */
     public CodeAnalyzerResultContent(CharSequence src) {
-        behaviourOnCellSplit = SPLIT_SPLITTING;
-        if (src == null) {
-            src = "";
-        }
-        textLength = 0;
-        nestedBatchEdit = 0;
-        append();
-        mListeners = new ArrayList<>();
-        indexer = new NoCacheIndexer(this);
-        insert(0, 0, src);
+        this();
+        append(src);
     }
 
     /**
@@ -117,7 +113,7 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      */
     public int getColumnCount(int line) {
         checkLine(line);
-        return get(line).size();
+        return get(line).getWidth();
     }
 
     /**
@@ -427,6 +423,10 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
 
     @Override
     public char charAt(int index) {
+        return charAtNaive(index);
+    }
+
+    public char charAtNaive(final int index) {
         int idx = 0;
         // TODO : or use the indexer system or find another system.
         for(Line<ContentCell> l : this) {
@@ -446,4 +446,11 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
         return null;
     }
 
+    public int append(CharSequence text) {
+        Line<ContentCell> line = new Line<>();
+        for(int a = 0; a < text.length(); a=a+1) {
+            line.append(new ContentCell(text.charAt(a)));
+        }
+        return append(line);
+    }
 }

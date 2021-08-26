@@ -17,7 +17,7 @@ package io.github.rosemoe.editor.core.analyze.analyzer;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-import io.github.rosemoe.editor.core.CEObject;
+import io.github.rosemoe.editor.core.util.CEObject;
 import io.github.rosemoe.editor.core.analyze.ResultStore;
 import io.github.rosemoe.editor.core.analyze.result.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;

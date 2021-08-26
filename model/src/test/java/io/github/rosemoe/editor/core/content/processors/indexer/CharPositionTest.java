@@ -1,7 +1,8 @@
-package io.github.rosemoe.editor.core;
+package io.github.rosemoe.editor.core.content.processors.indexer;
 
 import org.junit.Test;
 
+import io.github.rosemoe.editor.core.content.processors.indexer.CharPosition;
 import io.github.rosemoe.editor.core.util.Random;
 
 import static org.junit.Assert.*;

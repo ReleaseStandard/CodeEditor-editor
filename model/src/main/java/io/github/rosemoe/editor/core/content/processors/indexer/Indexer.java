@@ -15,8 +15,6 @@
  */
 package io.github.rosemoe.editor.core.content.processors.indexer;
 
-import io.github.rosemoe.editor.core.CharPosition;
-
 /**
  * A helper class for ITextContent to transform (line,column) and index
  *
@@ -54,7 +52,7 @@ public interface Indexer {
      * You are not expected to make changes with this CharPosition
      *
      * @param index The index you want to get
-     * @return The CharPosition object.
+     * @return The CharPosition object or null if not in.
      */
     CharPosition getCharPosition(int index);
 
@@ -64,7 +62,7 @@ public interface Indexer {
      *
      * @param line   The line position you want to get
      * @param column The column position you want to get
-     * @return The CharPosition object.
+     * @return The CharPosition object or null if not found.
      */
     CharPosition getCharPosition(int line, int column);
 

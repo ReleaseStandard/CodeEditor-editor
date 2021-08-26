@@ -1,6 +1,6 @@
 package io.github.rosemoe.editor.core.grid;
 
-import io.github.rosemoe.editor.core.CEObject;
+import io.github.rosemoe.editor.core.util.CEObject;
 
 public abstract class Cell extends CEObject {
 

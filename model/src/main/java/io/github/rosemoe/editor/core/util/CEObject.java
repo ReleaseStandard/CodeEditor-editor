@@ -1,4 +1,4 @@
-package io.github.rosemoe.editor.core;
+package io.github.rosemoe.editor.core.util;
 
 import java.lang.reflect.Field;
 
@@ -17,10 +17,13 @@ public class CEObject {
     public static void dump(Object obj) {
         dump(obj,"");
     }
-    public static void dump(Object obj, String offset){
-        String res = "hashCode="+obj.hashCode();
+    public static void dump(Object obj, String offset) {
         Class c = obj.getClass();
-        for(Field f : c.getFields()) {
+        dump(obj, offset, c.getFields());
+    }
+    public static void dump(Object obj, String offset, Field [] fields){
+        String res = "hashCode="+obj.hashCode();
+        for(Field f : fields) {
             f.setAccessible(true);
             Object o = null;
             try {
@@ -29,5 +32,9 @@ public class CEObject {
             res += "," + f.getName() + "=" + o;
         }
         Logger.debug(offset + res);
+    }
+    public static void dumpAll(Object obj, String offset) {
+        Class c = obj.getClass();
+        dump(obj, offset, c.getDeclaredFields());
     }
 }

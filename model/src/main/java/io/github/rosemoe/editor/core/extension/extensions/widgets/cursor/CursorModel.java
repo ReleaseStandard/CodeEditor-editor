@@ -15,7 +15,7 @@
  */
 package io.github.rosemoe.editor.core.extension.extensions.widgets.cursor;
 
-import io.github.rosemoe.editor.core.CharPosition;
+import io.github.rosemoe.editor.core.content.processors.indexer.CharPosition;
 import io.github.rosemoe.editor.core.Rect;
 
 public class CursorModel {

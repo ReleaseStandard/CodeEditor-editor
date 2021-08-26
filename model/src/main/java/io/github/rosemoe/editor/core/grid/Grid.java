@@ -3,7 +3,7 @@ package io.github.rosemoe.editor.core.grid;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import io.github.rosemoe.editor.core.CEObject;
+import io.github.rosemoe.editor.core.util.CEObject;
 import io.github.rosemoe.editor.core.util.Logger;
 
 /**

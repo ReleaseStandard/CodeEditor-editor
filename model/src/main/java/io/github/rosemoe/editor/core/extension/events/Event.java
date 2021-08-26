@@ -17,11 +17,9 @@ package io.github.rosemoe.editor.core.extension.events;
 
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.locks.ReentrantLock;
 
-import io.github.rosemoe.editor.core.CEObject;
+import io.github.rosemoe.editor.core.util.CEObject;
 import io.github.rosemoe.editor.core.extension.PrioritySystem;
-import io.github.rosemoe.editor.core.util.Logger;
 
 /**
  * Basically any type of events.

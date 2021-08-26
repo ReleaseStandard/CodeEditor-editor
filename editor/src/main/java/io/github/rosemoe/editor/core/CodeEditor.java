@@ -63,6 +63,7 @@ import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.analyze.signal.Router;
 import io.github.rosemoe.editor.core.analyze.signal.Routes;
 import io.github.rosemoe.editor.core.color.CodeAnalyzerResultColor;
+import io.github.rosemoe.editor.core.content.processors.indexer.CharPosition;
 import io.github.rosemoe.editor.core.extension.Extension;
 import io.github.rosemoe.editor.core.analyze.analyzer.CodeAnalyzer;
 import io.github.rosemoe.editor.core.analyze.result.AnalysisDoneCallback;

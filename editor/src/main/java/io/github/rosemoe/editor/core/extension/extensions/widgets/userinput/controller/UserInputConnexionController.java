@@ -19,7 +19,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 
-import io.github.rosemoe.editor.core.CharPosition;
+import io.github.rosemoe.editor.core.content.processors.indexer.CharPosition;
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.UserInputConnexionModel;
 import io.github.rosemoe.editor.core.extension.extensions.widgets.userinput.view.UserInputConnexionView;

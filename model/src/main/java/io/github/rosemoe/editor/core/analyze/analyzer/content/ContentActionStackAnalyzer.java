@@ -19,11 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import io.github.rosemoe.editor.core.CEObject;
+import io.github.rosemoe.editor.core.util.CEObject;
 import io.github.rosemoe.editor.core.analyze.ResultStore;
 import io.github.rosemoe.editor.core.analyze.analyzer.Analyzer;
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
-import io.github.rosemoe.editor.core.analyze.signal.Router;
 import io.github.rosemoe.editor.core.analyze.signal.Routes;
 
 import static io.github.rosemoe.editor.core.analyze.ResultStore.RES_CONTENT;

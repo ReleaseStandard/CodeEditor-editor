@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import io.github.rosemoe.editor.core.CEObject;
+import io.github.rosemoe.editor.core.util.CEObject;
 import io.github.rosemoe.editor.core.util.Logger;
 
 import static io.github.rosemoe.editor.core.grid.Cell.*;
