@@ -63,6 +63,9 @@ public class CachedContentIndexer extends ContentIndexer implements ContentListe
                     charPosition = processCharPosition(charPosition.index);
                 }
             }
+            if ( charPosition == null ) {
+                return false;
+            }
             return super.add(charPosition);
         }
         public void dump() {
@@ -370,46 +373,39 @@ public class CachedContentIndexer extends ContentIndexer implements ContentListe
         return (cp == null) ? -1 : cp.column;
     }
 
+    /**
+     * Get the CharPosition for given entry, add it to the cache if not present.
+     * @param charPosition
+     * @return
+     */
+    public CharPosition getCharPosition(CharPosition charPosition) {
+        if ( ! charPosition.equals(findNearest(charPosition)) ) {
+            cache.add(charPosition);
+            return cache.floor(charPosition);
+        }
+        return charPosition;
+    }
     @Override
     public CharPosition getCharPosition(int index) {
-        CharPosition pos = findNearestByIndex(index);
-        if ( pos == null ) {
-            CharPosition cp = new CharPosition(index);
-            cache.add(cp);
-            return cp;
-        } else {
-            return pos;
-        }
+        return getCharPosition(new CharPosition(index));
     }
 
     @Override
     public CharPosition getCharPosition(int line, int column) {
-        CharPosition pos = findNearestByLine(line);
-        if ( pos == null ) {
-            CharPosition cp = new CharPosition(line, column);
-            cache.add(cp);
-            return cp;
-        }
-        CharPosition res;
-        if (pos.line == line) {
-            if (pos.column == column) {
-                return pos;
-            }
-            return findInLine(pos, line, column);
-        } else if (pos.line < line) {
-            res = findLiCoForward(pos, line, column);
-        } else {
-            res = findLiCoBackward(pos, line, column);
-        }
-        if (Math.abs(pos.line - line) > mSwitchLine) {
-            cache.add(res);
-        }
-        return res;
+        return getCharPosition(new CharPosition(line, column));
     }
 
     @Override
     public void beforeReplace(CodeAnalyzerResultContent content) {
         //Do nothing
+    }
+
+    public void dump() {
+        dump("");
+    }
+
+    public void dump(String offset) {
+        CEObject.dumpAll(this, offset);
     }
 
     @Override
@@ -453,13 +449,6 @@ public class CachedContentIndexer extends ContentIndexer implements ContentListe
             }
             cache.removeAll(garbage);
         }
-    }
-
-    public void dump() {
-        dump("");
-    }
-    public void dump(String offset) {
-        CEObject.dumpAll(this, offset);
     }
 }
 

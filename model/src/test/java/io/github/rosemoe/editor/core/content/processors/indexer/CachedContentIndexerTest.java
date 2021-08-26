@@ -106,12 +106,12 @@ public class CachedContentIndexerTest {
             @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
             content.append("abc");
             @Jailbreak CachedContentIndexer indexer = new CachedContentIndexer(content);
-            CharPosition cp = indexer.getCharPosition(0);
             assertTrue(content.size()==1);
             assertTrue(content.get(0).size() == 3);
             assertTrue(content.get(0).get(0).c == 'a');
-            indexer.dump();
+            CharPosition cp = indexer.getCharPosition(0);
             assertTrue(cp != null);
+            cp.dump();
             assertTrue(cp.column == 0 && cp.line == 0);
         }
         {

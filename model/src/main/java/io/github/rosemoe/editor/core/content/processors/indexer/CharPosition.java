@@ -110,7 +110,10 @@ public final class CharPosition extends CEObject implements Comparable<Object> {
             } else {
                 return index == (Integer)another;
             }
-        } else {
+        } else if ( another == null ) {
+            return false;
+        }
+        else {
             throw new RuntimeException("Cannot compare object with : " + another.getClass());
         }
     }
