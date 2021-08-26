@@ -271,7 +271,7 @@ public final class CursorController extends WidgetExtensionController {
             if (model.mAutoIndentEnabled && text.length() != 0 && applyAutoIndent) {
                 char first = text.charAt(0);
                 if (first == '\n') {
-                    String line = mContent.getLineString(getLeftLine());
+                    String line = mContent.get(getLeftLine()).toString();
                     int p = 0, count = 0;
                     while (p < getLeftColumn()) {
                         if (isWhitespace(line.charAt(p))) {

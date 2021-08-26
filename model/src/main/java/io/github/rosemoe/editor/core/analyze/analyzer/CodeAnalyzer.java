@@ -16,6 +16,8 @@
 package io.github.rosemoe.editor.core.analyze.analyzer;
 
 import java.util.concurrent.locks.ReentrantLock;
+
+import io.github.rosemoe.editor.core.CEObject;
 import io.github.rosemoe.editor.core.analyze.ResultStore;
 import io.github.rosemoe.editor.core.analyze.result.AnalysisDoneCallback;
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
@@ -140,6 +142,7 @@ public abstract class CodeAnalyzer extends Analyzer {
         dump("");
     }
     public void dump(String offset) {
+        CEObject.dump(this, offset);
     }
 
     /**

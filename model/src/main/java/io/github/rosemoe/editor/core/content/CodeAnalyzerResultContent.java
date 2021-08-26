@@ -37,8 +37,6 @@ import static io.github.rosemoe.editor.core.grid.Cell.*;
  */
 public class CodeAnalyzerResultContent extends Grid<ContentCell> implements CharSequence, AnalyzerResult {
 
-    public static int sInitialListCapacity = 1000;
-
     public int textLength;
     public int nestedBatchEdit;
 
@@ -52,7 +50,6 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      */
     public CodeAnalyzerResultContent() {
         this(null);
-        behaviourOnCellSplit = SPLIT_SPLITTING;
     }
 
     /**
@@ -203,7 +200,7 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      * Delete character in [start,end)
      *  @param start Start position in content
      * @param end   End position in content
-     * @return
+     * @return the deleted content.
      */
     public String delete(int start, int end) {
         /*
@@ -417,15 +414,6 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
             throw new StringIndexOutOfBoundsException(
                     "Column " + column + " out of bounds.line: " + line + " ,column count:" + len);
         }
-    }
-
-    /**
-     * Returns the default capacity of text line list
-     *
-     * @return Default capacity
-     */
-    public static int getInitialLineCapacity() {
-        return CodeAnalyzerResultContent.sInitialListCapacity;
     }
 
     @Override

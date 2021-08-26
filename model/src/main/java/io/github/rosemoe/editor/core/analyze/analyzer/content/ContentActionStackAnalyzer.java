@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import io.github.rosemoe.editor.core.CEObject;
 import io.github.rosemoe.editor.core.analyze.ResultStore;
 import io.github.rosemoe.editor.core.analyze.analyzer.Analyzer;
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
@@ -33,7 +34,7 @@ import static io.github.rosemoe.editor.core.analyze.ResultStore.RES_CONTENT;
  *
  * @author Rose
  */
-public final class ContentActionStackAnalyzer extends Analyzer implements Router {
+public final class ContentActionStackAnalyzer extends Analyzer {
 
     public int maxStackSize = 100;
     private InsertAction mInsertAction;
@@ -54,11 +55,24 @@ public final class ContentActionStackAnalyzer extends Analyzer implements Router
         mStackPointer = 0;
     }
 
+    @Override
+    public boolean route(Routes action, Object... args) {
+        switch (action) {
+            case ACTION_UNDO:
+                undo();
+                return true;
+            case ACTION_REDO:
+                redo();
+                return true;
+        }
+        return false;
+    }
+
     /**
      * Undo on the given CodeAnalyzerResultContent
      *
      */
-    public void undo() {
+    private void undo() {
         if (canUndo()) {
             ignoreModification = true;
             ContentAction action = stack.get(mStackPointer - 1);
@@ -72,7 +86,7 @@ public final class ContentActionStackAnalyzer extends Analyzer implements Router
      * Redo on the given CodeAnalyzerResultContent
      *
      */
-    public void redo() {
+    private void redo() {
         if (canRedo()) {
             ignoreModification = true;
             ContentAction action = stack.get(mStackPointer);
@@ -82,13 +96,12 @@ public final class ContentActionStackAnalyzer extends Analyzer implements Router
         }
     }
 
-
     /**
      * Whether can undo
      *
      * @return Whether can undo
      */
-    public boolean canUndo() {
+    private boolean canUndo() {
         return undoEnabled && (mStackPointer > 0);
     }
 
@@ -97,7 +110,7 @@ public final class ContentActionStackAnalyzer extends Analyzer implements Router
      *
      * @return Whether can redo
      */
-    public boolean canRedo() {
+    private boolean canRedo() {
         return undoEnabled && (mStackPointer < stack.size());
     }
 
@@ -106,7 +119,7 @@ public final class ContentActionStackAnalyzer extends Analyzer implements Router
      *
      * @param enabled Enable or disable
      */
-    public void setUndoEnabled(boolean enabled) {
+    private void setUndoEnabled(boolean enabled) {
         undoEnabled = enabled;
         if (!enabled) {
             cleanStack();
@@ -118,7 +131,7 @@ public final class ContentActionStackAnalyzer extends Analyzer implements Router
      *
      * @param maxSize max stack size
      */
-    public void setMaxUndoStackSize(int maxSize) {
+    private void setMaxUndoStackSize(int maxSize) {
         if (maxSize <= 0) {
             throw new IllegalArgumentException(
                     "max size can not be zero or smaller.Did you want to disable undo module by calling set_undoEnabled(false)?");
@@ -159,7 +172,8 @@ public final class ContentActionStackAnalyzer extends Analyzer implements Router
      *
      * @param action New {@link ContentAction}
      */
-    private void pushAction(CodeAnalyzerResultContent content, ContentAction action) {
+    private void pushAction(ContentAction action) {
+        CodeAnalyzerResultContent content = (CodeAnalyzerResultContent) resultStore.getResultInBuild(RES_CONTENT);
         if (!undoEnabled) {
             return;
         }
@@ -208,7 +222,6 @@ public final class ContentActionStackAnalyzer extends Analyzer implements Router
 
     public void afterInsert(int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence insertedContent) {
-        CodeAnalyzerResultContent content = (CodeAnalyzerResultContent) resultStore.getResult(RES_CONTENT);
         if (ignoreModification) {
             return;
         }
@@ -222,16 +235,15 @@ public final class ContentActionStackAnalyzer extends Analyzer implements Router
             ReplaceAction rep = new ReplaceAction();
             rep._delete = mDeleteAction;
             rep._insert = mInsertAction;
-            pushAction(content, rep);
+            pushAction(rep);
         } else {
-            pushAction(content, mInsertAction);
+            pushAction(mInsertAction);
         }
         replaceMark = false;
     }
 
     public void afterDelete(int startLine, int startColumn, int endLine, int endColumn,
                             CharSequence deletedContent) {
-        CodeAnalyzerResultContent content = (CodeAnalyzerResultContent) resultStore.getResult(RES_CONTENT);
         if (ignoreModification) {
             return;
         }
@@ -242,21 +254,8 @@ public final class ContentActionStackAnalyzer extends Analyzer implements Router
         mDeleteAction.startLine = startLine;
         mDeleteAction.text = deletedContent;
         if (!replaceMark) {
-            pushAction(content, mDeleteAction);
+            pushAction(mDeleteAction);
         }
-    }
-
-    @Override
-    public boolean route(Routes action, Object... args) {
-        switch (action) {
-            case ACTION_UNDO:
-                undo();
-            return true;
-            case ACTION_REDO:
-                redo();
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -277,6 +276,8 @@ public final class ContentActionStackAnalyzer extends Analyzer implements Router
 
         @Override
         public void undo() {
+            System.out.println("Content : ");
+            CEObject.dump(this);
             CodeAnalyzerResultContent content = (CodeAnalyzerResultContent) ContentActionStackAnalyzer.this.resultStore.getResultInBuild(RES_CONTENT);
             String deleted = content.delete(startLine, startColumn, endLine, endColumn);
             ContentActionStackAnalyzer.this.afterDelete(startLine, startColumn, endLine, endColumn, deleted);

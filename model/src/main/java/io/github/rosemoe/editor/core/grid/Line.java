@@ -62,7 +62,7 @@ public class Line<T extends Cell> extends ConcurrentSkipListMap<Integer, T> impl
     public void dump(String offset) {
         CEObject.dump(this,offset);
         String res = "// ";
-        String[] patterns = new String[] {"*","-","+",","};
+        String[] patterns = new String[] {"*","-","+",",","x",":","!","p","^","$","/"};
         int idx = 0;
         for(T c:this) {
             for(int a=0;a<c.size;a+=1) {
