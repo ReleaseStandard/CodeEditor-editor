@@ -17,21 +17,21 @@ package io.github.rosemoe.editor.core.content.processors.indexer;
 
 
 import io.github.rosemoe.editor.core.IntPair;
+import io.github.rosemoe.editor.core.util.CEObject;
 
 /**
  * This a data class of a character position in ContentMapController
  *
  * @author Rose
  */
-public final class CharPosition implements Comparable<Object> {
+public final class CharPosition extends CEObject implements Comparable<Object> {
 
     //Packaged due to make changes
 
-    public int index = -1;
-
-    public int line = -1;
-
-    public int column = -1;
+    public final static int INVALID = -1;
+    public int index = INVALID;
+    public int line = INVALID;
+    public int column = INVALID;
 
     /**
      * Get the index
@@ -70,13 +70,17 @@ public final class CharPosition implements Comparable<Object> {
         return this;
     }
 
-    public CharPosition(int line, int column) {
+    public CharPosition(int line, int column, int index) {
         this.line = line;
         this.column = column;
+        this.index = index;
+    }
+    public CharPosition(int line, int column) {
+        this(line,column,INVALID);
     }
 
     public CharPosition(int index) {
-        this.index = index;
+        this(INVALID,INVALID,index);
     }
 
     public CharPosition() {
@@ -137,6 +141,11 @@ public final class CharPosition implements Comparable<Object> {
         }
     }
 
+    /**
+     * Compare to a CharPosition object.
+     * @param charPosition position to compare with.
+     * @return 0, -1, 1, Integer.compare, RuntimeException
+     */
     private int compareToCharPosition(CharPosition charPosition) {
         if (charPosition.index == -1 || index == -1) {
             if (!(charPosition.line == -1 || line == -1 || column == -1 || charPosition.column == -1)) {
@@ -163,6 +172,13 @@ public final class CharPosition implements Comparable<Object> {
         }
     }
 
+    /**
+     * Find the nearest for a given cp2 between cp3 and cp1.
+     * @param cp1
+     * @param cp2
+     * @param cp3
+     * @return or cp1 or cp3 or null
+     */
     public static CharPosition nearest(CharPosition cp1, final CharPosition cp2, CharPosition cp3) {
         if ( cp1 == null ) {
             if ( cp3 == null ) {

@@ -48,9 +48,12 @@ public class CachedContentIndexerTest {
             @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
             content.append("aze");
             @Jailbreak CachedContentIndexer indexer = new CachedContentIndexer(content);
+            indexer.cache.add(new CharPosition(0, 0, 0));
+            indexer.cache.add(new CharPosition(0, 1, 1));
+            indexer.cache.add(new CharPosition(0,2,2));
             CharPosition cpRes = indexer.findNearest(new CharPosition(1));
             assertTrue(cpRes!=null);
-            assertTrue(cpRes.column == 1);
+            assertTrue("cpRes.column=" + cpRes.column, cpRes.column == 1);
             assertTrue(cpRes.line == 0);
             assertTrue(cpRes.index == 1);
         }
