@@ -14,9 +14,9 @@ public class CharPositionTest {
     public void cloneTest() {
         CharPosition cp = new CharPosition();
         for(int a = 0; a < 50; a = a + 1) {
-            cp.column = r.nextInt();
-            cp.index = r.nextInt();
-            cp.line = r.nextInt();
+            cp.column = r.nextUint();
+            cp.index = r.nextUint();
+            cp.line = r.nextUint();
             CharPosition clone = cp.clone();
             assertTrue(cp.equals(clone));
         }
@@ -85,49 +85,49 @@ public class CharPositionTest {
             CharPosition cp1 = new CharPosition(0);
             CharPosition cp2 = new CharPosition(5);
             CharPosition cp3 = new CharPosition(10);
-            assertTrue(CharPosition.nearest(cp1,cp2,cp3) == cp1);
+            assertTrue(CharPosition.nearest(cp1,cp2,cp3).equals(cp1));
         }
         {
             // |+      |
             CharPosition cp1 = new CharPosition(0);
             CharPosition cp2 = new CharPosition(2);
             CharPosition cp3 = new CharPosition(10);
-            assertTrue(CharPosition.nearest(cp1,cp2,cp3) == cp1);
+            assertTrue(CharPosition.nearest(cp1,cp2,cp3).equals(cp1));
         }
         {
             // |     +|
             CharPosition cp1 = new CharPosition(0);
             CharPosition cp2 = new CharPosition(10);
             CharPosition cp3 = new CharPosition(10);
-            assertTrue(CharPosition.nearest(cp1,cp2,cp3) == cp3);
+            assertTrue(CharPosition.nearest(cp1,cp2,cp3).equals(cp3));
         }
         {
             // |     +|
             CharPosition cp1 = new CharPosition(0);
             CharPosition cp2 = new CharPosition(9);
             CharPosition cp3 = new CharPosition(10);
-            assertTrue(CharPosition.nearest(cp1,cp2,cp3) == cp3);
+            assertTrue(CharPosition.nearest(cp1,cp2,cp3).equals(cp3));
         }
         {
             // |+|
             CharPosition cp1 = new CharPosition(0);
             CharPosition cp2 = new CharPosition(0);
             CharPosition cp3 = new CharPosition(0);
-            assertTrue(CharPosition.nearest(cp1,cp2,cp3) == cp1);
+            assertTrue(CharPosition.nearest(cp1,cp2,cp3).equals(cp1));
         }
         {
             // |+|
             CharPosition cp1 = new CharPosition(0);
             CharPosition cp2 = new CharPosition(0);
             CharPosition cp3 = new CharPosition(1);
-            assertTrue(CharPosition.nearest(cp1,cp2,cp3) == cp1);
+            assertTrue(CharPosition.nearest(cp1,cp2,cp3).equals(cp1));
         }
         {
             // | +|
             CharPosition cp1 = new CharPosition(0);
             CharPosition cp2 = new CharPosition(1);
             CharPosition cp3 = new CharPosition(1);
-            assertTrue(CharPosition.nearest(cp1,cp2,cp3) == cp3);
+            assertTrue(CharPosition.nearest(cp1,cp2,cp3).equals(cp3));
         }
         {
             CharPosition cp1 = new CharPosition(0);
@@ -147,14 +147,53 @@ public class CharPositionTest {
             CharPosition cp1 = new CharPosition(0);
             CharPosition cp2 = new CharPosition(9);
             CharPosition cp3 = new CharPosition(10);
-            assertTrue(CharPosition.nearest(cp3,cp2,cp1) == cp3);
+            assertTrue(CharPosition.nearest(cp3,cp2,cp1).equals(cp3));
         }
         {
             // |+      |
             CharPosition cp1 = new CharPosition(0);
             CharPosition cp2 = new CharPosition(2);
             CharPosition cp3 = new CharPosition(10);
-            assertTrue(CharPosition.nearest(cp3,cp2,cp1) == cp1);
+            assertTrue(CharPosition.nearest(cp3,cp2,cp1).equals(cp1));
+        }
+    }
+
+    @Test
+    public void testEquals() {
+        {
+            CharPosition cp1 = new CharPosition(0);
+            CharPosition cp2 = new CharPosition(2);
+            assertFalse(cp1.equals(cp2));
+        }
+        {
+            CharPosition cp1 = new CharPosition(2);
+            CharPosition cp2 = new CharPosition(1);
+            assertFalse(cp1.equals(cp2));
+        }
+        {
+            CharPosition cp1 = new CharPosition(0);
+            CharPosition cp2 = new CharPosition(0);
+            cp1.dump();
+            cp2.dump();
+            assertTrue(cp1.equals(cp2));
+        }
+        {
+            CharPosition cp1 = new CharPosition(0,0);
+            CharPosition cp2 = new CharPosition(0,1);
+            assertFalse(cp1.equals(cp2));
+        }
+        {
+            CharPosition cp1 = new CharPosition(0,0);
+            CharPosition cp2 = new CharPosition(0,0);
+            assertTrue(cp1.equals(cp2));
+        }
+        {
+            CharPosition cp1 = new CharPosition(0);
+            assertTrue(cp1.equals(0));
+        }
+        {
+            CharPosition cp1 = new CharPosition(6);
+            assertFalse(cp1.equals(0));
         }
     }
 }

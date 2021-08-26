@@ -26,8 +26,7 @@ import io.github.rosemoe.editor.core.util.CEObject;
  */
 public final class CharPosition extends CEObject implements Comparable<Object> {
 
-    //Packaged due to make changes
-
+    // index, line, column are use [-1;INTEGER_MAX] values
     public final static int INVALID = -1;
     public int index = INVALID;
     public int line = INVALID;
@@ -71,6 +70,9 @@ public final class CharPosition extends CEObject implements Comparable<Object> {
     }
 
     public CharPosition(int line, int column, int index) {
+        if ( line < INVALID || column < INVALID || index < INVALID ) {
+            throw new RuntimeException("Invalid initialization");
+        }
         this.line = line;
         this.column = column;
         this.index = index;
@@ -90,11 +92,25 @@ public final class CharPosition extends CEObject implements Comparable<Object> {
     public boolean equals(Object another) {
         if (another instanceof CharPosition) {
             CharPosition a = (CharPosition) another;
-            return a.column == column &&
-                    a.line == line &&
-                    a.index == index;
+
+            if ( index == INVALID || a.index == INVALID ) {
+                if ( line == INVALID || column == INVALID || a.column == INVALID || a.line == INVALID ) {
+                    throw new RuntimeException("Cannot compare thoses object, one seem to be not initialised");
+                } else {
+                    return line == a.line && column == a.column;
+                }
+            } else {
+                return index == a.index;
+            }
+        } else if ( another instanceof Integer ) {
+            if ( index == INVALID ) {
+                throw new RuntimeException("Cannot compare thoses object, one seem to be not initialised");
+            } else {
+                return index == (Integer)another;
+            }
+        } else {
+            throw new RuntimeException("Cannot compare object with : " + another.getClass());
         }
-        return false;
     }
 
     /**
@@ -114,11 +130,7 @@ public final class CharPosition extends CEObject implements Comparable<Object> {
      */
     @Override
     public CharPosition clone() {
-        CharPosition pos = new CharPosition();
-        pos.index = index;
-        pos.line = line;
-        pos.column = column;
-        return pos;
+        return new CharPosition(line, column, index);
     }
 
     @Override
@@ -131,8 +143,8 @@ public final class CharPosition extends CEObject implements Comparable<Object> {
         if ( obj instanceof CharPosition ) {
            return compareToCharPosition((CharPosition) obj);
         } else if ( obj instanceof Integer ) {
-            if ( index <= -1 ) {
-                throw new RuntimeException("Cannot compare integer with -1");
+            if ( index == INVALID ) {
+                throw new RuntimeException("Cannot compare integer with INVALID");
             } else {
                 return Integer.compare(index, (Integer) obj);
             }
@@ -147,8 +159,8 @@ public final class CharPosition extends CEObject implements Comparable<Object> {
      * @return 0, -1, 1, Integer.compare, RuntimeException
      */
     private int compareToCharPosition(CharPosition charPosition) {
-        if (charPosition.index == -1 || index == -1) {
-            if (!(charPosition.line == -1 || line == -1 || column == -1 || charPosition.column == -1)) {
+        if (charPosition.index == INVALID || index == INVALID) {
+            if (!(charPosition.line == INVALID || line == INVALID || column == INVALID || charPosition.column == INVALID)) {
                 int cpmCol = Integer.compare(column, charPosition.column);
                 int cmpLine = Integer.compare(line, charPosition.line);
                 if (cmpLine < 0) {
@@ -195,7 +207,7 @@ public final class CharPosition extends CEObject implements Comparable<Object> {
                     cp1 = cp3;
                     cp3 = aux;
                 }
-                if ( cp1.index == -1 || cp2.index == -1 || cp3.index == -1 ) {
+                if ( cp1.index == INVALID || cp2.index == INVALID || cp3.index == INVALID ) {
                     throw new RuntimeException("We don't have size of lines at this step, can give a nearest !");
                 } else {
                     int diff = cp2.index - cp1.index;
