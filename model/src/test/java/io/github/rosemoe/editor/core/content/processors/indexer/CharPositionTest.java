@@ -21,4 +21,48 @@ public class CharPositionTest {
             assertTrue(cp.equals(clone));
         }
     }
+
+    @Test
+    public void testCompareTo() {
+        {
+            CharPosition cp1 = new CharPosition(0, 0);
+            CharPosition cp2 = new CharPosition(0, 5);
+            assertTrue(""+cp1.compareTo(cp2),cp1.compareTo(cp2) < 0);
+        }
+        {
+            CharPosition cp1 = new CharPosition(0, 5);
+            CharPosition cp2 = new CharPosition(0, 0);
+            assertTrue(cp1.compareTo(cp2) > 0);
+        }
+        {
+            CharPosition cp1 = new CharPosition(1, 0);
+            CharPosition cp2 = new CharPosition(0, 0);
+            assertTrue(cp1.compareTo(cp2) > 0);
+        }
+        {
+            CharPosition cp1 = new CharPosition(0, 0);
+            CharPosition cp2 = new CharPosition(1, 0);
+            assertTrue(cp1.compareTo(cp2) < 0);
+        }
+        {
+            CharPosition cp1 = new CharPosition(0, 0);
+            CharPosition cp2 = new CharPosition(0, 0);
+            assertTrue(cp1.compareTo(cp2) == 0);
+        }
+        {
+            CharPosition cp1 = new CharPosition(0);
+            CharPosition cp2 = new CharPosition(0);
+            assertTrue(cp1.compareTo(cp2) == 0);
+        }
+        {
+            CharPosition cp1 = new CharPosition(0);
+            CharPosition cp2 = new CharPosition(1);
+            assertTrue(cp1.compareTo(cp2) < 0);
+        }
+        {
+            CharPosition cp1 = new CharPosition(1);
+            CharPosition cp2 = new CharPosition(0);
+            assertTrue(cp1.compareTo(cp2) > 0);
+        }
+    }
 }

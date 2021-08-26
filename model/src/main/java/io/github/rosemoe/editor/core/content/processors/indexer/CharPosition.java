@@ -23,15 +23,15 @@ import io.github.rosemoe.editor.core.IntPair;
  *
  * @author Rose
  */
-public final class CharPosition {
+public final class CharPosition implements Comparable<CharPosition> {
 
     //Packaged due to make changes
 
-    public int index;
+    public int index = -1;
 
-    public int line;
+    public int line = -1;
 
-    public int column;
+    public int column = -1;
 
     /**
      * Get the index
@@ -70,6 +70,18 @@ public final class CharPosition {
         return this;
     }
 
+    public CharPosition(int line, int column) {
+        this.line = line;
+        this.column = column;
+    }
+
+    public CharPosition(int index) {
+        this.index = index;
+    }
+
+    public CharPosition() {
+
+    }
     @Override
     public boolean equals(Object another) {
         if (another instanceof CharPosition) {
@@ -110,4 +122,31 @@ public final class CharPosition {
         return "CharPosition(line = " + line + ",column = " + column + ",index = " + index + ")";
     }
 
+    @Override
+    public int compareTo(CharPosition charPosition) {
+        if ( charPosition.index == -1 || index == -1 ) {
+            if ( ! ( charPosition.line == -1 || line == -1 || column == -1 || charPosition.column == -1 ) ) {
+                int cpmCol = Integer.compare(column, charPosition.column);
+                int cmpLine = Integer.compare(line, charPosition.line);
+                if ( cmpLine < 0 ) {
+                    return -1;
+                } else if ( cmpLine > 0 ) {
+                    return 1;
+                } else {
+                    if ( cpmCol < 0 ) {
+                        return -1;
+                    } else if (cpmCol > 0) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }
+            }
+            else {
+                throw new RuntimeException("Cannot compare those CharPosition");
+            }
+        } else {
+            return Integer.compare(index, charPosition.index);
+        }
+    }
 }
