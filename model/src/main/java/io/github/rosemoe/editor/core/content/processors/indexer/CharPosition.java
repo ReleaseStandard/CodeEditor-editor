@@ -23,7 +23,7 @@ import io.github.rosemoe.editor.core.IntPair;
  *
  * @author Rose
  */
-public final class CharPosition implements Comparable<CharPosition> {
+public final class CharPosition implements Comparable<Object> {
 
     //Packaged due to make changes
 
@@ -123,17 +123,31 @@ public final class CharPosition implements Comparable<CharPosition> {
     }
 
     @Override
-    public int compareTo(final CharPosition charPosition) {
-        if ( charPosition.index == -1 || index == -1 ) {
-            if ( ! ( charPosition.line == -1 || line == -1 || column == -1 || charPosition.column == -1 ) ) {
+    public int compareTo(final Object obj) {
+        if ( obj instanceof CharPosition ) {
+           return compareToCharPosition((CharPosition) obj);
+        } else if ( obj instanceof Integer ) {
+            if ( index <= -1 ) {
+                throw new RuntimeException("Cannot compare integer with -1");
+            } else {
+                return Integer.compare(index, (Integer) obj);
+            }
+        } else {
+            throw new RuntimeException("Cannot compare CharPosition with " + obj.getClass());
+        }
+    }
+
+    private int compareToCharPosition(CharPosition charPosition) {
+        if (charPosition.index == -1 || index == -1) {
+            if (!(charPosition.line == -1 || line == -1 || column == -1 || charPosition.column == -1)) {
                 int cpmCol = Integer.compare(column, charPosition.column);
                 int cmpLine = Integer.compare(line, charPosition.line);
-                if ( cmpLine < 0 ) {
+                if (cmpLine < 0) {
                     return -1;
-                } else if ( cmpLine > 0 ) {
+                } else if (cmpLine > 0) {
                     return 1;
                 } else {
-                    if ( cpmCol < 0 ) {
+                    if (cpmCol < 0) {
                         return -1;
                     } else if (cpmCol > 0) {
                         return 1;
@@ -141,8 +155,7 @@ public final class CharPosition implements Comparable<CharPosition> {
                         return 0;
                     }
                 }
-            }
-            else {
+            } else {
                 throw new RuntimeException("Cannot compare those CharPosition");
             }
         } else {

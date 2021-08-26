@@ -64,6 +64,18 @@ public class CharPositionTest {
             CharPosition cp2 = new CharPosition(0);
             assertTrue(cp1.compareTo(cp2) > 0);
         }
+        {
+            CharPosition cp1 = new CharPosition(0);
+            assertTrue(cp1.compareTo(0)==0);
+        }
+        {
+            CharPosition cp1 = new CharPosition(10);
+            assertTrue(cp1.compareTo(0)>0);
+        }
+        {
+            CharPosition cp1 = new CharPosition(10);
+            assertTrue(cp1.compareTo(11)<0);
+        }
     }
 
     @Test
