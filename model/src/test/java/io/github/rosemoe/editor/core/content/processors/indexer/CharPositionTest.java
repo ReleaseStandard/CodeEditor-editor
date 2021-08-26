@@ -65,4 +65,84 @@ public class CharPositionTest {
             assertTrue(cp1.compareTo(cp2) > 0);
         }
     }
+
+    @Test
+    public void nearest() {
+        {
+            // |   +   |
+            CharPosition cp1 = new CharPosition(0);
+            CharPosition cp2 = new CharPosition(5);
+            CharPosition cp3 = new CharPosition(10);
+            assertTrue(CharPosition.nearest(cp1,cp2,cp3) == cp1);
+        }
+        {
+            // |+      |
+            CharPosition cp1 = new CharPosition(0);
+            CharPosition cp2 = new CharPosition(2);
+            CharPosition cp3 = new CharPosition(10);
+            assertTrue(CharPosition.nearest(cp1,cp2,cp3) == cp1);
+        }
+        {
+            // |     +|
+            CharPosition cp1 = new CharPosition(0);
+            CharPosition cp2 = new CharPosition(10);
+            CharPosition cp3 = new CharPosition(10);
+            assertTrue(CharPosition.nearest(cp1,cp2,cp3) == cp3);
+        }
+        {
+            // |     +|
+            CharPosition cp1 = new CharPosition(0);
+            CharPosition cp2 = new CharPosition(9);
+            CharPosition cp3 = new CharPosition(10);
+            assertTrue(CharPosition.nearest(cp1,cp2,cp3) == cp3);
+        }
+        {
+            // |+|
+            CharPosition cp1 = new CharPosition(0);
+            CharPosition cp2 = new CharPosition(0);
+            CharPosition cp3 = new CharPosition(0);
+            assertTrue(CharPosition.nearest(cp1,cp2,cp3) == cp1);
+        }
+        {
+            // |+|
+            CharPosition cp1 = new CharPosition(0);
+            CharPosition cp2 = new CharPosition(0);
+            CharPosition cp3 = new CharPosition(1);
+            assertTrue(CharPosition.nearest(cp1,cp2,cp3) == cp1);
+        }
+        {
+            // | +|
+            CharPosition cp1 = new CharPosition(0);
+            CharPosition cp2 = new CharPosition(1);
+            CharPosition cp3 = new CharPosition(1);
+            assertTrue(CharPosition.nearest(cp1,cp2,cp3) == cp3);
+        }
+        {
+            CharPosition cp1 = new CharPosition(0);
+            CharPosition cp2 = new CharPosition(1);
+            assertTrue(CharPosition.nearest(cp1,cp2,null)==cp1);
+        }
+        {
+            CharPosition cp1 = new CharPosition(0);
+            CharPosition cp2 = new CharPosition(1);
+            assertTrue(CharPosition.nearest(null,cp1,cp2)==cp2);
+        }
+        {
+            assertTrue(CharPosition.nearest(null,null,null)==null);
+        }
+        {
+            // |     +|
+            CharPosition cp1 = new CharPosition(0);
+            CharPosition cp2 = new CharPosition(9);
+            CharPosition cp3 = new CharPosition(10);
+            assertTrue(CharPosition.nearest(cp3,cp2,cp1) == cp3);
+        }
+        {
+            // |+      |
+            CharPosition cp1 = new CharPosition(0);
+            CharPosition cp2 = new CharPosition(2);
+            CharPosition cp3 = new CharPosition(10);
+            assertTrue(CharPosition.nearest(cp3,cp2,cp1) == cp1);
+        }
+    }
 }

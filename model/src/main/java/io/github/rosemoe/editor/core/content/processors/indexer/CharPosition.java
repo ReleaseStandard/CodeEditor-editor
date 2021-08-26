@@ -123,7 +123,7 @@ public final class CharPosition implements Comparable<CharPosition> {
     }
 
     @Override
-    public int compareTo(CharPosition charPosition) {
+    public int compareTo(final CharPosition charPosition) {
         if ( charPosition.index == -1 || index == -1 ) {
             if ( ! ( charPosition.line == -1 || line == -1 || column == -1 || charPosition.column == -1 ) ) {
                 int cpmCol = Integer.compare(column, charPosition.column);
@@ -147,6 +147,37 @@ public final class CharPosition implements Comparable<CharPosition> {
             }
         } else {
             return Integer.compare(index, charPosition.index);
+        }
+    }
+
+    public static CharPosition nearest(CharPosition cp1, final CharPosition cp2, CharPosition cp3) {
+        if ( cp1 == null ) {
+            if ( cp3 == null ) {
+                return null;
+            } else {
+                return cp3;
+            }
+        } else {
+            if ( cp3 == null ) {
+                return cp1;
+            } else {
+                if ( cp1 > cp3 ) {
+                    CharPosition aux = cp1;
+                    cp1 = cp3;
+                    cp3 = aux;
+                }
+                if ( cp1.index == -1 || cp2.index == -1 || cp3.index == -1 ) {
+                    throw new RuntimeException("We don't have size of lines at this step, can give a nearest !");
+                } else {
+                    int diff = cp2.index - cp1.index;
+                    int diff2 = cp3.index - cp2.index;
+                    if ( diff2 < diff ) {
+                        return cp3;
+                    } else {
+                        return cp1;
+                    }
+                }
+            }
         }
     }
 }
