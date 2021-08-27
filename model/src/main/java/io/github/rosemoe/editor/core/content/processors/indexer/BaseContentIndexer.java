@@ -71,6 +71,7 @@ public abstract class BaseContentIndexer extends ContentIndexer {
             if ( index >= idx && index < ( idx + l.getWidth() ) ) {
                 return new CharPosition(k,index-idx,index);
             } else {
+
             }
             idx += l.getWidth();
         }

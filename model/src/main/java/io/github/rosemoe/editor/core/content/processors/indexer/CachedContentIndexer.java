@@ -44,24 +44,9 @@ public class CachedContentIndexer extends BaseContentIndexer implements ContentL
         @Override
         public boolean add(CharPosition charPosition) {
             if ( size() >= maxSize ) { return false; }
-            if ( charPosition.index == INVALID ) {
-                if ( charPosition.line == INVALID || charPosition.column == INVALID ) {
-                    return false;
-                }
-                else {
-                    // index is missing in this case but can be deduced from CodeAnalyzerResultContent object
-                    charPosition.index = processIndex(charPosition.line, charPosition.column);
-                }
-            } else {
-                if ( charPosition.line == INVALID || charPosition.column == INVALID ) {
-                    // line or column is missing but we can deduce it from the index
-                    charPosition = processCharPosition(charPosition.index);
-                }
-            }
-            if ( charPosition == null ) {
-                return false;
-            }
-            return super.add(charPosition);
+            CharPosition charPosition1 = completeWithContent(charPosition);
+            if( charPosition1 == null ) { return false; }
+            return super.add(charPosition1);
         }
         public void dump() {
             dump("");
@@ -72,6 +57,26 @@ public class CachedContentIndexer extends BaseContentIndexer implements ContentL
     };
     Cache cache = new Cache();
 
+    public CharPosition completeWithContent(CharPosition charPosition) {
+        if ( charPosition.index == INVALID ) {
+            if ( charPosition.line == INVALID || charPosition.column == INVALID ) {
+                return null;
+            }
+            else {
+                // index is missing in this case but can be deduced from CodeAnalyzerResultContent object
+                charPosition.index = processIndex(charPosition.line, charPosition.column);
+            }
+        } else {
+            if ( charPosition.line == INVALID || charPosition.column == INVALID ) {
+                // line or column is missing but we can deduce it from the index
+                charPosition = processCharPosition(charPosition.index);
+            }
+        }
+        if ( charPosition == null ) {
+            return null;
+        }
+        return charPosition;
+    }
     /**
      * Try to index all the content in the map (process both {line, column} and {idx}
      */
@@ -99,7 +104,7 @@ public class CachedContentIndexer extends BaseContentIndexer implements ContentL
 
     /**
      * Find the nearest position in the cache.
-     * @param pos
+     * @param pos 0..n find the nearest of this position
      * @return
      */
     private CharPosition findNearest(CharPosition pos) {
@@ -136,31 +141,13 @@ public class CachedContentIndexer extends BaseContentIndexer implements ContentL
      */
     @Override
     public CharPosition getCharPosition(CharPosition charPosition) {
-        CharPosition res = findNearest(charPosition);
-        if ( ! charPosition.equals(res) ) {
-            Integer k = INVALID;
-            try {
-                k = content.lastKey();
-            } catch (Exception e) { return null; }
-            boolean cond1 = ( charPosition.index >= content.length() );
-            boolean cond2 = ( charPosition.line >= k && charPosition.column >= content.get(charPosition.line).getWidth() );
-            System.out.println("A,cond1="+cond1+",cond2="+cond2);
-            if ( cond1 && cond2 ) {
-                System.out.println("B");
-                return null;
-            }
-            if ( cond1 && ( charPosition.line == INVALID || charPosition.column == INVALID ) ) {
-                System.out.println("C");
-                return null;
-            }
-            if ( cond2 && (charPosition.index == INVALID) ) {
-                System.out.println("D");
-                return null;
-            }
+        if ( ! cache.contains(charPosition) ) {
+            if (!charPosition.isValid()) { return null; }
+            charPosition = completeWithContent(charPosition);
+            if ( charPosition == null || charPosition.index > content.length() ) { return null; }
             cache.add(charPosition);
-            return cache.floor(charPosition);
         }
-        return res;
+        return cache.floor(charPosition);
     }
 
     @Override

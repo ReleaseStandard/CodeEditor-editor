@@ -69,8 +69,8 @@ public abstract class ContentIndexer extends CEObject {
      * Get the CharPosition for the given (line,column)
      * You are not expected to make changes with this CharPosition
      *
-     * @param line   The line position you want to get
-     * @param column The column position you want to get
+     * @param line   0..n-1 The line position you want to get inclusive
+     * @param column 0..n   The column position you want to get exclusive
      * @return The CharPosition object or null if not found.
      */
     public abstract CharPosition getCharPosition(int line, int column);
