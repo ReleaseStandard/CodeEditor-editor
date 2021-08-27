@@ -48,9 +48,12 @@ public class UserInputConnexionView extends BaseInputConnection {
         //Logs.log("close connection");
         super.closeConnection();
         CodeAnalyzerResultContent content = editor.getText();
-        while (content.isInBatchEdit()) {
+/*
+        TODO: break
+      while (content.isInBatchEdit()) {
             content.endBatchEdit();
         }
+  */
         handleCloseConnection();
         editor.onCloseConnection();
     }
@@ -161,18 +164,14 @@ public class UserInputConnexionView extends BaseInputConnection {
 
     @Override
     public synchronized boolean beginBatchEdit() {
-        //Logs.log("beginBatchEdit()");
-        return editor.getText().beginBatchEdit();
+        editor.pipeline.route(Routes.ACTION_CONTENT_ACTION_STACK, Routes.ACTION_EDIT_BATCH, Routes.BEGIN);
+        return true;
     }
 
     @Override
     public synchronized boolean endBatchEdit() {
-        //Logs.log("endBatchEdit()");
-        boolean inBatch = editor.getText().endBatchEdit();
-        if (!inBatch) {
-            editor.updateSelection();
-        }
-        return inBatch;
+        editor.pipeline.route(Routes.ACTION_CONTENT_ACTION_STACK, Routes.ACTION_EDIT_BATCH, Routes.END);
+        return false;
     }
 
     @Override

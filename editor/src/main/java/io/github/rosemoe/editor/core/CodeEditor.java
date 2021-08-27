@@ -2869,8 +2869,8 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         }
 
         if (model.resultStore.mText != null) {
-            model.resultStore.mText.removeContentListener(this);
-            model.resultStore.mText.setLineListener(null);
+            //model.resultStore.mText.removeContentListener(this);
+            //model.resultStore.mText.setLineListener(null);
         }
         model.resultStore.mText = new CodeAnalyzerResultContent(text);
         boolean isAutoIndented = CursorModel.DEFAULT_ISAUTO_IDENT;
@@ -2881,8 +2881,8 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
         cursor.setAutoIndent(isAutoIndented);
         cursor.setLanguage(mLanguage);
         userInput.view.reset();
-        model.resultStore.mText.addContentListener(this);
-        model.resultStore.mText.setLineListener(this);
+        //model.resultStore.mText.addContentListener(this);
+        //model.resultStore.mText.setLineListener(this);
         pipeline.stopAllFlow();
 
         CodeAnalyzer analyzer = (CodeAnalyzer) mLanguage.analyzer;
@@ -3047,9 +3047,10 @@ public class CodeEditor implements ContentListener, TextFormatter.FormatResultRe
     public void updateCursor() {
         updateCursorAnchor();
         updateExtractedText();
-        if (!model.resultStore.mText.isInBatchEdit()) {
-            updateSelection();
-        }
+        // TODO : break
+        //if (!model.pip.isInBatchEdit()) {
+        //    updateSelection();
+        //}
     }
 
     //-------------------------------------------------------------------------------

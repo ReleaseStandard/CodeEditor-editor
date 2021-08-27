@@ -40,11 +40,8 @@ import static io.github.rosemoe.editor.core.grid.Cell.*;
 public class CodeAnalyzerResultContent extends Grid<ContentCell> implements CharSequence, AnalyzerResult {
 
     public int textLength;
-    public int nestedBatchEdit;
 
     private ContentIndexer contentIndexer;
-    private List<ContentListener> mListeners;
-    private ContentLineRemoveListener mLineListener;
 
 
     /**
@@ -53,8 +50,6 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
     public CodeAnalyzerResultContent() {
         behaviourOnCellSplit = SPLIT_SPLITTING;
         textLength = 0;
-        nestedBatchEdit = 0;
-        mListeners = new ArrayList<>();
         contentIndexer = new NoCacheContentIndexer(this);
     }
 
@@ -112,16 +107,6 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
         }
         textLength += text.length();
         return text;
-    }
-
-    /**
-     * Set a line listener
-     *
-     * @param lis the listener,maybe null
-     * @see ContentLineRemoveListener
-     */
-    public void setLineListener(ContentLineRemoveListener lis) {
-        this.mLineListener = lis;
     }
 
     /**
@@ -267,83 +252,6 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
         contentIndexer = new NoCacheContentIndexer(this);
     }
 
-    /**
-     * A delegate method.
-     * Notify the ContentActionStackAnalyzer to begin batch edit(enter a new layer).
-     * NOTE: batch edit in Android can be nested.
-     *
-     * @return Whether in batch edit
-     */
-    public boolean beginBatchEdit() {
-        nestedBatchEdit++;
-        return isInBatchEdit();
-    }
-
-    /**
-     * A delegate method.
-     * Notify the ContentActionStackAnalyzer to end batch edit(exit current layer).
-     *
-     * @return Whether in batch edit
-     */
-    public boolean endBatchEdit() {
-        nestedBatchEdit--;
-        if (nestedBatchEdit < 0) {
-            nestedBatchEdit = 0;
-        }
-        return isInBatchEdit();
-    }
-
-    /**
-     * Returns whether we are in batch edit
-     *
-     * @return Whether in batch edit
-     */
-    public boolean isInBatchEdit() {
-        return nestedBatchEdit > 0;
-    }
-
-    /**
-     * Add a new {@link ContentListener} to the CodeAnalyzerResultContent
-     *
-     * @param listener The listener to add
-     */
-    public void addContentListener(ContentListener listener) {
-        if (listener == null) {
-            throw new IllegalArgumentException("listener can not be null");
-        }
-        if (listener instanceof ContentIndexer) {
-            throw new IllegalArgumentException("Permission denied");
-        }
-        if (!mListeners.contains(listener)) {
-            mListeners.add(listener);
-        }
-    }
-
-    /**
-     * Remove the given listener of this CodeAnalyzerResultContent
-     *
-     * @param listener The listener to remove
-     */
-    public void removeContentListener(ContentListener listener) {
-        if (listener instanceof ContentIndexer) {
-            throw new IllegalArgumentException("Permission denied");
-        }
-        mListeners.remove(listener);
-    }
-
-    /**
-     * Get the using {@link ContentIndexer} object
-     *
-     * @return ContentIndexer for this object
-     */
-    /*
-    public ContentIndexer getIndexer() {
-        if (contentIndexer.getClass() != CachedContentIndexer.class && cursor != null) {
-            return cursor.getIndexer();
-        }
-        return contentIndexer;
-    }
-*/
     @Override
     public boolean equals(Object anotherObject) {
         if (anotherObject instanceof CodeAnalyzerResultContent) {

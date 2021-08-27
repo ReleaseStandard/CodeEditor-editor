@@ -26,6 +26,7 @@ import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.analyze.signal.Routes;
 
 import static io.github.rosemoe.editor.core.analyze.ResultStore.RES_CONTENT;
+import static io.github.rosemoe.editor.core.analyze.signal.Routes.*;
 
 /**
  * Helper class for CodeAnalyzerResultContent to take down modification
@@ -63,6 +64,15 @@ public final class ContentActionStackAnalyzer extends Analyzer {
             case ACTION_REDO:
                 redo();
                 return true;
+            case ACTION_EDIT_BATCH:
+                switch ((Routes)args[0]) {
+                    case BEGIN: {
+                        beginBatchEdit();
+                    } return true;
+                    case END: {
+                        endBatchEdit();
+                    } return true;
+                }
         }
         return false;
     }
@@ -165,6 +175,42 @@ public final class ContentActionStackAnalyzer extends Analyzer {
         }
     }
 
+    public int nestedBatchEdit = 0;
+
+    /**
+     * A delegate method.
+     * Notify the ContentActionStackAnalyzer to begin batch edit(enter a new layer).
+     * NOTE: batch edit in Android can be nested.
+     *
+     * @return Whether in batch edit
+     */
+    public boolean beginBatchEdit() {
+        nestedBatchEdit++;
+        return isInBatchEdit();
+    }
+    /**
+     * A delegate method.
+     * Notify the ContentActionStackAnalyzer to end batch edit(exit current layer).
+     *
+     * @return Whether in batch edit
+     */
+    public boolean endBatchEdit() {
+        nestedBatchEdit--;
+        if (nestedBatchEdit < 0) {
+            nestedBatchEdit = 0;
+        }
+        return isInBatchEdit();
+    }
+    /**
+     * Returns whether we are in batch edit
+     *
+     * @return Whether in batch edit
+     */
+    public boolean isInBatchEdit() {
+        return nestedBatchEdit > 0;
+    }
+
+
     /**
      * Push a new {@link ContentAction} to stack
      * It will merge actions if possible
@@ -177,14 +223,14 @@ public final class ContentActionStackAnalyzer extends Analyzer {
             return;
         }
         cleanBeforePush();
-        if (content.isInBatchEdit()) {
+        if (isInBatchEdit()) {
             if (stack.isEmpty()) {
                 MultiAction a = new MultiAction();
                 a.addAction(action);
                 stack.push(a);
                 mStackPointer++;
             } else {
-                ContentAction a = stack.get(stack.size() - 1);
+                ContentAction a = stack.lastElement();
                 if (a instanceof MultiAction) {
                     MultiAction ac = (MultiAction) a;
                     ac.addAction(action);
