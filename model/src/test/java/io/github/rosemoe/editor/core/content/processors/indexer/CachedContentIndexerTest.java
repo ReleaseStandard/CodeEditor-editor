@@ -101,6 +101,43 @@ public class CachedContentIndexerTest {
     }
 
     @Test
+    public void testGetCharPositionBug() {
+        // aazez
+        // aa
+        // er
+        @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+        content.append("aazez");
+        content.append("aa");
+        content.append("er");
+        @Jailbreak CachedContentIndexer indexer = new CachedContentIndexer(content);
+        {
+            CharPosition cp = indexer.getCharPosition(-1);
+            assertTrue(cp == null);
+            cp = indexer.getCharPosition(0);
+            assertTrue(cp.line == 0 && cp.column == 0);
+            cp = indexer.getCharPosition(1);
+            assertTrue(cp.line == 0 && cp.column == 1);
+            cp = indexer.getCharPosition(2);
+            assertTrue(cp.line == 0 && cp.column == 2);
+            cp = indexer.getCharPosition(3);
+            assertTrue(cp.line == 0 && cp.column == 3);
+            cp = indexer.getCharPosition(4);
+            assertTrue(cp.line == 0 && cp.column == 4);
+            cp = indexer.getCharPosition(5);
+            assertTrue(cp.line == 1 && cp.column == 0);
+            cp = indexer.getCharPosition(6);
+            assertTrue(cp.line == 1 && cp.column == 1);
+            cp = indexer.getCharPosition(7);
+            assertTrue(cp.line == 2 && cp.column == 0);
+            cp = indexer.getCharPosition(8);
+            assertTrue(cp.line == 2 && cp.column == 1);
+            cp = indexer.getCharPosition(9);
+            assertTrue(cp == null);
+
+        }
+    }
+
+    @Test
     public void getCharPosition() {
         {
             // abc

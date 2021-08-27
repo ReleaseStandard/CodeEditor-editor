@@ -25,6 +25,8 @@ import io.github.rosemoe.editor.core.util.CEObject;
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.content.ContentListener;
 
+import static io.github.rosemoe.editor.core.content.processors.indexer.CharPosition.INVALID;
+
 /**
  * ContentIndexer Impl for CodeAnalyzerResultContent
  * With cache
@@ -42,8 +44,8 @@ public class CachedContentIndexer extends BaseContentIndexer implements ContentL
         @Override
         public boolean add(CharPosition charPosition) {
             if ( size() >= maxSize ) { return false; }
-            if ( charPosition.index == CharPosition.INVALID ) {
-                if ( charPosition.line == CharPosition.INVALID || charPosition.column == CharPosition.INVALID ) {
+            if ( charPosition.index == INVALID ) {
+                if ( charPosition.line == INVALID || charPosition.column == INVALID ) {
                     return false;
                 }
                 else {
@@ -51,7 +53,7 @@ public class CachedContentIndexer extends BaseContentIndexer implements ContentL
                     charPosition.index = processIndex(charPosition.line, charPosition.column);
                 }
             } else {
-                if ( charPosition.line == CharPosition.INVALID || charPosition.column == CharPosition.INVALID ) {
+                if ( charPosition.line == INVALID || charPosition.column == INVALID ) {
                     // line or column is missing but we can deduce it from the index
                     charPosition = processCharPosition(charPosition.index);
                 }
@@ -95,10 +97,15 @@ public class CachedContentIndexer extends BaseContentIndexer implements ContentL
         super(content);
     }
 
+    /**
+     * Find the nearest position in the cache.
+     * @param pos
+     * @return
+     */
     private CharPosition findNearest(CharPosition pos) {
         CharPosition cp1 = cache.floor(pos);
         CharPosition cp2 = cache.ceiling(pos);
-        return CharPosition.nearest(cp1,pos,cp2);
+        return CharPosition.nearest(cp1, pos, cp2);
     }
 
     /**
@@ -131,6 +138,25 @@ public class CachedContentIndexer extends BaseContentIndexer implements ContentL
     public CharPosition getCharPosition(CharPosition charPosition) {
         CharPosition res = findNearest(charPosition);
         if ( ! charPosition.equals(res) ) {
+            Integer k = INVALID;
+            try {
+                k = content.lastKey();
+            } catch (Exception e) { return null; }
+            boolean cond1 = ( charPosition.index >= content.length() );
+            boolean cond2 = ( charPosition.line >= k && charPosition.column >= content.get(charPosition.line).getWidth() );
+            System.out.println("A,cond1="+cond1+",cond2="+cond2);
+            if ( cond1 && cond2 ) {
+                System.out.println("B");
+                return null;
+            }
+            if ( cond1 && ( charPosition.line == INVALID || charPosition.column == INVALID ) ) {
+                System.out.println("C");
+                return null;
+            }
+            if ( cond2 && (charPosition.index == INVALID) ) {
+                System.out.println("D");
+                return null;
+            }
             cache.add(charPosition);
             return cache.floor(charPosition);
         }
