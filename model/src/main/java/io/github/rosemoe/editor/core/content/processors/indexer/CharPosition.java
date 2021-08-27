@@ -17,6 +17,7 @@ package io.github.rosemoe.editor.core.content.processors.indexer;
 
 
 import io.github.rosemoe.editor.core.IntPair;
+import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.util.CEObject;
 
 /**
@@ -225,5 +226,13 @@ public final class CharPosition extends CEObject implements Comparable<Object> {
                 }
             }
         }
+    }
+
+    /**
+     * Check the current object contains enought information to get a position on the grid.
+     * @return
+     */
+    public boolean isValid() {
+        return ( index != INVALID || ( line != INVALID && column != INVALID ) );
     }
 }

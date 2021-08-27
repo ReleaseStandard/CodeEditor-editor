@@ -1,5 +1,6 @@
 package io.github.rosemoe.editor.core.content.processors.indexer;
 
+import org.checkerframework.checker.units.qual.C;
 import org.junit.Test;
 
 import io.github.rosemoe.editor.core.content.processors.indexer.CharPosition;
@@ -194,6 +195,34 @@ public class CharPositionTest {
         {
             CharPosition cp1 = new CharPosition(6);
             assertFalse(cp1.equals(0));
+        }
+    }
+
+    @Test
+    public void testIsValid() {
+        {
+            CharPosition cp1 = new CharPosition(0);
+            assertTrue(cp1.isValid());
+        }
+        {
+            CharPosition cp1 = new CharPosition(0, 0);
+            assertTrue(cp1.isValid());
+        }
+        {
+            CharPosition cp1 = new CharPosition(0, CharPosition.INVALID);
+            assertFalse(cp1.isValid());
+        }
+        {
+            CharPosition cp1 = new CharPosition();
+            assertFalse(cp1.isValid());
+        }
+        {
+            CharPosition cp1 = new CharPosition(CharPosition.INVALID, 0);
+            assertFalse(cp1.isValid());
+        }
+        {
+            CharPosition cp1 = new CharPosition(CharPosition.INVALID);
+            assertFalse(cp1.isValid());
         }
     }
 }
