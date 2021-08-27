@@ -39,8 +39,6 @@ import static io.github.rosemoe.editor.core.grid.Cell.*;
  */
 public class CodeAnalyzerResultContent extends Grid<ContentCell> implements CharSequence, AnalyzerResult {
 
-    public int textLength;
-
     private ContentIndexer contentIndexer;
 
 
@@ -49,7 +47,6 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      */
     public CodeAnalyzerResultContent() {
         behaviourOnCellSplit = SPLIT_SPLITTING;
-        textLength = 0;
         contentIndexer = new NoCacheContentIndexer(this);
     }
 
@@ -105,7 +102,6 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
                 workIndex++;
             }
         }
-        textLength += text.length();
         return text;
     }
 
