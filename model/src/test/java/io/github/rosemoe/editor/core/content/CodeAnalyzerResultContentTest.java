@@ -3,6 +3,7 @@ package io.github.rosemoe.editor.core.content;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Set;
@@ -41,15 +42,131 @@ public class CodeAnalyzerResultContentTest {
             }
         }
     }
-
     @Test
-    public void testAppendText() {
-        CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
-        int i = content.append("test");
-        assertTrue(i==0);
-        assertTrue(content.get(0).getWidth() == 4);
+    public void testReflexivity() {
+        CodeAnalyzerResultContent c1 = new CodeAnalyzerResultContent();
+        CodeAnalyzerResultContent c2 = new CodeAnalyzerResultContent();
+        for(int a = 0; a < r.nextUint(10); a=a+1) {
+            String text = r.nextString(r.nextUint(100));
+            c1.append(text);
+            c2.append(text);
+        }
+        assertTrue(c1.equals(c2) && c2.equals(c1));
+    }
+    @Test
+    public void testEquals() {
+        {
+            // aze
+            // az
+            // a
+            //
+            // aze
+            // az
+            // a
+            CodeAnalyzerResultContent c1 = new CodeAnalyzerResultContent();
+            c1.append("aze");
+            c1.append("az");
+            c1.append("a");
+            CodeAnalyzerResultContent c2 = new CodeAnalyzerResultContent();
+            c2.append("aze");
+            c2.append("az");
+            c2.append("a");
+            c1.dump();
+            c2.dump();
+            assertTrue(c1.equals(c2));
+        }
+        {
+            // aze
+            // a
+            //
+            // a
+            // aze
+            CodeAnalyzerResultContent c1 = new CodeAnalyzerResultContent();
+            c1.append("aze");
+            c1.append("a");
+            CodeAnalyzerResultContent c2 = new CodeAnalyzerResultContent();
+            c2.append("a");
+            c2.append("aze");
+            assertFalse(c1.equals(c2));
+        }
     }
 
+    @Test
+    public void testCheckLine() {
+        {
+            @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            content.checkLine(0);
+            content.checkLineAndColumn(0,0);
+        }
+        {
+            // ok
+            @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            content.append("ok");
+            content.checkLine(0);
+            content.checkLine(1);
+            content.checkLineAndColumn(0,0);
+            content.checkLineAndColumn(0,1);
+            content.checkLineAndColumn(0,2);
+        }
+        {
+            // abc
+            // ab
+            // a
+            @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            content.append("abc");
+            content.append("ab");
+            content.append("a");
+            content.checkLine(0);
+            content.checkLine(1);
+            content.checkLine(2);
+            content.checkLine(3);
+            content.checkLineAndColumn(0,0);
+            content.checkLineAndColumn(0,1);
+            content.checkLineAndColumn(0,2);
+            content.checkLineAndColumn(0,3);
+            content.checkLineAndColumn(1,0);
+            content.checkLineAndColumn(1,1);
+            content.checkLineAndColumn(1,2);
+            content.checkLineAndColumn(2,0);
+            content.checkLineAndColumn(2,1);
+            content.checkLineAndColumn(3,0);
+        }
+        {
+            //
+            // a
+            // abc
+            @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            content.append();
+            content.append("a");
+            content.append("abc");
+            content.checkLine(0);
+            content.checkLine(1);
+            content.checkLine(2);
+            content.checkLine(3);
+            content.checkLineAndColumn(0,0);
+            content.checkLineAndColumn(1,0);
+            content.checkLineAndColumn(1,1);
+            content.checkLineAndColumn(2,0);
+            content.checkLineAndColumn(2,1);
+            content.checkLineAndColumn(2,2);
+            content.checkLineAndColumn(2,3);
+            content.checkLineAndColumn(3,0);
+        }
+    }
+
+    @Test
+    public void testLength() {
+        {
+            CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            int total = 0;
+            for(int a = 0; a < r.nextUint(100); a=a+1) {
+                int sz = r.nextUint(100);
+                content.append(r.nextString(sz));
+                total += sz;
+            }
+            assertTrue(content.length() == total);
+        }
+    }
     @Test
     public void testCharAt() {
         {
@@ -57,30 +174,14 @@ public class CodeAnalyzerResultContentTest {
             // azez123
             // aze
             CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
-            Line<ContentCell> l1 = new Line<>(), l2 = new Line<>(), l3 = new Line<>();
-            l1.append(new ContentCell('-'));
-            l1.append(new ContentCell('a'));
-            l1.append(new ContentCell('*'));
-            l1.append(new ContentCell('z'));
-            l1.append(new ContentCell('$'));
-            l1.append(new ContentCell('e'));
-            l1.append(new ContentCell('$'));
-            l2.append(new ContentCell('a'));
-            l2.append(new ContentCell('z'));
-            l2.append(new ContentCell('e'));
-            l2.append(new ContentCell('z'));
-            l2.append(new ContentCell('1'));
-            l2.append(new ContentCell('2'));
-            l2.append(new ContentCell('3'));
-            l3.append(new ContentCell('a'));
-            l3.append(new ContentCell('z'));
-            l3.append(new ContentCell('e'));
-            content.append(l1,l2,l3);
+            content.append("-a*z$e$");
+            content.append("azez123");
+            content.append("aze");
             assertTrue( content.charAt(3) == 'z');
         }
-        /*
         {
             CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            content.beginStreamCharGetting(0);
             int total = 0;
             for(int a = 0; a < r.nextUint(20); a=a+1) {
                 Line<ContentCell> l = new Line<>();
@@ -93,29 +194,107 @@ public class CodeAnalyzerResultContentTest {
             }
             for(int a = 0; a < 10 + r.nextUint(20); a=a+1) {
                 int i = r.nextUint(total);
-                assertTrue("i=" + i + ",a=" + a + ",total="+total, content.charAtNaive(i) == content.charAtPseudoDico(i));
+                assertTrue("i=" + i + ",a=" + a + ",total="+total, content.charAtNaive(i) == content.charAtWithIndexer(i));
             }
         }
-        */
     }
-
+    @Test
+    public void testCharAtWithIndexer() {
+        {
+            //
+            CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            content.beginStreamCharGetting(0);
+            try {
+                content.charAtWithIndexer(0);
+                assertTrue(false);
+            } catch (RuntimeException e) {
+                assertTrue(true);
+            }
+        }
+        {
+            //
+            // aze
+            // aa
+            CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            content.append();
+            content.append("aze");
+            content.append("aa");
+            assertTrue(content.charAtWithIndexer(0) == 'a');
+            assertTrue(content.charAtWithIndexer(1) == 'z');
+            assertTrue(content.charAtWithIndexer(2) == 'e');
+            assertTrue(content.charAtWithIndexer(3) == 'a');
+            assertTrue(content.charAtWithIndexer(4) == 'a');
+            try {
+                content.charAtWithIndexer(5);
+                assertTrue(false);
+            } catch (Exception e) {
+                assertTrue(true);
+            }
+        }
+    }
+    @Test
+    public void testCharAtNaive() {
+        {
+            //
+            CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            try {
+                content.charAtNaive(0);
+                assertTrue(false);
+            } catch (RuntimeException e) {
+                assertTrue(true);
+            }
+        }
+        {
+            //
+            // aze
+            // aa
+            CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            content.append();
+            content.append("aze");
+            content.append("aa");
+            assertTrue(content.charAtNaive(0) == 'a');
+            assertTrue(content.charAtNaive(1) == 'z');
+            assertTrue(content.charAtNaive(2) == 'e');
+            assertTrue(content.charAtNaive(3) == 'a');
+            assertTrue(content.charAtNaive(4) == 'a');
+            try {
+                content.charAtNaive(5);
+                assertTrue(false);
+            } catch (Exception e) {
+                assertTrue(true);
+            }
+        }
+    }
     @Test
     public void testAppend() {
-        CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
-        int totalSize = 0;
-        int nLines = r.nextUint(20);
-        for(int a = 0; a < nLines; a=a+1 ) {
-            String txt = r.nextString(r.nextUint(20));
-            content.append(txt);
-            totalSize+=txt.length();
-        }
+        {
+            CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            int totalSize = 0;
+            int nLines = r.nextUint(20);
+            for (int a = 0; a < nLines; a = a + 1) {
+                String txt = r.nextString(r.nextUint(20));
+                content.append(txt);
+                totalSize += txt.length();
+            }
 
-        int verif = 0;
-        for(Line<ContentCell> l : content) {
-            verif += l.getWidth();
+            int verif = 0;
+            for (Line<ContentCell> l : content) {
+                verif += l.getWidth();
+            }
+            assertTrue(content.size() == nLines);
+            assertTrue(verif == totalSize);
         }
-        assertTrue(content.size() == nLines);
-        assertTrue(verif == totalSize);
+        {
+            CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            int i = content.append("test");
+            assertTrue("i=" + i ,i==0);
+            assertTrue(content.get(0).getWidth() == 4);
+        }
+        {
+            CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            content.append("ok\nok\na");
+            assertTrue(content.size()==3);
+        }
     }
 
     @Test

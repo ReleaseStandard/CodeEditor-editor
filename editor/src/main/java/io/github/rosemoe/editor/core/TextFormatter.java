@@ -39,7 +39,7 @@ public class TextFormatter extends Thread {
     public void run() {
         CharSequence result = null;
         try {
-            CharSequence chars = ((mText instanceof CodeAnalyzerResultContent) ? (((CodeAnalyzerResultContent) mText).toStringBuilder()) : new StringBuilder(mText));
+            CharSequence chars = ((mText instanceof CodeAnalyzerResultContent) ? (((CodeAnalyzerResultContent) mText).toString()) : new StringBuilder(mText));
             result = mLanguage.format(chars);
         } catch (Throwable e) {
             if (mReceiver != null) {

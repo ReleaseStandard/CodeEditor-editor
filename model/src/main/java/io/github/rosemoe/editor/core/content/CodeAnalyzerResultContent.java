@@ -70,6 +70,51 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
     }
 
     /**
+     * Insert content to this object
+     * @param line   0..n The insertion's line position
+     * @param column 0..n The insertion's column position
+     * @param text   The text you want to insert at the position
+     * @return
+     */
+    public CharSequence insert(int line, int column, CharSequence text) {
+        checkLineAndColumn(line, column);
+        if (text == null) {
+            throw new IllegalArgumentException("text can not be null");
+        }
+
+        //-----Notify------
+        //if (cursor != null)
+        //    cursor.beforeInsert(line, column);
+        // TODO : break
+
+        int workLine = line;
+        int workIndex = column;
+        if (workIndex == -1) {
+            workIndex = 0;
+        }
+        Line<ContentCell> currLine = get(workLine);
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c == '\n') {
+                Line<ContentCell> newLine = new Line<ContentCell>();
+                newLine.append(currLine.subLine(workIndex));
+                currLine.removeCells(workIndex, currLine.getWidth());
+                put(workLine + 1, newLine);
+                currLine = newLine;
+                workIndex = 0;
+                workLine++;
+            } else {
+                ContentCell cc = new ContentCell(c);
+                cc.column = workIndex;
+                currLine.insertCell(cc);
+                workIndex++;
+            }
+        }
+        textLength += text.length();
+        return text;
+    }
+
+    /**
      * Set a line listener
      *
      * @param lis the listener,maybe null
@@ -89,7 +134,7 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      * @return The character at the given position
      */
     public char charAt(int line, int column) {
-        checkLineAndColumn(line, column, true);
+        checkLineAndColumn(line, column);
         if (column == getColumnCount(line)) {
             return '\n';
         }
@@ -147,51 +192,6 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
     public int getCharIndex(int line, int column) {
         //return getIndexer().getCharIndex(line, column);
         return -1;
-    }
-
-    /**
-     * Insert content to this object
-     *  @param line   The insertion's line position
-     * @param column The insertion's column position
-     * @param text   The text you want to insert at the position
-     * @return
-     */
-    public CharSequence insert(int line, int column, CharSequence text) {
-        checkLineAndColumn(line, column, true);
-        if (text == null) {
-            throw new IllegalArgumentException("text can not be null");
-        }
-
-        //-----Notify------
-        //if (cursor != null)
-        //    cursor.beforeInsert(line, column);
-        // TODO : break
-
-        int workLine = line;
-        int workIndex = column;
-        if (workIndex == -1) {
-            workIndex = 0;
-        }
-        Line<ContentCell> currLine = get(workLine);
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
-            if (c == '\n') {
-                Line<ContentCell> newLine = new Line<ContentCell>();
-                newLine.append(currLine.subLine(workIndex));
-                currLine.removeCells(workIndex, currLine.getWidth());
-                put(workLine + 1, newLine);
-                currLine = newLine;
-                workIndex = 0;
-                workLine++;
-            } else {
-                ContentCell cc = new ContentCell(c);
-                cc.column = workIndex;
-                currLine.insertCell(cc);
-                workIndex++;
-            }
-        }
-        textLength += text.length();
-        return text;
     }
 
     /**
@@ -348,52 +348,29 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
     public boolean equals(Object anotherObject) {
         if (anotherObject instanceof CodeAnalyzerResultContent) {
             CodeAnalyzerResultContent content = (CodeAnalyzerResultContent) anotherObject;
-            if (content.size() != this.size()) {
+            if (content.size() != size()) {
                 return false;
             }
-            for (int i = 0; i < this.size(); i++) {
-                if (!get(i).equals(content.get(i))) {
+            for(Integer k : keySet()) {
+                Line l = get(k);
+                if ( ! content.containsKey(k) || ! l.equals(content.get(k))) {
+                    System.out.println("B,i="+content.containsKey(k)+",j="+l.equals(content.get(k)));
                     return false;
                 }
             }
             return true;
         } else {
-            return false;
+            throw new RuntimeException("Cannot compare those objects");
         }
-    }
-
-    /**
-     * Get the text in StringBuilder form
-     * Used by TextColorProvider
-     * This can improve the speed in char getting for tokenizing
-     *
-     * @return StringBuilder form of CodeAnalyzerResultContent
-     */
-    public StringBuilder toStringBuilder() {
-        StringBuilder sb = new StringBuilder();
-        sb.ensureCapacity(textLength + 10);
-        boolean first = true;
-        final int lines = size();
-        for (int i = 0; i < lines; i++) {
-            Line<ContentCell> line = this.get(i);
-            if (!first) {
-                sb.append('\n');
-            } else {
-                first = false;
-            }
-            // TODO break
-            //line.appendTo(sb);
-        }
-        return sb;
     }
 
     /**
      * Check whether the line is valid
      *
-     * @param line Line to check
+     * @param line 0..n Line to check
      */
     protected void checkLine(int line) {
-        if (line >= size()) {
+        if (line > size()) {
             throw new StringIndexOutOfBoundsException("Line " + line + " out of bounds. line count:" + size());
         }
     }
@@ -403,12 +380,20 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      *
      * @param line       The line to check
      * @param column     The column to check
-     * @param allowEqual Whether allow (column == getColumnCount(line))
      */
-    public void checkLineAndColumn(int line, int column, boolean allowEqual) {
+    public void checkLineAndColumn(int line, int column) {
         checkLine(line);
-        int len = get(line).getWidth();
-        if (column > len || (!allowEqual && column == len)) {
+        Line l = get(line);
+        if ( l == null ) {
+            if ( column == 0 ) {
+                return;
+            } else {
+                throw new StringIndexOutOfBoundsException(
+                        "Column " + column + " out of bounds.line: " + line);
+            }
+        }
+        int len = l.getWidth();
+        if ( column > len ) {
             throw new StringIndexOutOfBoundsException(
                     "Column " + column + " out of bounds.line: " + line + " ,column count:" + len);
         }
@@ -428,23 +413,35 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
         return charAtWithIndexer(index);
     }
 
+    /**
+     * @param index 0..n-1 index in the CharSequence
+     * @return the char for given index or RunttimeException
+     */
     public char charAtWithIndexer(final int index) {
         CharPosition cp = contentIndexer.getCharPosition(index);
-        if ( cp == null ) { return '\0'; }
+        if ( cp == null ) {
+            throw new RuntimeException("charAt failed : index="+index);
+        }
         return get(cp.line).get(cp.column).c;
     }
+
+    /**
+     * @param index 0..n-1 index in the charSequence
+     * @return the char for given index
+     *         RuntimeException if wrong index given in entry
+     */
     public char charAtNaive(final int index) {
         int idx = 0;
         for(Line<ContentCell> l : this) {
-            if ( ( idx + l.getWidth() ) < index ) {
+            if ( ( idx + l.getWidth() ) <= index ) {
                 idx += l.getWidth();
                 continue;
             }
-            int col = idx - index;
+            int col = index - idx;
             Integer key = floorKey(col);
             return l.get(key).c;
         }
-        return 0;
+        throw new RuntimeException("charAt failed : index="+index);
     }
 
     /**
@@ -468,11 +465,34 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
         return res;
     }
 
-    public int append(CharSequence text) {
+    public final static String EOL = "\n";
+    public final static Integer MULTIPLE_LINES = -1;
+    /**
+     * Append a charsequence
+     * @param text text to append in the content.
+     * @return 0..n-1 the line at which content has been inserted
+     */
+    private int append(CharSequence text) {
         Line<ContentCell> line = new Line<>();
         for(int a = 0; a < text.length(); a=a+1) {
             line.append(new ContentCell(text.charAt(a)));
         }
         return append(line);
+    }
+    /**
+     * Append a text string (could be multiple lines)
+     * @param text text to append.
+     * @return -1 if multiples lines, else the index 0..n-1 at which have been inserted.
+     */
+    public int append(String text) {
+        String[]arr = text.split(EOL);
+        int rv = -1;
+        for(String t : arr) {
+            rv = append((CharSequence) t);
+        }
+        if (arr.length > 1) {
+            rv = MULTIPLE_LINES;
+        }
+        return rv;
     }
 }

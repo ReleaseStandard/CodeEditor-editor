@@ -92,7 +92,7 @@ public class CodeEditorView extends View {
         node.setScrollable(true);
         node.setInputType(InputType.TYPE_CLASS_TEXT);
         node.setMultiLine(true);
-        node.setText(editor.getText().toStringBuilder());
+        node.setText(editor.getText().toString());
         node.setLongClickable(true);
         node.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_COPY);
         node.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_CUT);

@@ -53,7 +53,7 @@ public class CodeAnalyzerThread extends Thread {
                 mOpStartTime = System.currentTimeMillis();
                 do {
                     waiting = false;
-                    StringBuilder c = content.toStringBuilder();
+                    String c = content.toString();
                     codeAnalyzer.analyze(c, d);
                     if (waiting) {
                         codeAnalyzer.resultStore.clearInBuild();

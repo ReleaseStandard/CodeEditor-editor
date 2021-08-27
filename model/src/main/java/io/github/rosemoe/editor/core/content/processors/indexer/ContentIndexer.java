@@ -31,6 +31,7 @@ public abstract class ContentIndexer extends CEObject {
         this.content = content;
     }
 
+    public static final Integer INVALID_IDX = -1;
     /**
      * Get the index of (line,column)
      *
