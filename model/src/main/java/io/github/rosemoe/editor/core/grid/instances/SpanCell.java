@@ -39,6 +39,7 @@ public class SpanCell extends Cell {
 
     @Override
     public Cell dataClone(Cell cloning) {
+        super.dataClone(cloning);
         SpanCell c = (SpanCell) cloning;
         c.color = color;
         c.underlineColor = underlineColor;
@@ -66,6 +67,12 @@ public class SpanCell extends Cell {
         super(size);
         this.color = color;
     }
+
+    @Override
+    public Cell clone() {
+        return dataClone(new SpanCell());
+    }
+
     public SpanCell(int column, int size, int color) {
         super(column, size);
         this.color = color;

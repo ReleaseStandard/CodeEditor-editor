@@ -38,22 +38,16 @@ public abstract class Cell extends CEObject {
         size = column = 0;
         dataClear();
     }
-    public Cell clone() {
-        Cell c = null;
-        try {
-            c = this.getClass().newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        c.column = column;
-        c.size = size;
-        dataClone(c);
-        return c;
-    }
+    public abstract Cell clone();
+
     public Cell obtain(Object ...args) {
         return null;
     }
     protected abstract void dataClear();
-    protected abstract Cell dataClone(Cell cloning);
+    protected Cell dataClone(Cell cloning) {
+        cloning.column = column;
+        cloning.size = size;
+        cloning.enabled = enabled;
+        return cloning;
+    }
 }

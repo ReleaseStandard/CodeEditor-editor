@@ -34,10 +34,10 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
     /**
      * Get sub grid of initial grid.
      * The returned grid is copy not pointers.
-     * @param lineStart 0..n-1 line of sub grid start
-     * @param colStart 0..n-1 column of sub grid start
-     * @param lineStop 0..n-1 line of subgrid stop
-     * @param colStop 0..n-1 columne of sub grid stop
+     * @param lineStart 0..n-1 line of sub grid start inclusive
+     * @param colStart 0..n-1 column of sub grid start inclusive
+     * @param lineStop 0..n-1 line of subgrid stop inclusive
+     * @param colStop 0..n-1 column of sub grid stop exclusive
      * @return a subgrid with {@link Cell} copied from the original grid.
      */
     public Grid<T> subGrid(int lineStart, int colStart, int lineStop, int colStop) {

@@ -1,5 +1,7 @@
 package io.github.rosemoe.editor.core.grid;
 
+import io.github.rosemoe.editor.core.content.processors.indexer.BaseContentIndexer;
+
 public class BaseCell extends Cell {
 
     public BaseCell() { }
@@ -13,12 +15,17 @@ public class BaseCell extends Cell {
     }
 
     @Override
+    public Cell clone() {
+        return dataClone(new BaseCell());
+    }
+
+    @Override
     public void dataClear() {
         
     }
 
     @Override
     public Cell dataClone(Cell cloning) {
-        return cloning;
+        return super.dataClone(cloning);
     }
 }
