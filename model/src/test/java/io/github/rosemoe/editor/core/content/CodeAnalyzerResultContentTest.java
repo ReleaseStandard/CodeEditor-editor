@@ -1,14 +1,23 @@
 package io.github.rosemoe.editor.core.content;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
 import org.junit.Test;
+
+import java.util.Set;
 
 import io.github.rosemoe.editor.core.CodeEditorModel;
 import io.github.rosemoe.editor.core.analyze.analyzer.CodeAnalyzer;
+import io.github.rosemoe.editor.core.content.processors.indexer.CachedContentIndexer;
+import io.github.rosemoe.editor.core.content.processors.indexer.ContentIndexer;
+import io.github.rosemoe.editor.core.content.processors.indexer.NoCacheContentIndexer;
 import io.github.rosemoe.editor.core.grid.BaseCell;
 import io.github.rosemoe.editor.core.grid.Cell;
 import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 import io.github.rosemoe.editor.core.util.Random;
+import manifold.ext.rt.api.Jailbreak;
 
 import static org.junit.Assert.*;
 
@@ -88,5 +97,54 @@ public class CodeAnalyzerResultContentTest {
             }
         }
         */
+    }
+
+    @Test
+    public void testAppend() {
+        CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+        int totalSize = 0;
+        int nLines = r.nextUint(20);
+        for(int a = 0; a < nLines; a=a+1 ) {
+            String txt = r.nextString(r.nextUint(20));
+            content.append(txt);
+            totalSize+=txt.length();
+        }
+
+        int verif = 0;
+        for(Line<ContentCell> l : content) {
+            verif += l.getWidth();
+        }
+        assertTrue(content.size() == nLines);
+        assertTrue(verif == totalSize);
+    }
+
+    @Test
+    public void testSubSequence() {
+        {
+            // aazez
+            // aa
+            // er
+            @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            content.append("aazez");
+            content.append("aa");
+            content.append("er");
+            String allSeq = "aazezaaer";
+            ContentIndexer[] idxs = new ContentIndexer[] {
+                new CachedContentIndexer(content),
+                new NoCacheContentIndexer(content)
+            };
+            for(ContentIndexer ci : idxs) {
+                content.contentIndexer = ci;
+                Set<Set<Integer>> combinations = Sets.combinations(ImmutableSet.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), 2);
+                for(Set<Integer> combination : combinations) {
+                    Integer [] arr = combination.toArray(new Integer[2]);
+                    System.out.println("ci="+ci.getClass()+"arr[0]="+arr[0]+"arr[1]="+arr[1]);
+                    CharSequence res = content.subSequence(arr[0], arr[1]);
+                    CharSequence res2 = allSeq.subSequence(arr[0],arr[1]);
+                    System.out.println("res="+res+",res2="+res2);
+                    assertTrue(res.equals(res2));
+                }
+            }
+        }
     }
 }

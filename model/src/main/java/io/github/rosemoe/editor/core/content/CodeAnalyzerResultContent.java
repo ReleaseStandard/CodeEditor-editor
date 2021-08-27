@@ -20,6 +20,7 @@ import java.util.List;
 
 import io.github.rosemoe.editor.core.content.processors.ContentLineRemoveListener;
 import io.github.rosemoe.editor.core.content.processors.indexer.CachedContentIndexer;
+import io.github.rosemoe.editor.core.content.processors.indexer.CharPosition;
 import io.github.rosemoe.editor.core.content.processors.indexer.ContentIndexer;
 import io.github.rosemoe.editor.core.content.processors.indexer.NoCacheContentIndexer;
 
@@ -28,6 +29,7 @@ import io.github.rosemoe.editor.core.grid.Grid;
 import io.github.rosemoe.editor.core.grid.Line;
 import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 
+import static io.github.rosemoe.editor.core.content.processors.indexer.CharPosition.INVALID;
 import static io.github.rosemoe.editor.core.grid.Cell.*;
 
 /**
@@ -423,12 +425,16 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
 
     @Override
     public char charAt(int index) {
-        return charAtNaive(index);
+        return charAtWithIndexer(index);
     }
 
+    public char charAtWithIndexer(final int index) {
+        CharPosition cp = contentIndexer.getCharPosition(index);
+        if ( cp == null ) { return '\0'; }
+        return get(cp.line).get(cp.column).c;
+    }
     public char charAtNaive(final int index) {
         int idx = 0;
-        // TODO : or use the contentIndexer system or find another system.
         for(Line<ContentCell> l : this) {
             if ( ( idx + l.getWidth() ) < index ) {
                 idx += l.getWidth();
@@ -441,9 +447,25 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
         return 0;
     }
 
+    /**
+     *
+     * @param start 0..n-1 inclusive
+     * @param end 0..n-1 exclusive
+     * @return
+     */
     @Override
     public CharSequence subSequence(int start, int end) {
-        return null;
+        if ( start <= INVALID || end > length() ) {
+            throw new StringIndexOutOfBoundsException("begin " + start + ", end " + end + ", length " + (end-start));
+        }
+        CharPosition startPos = contentIndexer.getCharPosition(start);
+        CharPosition stopPos = contentIndexer.getCharPosition(end);
+        Grid<ContentCell> g = subGrid(startPos.line, startPos.column, stopPos.line, stopPos.column);
+        String res = "";
+        for(Line l : g) {
+            res += l;
+        }
+        return res;
     }
 
     public int append(CharSequence text) {

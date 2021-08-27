@@ -11,6 +11,7 @@ dependencies {
     universalEmbed 'io.github.ReleaseStandard.CodeEditor:logger-debug:62.65.0'
     implementation 'io.github.ReleaseStandard.CodeEditor:logger-debug:62.65.0'
     testImplementation 'junit:junit:4.+'
+    testImplementation "com.google.guava:guava:30.1.1-jre"
 
     implementation 'systems.manifold:manifold-json-rt:2021.1.14'
     implementation 'systems.manifold:manifold-props-rt:2021.1.14'
