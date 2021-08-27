@@ -16,13 +16,16 @@
 package io.github.rosemoe.editor.core.content.processors.indexer;
 
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.grid.instances.ContentCell;
+
+import static io.github.rosemoe.editor.core.content.processors.indexer.CharPosition.INVALID;
 
 /**
  * ContentIndexer without cache
  *
  * @author Rose
  */
-public final class NoCacheContentIndexer extends CachedContentIndexer {
+public final class NoCacheContentIndexer extends BaseContentIndexer {
 
     /**
      * Create a indexer without cache
@@ -31,12 +34,18 @@ public final class NoCacheContentIndexer extends CachedContentIndexer {
      */
     public NoCacheContentIndexer(CodeAnalyzerResultContent content) {
         super(content);
-        //Disable dynamic indexing
-        if (super.getMaxCacheSize() != 0) {
-            super.setMaxCacheSize(0);
-        }
-        if (super.isHandleEvent()) {
-            super.setHandleEvent(false);
+    }
+
+    @Override
+    protected CharPosition getCharPosition(CharPosition charPosition) {
+        if ( charPosition.index == INVALID ) {
+            if ( charPosition.line == INVALID || charPosition.column == INVALID ) {
+                return null;
+            } else {
+                return processIndexWrappCharPosition(charPosition.line, charPosition.column);
+            }
+        } else {
+            return processCharPosition(charPosition.index);
         }
     }
 

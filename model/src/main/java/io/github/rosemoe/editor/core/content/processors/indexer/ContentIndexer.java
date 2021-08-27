@@ -16,13 +16,14 @@
 package io.github.rosemoe.editor.core.content.processors.indexer;
 
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.util.CEObject;
 
 /**
  * A helper class for ITextContent to transform (line,column) and index
  *
  * @author Rose
  */
-public abstract class ContentIndexer {
+public abstract class ContentIndexer extends CEObject {
 
     protected final CodeAnalyzerResultContent content;
 
