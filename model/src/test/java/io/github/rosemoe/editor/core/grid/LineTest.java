@@ -29,11 +29,10 @@ public class LineTest {
         Line<BaseCell> l = new Line<BaseCell>();
         for(int a = 0; a < 10; a ++) {
             int sz = r.nextUint(100);
-            int col = r.nextUint(100);
-            assertTrue("col="+col+",sz="+sz,l.append(new BaseCell(col, sz))!=null);
+            l.append(new BaseCell(sz));
         }
-        assertTrue(l.size()==10);
-        assertTrue(l.getWidth() <= 10 * 200);
+        assertTrue("l.size()=" + l.size(), l.size()==10);
+        assertTrue(l.getWidth() <= 10 * 100);
     }
 
     @Test

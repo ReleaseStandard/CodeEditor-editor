@@ -160,36 +160,25 @@ public class Line<T extends Cell> extends ConcurrentSkipListMap<Integer, T> impl
 
     /**
      * This function merge two SpanLines together and returns the concatened span line.
-     * Warning : this operation in destructive on given entry lines
+     * The result contains pointers to others two lines.
      * @param one
      * @param two
      * @return
      */
-    public static Line concat(Line one, Line two) {
-        Line result = null;
-        try {
-            result = one.getClass().newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        for(Object o : one) {
-            Cell span = (Cell) o;
-            result.put(span);
+    public static Line concat(Line<? extends Cell> one, Line<? extends Cell> two) {
+        Line result = new Line();
+        for(Cell cell : one) {
+            result.put(cell);
         }
         int index = 0;
         if ( one.size() > 0 ) {
-            Cell lastCell = (Cell) one.lastEntry().getValue();
+            Cell lastCell = one.lastEntry().getValue();
             index = lastCell.column + lastCell.size;
         }
-        for(Object o : two) {
-            Cell span = (Cell) o;
-            span.column = index + span.column;
-            result.put(span);
+        for(Cell cell : two) {
+            cell.column = index + cell.column;
+            result.put(cell);
         }
-        one.clear();
-        two.clear();
         return result;
     }
 
@@ -219,25 +208,32 @@ public class Line<T extends Cell> extends ConcurrentSkipListMap<Integer, T> impl
         }
     }
     /**
-     * Insert a cell in the line.
+     * Insert a {@link Cell} in the {@link Line}.
      *  behaviours:
      *  - it extend a cell
      *  - it split existing cell and insert between
      *  - it invalidate existing cell and insert between
      * @param cell the cell to insert
+     * @return cell the cell inserted or null if size the of the cell is zero or invalid.
      */
-    public void insertCell(T cell) {
+    public T insertCell(T cell) {
         // here we got undefined :
         //   - or do not insert the span (we just use fields)
         //   - or do insert the span but do not respect the behaviourOnSpanSplit policy
         if ( getBehaviourOnCellSplit() == SPLIT_EXTENDS) {
-            throw new RuntimeException("Error : give insert a SpanCell in SPAN_SPLIT_EXTENDS policy will produce undermined behaviour, aborting");
+            throw new RuntimeException("Cannot insert a cell with policy SPLIT_EXTENDS : it is an undefined behaviour");
         }
         insertCell(cell.column, cell.size);
         if ( cell.size > 0 ) {
-            put(cell.column, cell);
+            return put(cell.column, cell);
         }
+        return null;
     }
+
+    /**
+     * @param col
+     * @param size
+     */
     public void insertCell(final int col, final int size) {
         Integer[] keys = keySet().toArray(new Integer[size()]);
         for(int a = size()-1; a >= 0; a --) {
