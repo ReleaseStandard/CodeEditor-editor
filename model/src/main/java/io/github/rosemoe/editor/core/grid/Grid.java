@@ -34,11 +34,12 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
     /**
      * Get sub grid of initial grid.
      * The returned grid is copy not pointers.
+     * Line are reindexed begining at 0, and the col of the first line also.
      * @param lineStart 0..n-1 line of sub grid start inclusive
      * @param colStart 0..n-1 column of sub grid start inclusive
      * @param lineStop 0..n-1 line of subgrid stop inclusive
      * @param colStop 0..n-1 column of sub grid stop exclusive
-     * @return a subgrid with {@link Cell} copied from the original grid.
+     * @return a subgrid with {@link Cell} copied from the original grid, col starting at 0, line also.
      */
     public Grid<T> subGrid(int lineStart, int colStart, int lineStop, int colStop) {
         Grid<T> g = new Grid<T>();
@@ -47,11 +48,11 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
         } else {
             for (int a = lineStart; a <= lineStop; a++) {
                 if ( a == lineStart ) {
-                    g.put(a,(get(a).subLine(colStart,-1)));
+                    g.append(get(a).subLine(colStart,-1));
                 } else if ( a == lineStop ) {
-                    g.put(a,(get(a).subLine(0,colStop)));
+                    g.append((get(a).subLine(0,colStop)));
                 } else {
-                    g.put(a,get(a).clone());
+                    g.append(get(a).clone());
                 }
             }
         }

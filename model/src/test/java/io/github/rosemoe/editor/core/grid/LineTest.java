@@ -994,6 +994,24 @@ public class LineTest {
     }
 
     @Test
+    public void testSubLineBug() {
+        {
+            // **|**|*
+            // **
+            Line<BaseCell> l = new Line<>();
+            l.append(new BaseCell(1));
+            l.append(new BaseCell(1));
+            l.append(new BaseCell(1));
+            l.append(new BaseCell(1));
+            l.append(new BaseCell(1));
+            Line<BaseCell> sub = l.subLine(2,2);
+            assertTrue(sub.size()==2);
+            assertTrue(sub.get(0).size == 1);
+            assertTrue(sub.get(1).size == 1);
+            assertTrue(sub.get(2) == null);
+        }
+    }
+    @Test
     public void subCells() {
         {
             // *|*-|-
@@ -1006,7 +1024,7 @@ public class LineTest {
             l.dump();
             sub.dump();
             assertTrue(sub.size() == 2);
-            assertTrue("sub.get(1).enabled="+sub.get(1).enabled+",l.behaviourOnCellSplit="+l.behaviourOnCellSplit,sub.get(1).enabled == ( l.behaviourOnCellSplit != SPLIT_INVALIDATE ));
+            assertTrue("sub.get(1).enabled="+sub.get(0).enabled+",l.behaviourOnCellSplit="+l.behaviourOnCellSplit,sub.get(0).enabled == ( l.behaviourOnCellSplit != SPLIT_INVALIDATE ));
         }
         {
             // |*|
@@ -1079,10 +1097,22 @@ public class LineTest {
             sub.dump();
             assertTrue(sub.size()==4);
             sub.dump();
-            assertTrue(sub.get(3).size == 1);
-            assertTrue(sub.get(4).size == 3);
-            assertTrue(sub.get(7).size == 2);
-            assertTrue(sub.get(9).size == 2);
+            assertTrue(sub.get(0).size == 1);
+            assertTrue(sub.get(1).size == 3);
+            assertTrue(sub.get(4).size == 2);
+            assertTrue(sub.get(6).size == 2);
+        }
+        {
+            for(int a = 0; a < r.nextUint(10); a=a+1) {
+                Line<BaseCell> l = new Line<>();
+                int sz = r.nextUint(100);
+                for(int b = 0; b < sz; b=b+1) {
+                    l.append(new BaseCell(1));
+                }
+                int i = r.nextUint(sz);
+                Line<BaseCell> l1 = l.subLine(i, sz-i);
+                assertTrue(l1.size() == sz-i);
+            }
         }
     }
 

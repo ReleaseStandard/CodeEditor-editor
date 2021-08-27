@@ -375,9 +375,9 @@ public class Line<T extends Cell> extends ConcurrentSkipListMap<Integer, T> impl
     }
     /**
      * Get a subpart of the Line
-     * @param col
-     * @param sz
-     * @return the subpart (WARNING indx could begin greater than 0)
+     * @param col 0..n-1 col in the line
+     * @param sz  0..n   size of the subline to retrieve
+     * @return the subline starting at index 0 for a size of sz
      */
     public Line<T> subLine(int col, int sz) {
         if ( sz == -1 ) {
@@ -400,27 +400,27 @@ public class Line<T extends Cell> extends ConcurrentSkipListMap<Integer, T> impl
         if ( lastKey == firstKey || lastKey == null ) {
             lastKey = col+sz;
         }
-        Logger.debug("firstKey="+firstKey+",lastKey="+lastKey);
+        Line<T>res = new Line();
         ConcurrentNavigableMap<Integer, T> submap = this.clone().subMap(firstKey, true, lastKey, (lastKey <= col+sz));
         NavigableSet<Integer> ks = submap.keySet();
-        Integer f = ks.first();
-        if ( f < col ) {
-            T c = submap.remove(f);
-            c.size -= (col-f);
-            c.column = col;
-            c.enabled = (behaviourOnCellSplit != SPLIT_INVALIDATE);
-            submap.put(c.column, c);
-        }
-        Integer l = ks.last();
-        T lastCell = submap.get(l);
-        if ( (l+lastCell.size) > col+sz ) {
-            lastCell.size -= ((l+lastCell.size)-(col+sz));
-            if ( lastCell.size == 0 ) {
-                submap.remove(l);
+        for(Integer key : ks) {
+            T cell = submap.remove(key);
+            if ( key < col ) {
+                cell.size -= (col-key);
+                cell.column = 0;
+                cell.enabled = (behaviourOnCellSplit != SPLIT_INVALIDATE);
+            } else if ((key+cell.size) > col+sz) {
+                cell.size -= ((key+cell.size)-(col+sz));
+                if ( cell.size == 0 ) {
+                    continue;
+                }
+                cell.enabled = (behaviourOnCellSplit != SPLIT_INVALIDATE);
+            } else {
+                cell.column -= col;
             }
-            lastCell.enabled = (behaviourOnCellSplit != SPLIT_INVALIDATE);
+            res.put(cell.column, cell);
         }
-        return new Line<T>(submap);
+        return res;
     }
 
     /**

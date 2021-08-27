@@ -356,7 +356,7 @@ public class GridTest {
     public void testSubGrid() {
         {
             // +++|+---**,,|...
-            //     +---**,,
+            // +---**,,
             Grid g = new Grid();
             Line l = new Line();
             l.append(new BaseCell(4));
@@ -370,10 +370,10 @@ public class GridTest {
             Grid g1 = g.subGrid(0,3,0,11);
             assertTrue(g1.size() == 1);
             assertTrue(g1.get(0).size()==4);
-            assertTrue(g1.get(0).get(3).size == 1);
-            assertTrue(g1.get(0).get(4).size == 3);
-            assertTrue(g1.get(0).get(7).size == 2);
-            assertTrue(g1.get(0).get(9).size == 2);
+            assertTrue(g1.get(0).get(0).size == 1);
+            assertTrue(g1.get(0).get(1).size == 3);
+            assertTrue(g1.get(0).get(4).size == 2);
+            assertTrue(g1.get(0).get(6).size == 2);
         }
         {
             // --+++|*
@@ -394,12 +394,38 @@ public class GridTest {
             g.append(l3);
             Grid g1 = g.subGrid(0,5,2,5);
             assertTrue(g1.size()==3);
-            assertTrue(g1.get(0).get(5).size==1);
+            assertTrue(g1.get(0).get(0).size==1);
             assertTrue(g1.get(1).get(0).size==2);
             assertTrue(g1.get(1).get(2).size==3);
             assertTrue(g1.get(1).get(5).size==1);
             assertTrue(g1.get(2).get(0).size==4);
             assertTrue(g1.get(2).get(4).size==1);
+        }
+        {
+            // --+++*
+            // $$|:::-
+            // ====++|
+            Grid g = new Grid();
+            Line l1 = new Line(),l2 = new Line(),l3 = new Line();
+            l1.append(new BaseCell(2));
+            l1.append(new BaseCell(3));
+            l1.append(new BaseCell(1));
+            l2.append(new BaseCell(2));
+            l2.append(new BaseCell(3));
+            l2.append(new BaseCell(1));
+            l3.append(new BaseCell(4));
+            l3.append(new BaseCell(2));
+            g.append(l1);
+            g.append(l2);
+            g.append(l3);
+            Grid g1 = g.subGrid(1,2,2,7);
+            assertTrue(g1.size() == 2);
+            assertTrue(g1.get(0).size() == 2);
+            assertTrue(g1.get(0).get(0).size == 3);
+            assertTrue(g1.get(0).get(3).size == 1);
+            assertTrue(g1.get(1).size()==2);
+            assertTrue(g1.get(1).get(0).size==4);
+            assertTrue(g1.get(1).get(4).size==2);
         }
     }
 }
