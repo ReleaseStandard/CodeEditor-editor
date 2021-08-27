@@ -26,7 +26,7 @@ import io.github.rosemoe.editor.core.util.CEObject;
  *
  * @author Rose
  */
-public final class CharPosition extends CEObject implements Comparable<Object> {
+public final class CharPosition extends CEObject implements Comparable {
 
     // index, line, column are use [-1;INTEGER_MAX] values
     public final static int INVALID = -1;

@@ -54,8 +54,25 @@ public class CachedContentIndexer extends BaseContentIndexer implements ContentL
         public void dump(String offset) {
             CEObject.dumpAll(this, offset);
         }
+        /**
+         * Get max cache size
+         *
+         * @return max cache size
+         */
+        public int getMaxCacheSize() {
+            return cache.maxSize;
+        }
+
+        /**
+         * Set max cache size
+         *
+         * @param maxSize max cache size
+         */
+        public void setMaxCacheSize(int maxSize) {
+            cache.maxSize = maxSize;
+        }
     };
-    Cache cache = new Cache();
+    public Cache cache = new Cache();
 
     public CharPosition completeWithContent(CharPosition charPosition) {
         if ( charPosition.index == INVALID ) {
@@ -112,25 +129,6 @@ public class CachedContentIndexer extends BaseContentIndexer implements ContentL
         CharPosition cp2 = cache.ceiling(pos);
         return CharPosition.nearest(cp1, pos, cp2);
     }
-
-    /**
-     * Get max cache size
-     *
-     * @return max cache size
-     */
-    protected int getMaxCacheSize() {
-        return cache.maxSize;
-    }
-
-    /**
-     * Set max cache size
-     *
-     * @param maxSize max cache size
-     */
-    protected void setMaxCacheSize(int maxSize) {
-        cache.maxSize = maxSize;
-    }
-
 
 
 
