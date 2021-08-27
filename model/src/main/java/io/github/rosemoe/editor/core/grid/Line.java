@@ -444,13 +444,16 @@ public class Line<T extends Cell> extends ConcurrentSkipListMap<Integer, T> impl
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Line cells = (Line) o;
-        return behaviourOnCellSplit == cells.behaviourOnCellSplit &&
-                width == cells.width &&
-                isEmpty == cells.isEmpty;
+        if ( o instanceof Line ) {
+            Line l = (Line) o;
+            if ( size() != l.size() ) { return false; }
+            return behaviourOnCellSplit == l.behaviourOnCellSplit &&
+                    width == l.width &&
+                    isEmpty == l.isEmpty;
+
+        } else {
+            throw new RuntimeException("Cannot compare those objects");
+        }
     }
 
     @Override

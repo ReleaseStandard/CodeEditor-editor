@@ -1166,4 +1166,49 @@ public class LineTest {
             assertTrue(l.get(4).size == 6);
         }
     }
+    @Test
+    public void testEquals() {
+        {
+            //
+            //
+            Line l1 = new Line();
+            Line l2 = new Line();
+            assertTrue(l1.equals(l2));
+        }
+        {
+            // **
+            // ****
+            Line l1 = new Line();
+            Line l2 = new Line();
+            l1.append(new BaseCell(1));
+            l1.append(new BaseCell(1));
+            l2.append(new BaseCell(1));
+            l2.append(new BaseCell(1));
+            l2.append(new BaseCell(1));
+            l2.append(new BaseCell(1));
+            assertFalse(l1.equals(l2));
+        }
+        {
+            // **
+            // **
+            Line l1 = new Line();
+            Line l2 = new Line();
+            l1.append(new BaseCell(1));
+            l1.append(new BaseCell(1));
+            l2.append(new BaseCell(1));
+            l2.append(new BaseCell(1));
+            assertTrue(l1.equals(l2));
+        }
+        {
+            // **
+            // **
+            Line l1 = new Line();
+            Line l2 = new Line();
+            l1.append(new BaseCell(2));
+            l1.append(new BaseCell(1));
+            l2.append(new BaseCell(1));
+            l2.append(new BaseCell(1));
+            assertFalse(l1.equals(l2));
+        }
+    }
 }
