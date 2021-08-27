@@ -43,6 +43,9 @@ public class BaseContentIndexerTest {
             @Jailbreak Base indexer = new Base(content);
             assertTrue(indexer.processIndex(0,2)==-1);
         }
+        {
+
+        }
     }
     @Test
     public void testProcessCharPosition() {
@@ -106,7 +109,31 @@ public class BaseContentIndexerTest {
             }
             {
                 CharPosition cp = indexer.processCharPosition(6);
+                assertTrue(cp.column == 0 && cp.line == 3);
+            }
+            {
+                CharPosition cp = indexer.processCharPosition(7);
                 assertTrue(cp == null);
+            }
+        }
+        {
+            //
+            //
+            //
+            //
+            @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            content.append();
+            content.append();
+            content.append();
+            content.append();
+            @Jailbreak Base indexer = new Base(content);
+            {
+                CharPosition cp = indexer.processCharPosition(0);
+                assertTrue(cp.line == 3 && cp.column == 0);
+            }
+            {
+                CharPosition cp = indexer.processCharPosition(1);
+                assertTrue(cp == null );
             }
         }
     }

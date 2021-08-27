@@ -132,6 +132,8 @@ public class CachedContentIndexerTest {
             cp = indexer.getCharPosition(8);
             assertTrue(cp.line == 2 && cp.column == 1);
             cp = indexer.getCharPosition(9);
+            assertTrue(cp != null);
+            cp = indexer.getCharPosition(10);
             assertTrue(cp == null);
 
         }

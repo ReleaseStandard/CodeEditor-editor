@@ -68,12 +68,19 @@ public abstract class BaseContentIndexer extends ContentIndexer {
         int idx = 0;
         for( Integer k : content.keySet()) {
             Line<ContentCell> l = content.get(k);
-            if ( index >= idx && index < ( idx + l.getWidth() ) ) {
-                return new CharPosition(k,index-idx,index);
+            if ( index >= idx ) {
+                if ( index < ( idx + l.getWidth() ) ) {
+                    return new CharPosition(k,index-idx,index);
+                }
             } else {
 
             }
             idx += l.getWidth();
+        }
+        if ( idx == index ) {
+            try {
+                return new CharPosition(content.lastKey(), content.get(content.lastKey()).getWidth(), index);
+            } catch (Exception e) { return null; }
         }
         return null;
     }
