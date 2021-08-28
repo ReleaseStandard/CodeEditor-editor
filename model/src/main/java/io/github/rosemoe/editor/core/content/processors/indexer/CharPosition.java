@@ -183,6 +183,10 @@ public final class CharPosition extends CEObject implements Comparable {
                     }
                 }
             } else {
+                System.out.println("this=");
+                dump();
+                System.out.println("vs=");
+                charPosition.dump();
                 throw new RuntimeException("Cannot compare those CharPosition");
             }
         } else {

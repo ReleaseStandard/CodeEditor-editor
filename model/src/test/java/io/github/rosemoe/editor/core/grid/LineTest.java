@@ -1250,23 +1250,30 @@ public class LineTest {
             assertTrue(l.get(8).size == 2);
             assertTrue(l.get(10).size == 2);
         }
-    }
-
-    @Test
-    public void testInsertLineBug() {
         {
             // **--++|++
             // **$$
             // **--++++++++
             Line<BaseCell> l = new Line<>(), l2 = new Line<>();
+            BaseCell b;
             l.behaviourOnCellSplit = SPLIT_EXTENDS;
-            l2.behaviourOnCellSplit = SPLIT_EXTENDS;
-            l.append(new BaseCell(2));
-            l.append(new BaseCell(2));
-            l.append(new BaseCell(4));
-            l2.append(new BaseCell(2));
-            l2.append(new BaseCell(2));
+            b = new BaseCell(2);
+            b.enabled = false;
+            l.append(b);
+            b = new BaseCell(2);
+            b.enabled = false;
+            l.append(b);
+            b = new BaseCell(4);
+            b.enabled = false;
+            l.append(b);
             l.dump();
+            l2.behaviourOnCellSplit = SPLIT_EXTENDS;
+            b = new BaseCell(2);
+            b.enabled = false;
+            l2.append(b);
+            b = new BaseCell(2);
+            b.enabled = false;
+            l2.append(b);
             l2.dump();
             l.insertLine(6,l2);
             Logger.debug("END");
@@ -1274,7 +1281,7 @@ public class LineTest {
             assertTrue(l.size() == 3);
             assertTrue(l.get(0).size == 2);
             assertTrue(l.get(2).size == 2);
-            assertTrue(l.get(4).size == 6);
+            assertTrue(l.get(4).size == 8);
         }
     }
     @Test

@@ -322,7 +322,9 @@ public class CodeAnalyzerResultContent extends Grid<ContentCell> implements Char
      * @return the char for given index or RunttimeException
      */
     public char charAtWithIndexer(final int index) {
+        System.out.println("index="+index);
         CharPosition cp = contentIndexer.getCharPosition(index);
+        cp.dump();
         if ( cp == null ) {
             throw new RuntimeException("charAt failed : index="+index);
         }

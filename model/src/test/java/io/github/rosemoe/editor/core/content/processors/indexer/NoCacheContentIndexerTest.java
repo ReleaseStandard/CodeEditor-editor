@@ -15,7 +15,8 @@ public class NoCacheContentIndexerTest {
         {
             CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
             @Jailbreak NoCacheContentIndexer indexer = new NoCacheContentIndexer(content);
-            assertTrue(indexer.getCharPosition(new CharPosition(0)) == null);
+            CharPosition cp = indexer.getCharPosition(new CharPosition(0));
+            assertTrue( cp != null && cp.column == 0 && cp.index == 0 && cp.line == 0 );
         }
         {
             CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
@@ -35,7 +36,7 @@ public class NoCacheContentIndexerTest {
             assertTrue(indexer.getCharPosition(new CharPosition(2)) != null);
             assertTrue(indexer.getCharPosition(new CharPosition(3)) != null);
             assertTrue(indexer.getCharPosition(new CharPosition(4)) != null);
-            assertTrue(indexer.getCharPosition(new CharPosition(5)) == null);
+            assertTrue(indexer.getCharPosition(new CharPosition(5)) != null);
             assertTrue(indexer.getCharPosition(new CharPosition(0,0)) != null);
             assertTrue(indexer.getCharPosition(new CharPosition(0,1)) != null);
             assertTrue(indexer.getCharPosition(new CharPosition(0,2)) != null);
@@ -47,7 +48,6 @@ public class NoCacheContentIndexerTest {
         }
     }
     @Test
-    @Ignore("This is know")
     public void testCharPosition() {
         // a
         CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
@@ -55,6 +55,7 @@ public class NoCacheContentIndexerTest {
         @Jailbreak NoCacheContentIndexer indexer = new NoCacheContentIndexer(content);
         assertTrue(indexer.getCharPosition(new CharPosition(0,0)) != null);
         assertTrue(indexer.getCharPosition(new CharPosition(0,1)) != null);
-        assertTrue(indexer.getCharPosition(new CharPosition(0,2)) == null);
+        CharPosition cp = indexer.getCharPosition(new CharPosition(0,2));
+        assertTrue( cp != null && cp.line == 0 && cp.column == 2 && cp.index == 2);
     }
 }

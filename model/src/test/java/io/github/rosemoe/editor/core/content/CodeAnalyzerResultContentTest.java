@@ -216,7 +216,7 @@ public class CodeAnalyzerResultContentTest {
             //
             // aze
             // aa
-            CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
             content.append();
             content.append("aze");
             content.append("aa");
@@ -225,6 +225,7 @@ public class CodeAnalyzerResultContentTest {
             assertTrue(content.charAtWithIndexer(2) == 'e');
             assertTrue(content.charAtWithIndexer(3) == 'a');
             assertTrue(content.charAtWithIndexer(4) == 'a');
+            content.dump();
             try {
                 content.charAtWithIndexer(5);
                 assertTrue(false);

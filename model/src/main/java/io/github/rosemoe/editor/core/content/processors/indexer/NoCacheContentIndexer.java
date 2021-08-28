@@ -16,7 +16,6 @@
 package io.github.rosemoe.editor.core.content.processors.indexer;
 
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
-import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 
 import static io.github.rosemoe.editor.core.content.processors.indexer.CharPosition.INVALID;
 
@@ -42,7 +41,8 @@ public final class NoCacheContentIndexer extends BaseContentIndexer {
             if ( charPosition.line == INVALID || charPosition.column == INVALID ) {
                 return null;
             } else {
-                return processIndexWrappCharPosition(charPosition.line, charPosition.column);
+                int idx = processIndex(charPosition.line, charPosition.column);
+                return new CharPosition(charPosition.line, charPosition.column, idx);
             }
         } else {
             return processCharPosition(charPosition.index);

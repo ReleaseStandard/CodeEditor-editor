@@ -24,6 +24,7 @@ import io.github.rosemoe.editor.core.grid.instances.ContentCell;
 import io.github.rosemoe.editor.core.util.CEObject;
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
 import io.github.rosemoe.editor.core.content.ContentListener;
+import io.github.rosemoe.editor.core.util.Logger;
 
 import static io.github.rosemoe.editor.core.content.processors.indexer.CharPosition.INVALID;
 
@@ -74,6 +75,11 @@ public class CachedContentIndexer extends BaseContentIndexer implements ContentL
     };
     public Cache cache = new Cache();
 
+    /**
+     * complete informations in the given charPosition from the content.
+     * @param charPosition information to complete theses values could be outside the map.
+     * @return information completed or null when error
+     */
     public CharPosition completeWithContent(CharPosition charPosition) {
         if ( charPosition.index == INVALID ) {
             if ( charPosition.line == INVALID || charPosition.column == INVALID ) {
@@ -88,9 +94,6 @@ public class CachedContentIndexer extends BaseContentIndexer implements ContentL
                 // line or column is missing but we can deduce it from the index
                 charPosition = processCharPosition(charPosition.index);
             }
-        }
-        if ( charPosition == null ) {
-            return null;
         }
         return charPosition;
     }
@@ -139,13 +142,16 @@ public class CachedContentIndexer extends BaseContentIndexer implements ContentL
      */
     @Override
     public CharPosition getCharPosition(CharPosition charPosition) {
-        if ( ! cache.contains(charPosition) ) {
-            if (!charPosition.isValid()) { return null; }
-            charPosition = completeWithContent(charPosition);
-            if ( charPosition == null || charPosition.index > content.length() ) { return null; }
-            cache.add(charPosition);
+        CharPosition res = charPosition;
+        if ( charPosition.index == INVALID || charPosition.column == INVALID || charPosition.line == INVALID ) {
+            res = completeWithContent(charPosition);
         }
-        return cache.floor(charPosition);
+        if ( res == null ) { return null; }
+        if ( ! cache.contains(res) ) {
+            if ( res.index > content.length() ) { return null; }
+            cache.add(res);
+        }
+        return cache.floor(res);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package io.github.rosemoe.editor.core.content.processors.indexer;
 
+import org.checkerframework.checker.units.qual.C;
 import org.junit.*;
 
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
@@ -75,15 +76,17 @@ public class CachedContentIndexerTest {
     }
 
     @Test
-    @Ignore("This is know")
     public void getChars() {
         {
             //
             @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
             @Jailbreak CachedContentIndexer indexer = new CachedContentIndexer(content);
-            assertTrue(-1 == indexer.getCharIndex(0,0));
-            assertTrue(-1 == indexer.getCharLine(0));
-            assertTrue(-1 == indexer.getCharColumn(0));
+            System.out.println("Side effect exameple");
+            indexer.dump();
+            assertTrue(indexer.getCharIndex(0,0) == 0);
+            indexer.dump();
+            assertTrue(indexer.getCharLine(0) == 0);
+            assertTrue(indexer.getCharColumn(0) == 0);
         }
         {
             // abc
@@ -159,7 +162,7 @@ public class CachedContentIndexerTest {
             @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
             @Jailbreak CachedContentIndexer indexer = new CachedContentIndexer(content);
             CharPosition cp = indexer.getCharPosition(0);
-            assertTrue(content.size()==0 && cp == null);
+            assertTrue(cp.column == 0 && cp.line == 0 && cp.index == 0);
         }
         {
             CodeAnalyzerResultContent content = createSample();
@@ -212,6 +215,85 @@ public class CachedContentIndexerTest {
             @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
             @Jailbreak CachedContentIndexer indexer = new CachedContentIndexer(content);
             indexer.processContent();
+        }
+    }
+
+    @Test
+    public void testCannotCompareThoseCharPositionBug() {
+        @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+        @Jailbreak CachedContentIndexer indexer = new CachedContentIndexer(content);
+        //indexer.cache.contains(new CharPosition(0));
+        indexer.getCharLine(0);
+    }
+
+    @Test
+    public void testCompleteWithContent() {
+        // aze
+        @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+        content.append("aze");
+        content.append("zz");
+        @Jailbreak CachedContentIndexer indexer = new CachedContentIndexer(content);
+        CharPosition res = indexer.completeWithContent(new CharPosition(0));
+        assertTrue(res != null);
+        assertTrue(res.column == 0 && res.line == 0 && res.index == 0);
+        res = indexer.completeWithContent(new CharPosition(0,1));
+        assertTrue(res != null);
+        assertTrue(res.column == 1 && res.line == 0 && res.index == 1);
+        res = indexer.completeWithContent(new CharPosition(2));
+        assertTrue(res != null);
+        assertTrue(res.column == 2 && res.line == 0 && res.index == 2);
+        res = indexer.completeWithContent(new CharPosition(3));
+        assertTrue(res != null);
+        assertTrue(res.column == 0 && res.line == 1 && res.index == 3);
+        res = indexer.completeWithContent(new CharPosition(4));
+        assertTrue(res != null);
+        assertTrue(res.column == 1 && res.line == 1 && res.index == 4);
+        CharPosition cp = indexer.completeWithContent(new CharPosition(100));
+        assertTrue( cp != null);
+    }
+
+    @Test
+    public void testCharAtWith() {
+        {
+            //
+            // aze
+            // aa
+            @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            content.append();
+            content.append("aze");
+            content.append("aa");
+            CachedContentIndexer contentIndexer = new CachedContentIndexer(content);
+            CharPosition res = contentIndexer.processCharPosition(5);
+            content.dump();
+            res.dump();
+            assertTrue(res != null && res.index == 5 && res.line == 2 && res.column == 2);
+        }
+        {
+            //
+            // aze
+            // aa
+            @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            content.append();
+            content.append("aze");
+            content.append("aa");
+            CachedContentIndexer contentIndexer = new CachedContentIndexer(content);
+            CharPosition res = contentIndexer.completeWithContent(new CharPosition(5));
+            content.dump();
+            res.dump();
+            assertTrue(res != null && res.index == 5 && res.line == 2 && res.column == 2);
+        }
+        {
+            //
+            // aze
+            // aa
+            @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
+            content.append();
+            content.append("aze");
+            content.append("aa");
+            CachedContentIndexer contentIndexer = new CachedContentIndexer(content);
+            CharPosition cp = contentIndexer.getCharPosition(5);
+            cp.dump();
+            assertTrue(cp != null && cp.index == 5 && cp.line == 2 && cp.column == 2);
         }
     }
 }

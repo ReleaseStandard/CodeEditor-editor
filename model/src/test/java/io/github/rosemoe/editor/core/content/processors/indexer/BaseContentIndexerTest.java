@@ -3,6 +3,7 @@ package io.github.rosemoe.editor.core.content.processors.indexer;
 import org.junit.Test;
 
 import io.github.rosemoe.editor.core.content.CodeAnalyzerResultContent;
+import io.github.rosemoe.editor.core.util.Logger;
 import manifold.ext.rt.api.Jailbreak;
 
 import static org.junit.Assert.*;
@@ -36,12 +37,13 @@ public class BaseContentIndexerTest {
             assertTrue("res=" + res, res==7);
             res = indexer.processIndex(2,5);
             assertTrue("res="+res,res==20);
-            assertTrue(indexer.processIndex(123,123) == -1);
+            res = indexer.processIndex(123,1);
+            assertTrue("res=" + res + ",content.length=" + content.length(),content.length() + 1 == res);
         }
         {
             @Jailbreak CodeAnalyzerResultContent content = new CodeAnalyzerResultContent();
             @Jailbreak Base indexer = new Base(content);
-            assertTrue(indexer.processIndex(0,2)==-1);
+            assertTrue(indexer.processIndex(0,2)==2);
         }
         {
 
@@ -113,7 +115,7 @@ public class BaseContentIndexerTest {
             }
             {
                 CharPosition cp = indexer.processCharPosition(7);
-                assertTrue(cp == null);
+                assertTrue(cp.column == 1 && cp.line == 3);
             }
         }
         {
@@ -129,11 +131,11 @@ public class BaseContentIndexerTest {
             @Jailbreak Base indexer = new Base(content);
             {
                 CharPosition cp = indexer.processCharPosition(0);
-                assertTrue(cp.line == 3 && cp.column == 0);
+                assertTrue(cp.line == 3 && cp.column == 0 && cp.index == 0);
             }
             {
                 CharPosition cp = indexer.processCharPosition(1);
-                assertTrue(cp == null );
+                assertTrue(cp.line == 3 && cp.column == 1 && cp.index == 1 );
             }
         }
     }

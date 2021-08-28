@@ -43,7 +43,7 @@ public abstract class BaseContentIndexer extends ContentIndexer {
      * Assuming line column not INVALID
      * @param line 0..n-1
      * @param column 0..n-1
-     * @return -1 or index
+     * @return index 0..n-1 in the content map (warning: it could be outside the map)
      */
     protected int processIndex(int line, int column) {
         int index = column;
@@ -53,16 +53,14 @@ public abstract class BaseContentIndexer extends ContentIndexer {
             if ( l == null ) { continue; }
             index += l.getWidth();
         }
-        return -1;
+        return index;
     }
-    protected CharPosition processIndexWrappCharPosition(int line, int column) {
-        int idx = processIndex(line, column);
-        return new CharPosition(line, column, idx);
-    }
+
     /**
      * Get line, column for that index in the given column.
-     * @param index
-     * @return
+     * By default indexes that are not in the map are appended in the last line.
+     * @param index 0..n-1 index of the char in the content
+     * @return the new CharPosition
      */
     protected CharPosition processCharPosition(int index) {
         int idx = 0;
@@ -77,12 +75,16 @@ public abstract class BaseContentIndexer extends ContentIndexer {
             }
             idx += l.getWidth();
         }
-        if ( idx == index ) {
-            try {
-                return new CharPosition(content.lastKey(), content.get(content.lastKey()).getWidth(), index);
-            } catch (Exception e) { return null; }
+        int line = 0;
+        int column = 0;
+        try {
+            line = content.lastKey();
+            Line l = content.get(line);
+            column = index - (idx - l.getWidth());
+        } catch (Exception e) {
+            column = index;
         }
-        return null;
+        return new CharPosition(line, column, index);
     }
 
     /**

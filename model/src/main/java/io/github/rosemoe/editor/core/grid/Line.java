@@ -196,15 +196,13 @@ public class Line<T extends Cell> extends ConcurrentSkipListMap<Integer, T> impl
 
     /**
      * Insert a line into an other, warning this destruct the original line.
-     * @param offset
-     * @param l
+     * @param offset 0..n-1 offset in the current Line
+     * @param l The Line to insert
      */
     public void insertLine(int offset, Line<T> l) {
-        insertCell(offset,l.getWidth());
-        remove(offset);
-        for(T c : l) {
-            c.column += offset;
-            put(c);
+        for(T cell : l) {
+            cell.column += offset;
+            insertCell(cell);
         }
     }
     /**
