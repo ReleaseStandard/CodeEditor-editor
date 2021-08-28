@@ -639,7 +639,23 @@ public class LineTest {
             s1.put(new BaseCell(0,2));
             s1.put(new BaseCell(2,2));
             s1.put(new BaseCell(4,5));
-            s1.insertCell(5,2);
+            assertTrue(s1.insertCell(5,2) == 4);
+            assertTrue("s1.size()=" + s1.size(), s1.size() == 3);
+            assertTrue(s1.get(0).size == 2);
+            assertTrue(s1.get(2).size == 2);
+            assertTrue(s1.get(4).size == 7);
+        }
+        {
+            // --++*|****
+            // --++*******
+            Line<BaseCell> s1 = new Line<BaseCell>();
+            s1.behaviourOnCellSplit = SPLIT_EXTENDS;
+            s1.put(new BaseCell(0,2));
+            s1.put(new BaseCell(2,2));
+            s1.put(new BaseCell(4,5));
+            BaseCell insert = new BaseCell(5,2);
+            insert.enabled = false;
+            s1.insertCell(insert);
             assertTrue("s1.size()=" + s1.size(), s1.size() == 3);
             assertTrue(s1.get(0).size == 2);
             assertTrue(s1.get(2).size == 2);
@@ -670,7 +686,6 @@ public class LineTest {
     }
 
     @Test
-    @Ignore("TODO")
     public void testInsertBug() {
         {
             // --++*|****
@@ -690,6 +705,93 @@ public class LineTest {
             assertTrue(s1.get(4).size == 1);
             assertTrue(s1.get(5).size == 2);
             assertTrue(s1.get(7).size == 4);
+        }
+    }
+    @Test
+    public void testInsertBug2() {
+        {
+            // --++*|****
+            // --++******
+            Line s1 = new Line();
+            s1.behaviourOnCellSplit = SPLIT_EXTENDS;
+            s1.append(new BaseCell( 2));
+            s1.append(new BaseCell( 2));
+            s1.append(new BaseCell( 5));
+            assertTrue(s1.insertCell(5,1)==4);
+            assertTrue(s1.size() == 3);
+            assertTrue(s1.get(0).size==2);
+            assertTrue(s1.get(2).size==2);
+            assertTrue(s1.get(4).size==6);
+        }
+        {
+            // --++*|****
+            // --++* ,,,,
+            Line s1 = new Line();
+            s1.behaviourOnCellSplit = SPLIT_SPLITTING;
+            s1.append(new BaseCell(2));
+            s1.append(new BaseCell(2));
+            s1.append(new BaseCell(5));
+            s1.dump();
+            assertTrue(s1.insertCell(5, 1) == 5);
+            s1.dump();
+            assertTrue(s1.size() == 4);
+            assertTrue(s1.get(0).size == 2);
+            assertTrue(s1.get(2).size == 2);
+            assertTrue(s1.get(4).size == 1);
+            assertTrue(s1.get(6).size == 4);
+        }
+        {
+            // --++*|****
+            // --++ o
+            Line s1 = new Line();
+            s1.behaviourOnCellSplit = SPLIT_INVALIDATE;
+            s1.append(new BaseCell(2));
+            s1.append(new BaseCell(2));
+            s1.append(new BaseCell(5));
+            s1.dump();
+            assertTrue(s1.insertCell(5, 1) == 5);
+            s1.dump();
+            assertTrue(s1.size() == 4);
+            assertTrue(s1.get(0).size == 2);
+            assertTrue(s1.get(2).size == 2);
+            assertTrue("s1.get(4).size="+ s1.get(4).size, s1.get(4).size == 1 && s1.get(4).enabled == false);
+            assertTrue(s1.get(6).size == 4 && s1.get(6).enabled == false);
+        }
+        {
+            // --++*|****
+            // --++* ,,,,
+            Line s1 = new Line();
+            s1.behaviourOnCellSplit = SPLIT_SPLITTING;
+            s1.append(new BaseCell(2));
+            s1.append(new BaseCell(2));
+            s1.append(new BaseCell(5));
+            s1.dump();
+            s1.insertCell(new BaseCell(5,1));
+            s1.dump();
+            assertTrue(s1.size() == 5);
+            assertTrue(s1.get(0).size == 2);
+            assertTrue(s1.get(2).size == 2);
+            assertTrue(s1.get(4).size == 1);
+            assertTrue(s1.get(5).size == 1);
+            assertTrue(s1.get(6).size == 4);
+        }
+        {
+            // --++*|****
+            // --++ o
+            Line s1 = new Line();
+            s1.behaviourOnCellSplit = SPLIT_INVALIDATE;
+            s1.append(new BaseCell(2));
+            s1.append(new BaseCell(2));
+            s1.append(new BaseCell(5));
+            s1.dump();
+            s1.insertCell(new BaseCell(5,1));
+            s1.dump();
+            assertTrue(s1.size() == 5);
+            assertTrue(s1.get(0).size == 2);
+            assertTrue(s1.get(2).size == 2);
+            assertTrue("s1.get(4).size="+ s1.get(4).size, s1.get(4).size == 1 && s1.get(4).enabled == false);
+            assertTrue(s1.get(5).size == 1);
+            assertTrue(s1.get(6).size == 4 && s1.get(6).enabled == false);
         }
     }
     @Test(expected = RuntimeException.class)
@@ -1169,8 +1271,8 @@ public class LineTest {
             assertTrue(l.get(10).size == 2);
         }
     }
+
     @Test
-    @Ignore("This is a bug")
     public void testInsertLineBug() {
         {
             // **--++|++

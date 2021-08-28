@@ -42,6 +42,7 @@ public class CodeAnalyzerResultContentTest {
             }
         }
     }
+
     @Test
     public void testReflexivity() {
         CodeAnalyzerResultContent c1 = new CodeAnalyzerResultContent();

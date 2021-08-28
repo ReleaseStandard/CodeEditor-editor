@@ -12,11 +12,10 @@ public class GridTest {
     Random r = new Random();
 
     @Test
-    @Ignore("This bug is known")
     public void testInsertContentBug() {
         {
             // --++*|****
-            // --++*o****
+            // --++* ****
             Grid<BaseCell> map = new Grid();
             map.behaviourOnCellSplit = Cell.SPLIT_SPLITTING;
             Line s1 = new Line();
@@ -25,9 +24,11 @@ public class GridTest {
             s1.append(new BaseCell( 5));
             map.append(s1);
             map.insertCells(0,5,6);
-            System.out.println("<=== map.dump() ===>");
-            map.dump();
-            assertTrue("s1.size()=" + s1.size(), s1.size() == 5);
+            assertTrue(s1.size() == 4);
+            assertTrue(s1.get(0).size == 2);
+            assertTrue(s1.get(2).size == 2);
+            assertTrue(s1.get(4).size == 1);
+            assertTrue(s1.get(6).size == 4);
         }
     }
     @Test

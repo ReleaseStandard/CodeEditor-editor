@@ -124,7 +124,11 @@ public class Grid<T extends Cell> extends ConcurrentSkipListMap<Integer, Line<T>
         if (lineStart > lineStop) {
             throw new RuntimeException("INVALID : lineStart=" + lineStart + ",lineStop=" + lineStop);
         } else if (lineStart == lineStop) {
+            Logger.debug("size of insert = " + (colStop - colStart));
+            get(lineStart).dump();
             get(lineStart).insertCell(colStart, colStop - colStart);
+            Logger.debug("END");
+            get(lineStart).dump();
         } else {
             Line<T>[] startParts = get(lineStart).split(colStart);
             put(lineStart, startParts[0]);

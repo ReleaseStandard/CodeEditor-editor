@@ -217,24 +217,32 @@ public class Line<T extends Cell> extends ConcurrentSkipListMap<Integer, T> impl
      * @return cell the cell inserted or null if size the of the cell is zero or invalid.
      */
     public T insertCell(T cell) {
-        // here we got undefined :
-        //   - or do not insert the span (we just use fields)
-        //   - or do insert the span but do not respect the behaviourOnSpanSplit policy
         if ( getBehaviourOnCellSplit() == SPLIT_EXTENDS) {
-            throw new RuntimeException("Cannot insert a cell with policy SPLIT_EXTENDS : it is an undefined behaviour");
-        }
-        insertCell(cell.column, cell.size);
-        if ( cell.size > 0 ) {
-            return put(cell.column, cell);
+            if ( cell.enabled == false ) {
+                int insert = insertCell(cell.column, cell.size);
+                if ( cell.size > 0 ) {
+                    return get(insert);
+                }
+            } else {
+                // here we got undefined :
+                //   keep attributes of old cell or of the new cell ?
+                throw new RuntimeException("Cannot insert a cell with content inside with policy SPLIT_EXTENDS : it is an undefined behaviour");
+            }
+        } else {
+            int insert = insertCell(cell.column, cell.size);
+            if ( cell.size > 0 ) {
+                return put(cell.column, cell);
+            }
         }
         return null;
     }
 
     /**
-     * @param col
-     * @param size
+     * @param col  0..n index to insert
+     * @param size 0..n size to insert
+     * @return the index at which the inserted cell begin
      */
-    public void insertCell(final int col, final int size) {
+    public int insertCell(final int col, final int size) {
         Integer[] keys = keySet().toArray(new Integer[size()]);
         for(int a = size()-1; a >= 0; a --) {
             T s = get(keys[a]);
@@ -244,27 +252,31 @@ public class Line<T extends Cell> extends ConcurrentSkipListMap<Integer, T> impl
                 put(s.column, s);
             } else if (s.column < col && (s.column + s.size) > col) {
                 switch (getBehaviourOnCellSplit()) {
-                    case SPLIT_EXTENDS:
+                    case SPLIT_EXTENDS: {
                         remove(s.column);
                         s.size += size;
                         put(s.column, s);
-                        break;
+                        return s.column;
+                    }
                     case SPLIT_INVALIDATE:
-                    case SPLIT_SPLITTING:
+                    case SPLIT_SPLITTING: {
                         int oldSz = s.size;
                         int index = col + size;
                         s.size = (col - s.column);
+                        s.enabled = !(behaviourOnCellSplit == SPLIT_INVALIDATE);
                         T c = (T) s.clone();
                         c.column = index;
                         c.size = oldSz - s.size;
                         c.enabled = !(behaviourOnCellSplit == SPLIT_INVALIDATE);
                         put(index, c);
-                        break;
+                        return col;
+                    }
                 }
             } else {
                 break;
             }
         }
+        return col;
     }
 
     /**
