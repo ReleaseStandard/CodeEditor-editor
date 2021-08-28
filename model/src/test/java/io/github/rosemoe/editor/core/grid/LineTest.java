@@ -663,28 +663,6 @@ public class LineTest {
         }
     }
 
-    // Test that all behaviour lead to the same length on the content
-    @Test
-    @Ignore("This test coud lead to bug")
-    public void testGenericity() {
-        Line<BaseCell> l = new Line<BaseCell>();
-        int n = r.nextUint(20);
-        for(int a = 0; a < n; a = a + 1) {
-            l.append(new BaseCell(r.nextUint(100)));
-        }
-        int insertSize = r.nextUint(100);
-        int insertCol = r.nextUint(l.getWidth());
-        int [] behaves = new int[]{SPLIT_EXTENDS, SPLIT_INVALIDATE, SPLIT_SPLITTING};
-        int [] results = new int[behaves.length];
-        for(int a = 0; a < behaves.length; a = a + 1) {
-            Line<BaseCell> l2 = l.clone();
-            l2.behaviourOnCellSplit = behaves[a];
-            l2.insertCell(insertCol, insertSize);
-            results[a] = l2.getWidth() + l2.size();
-        }
-        assertTrue("{cut: {insertSize: " + insertSize+", insertCol: " + insertCol + "}, n: "+n+"}", results[0]==results[1] && results[1]==results[2]);
-    }
-
     @Test
     public void testInsertBug() {
         {
@@ -794,6 +772,7 @@ public class LineTest {
             assertTrue(s1.get(6).size == 4 && s1.get(6).enabled == false);
         }
     }
+
     @Test(expected = RuntimeException.class)
     public void testInsertCells() {
         //
@@ -1112,6 +1091,7 @@ public class LineTest {
             assertTrue(sub.get(2) == null);
         }
     }
+
     @Test
     public void subCells() {
         {
